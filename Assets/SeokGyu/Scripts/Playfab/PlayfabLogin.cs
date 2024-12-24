@@ -32,6 +32,13 @@ public class PlayfabLogin : MonoBehaviour
         PlayFabClientAPI.LoginWithCustomID(request, OnLoginCustomIdSuccess, OnFailure);
     }
 
+    private void UpdateDisplayName(string displayName)
+    {
+        Debug.Log($"Updating Playfab account's Display name to: {displayName}");
+        var request = new UpdateUserTitleDisplayNameRequest { DisplayName = displayName };
+        PlayFabClientAPI.UpdateUserTitleDisplayName(request, OnDisplayNameSuccess, OnFailure);
+    }
+
     
 
     public void SetUsername(string name)
@@ -51,6 +58,13 @@ public class PlayfabLogin : MonoBehaviour
     private void OnLoginCustomIdSuccess(LoginResult result)
     {
         Debug.Log($"You have logged into Playfab using custom id {username}");
+        UpdateDisplayName(username);
+    }
+
+    private void OnDisplayNameSuccess(UpdateUserTitleDisplayNameResult result)
+    {
+        Debug.Log($"You have updated the displayname of the playfab account!");
+        SceneController.LoadScene("MainMenu");
     }
 
     private void OnFailure(PlayFabError error)

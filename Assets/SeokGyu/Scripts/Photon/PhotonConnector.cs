@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using Photon.Pun.Demo.Cockpit;
 using TMPro;
+using System;
 
 namespace EverScord
 {
-    public class PhotonManager : MonoBehaviourPunCallbacks
+    public class PhotonConnector : MonoBehaviourPunCallbacks
     {
         /*
             실행
@@ -16,6 +14,7 @@ namespace EverScord
             -> 로비룸에서 대기. 이때 매칭을 넣을수도, 초대를 받을수도, 초대를 할수도 있음.
             -> 
         */
+        public static Action GetPhotonFriends = delegate { };
         private readonly string version = "1.0"; // 게임 버전 체크
         private string userId;
 
@@ -70,6 +69,7 @@ namespace EverScord
             Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");
             // 방 접속 방법은 두 가지. 1 랜던 매치메이킹, 2 선택된 방 접속
 
+            GetPhotonFriends?.Invoke();
             //PhotonNetwork.JoinRandomRoom();
         }
 
@@ -136,7 +136,7 @@ namespace EverScord
         private void SetInfo()
         {
             // 유저 ID 랜덤 설정, 20명까지 밖에 못들어오므로 1~21 설정. -> 00은 한 자리도 두 자리로 만들기 위해서
-            userId = PlayerPrefs.GetString("USER_ID", $"USER_{Random.Range(1, 21):00}");
+            userId = PlayerPrefs.GetString("USER_ID", $"USER_{UnityEngine.Random.Range(1, 21):00}");
             PhotonNetwork.NickName = userId;
         }
 
@@ -144,7 +144,7 @@ namespace EverScord
         {
             if (string.IsNullOrEmpty(roomInputField.text))
             {
-                roomInputField.text = $"ROOM_{Random.Range(1, 101):000}";
+                roomInputField.text = $"ROOM_{UnityEngine.Random.Range(1, 101):000}";
             }
             return roomInputField.text;
         }
