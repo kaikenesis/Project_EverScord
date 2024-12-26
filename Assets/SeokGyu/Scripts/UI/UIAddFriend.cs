@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class UIAddFriends : MonoBehaviour
+public class UIAddFriend : MonoBehaviour
 {
     [SerializeField] private string displayName;
 

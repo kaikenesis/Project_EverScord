@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using PlayFab;
-using PlayFab.MultiplayerModels;
 using PlayFab.ClientModels;
 using System;
 using System.Linq;
@@ -15,16 +14,19 @@ public class PlayfabFriendController : MonoBehaviour
     private void Awake()
     {
         friends = new List<FriendInfo>();
-        //PhotonConnector.
-        UIAddFriends.OnAddFriend += HandleAddPlayfabFriend;
+        PhotonConnector.GetPhotonFriends += HandleGetFriends;
+        UIAddFriend.OnAddFriend += HandleAddPlayfabFriend;
         UIFriend.OnRemoveFriend += HandleRemoveFriend;
     }
 
     private void OnDestroy()
     {
-        UIAddFriends.OnAddFriend -= HandleAddPlayfabFriend;
+        PhotonConnector.GetPhotonFriends -= HandleGetFriends;
+        UIAddFriend.OnAddFriend -= HandleAddPlayfabFriend;
         UIFriend.OnRemoveFriend -= HandleRemoveFriend;
     }
+
+    
 
     private void Start()
     {
@@ -39,9 +41,14 @@ public class PlayfabFriendController : MonoBehaviour
 
     private void HandleRemoveFriend(string name)
     {
-        string id = friends.FirstOrDefault(f => f.TitleDisplayName == name).ToString();
+        string id = friends.FirstOrDefault(f => f.TitleDisplayName == name).FriendPlayFabId;
         var request = new RemoveFriendRequest { FriendPlayFabId = id };
         PlayFabClientAPI.RemoveFriend(request, OnFriendRemoveSuccess, OnFailure);
+    }
+
+    private void HandleGetFriends()
+    {
+        GetPlayfabFriends();
     }
 
     private void GetPlayfabFriends()

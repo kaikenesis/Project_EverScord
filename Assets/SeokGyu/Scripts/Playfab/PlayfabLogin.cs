@@ -1,11 +1,11 @@
 using PlayFab;
 using PlayFab.ClientModels;
-using System;
 using UnityEngine;
 
 public class PlayfabLogin : MonoBehaviour
 {
     [SerializeField] private string username;
+    [SerializeField] private GameObject LogInUI;
 
     private void Start()
     {
@@ -13,6 +13,8 @@ public class PlayfabLogin : MonoBehaviour
         {
             PlayFabSettings.TitleId = "3FCDA";
         }
+
+        PlayerPrefs.SetString("USERNAME", "");
     }
 
     private bool IsValidUsername()
@@ -64,6 +66,7 @@ public class PlayfabLogin : MonoBehaviour
     private void OnDisplayNameSuccess(UpdateUserTitleDisplayNameResult result)
     {
         Debug.Log($"You have updated the displayname of the playfab account!");
+        LogInUI.SetActive(false);
         SceneController.LoadScene("MainMenu");
     }
 

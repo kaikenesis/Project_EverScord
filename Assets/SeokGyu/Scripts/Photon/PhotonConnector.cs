@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using System;
+using WebSocketSharp;
 
 namespace EverScord
 {
@@ -16,52 +17,73 @@ namespace EverScord
         */
         public static Action GetPhotonFriends = delegate { };
         private readonly string version = "1.0"; // 게임 버전 체크
-        private string userId;
 
         [SerializeField] private TMP_InputField userInputField;
         [SerializeField] private TMP_InputField roomInputField;
         [SerializeField] private TMP_InputField searchIDInputField;
-        [SerializeField] private GameObject LogInUI;
 
         [SerializeField] int maxPlayerCount;
 
         
         private void Awake()
         {
-            Init();
+            //Init();
+        }
+
+        private void Start()
+        {
+            
         }
 
         private void Init()
         {
-            PhotonNetwork.AutomaticallySyncScene = true;    // 씬 동기화. 맨 처음 접속한 사람이 방장
             PhotonNetwork.GameVersion = version;            // 버전 할당.
             Debug.Log(PhotonNetwork.SendRate);              // Photon서버와의 통신 횟수를 로그로 찍기. 기본값 : 30, 제대로 통신이 되면 30이 출력
         }
 
-        public void OnLogIn()
+        public void LoginPhoton()
         {
-            // 마스터서버에 접속
-            if (PhotonNetwork.IsConnected == true)
-            {
-                Debug.Log("Already connected to Master");
-                return;
-            }
-            if (userInputField.text == null || userInputField.text == "")
-            {
-                Debug.Log("You need to input UserID");
-                return;
-            }
-
-            userId = userInputField.text;
-            PhotonNetwork.ConnectUsingSettings();
-            LogInUI.SetActive(false);
+            string nickName = PlayerPrefs.GetString("USERNAME");
+            if (string.IsNullOrEmpty(nickName)) return;
+            ConnectToPhoton(nickName);
         }
+
+        private void ConnectToPhoton(string nickName)
+        {
+            Debug.Log($"Connect to Photon as {nickName}");
+            PhotonNetwork.AuthValues = new AuthenticationValues(nickName);
+            PhotonNetwork.AutomaticallySyncScene = true; // 씬 동기화. 맨 처음 접속한 사람이 방장
+            PhotonNetwork.NickName = nickName;
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+        //public void OnLogIn()
+        //{
+        //    // 마스터서버에 접속
+        //    if (PhotonNetwork.IsConnected == true)
+        //    {
+        //        Debug.Log("Already connected to Master");
+        //        return;
+        //    }
+        //    if (userInputField.text == null || userInputField.text == "")
+        //    {
+        //        Debug.Log("You need to input UserID");
+        //        return;
+        //    }
+
+        //    userId = userInputField.text;
+        //    ConnectToPhoton(userId);
+        //    LogInUI.SetActive(false);
+        //}
 
         public override void OnConnectedToMaster()
         {
             Debug.Log("Connected to Master");                   // 마스터 서버에 접속이 되었는지 디버깅
             Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");   // 로비에 들어와 있으면 True, 아니면 False 반환. Master 서버에는 접속했지만 로비는 아니므로 False.
-            PhotonNetwork.JoinLobby();                          // 로비 접속
+            if(!PhotonNetwork.InLobby)
+            {
+                PhotonNetwork.JoinLobby();                          // 로비 접속
+            }
         }
 
         public override void OnJoinedLobby()
@@ -126,19 +148,11 @@ namespace EverScord
             {
                 PhotonNetwork.LoadLevel("TestRoom");
             }
+
+            
         }
 
-        private void Start()
-        {
-            SetInfo();
-        }
-
-        private void SetInfo()
-        {
-            // 유저 ID 랜덤 설정, 20명까지 밖에 못들어오므로 1~21 설정. -> 00은 한 자리도 두 자리로 만들기 위해서
-            userId = PlayerPrefs.GetString("USER_ID", $"USER_{UnityEngine.Random.Range(1, 21):00}");
-            PhotonNetwork.NickName = userId;
-        }
+        
 
         private string SetRoomName()
         {
