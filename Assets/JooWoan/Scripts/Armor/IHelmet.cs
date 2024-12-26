@@ -1,13 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace EverScord.Armor
 {
     public interface IHelmet
     {
-        float BasicAttackDamage { get; }
-        float SkillDamage { get; }
-        float AllroundHealAmount { get; }
+        // Dealer
+        public float BasicAttackDamage  { get; }
+        public float SkillDamage        { get; }
+
+        // Healer
+        public float BasicHealAmount    { get; }
+        public float SkillHealAmount    { get; }
+        public float AllroundHealAmount { get; }
     }
 }

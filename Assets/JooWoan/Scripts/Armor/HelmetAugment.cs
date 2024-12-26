@@ -1,27 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace EverScord.Armor
 {
     public class HelmetAugment : ArmorAugment
     {
-        // Dealer
-        private float basicAttackDamage;
-        private float skillDamage;
+        public float BasicAttackDamage  { get; private set; }
+        public float SkillDamage        { get; private set; }
+        public float BasicHealAmount    { get; private set; }
+        public float SkillHealAmount    { get; private set; }
+        public float AllroundHealAmount { get; private set; }
 
-        // Healer
-        private float basicHealAmount;
-        private float skillHealAmount;
-        private float allroundHealAmount;
-
-        public HelmetAugment()
+        public HelmetAugment(HelmetAugmentBuilder builder)
         {
-            
-        }
+            Name                = builder.Name;
+            Description         = builder.Description;
 
-        public float SkillDamage => skillDamage;
-        public float BasicAttackDamage => basicAttackDamage;
-        public float AllroundHealAmount => allroundHealAmount;
+            BasicAttackDamage   = builder.BasicAttackDamage;
+            SkillDamage         = builder.SkillDamage;
+            BasicHealAmount     = builder.BasicHealAmount;
+            SkillHealAmount     = builder.SkillHealAmount;
+            AllroundHealAmount  = builder.AllroundHealAmount;
+        }
     }
 }

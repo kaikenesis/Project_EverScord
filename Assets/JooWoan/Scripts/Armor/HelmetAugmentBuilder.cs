@@ -1,45 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace EverScord.Armor
 {
-    public class HelmetAugmentBuilder : IArmorAugmentBuilder
+    public class HelmetAugmentBuilder : AugmentBuilder
     {
-        private float basicAttackDamage;
-        private float skillDamage;
+        public float BasicAttackDamage  { get; private set; }
+        public float SkillDamage        { get; private set; }
+        public float BasicHealAmount    { get; private set; }
+        public float SkillHealAmount    { get; private set; }
+        public float AllroundHealAmount { get; private set; }
 
-        private float basicHealAmount;
-        private float skillHealAmount;
-        private float allroundHealAmount;
+        public HelmetAugmentBuilder() {}
 
-        private void SetBasicAttackDamage()
+        public HelmetAugmentBuilder SetName(string name)
         {
-
+            Name = name;
+            return this;
         }
 
-        private void SetSkillDamage()
+        public HelmetAugmentBuilder SetDescription(string description)
         {
-
+            Description = description;
+            return this;
         }
 
-        private void SetBasicHealAmount()
+        public HelmetAugmentBuilder SetBasicAttackDamage(float basicAttackDamage)
         {
-
+            BasicAttackDamage = basicAttackDamage;
+            return this;
         }
 
-        private void SetSkillHealAmount()
+        public HelmetAugmentBuilder SetSkillDamage(float skillDamage)
         {
-
+            SkillDamage = skillDamage;
+            return this;
         }
 
-        private void SetAllroundHealAmount()
+        public HelmetAugmentBuilder SetBasicHealAmount(float basicHealAmount)
         {
-
+            BasicHealAmount = basicHealAmount;
+            return this;
         }
 
-        public void BuildAugment()
+        public HelmetAugmentBuilder SetSkillHealAmount(float skillHealAmount)
         {
+            SkillHealAmount = skillHealAmount;
+            return this;
+        }
+
+        public HelmetAugmentBuilder SetAllroundHealAmount(float allroundHealAmount)
+        {
+            AllroundHealAmount = allroundHealAmount;
+            return this;
+        }
+
+        public HelmetAugment Build()
+        {
+            return new HelmetAugment(this);
         }
     }
 }
