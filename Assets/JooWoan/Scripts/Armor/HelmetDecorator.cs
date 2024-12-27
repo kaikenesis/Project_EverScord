@@ -12,29 +12,29 @@ namespace EverScord.Armor
             this.augment            = augment;
         }
 
-        public float BasicAttackDamage
+        public float BasicAttackBonus
         {
-            get { return decoratedHelmet.BasicAttackDamage + augment.BasicAttackDamage; }
+            get { return decoratedHelmet.BasicAttackBonus + augment.BasicAttackBonus; }
         }
 
-        public float SkillDamage
+        public float SkillAttackBonus
         {
-            get { return decoratedHelmet.BasicAttackDamage + augment.SkillDamage; }
+            get { return decoratedHelmet.SkillAttackBonus + augment.SkillAttackBonus; }
         }
 
-        public float BasicHealAmount
+        public float BasicHealBonus
         {
-            get { return decoratedHelmet.BasicHealAmount + augment.BasicHealAmount; }
+            get { return decoratedHelmet.BasicHealBonus + augment.BasicHealBonus; }
         }
 
-        public float SkillHealAmount
+        public float SkillHealBonus
         {
-            get { return decoratedHelmet.SkillHealAmount + augment.SkillHealAmount; }
+            get { return decoratedHelmet.SkillHealBonus + augment.SkillHealBonus; }
         }
 
-        public float AllroundHealAmount
+        public float AllroundHealBonus
         {
-            get { return decoratedHelmet.AllroundHealAmount; }
+            get { return decoratedHelmet.AllroundHealBonus + augment.AllroundHealBonus; }
         }
     }
 }
