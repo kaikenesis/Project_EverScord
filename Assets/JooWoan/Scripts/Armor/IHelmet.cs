@@ -4,12 +4,21 @@ namespace EverScord.Armor
     public interface IHelmet
     {
         // Dealer
-        public float BasicAttackBonus   { get; }
-        public float SkillAttackBonus   { get; }
+        public StatBonus BasicAttackBonus   { get; }
+        public StatBonus SkillAttackBonus   { get; }
 
         // Healer
-        public float BasicHealBonus     { get; }
-        public float SkillHealBonus     { get; }
-        public float AllroundHealBonus  { get; }
+        public StatBonus BasicHealBonus     { get; }
+        public StatBonus SkillHealBonus     { get; }
+        public StatBonus AllroundHealBonus  { get; }
+
+        public enum BonusType
+        {
+            BasicAttack,
+            SkillAttack,
+            BasicHeal,
+            SkillHeal,
+            AllroundHeal
+        };
     }
 }

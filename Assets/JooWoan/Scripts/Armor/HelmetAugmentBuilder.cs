@@ -3,11 +3,11 @@ namespace EverScord.Armor
 {
     public class HelmetAugmentBuilder : AugmentBuilder
     {
-        public float BasicAttackBonus   { get; private set; }
-        public float SkillAttackBonus   { get; private set; }
-        public float BasicHealBonus     { get; private set; }
-        public float SkillHealBonus     { get; private set; }
-        public float AllroundHealBonus  { get; private set; }
+        public StatBonus BasicAttackBonus   { get; private set; }
+        public StatBonus SkillAttackBonus   { get; private set; }
+        public StatBonus BasicHealBonus     { get; private set; }
+        public StatBonus SkillHealBonus     { get; private set; }
+        public StatBonus AllroundHealBonus  { get; private set; }
 
         public HelmetAugmentBuilder() {}
 
@@ -23,33 +23,34 @@ namespace EverScord.Armor
             return this;
         }
 
-        public HelmetAugmentBuilder SetBasicAttackBonus(float basicAttackBonus)
+        public HelmetAugmentBuilder SetBonus(IHelmet.BonusType type, float additive, float multiplicative)
         {
-            BasicAttackBonus = basicAttackBonus;
-            return this;
-        }
+            switch (type)
+            {
+                case IHelmet.BonusType.BasicAttack:
+                    BasicAttackBonus.Init(additive, multiplicative);
+                    break;
 
-        public HelmetAugmentBuilder SetSkillAttackBonus(float skillAttackBonus)
-        {
-            SkillAttackBonus = skillAttackBonus;
-            return this;
-        }
+                case IHelmet.BonusType.SkillAttack:
+                    BasicAttackBonus.Init(additive, multiplicative);
+                    break;
 
-        public HelmetAugmentBuilder SetBasicHealBonus(float basicHealBonus)
-        {
-            BasicHealBonus = basicHealBonus;
-            return this;
-        }
+                case IHelmet.BonusType.BasicHeal:
+                    BasicHealBonus.Init(additive, multiplicative);
+                    break;
 
-        public HelmetAugmentBuilder SetSkillHealBonus(float skillHealBonus)
-        {
-            SkillHealBonus = skillHealBonus;
-            return this;
-        }
+                case IHelmet.BonusType.SkillHeal:
+                    SkillHealBonus.Init(additive, multiplicative);
+                    break;
 
-        public HelmetAugmentBuilder SetAllroundHealBonus(float allroundHealBonus)
-        {
-            AllroundHealBonus = allroundHealBonus;
+                case IHelmet.BonusType.AllroundHeal:
+                    AllroundHealBonus.Init(additive, multiplicative);
+                    break;
+
+                default:
+                    break;
+            }
+
             return this;
         }
 
