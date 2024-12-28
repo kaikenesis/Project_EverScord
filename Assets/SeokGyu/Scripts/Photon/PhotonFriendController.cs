@@ -27,6 +27,11 @@ public class PhotonFriendController : MonoBehaviourPunCallbacks
             string[] friendDisplayNames = friends.Select(f => f.TitleDisplayName).ToArray();
             PhotonNetwork.FindFriends(friendDisplayNames);
         }
+        else
+        {
+            List<PhotonFriendInfo> friendList = new List<PhotonFriendInfo>();
+            OnDisplayFriends?.Invoke(friendList);
+        }
     }
 
     public override void OnFriendListUpdate(List<PhotonFriendInfo> friendList)

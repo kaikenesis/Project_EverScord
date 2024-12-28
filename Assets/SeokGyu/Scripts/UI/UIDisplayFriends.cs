@@ -22,7 +22,7 @@ public class UIDisplayFriends : MonoBehaviour
     {
         foreach(Transform child in friendContainer)
         {
-            Destroy(child);
+            Destroy(child.gameObject);
         }
 
         foreach(FriendInfo friend in friends)

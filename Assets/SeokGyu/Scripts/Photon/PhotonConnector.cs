@@ -3,7 +3,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using System;
-using WebSocketSharp;
 
 namespace EverScord
 {
@@ -15,6 +14,8 @@ namespace EverScord
             -> 로비룸에서 대기. 이때 매칭을 넣을수도, 초대를 받을수도, 초대를 할수도 있음.
             -> 
         */
+        // 개인랜덤매칭 or 파티랜덤매칭(파티 : 초대, 배열로 저장한 뒤 전달?) or 플레이어초대(userId 검색, 방코드 등등)?
+
         public static Action GetPhotonFriends = delegate { };
         private readonly string version = "1.0"; // 게임 버전 체크
 
@@ -24,28 +25,23 @@ namespace EverScord
 
         [SerializeField] int maxPlayerCount;
 
-        
+        #region Private Methods
+
         private void Awake()
         {
-            //Init();
+            Init();
         }
 
-        private void Start()
+        private void OnDestroy()
         {
-            
+            UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
         }
 
         private void Init()
         {
             PhotonNetwork.GameVersion = version;            // 버전 할당.
             Debug.Log(PhotonNetwork.SendRate);              // Photon서버와의 통신 횟수를 로그로 찍기. 기본값 : 30, 제대로 통신이 되면 30이 출력
-        }
-
-        public void LoginPhoton()
-        {
-            string nickName = PlayerPrefs.GetString("USERNAME");
-            if (string.IsNullOrEmpty(nickName)) return;
-            ConnectToPhoton(nickName);
+            UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
         }
 
         private void ConnectToPhoton(string nickName)
@@ -57,42 +53,47 @@ namespace EverScord
             PhotonNetwork.ConnectUsingSettings();
         }
 
-        //public void OnLogIn()
-        //{
-        //    // 마스터서버에 접속
-        //    if (PhotonNetwork.IsConnected == true)
-        //    {
-        //        Debug.Log("Already connected to Master");
-        //        return;
-        //    }
-        //    if (userInputField.text == null || userInputField.text == "")
-        //    {
-        //        Debug.Log("You need to input UserID");
-        //        return;
-        //    }
-
-        //    userId = userInputField.text;
-        //    ConnectToPhoton(userId);
-        //    LogInUI.SetActive(false);
-        //}
-
-        public override void OnConnectedToMaster()
+        private void HandleRoomInviteAccept(string roomName)
         {
-            Debug.Log("Connected to Master");                   // 마스터 서버에 접속이 되었는지 디버깅
-            Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");   // 로비에 들어와 있으면 True, 아니면 False 반환. Master 서버에는 접속했지만 로비는 아니므로 False.
-            if(!PhotonNetwork.InLobby)
+            PlayerPrefs.SetString("PHOTONROOM", roomName);
+            if (PhotonNetwork.InRoom)
             {
-                PhotonNetwork.JoinLobby();                          // 로비 접속
+                PhotonNetwork.LeaveRoom();
+            }
+            else
+            {
+                if (PhotonNetwork.InLobby)
+                {
+                    JoinPlayerRoom();
+                }
             }
         }
 
-        public override void OnJoinedLobby()
+        private void JoinPlayerRoom()
         {
-            Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");
-            // 방 접속 방법은 두 가지. 1 랜던 매치메이킹, 2 선택된 방 접속
+            string roomName = PlayerPrefs.GetString("PHOTONROOM");
+            PlayerPrefs.SetString("PHOTONROOM", "");
+            PhotonNetwork.JoinRoom(roomName);
+        }
 
-            GetPhotonFriends?.Invoke();
-            //PhotonNetwork.JoinRandomRoom();
+        private string SetRoomName()
+        {
+            if (string.IsNullOrEmpty(roomInputField.text))
+            {
+                roomInputField.text = $"ROOM_{UnityEngine.Random.Range(1, 101):000}";
+            }
+            return roomInputField.text;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public void LoginPhoton()
+        {
+            string nickName = PlayerPrefs.GetString("USERNAME");
+            if (string.IsNullOrEmpty(nickName)) return;
+            ConnectToPhoton(nickName);
         }
 
         public void InviteUser()
@@ -104,15 +105,61 @@ namespace EverScord
             }
 
             PhotonNetwork.FindFriends(new string[1] { searchIDInputField.text });
-            
+
         }
 
-        public void JoinOrCreatePrivateRoom(string nameEveryFriendKnows)
+        public void CreatePhotonRoom(string roomName)
         {
-            Debug.Log("JoinOrCreatePrivateRoom : " + nameEveryFriendKnows);
+            Debug.Log("JoinOrCreatePrivateRoom : " + roomName);
+
             RoomOptions roomOptions = new RoomOptions();
-            roomOptions.IsVisible = false;
-            PhotonNetwork.JoinOrCreateRoom(nameEveryFriendKnows, roomOptions, null);
+            roomOptions.IsOpen = true;
+            roomOptions.IsVisible = true;
+            roomOptions.MaxPlayers = 4;
+            PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
+        }
+
+        // 개인랜덤매칭
+        public void OnMakeRoom()
+        {
+            RoomOptions roomOption = new RoomOptions();
+            roomOption.MaxPlayers = 3;
+            roomOption.IsOpen = true;    // false시 join 불가능. ex) 게임시작 후 다른 플레이어가 도중참가를 원치 않을때 사용
+            roomOption.IsVisible = true; // false시 RandomJoin이 안됨
+                                         // 고정된 값이 아닌 유저가 타이핑한 값을 받아옴
+            PhotonNetwork.CreateRoom(SetRoomName(), roomOption);
+        }
+
+        public void OnCreateRoomClicked(string roomName)
+        {
+            CreatePhotonRoom(roomName);
+        }
+
+        #endregion
+
+        #region Photon Callbacks
+
+        public override void OnConnectedToMaster()
+        {
+            Debug.Log("Connected to Master");                   // 마스터 서버에 접속이 되었는지 디버깅
+            Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");   // 로비에 들어와 있으면 True, 아니면 False 반환. Master 서버에는 접속했지만 로비는 아니므로 False.
+            if (!PhotonNetwork.InLobby)
+            {
+                PhotonNetwork.JoinLobby();                          // 로비 접속
+            }
+        }
+
+        public override void OnJoinedLobby()
+        {
+            Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");
+            // 방 접속 방법은 두 가지. 1 랜던 매치메이킹, 2 선택된 방 접속
+
+            GetPhotonFriends?.Invoke();
+            string roomName = PlayerPrefs.GetString("PHOTONROOM");
+            if (!string.IsNullOrEmpty(roomName))
+            {
+                JoinPlayerRoom();
+            }
         }
 
         // 방 생성이 되지 않았으면 오류 콜백 함수 실행
@@ -148,32 +195,13 @@ namespace EverScord
             {
                 PhotonNetwork.LoadLevel("TestRoom");
             }
-
-            
         }
+
+        #endregion
+
 
         
 
-        private string SetRoomName()
-        {
-            if (string.IsNullOrEmpty(roomInputField.text))
-            {
-                roomInputField.text = $"ROOM_{UnityEngine.Random.Range(1, 101):000}";
-            }
-            return roomInputField.text;
-        }
-
-        // 개인랜덤매칭 or 파티랜덤매칭(파티 : 초대, 배열로 저장한 뒤 전달?) or 플레이어초대(userId 검색, 방코드 등등)?
-
-        // 개인랜덤매칭
-        public void OnMakeRoom()
-        {
-            RoomOptions roomOption = new RoomOptions();
-            roomOption.MaxPlayers = 3;
-            roomOption.IsOpen = true;    // false시 join 불가능. ex) 게임시작 후 다른 플레이어가 도중참가를 원치 않을때 사용
-            roomOption.IsVisible = true; // false시 RandomJoin이 안됨
-                                         // 고정된 값이 아닌 유저가 타이핑한 값을 받아옴
-            PhotonNetwork.CreateRoom(SetRoomName(), roomOption);
-        }
+        
     }
 }
