@@ -8,33 +8,33 @@ namespace EverScord.Armor
 
         public HelmetDecorator(IHelmet decoratedHelmet, HelmetAugment augment)
         {
-            this.decoratedHelmet    = decoratedHelmet;
-            this.augment            = augment;
+            this.decoratedHelmet  = decoratedHelmet;
+            this.augment          = augment;
         }
 
         public StatBonus BasicAttackBonus
         {
-            get { return null; }
+            get { return StatBonus.MergeBonus(decoratedHelmet.BasicAttackBonus, augment.BasicAttackBonus); }
         }
 
         public StatBonus SkillAttackBonus
         {
-            get { return null; }
+            get { return StatBonus.MergeBonus(decoratedHelmet.SkillAttackBonus, augment.SkillAttackBonus); }
         }
 
         public StatBonus BasicHealBonus
         {
-            get { return null; }
+            get { return StatBonus.MergeBonus(decoratedHelmet.BasicHealBonus, augment.BasicHealBonus); }
         }
 
         public StatBonus SkillHealBonus
         {
-            get { return null; }
+            get { return StatBonus.MergeBonus(decoratedHelmet.SkillHealBonus, augment.SkillHealBonus); }
         }
 
         public StatBonus AllroundHealBonus
         {
-            get { return null; }
+            get { return StatBonus.MergeBonus(decoratedHelmet.AllroundHealBonus, augment.AllroundHealBonus); }
         }
     }
 }

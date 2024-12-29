@@ -1,8 +1,14 @@
 
-public class StatBonus
+public struct StatBonus
 {
-    public float additive = 1f;
-    public float multiplicative = 1f;
+    public float additive;
+    public float multiplicative;
+
+    public StatBonus(float additive, float multiplicative)
+    {
+        this.additive = additive;
+        this.multiplicative = multiplicative;
+    }
 
     public void Init(float additive, float multiplicative)
     {
@@ -15,9 +21,12 @@ public class StatBonus
         return statValue * additive * multiplicative;
     }
 
-    public void MergeBonus(StatBonus newBonus)
+    public static StatBonus MergeBonus(StatBonus bonus1, StatBonus bonus2)
     {
-        additive += newBonus.additive;
-        multiplicative *= newBonus.multiplicative;
+        StatBonus mergedBonus;
+        mergedBonus.additive        = bonus1.additive + bonus2.additive;
+        mergedBonus.multiplicative  = bonus1.multiplicative * bonus2.multiplicative;
+
+        return mergedBonus;
     }
 }

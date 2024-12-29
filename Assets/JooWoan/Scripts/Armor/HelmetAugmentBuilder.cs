@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+using System.Collections;
 
 namespace EverScord.Armor
 {
-    public class HelmetAugmentBuilder : AugmentBuilder
+    public class HelmetAugmentBuilder : AugmentBuilder, IHelmet
     {
         public StatBonus BasicAttackBonus   { get; private set; }
         public StatBonus SkillAttackBonus   { get; private set; }
@@ -23,9 +25,9 @@ namespace EverScord.Armor
             return this;
         }
 
-        public HelmetAugmentBuilder SetBonus(IHelmet.BonusType type, float additive, float multiplicative)
+        public HelmetAugmentBuilder SetBonus(IHelmet.BonusType bonusType, float additive, float multiplicative)
         {
-            switch (type)
+            switch (bonusType)
             {
                 case IHelmet.BonusType.BasicAttack:
                     BasicAttackBonus.Init(additive, multiplicative);
