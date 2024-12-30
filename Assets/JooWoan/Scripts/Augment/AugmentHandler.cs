@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using EverScord.UI;
+using EverScord.Armor;
 
 namespace EverScord.Augment
 {
@@ -13,8 +15,10 @@ namespace EverScord.Augment
             Shoes
         };
 
+        [SerializeField] private TestPlayer player;
         [SerializeField] private CardUI helmetCardUI, vestCardUI, shoesCardUI;
-        private AugmentData augmentData = new AugmentData();
+        [SerializeField] private LockableButton confirmBtn;
+        private AugmentData augmentData = new();
 
         private List<string> helmetAugmentTags = new();
         private List<string> vestAugmentTags = new();
@@ -22,17 +26,40 @@ namespace EverScord.Augment
 
         private int enhanceCount = 0;
 
-        void Start()
+        void Awake()
         {
             augmentData.Init();
-            InitAugmentDict(AugmentType.Helmet);
-            InitAugmentDict(AugmentType.Vest);
-            InitAugmentDict(AugmentType.Shoes);
+
+            helmetCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
+            vestCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
+            shoesCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
+
+            confirmBtn.GetComponent<Button>()?.onClick.AddListener(EnhanceArmor);
         }
 
-        void InitAugmentDict(AugmentType type)
+        void OnDisable()
         {
-            IDictionary<string, HelmetAugment> augmentDict = null;
+            helmetCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
+            vestCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
+            shoesCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
+
+            confirmBtn.GetComponent<Button>()?.onClick.RemoveListener(EnhanceArmor);
+        }
+
+        void Start()
+        {
+            SetAugmentTags(AugmentType.Helmet);
+            // SetAugmentTags(AugmentType.Vest);
+            // SetAugmentTags(AugmentType.Shoes);
+        }
+
+        void SetAugmentTags(AugmentType type)
+        {
+            helmetAugmentTags.Clear();
+            vestAugmentTags.Clear();
+            shoesAugmentTags.Clear();
+
+            IDictionary<string, List<ArmorAugment>> augmentDict = null;
             List<string> augmentTags = null;
             CardUI targetCard = null;
 
@@ -40,19 +67,22 @@ namespace EverScord.Augment
             {
                 case AugmentType.Helmet:
                     // Check dealer or healer
-                    //augmentDict = augmentData.DealerHelmetAugmentDict;
+                    augmentDict = augmentData.DealerHelmetAugmentDict;
+
                     augmentTags = helmetAugmentTags;
-                    targetCard = helmetCardUI;
+                    targetCard  = helmetCardUI;
                     break;
 
                 case AugmentType.Vest:
+                    // augmentDict = augmentData.VestAugmentDict;
                     augmentTags = vestAugmentTags;
-                    targetCard = vestCardUI;
+                    targetCard  = vestCardUI;
                     break;
 
                 case AugmentType.Shoes:
+                    // augmentDict = augmentData.ShoesAugmentDict;
                     augmentTags = shoesAugmentTags;
-                    targetCard = shoesCardUI;
+                    targetCard  = shoesCardUI;
                     break;
 
                 default:
@@ -61,21 +91,57 @@ namespace EverScord.Augment
 
             if (augmentDict == null)
             {
-                Debug.LogWarning($"Failed to initialize augment dictionary.");
+                Debug.LogWarning("Failed to initialize augment dictionary.");
                 return;
             }
 
             int index = 0;
 
-            foreach (KeyValuePair<string, HelmetAugment> keyValue in augmentDict)
+            foreach (KeyValuePair<string, List<ArmorAugment>> record in augmentDict)
             {
                 if (index >= targetCard.slotImages.Length)
                     break;
 
-                augmentTags.Add(keyValue.Key);
-                targetCard.SetSlotText(index);
+                if (enhanceCount >= record.Value.Count)
+                {
+                    Debug.LogWarning($"Enhanced augment does not exist. Current enhance count : {enhanceCount}");
+                    break;
+                }
+
+                augmentTags.Add(record.Key);
+                targetCard.SetSlotText(index, record.Value[enhanceCount]?.Description);
                 index++;
             }
+        }
+
+        private void TryUnlockConfirmBtn()
+        {
+            Debug.Log("?");
+
+            if (helmetCardUI.selectedSlotIndex == -1)
+                return;
+            
+            if (vestCardUI.selectedSlotIndex == -1)
+                return;
+
+            if (shoesCardUI.selectedSlotIndex == -1)
+                return;
+
+            Debug.Log("!");
+            confirmBtn.UnlockButton();
+        }
+
+        private void EnhanceArmor()
+        {
+            enhanceCount++;
+
+            string helmetTag = helmetAugmentTags[helmetCardUI.selectedSlotIndex];
+
+            // check dealer or healer
+            HelmetAugment helmetAugment = (HelmetAugment)augmentData.DealerHelmetAugmentDict[helmetTag][enhanceCount];
+            player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
+
+
         }
     }
 }

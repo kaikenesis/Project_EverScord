@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace EverScord.UI
 {
@@ -10,18 +11,20 @@ namespace EverScord.UI
         [SerializeField] private Transform slotParent;
         [SerializeField] private Color selectedSlotColor;
 
-        private Color initialColor;
+        private Color32 initialColor;
         private List<TextMeshProUGUI> slotTexts = new();
 
         public Image[] slotImages { get; private set; }
         public int selectedSlotIndex { get; private set; }
 
+        private UnityEvent onSelectSlotEvent = new UnityEvent();
+
         void Awake()
         {
-            slotImages = slotParent.GetComponentsInChildren<Image>();
+            slotImages = slotParent.GetComponentsInChildren<Image>(true);
 
             foreach (Image slot in slotImages)
-                slotTexts.Add(slot.GetComponent<TextMeshProUGUI>());
+                slotTexts.Add(slot.GetComponentInChildren<TextMeshProUGUI>(true));
 
             selectedSlotIndex = -1;
 
@@ -34,11 +37,23 @@ namespace EverScord.UI
             SetSlotColor(selectedSlotIndex, false);
             selectedSlotIndex = index;
             SetSlotColor(selectedSlotIndex, true);
+
+            onSelectSlotEvent?.Invoke();
         }
 
-        public void SetSlotText(int index)
+        public void SetSlotSelectEvent(UnityAction listener)
         {
+            onSelectSlotEvent?.AddListener(listener);
+        }
 
+        public void RemoveSlotSelectEvent(UnityAction listener)
+        {
+            onSelectSlotEvent?.RemoveListener(listener);
+        }
+
+        public void SetSlotText(int index, string description)
+        {
+            slotTexts[index].text = description;
         }
 
         private void SetSlotColor(int index, bool isSelected)

@@ -221,6 +221,22 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 991999389691995935}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8473842317978571632}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnSelectSlot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4209536897667512066, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -310,6 +326,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+--- !u!114 &991999389691995935 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2236531567442796700, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+  m_PrefabInstance: {fileID: 1354892633786206083}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2929253102903226497 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4209536897667512066, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
@@ -332,6 +359,22 @@ PrefabInstance:
       value: OnSelectSlot
       objectReference: {fileID: 0}
     - target: {fileID: 3045834920441172223, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 4228364508887309904}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8473842317978571632}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnSelectSlot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 2
       objectReference: {fileID: 0}
@@ -429,6 +472,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4209536897667512066, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
   m_PrefabInstance: {fileID: 2713395145981099724}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4228364508887309904 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2236531567442796700, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+  m_PrefabInstance: {fileID: 2713395145981099724}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5556632710012969283
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -437,14 +491,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 334482245255003133}
     m_Modifications:
-    - target: {fileID: 3045834920441172223, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
+    - target: {fileID: 3372494225400674458, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 8473842317978571632}
-    - target: {fileID: 3045834920441172223, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnSelectSlot
-      objectReference: {fileID: 0}
     - target: {fileID: 4209536897667512066, guid: dd45817c4419eba48bd9c94e4ce950cb, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

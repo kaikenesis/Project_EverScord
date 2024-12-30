@@ -9,4 +9,9 @@ public class TestPlayer : MonoBehaviour
     {
         helmet = new Helmet(10, 10, 10, 10, 10);
     }
+
+    public void SetHelmet(IHelmet newHelmet)
+    {
+        helmet = newHelmet;
+    }
 }
