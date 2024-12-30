@@ -1,3 +1,4 @@
+using EverScord.Augment;
 
 namespace EverScord.Armor
 {

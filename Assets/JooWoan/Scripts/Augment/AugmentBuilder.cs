@@ -1,5 +1,5 @@
 
-namespace EverScord.Armor
+namespace EverScord.Augment
 {
     public abstract class AugmentBuilder
     {

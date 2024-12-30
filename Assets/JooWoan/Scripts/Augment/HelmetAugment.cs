@@ -1,5 +1,6 @@
+using EverScord.Armor;
 
-namespace EverScord.Armor
+namespace EverScord.Augment
 {
     public class HelmetAugment : ArmorAugment, IHelmet
     {

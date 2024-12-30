@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.Collections;
+using EverScord.Armor;
 
-namespace EverScord.Armor
+namespace EverScord.Augment
 {
     public class HelmetAugmentBuilder : AugmentBuilder, IHelmet
     {
