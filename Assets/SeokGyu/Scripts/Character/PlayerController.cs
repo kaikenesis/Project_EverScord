@@ -1,4 +1,6 @@
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 namespace EverScord
 {
@@ -8,11 +10,40 @@ namespace EverScord
         // 좌클릭,우클릭 공격
         // Q,R 스킬 공격 -> 직군별 스킬변화
         // 재장전 E or 장탄수 모두 소모시 자동으로 수행
-        private float speed = 50.0f;
+        [SerializeField] private GameObject character;
+        //private Collider collider;
+        private Rigidbody rigidBody;
+        private Animator animator;
+        //private Camera camera;
+
+        private PhotonView photonView;
+
+        private float moveSpeed = 30.0f;
+        //private float rotSpeed = 1.0f;
 
         #region Private Methods
 
+        private void Awake()
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            //collider = character.GetComponent<Collider>();
+            rigidBody = character.GetComponent<Rigidbody>();
+            animator = character.GetComponent<Animator>();
+            //camera = Camera.main;
+
+            photonView = character.GetComponent<PhotonView>();
+        }
+
         private void Start()
+        {
+            SetInfo();
+        }
+
+        private void SetInfo()
         {
 
         }
@@ -24,12 +55,15 @@ namespace EverScord
 
         private void InputKey()
         {
-            Move();
+            if(photonView.IsMine)
+            {
+                Move();
+            }
         }
 
         private void Move()
         {
-            float moveSpeed = speed * Time.deltaTime;
+            float speed = moveSpeed * Time.deltaTime;
             Vector3 dir;
             float forward = 0;
             float right = 0;
@@ -50,10 +84,10 @@ namespace EverScord
             {
                 right += 1;
             }
-
             dir = new Vector3(right, 0.0f, forward);
             dir = dir.normalized;
-            dir *= moveSpeed;
+            dir *= speed;
+
             transform.Translate(dir);
         }
 

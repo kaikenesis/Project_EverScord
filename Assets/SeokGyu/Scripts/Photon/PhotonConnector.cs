@@ -16,10 +16,23 @@ namespace EverScord
         */
         // 개인랜덤매칭 or 파티랜덤매칭(파티 : 초대, 배열로 저장한 뒤 전달?) or 플레이어초대(userId 검색, 방코드 등등)?
 
-        public static Action GetPhotonFriends = delegate { };
         private readonly string version = "1.0"; // 게임 버전 체크
+        //private static PhotonConnector instance;
+        //public static PhotonConnector Instance
+        //{
+        //    get
+        //    {
+        //        if (instance == null)
+        //        {
+        //            GameObject newGameObject = new GameObject("PhotonManager");
+        //            instance = newGameObject.AddComponent<PhotonConnector>();
+        //        }
+        //        return instance;
+        //    }
+        //}
 
-        //[SerializeField] int maxPlayerCount;
+        public static Action GetPhotonFriends = delegate { };
+        public static Action OnLobbyJoined = delegate { };
 
         #region Private Methods
 
@@ -38,31 +51,40 @@ namespace EverScord
             PhotonNetwork.GameVersion = version;            // 버전 할당.
             Debug.Log(PhotonNetwork.SendRate);              // Photon서버와의 통신 횟수를 로그로 찍기. 기본값 : 30, 제대로 통신이 되면 30이 출력
             UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
+
+            //if(instance != null && instance != this)
+            //{
+            //    Destroy(this.gameObject);
+            //    return;
+            //}
+            //instance = this;
+            
+            //DontDestroyOnLoad(this.gameObject);
         }
 
         private void ConnectToPhoton(string nickName)
         {
             Debug.Log($"Connect to Photon as {nickName}");
             PhotonNetwork.AuthValues = new AuthenticationValues(nickName);
-            PhotonNetwork.AutomaticallySyncScene = true; // 씬 동기화. 맨 처음 접속한 사람이 방장
+            PhotonNetwork.AutomaticallySyncScene = true;    // 씬 동기화. 맨 처음 접속한 사람이 방장
             PhotonNetwork.NickName = nickName;
             PhotonNetwork.ConnectUsingSettings();
         }
 
         private void HandleRoomInviteAccept(string roomName)
         {
-            PlayerPrefs.SetString("PHOTONROOM", roomName);
-            if (PhotonNetwork.InRoom)
-            {
-                PhotonNetwork.LeaveRoom();
-            }
-            else
-            {
-                if (PhotonNetwork.InLobby)
-                {
-                    JoinPlayerRoom();
-                }
-            }
+            //PlayerPrefs.SetString("PHOTONROOM", roomName);
+            //if (PhotonNetwork.InRoom)
+            //{
+            //    PhotonNetwork.LeaveRoom();
+            //}
+            //else
+            //{
+            //    if (PhotonNetwork.InLobby)
+            //    {
+            //        JoinPlayerRoom();
+            //    }
+            //}
         }
 
         private void JoinPlayerRoom()
@@ -71,15 +93,6 @@ namespace EverScord
             PlayerPrefs.SetString("PHOTONROOM", "");
             PhotonNetwork.JoinRoom(roomName);
         }
-
-        //private string SetRoomName()
-        //{
-        //    if (string.IsNullOrEmpty(roomInputField.text))
-        //    {
-        //        roomInputField.text = $"ROOM_{UnityEngine.Random.Range(1, 101):000}";
-        //    }
-        //    return roomInputField.text;
-        //}
 
         #endregion
 
@@ -92,39 +105,16 @@ namespace EverScord
             ConnectToPhoton(nickName);
         }
 
-        //public void InviteUser()
-        //{
-        //    if (searchIDInputField.text == null || searchIDInputField.text == "")
-        //    {
-        //        Debug.Log("You need to input UserID");
-        //        return;
-        //    }
-
-        //    PhotonNetwork.FindFriends(new string[1] { searchIDInputField.text });
-
-        //}
-
         public void CreatePhotonRoom(string roomName)
         {
-            Debug.Log("JoinOrCreatePrivateRoom : " + roomName);
+            //Debug.Log("JoinOrCreatePrivateRoom : " + roomName);
 
-            RoomOptions roomOptions = new RoomOptions();
-            roomOptions.IsOpen = true;
-            roomOptions.IsVisible = true;
-            roomOptions.MaxPlayers = 4;
-            PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
+            //RoomOptions roomOptions = new RoomOptions();
+            //roomOptions.IsOpen = true;
+            //roomOptions.IsVisible = true;
+            //roomOptions.MaxPlayers = 4;
+            //PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
         }
-
-        // 개인랜덤매칭
-        //public void OnMakeRoom()
-        //{
-        //    RoomOptions roomOption = new RoomOptions();
-        //    roomOption.MaxPlayers = 3;
-        //    roomOption.IsOpen = true;    // false시 join 불가능. ex) 게임시작 후 다른 플레이어가 도중참가를 원치 않을때 사용
-        //    roomOption.IsVisible = true; // false시 RandomJoin이 안됨
-        //                                 // 고정된 값이 아닌 유저가 타이핑한 값을 받아옴
-        //    PhotonNetwork.CreateRoom(SetRoomName(), roomOption);
-        //}
 
         public void OnCreateRoomClicked(string roomName)
         {
@@ -137,39 +127,24 @@ namespace EverScord
 
         public override void OnConnectedToMaster()
         {
-            Debug.Log("Connected to Master");                   // 마스터 서버에 접속이 되었는지 디버깅
-            Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");   // 로비에 들어와 있으면 True, 아니면 False 반환. Master 서버에는 접속했지만 로비는 아니므로 False.
+            Debug.Log("Connected to Master");
             if (!PhotonNetwork.InLobby)
             {
-                PhotonNetwork.JoinLobby();                          // 로비 접속
+                PhotonNetwork.JoinLobby();
             }
         }
 
         public override void OnJoinedLobby()
         {
             Debug.Log($"In Lobby = {PhotonNetwork.InLobby}");
-            // 방 접속 방법은 두 가지. 1 랜던 매치메이킹, 2 선택된 방 접속
 
             GetPhotonFriends?.Invoke();
+            OnLobbyJoined?.Invoke();
             string roomName = PlayerPrefs.GetString("PHOTONROOM");
             if (!string.IsNullOrEmpty(roomName))
             {
                 JoinPlayerRoom();
             }
-        }
-
-        // 방 생성이 되지 않았으면 오류 콜백 함수 실행
-        public override void OnJoinRandomFailed(short returnCode, string message)
-        {
-            Debug.Log($"JoinRandom Failed {returnCode} : {message}");
-
-        }
-
-        // 제대로 방이 있다면 다음의 콜백 함수 호출
-        public override void OnCreatedRoom()
-        {
-            Debug.Log("Created Room");
-            Debug.Log($"Room Name : {PhotonNetwork.CurrentRoom.Name}");
         }
 
         // 방에 들어왔을때 콜백 함수
@@ -189,7 +164,7 @@ namespace EverScord
             // 마스터 클라이언트인 경우 게임 씬 로딩
             //if (PhotonNetwork.IsMasterClient)
             //{
-            //    PhotonNetwork.LoadLevel("TestRoom");
+            //    PhotonNetwork.LoadLevel("TestPlayScene");
             //}
         }
 
