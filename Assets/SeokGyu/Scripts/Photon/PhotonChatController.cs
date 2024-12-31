@@ -11,6 +11,8 @@ public class PhotonChatController : MonoBehaviour, IChatClientListener
     private ChatClient chatClient;
 
     public static Action<string, string> OnRoomInvite = delegate { };
+    public static Action<ChatClient> OnChatConnected = delegate { };
+    public static Action<PhotonStatus> OnStatusUpdated = delegate { };
 
     private void Start()
     {
@@ -51,11 +53,14 @@ public class PhotonChatController : MonoBehaviour, IChatClientListener
     public void OnDisconnected()
     {
         Debug.Log("You have disconnected from the Photon Chat");
+        chatClient.SetOnlineStatus(ChatUserStatus.Offline);
     }
 
     public void OnConnected()
     {
         Debug.Log("You have connected to the Photon Chat");
+        OnChatConnected?.Invoke(chatClient);
+        chatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
 
     public void OnChatStateChange(ChatState state)
@@ -92,17 +97,28 @@ public class PhotonChatController : MonoBehaviour, IChatClientListener
 
     public void OnSubscribed(string[] channels, bool[] results)
     {
-        
+        Debug.Log($"Photon Chat OnSubscribed");
+        for (int i = 0; i < channels.Length; i++)
+        {
+            Debug.Log($"{channels[i]}");
+        }
     }
 
     public void OnUnsubscribed(string[] channels)
     {
-        
+        Debug.Log($"Photon Chat OnUnsubscribed");
+        for (int i = 0; i < channels.Length; i++)
+        {
+            Debug.Log($"{channels[i]}");
+        }
     }
 
     public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
     {
-        
+        Debug.Log($"Photon Chat OnStatusUpdate: {user} changed to {status}: {message}");
+        PhotonStatus newStatus = new PhotonStatus(user, status, (string)message);
+        Debug.Log($"Status Update for {user} and its now {status}.");
+        OnStatusUpdated?.Invoke(newStatus);
     }
 
     public void OnUserSubscribed(string channel, string user)

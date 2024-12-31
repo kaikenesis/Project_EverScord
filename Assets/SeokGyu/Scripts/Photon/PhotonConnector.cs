@@ -19,11 +19,7 @@ namespace EverScord
         public static Action GetPhotonFriends = delegate { };
         private readonly string version = "1.0"; // 게임 버전 체크
 
-        [SerializeField] private TMP_InputField userInputField;
-        [SerializeField] private TMP_InputField roomInputField;
-        [SerializeField] private TMP_InputField searchIDInputField;
-
-        [SerializeField] int maxPlayerCount;
+        //[SerializeField] int maxPlayerCount;
 
         #region Private Methods
 
@@ -76,14 +72,14 @@ namespace EverScord
             PhotonNetwork.JoinRoom(roomName);
         }
 
-        private string SetRoomName()
-        {
-            if (string.IsNullOrEmpty(roomInputField.text))
-            {
-                roomInputField.text = $"ROOM_{UnityEngine.Random.Range(1, 101):000}";
-            }
-            return roomInputField.text;
-        }
+        //private string SetRoomName()
+        //{
+        //    if (string.IsNullOrEmpty(roomInputField.text))
+        //    {
+        //        roomInputField.text = $"ROOM_{UnityEngine.Random.Range(1, 101):000}";
+        //    }
+        //    return roomInputField.text;
+        //}
 
         #endregion
 
@@ -96,17 +92,17 @@ namespace EverScord
             ConnectToPhoton(nickName);
         }
 
-        public void InviteUser()
-        {
-            if (searchIDInputField.text == null || searchIDInputField.text == "")
-            {
-                Debug.Log("You need to input UserID");
-                return;
-            }
+        //public void InviteUser()
+        //{
+        //    if (searchIDInputField.text == null || searchIDInputField.text == "")
+        //    {
+        //        Debug.Log("You need to input UserID");
+        //        return;
+        //    }
 
-            PhotonNetwork.FindFriends(new string[1] { searchIDInputField.text });
+        //    PhotonNetwork.FindFriends(new string[1] { searchIDInputField.text });
 
-        }
+        //}
 
         public void CreatePhotonRoom(string roomName)
         {
@@ -120,15 +116,15 @@ namespace EverScord
         }
 
         // 개인랜덤매칭
-        public void OnMakeRoom()
-        {
-            RoomOptions roomOption = new RoomOptions();
-            roomOption.MaxPlayers = 3;
-            roomOption.IsOpen = true;    // false시 join 불가능. ex) 게임시작 후 다른 플레이어가 도중참가를 원치 않을때 사용
-            roomOption.IsVisible = true; // false시 RandomJoin이 안됨
-                                         // 고정된 값이 아닌 유저가 타이핑한 값을 받아옴
-            PhotonNetwork.CreateRoom(SetRoomName(), roomOption);
-        }
+        //public void OnMakeRoom()
+        //{
+        //    RoomOptions roomOption = new RoomOptions();
+        //    roomOption.MaxPlayers = 3;
+        //    roomOption.IsOpen = true;    // false시 join 불가능. ex) 게임시작 후 다른 플레이어가 도중참가를 원치 않을때 사용
+        //    roomOption.IsVisible = true; // false시 RandomJoin이 안됨
+        //                                 // 고정된 값이 아닌 유저가 타이핑한 값을 받아옴
+        //    PhotonNetwork.CreateRoom(SetRoomName(), roomOption);
+        //}
 
         public void OnCreateRoomClicked(string roomName)
         {
@@ -191,17 +187,12 @@ namespace EverScord
             }
 
             // 마스터 클라이언트인 경우 게임 씬 로딩
-            if (PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.LoadLevel("TestRoom");
-            }
+            //if (PhotonNetwork.IsMasterClient)
+            //{
+            //    PhotonNetwork.LoadLevel("TestRoom");
+            //}
         }
 
         #endregion
-
-
-        
-
-        
     }
 }

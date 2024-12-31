@@ -6,10 +6,10 @@ public class UIDisplayInvites : MonoBehaviour
 {
     [SerializeField] private Transform inviteContainer;
     [SerializeField] private UIInvite uiInvitePrefab;
-    [SerializeField] private RectTransform contentRect;
     [SerializeField] private Vector2 originalSize;
     [SerializeField] private Vector2 increaseSize;
 
+    private RectTransform contentRect;
     private List<UIInvite> invites;
 
     private void Awake()
