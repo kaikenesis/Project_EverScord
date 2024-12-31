@@ -1,8 +1,7 @@
-using EverScord.Armor;
 
 namespace EverScord.Augment
 {
-    public class HelmetAugment : ArmorAugment, IHelmet
+    public class HelmetAugment : ArmorAugment
     {
         public StatBonus BasicAttackBonus   { get; private set; }
         public StatBonus SkillAttackBonus   { get; private set; }

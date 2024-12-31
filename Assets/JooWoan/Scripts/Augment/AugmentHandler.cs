@@ -34,16 +34,13 @@ namespace EverScord.Augment
             vestCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
             shoesCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
 
-            confirmBtn.GetComponent<Button>()?.onClick.AddListener(EnhanceArmor);
+            confirmBtn.GetComponent<Button>().onClick.AddListener(EnhanceArmor);
         }
 
         void OnDisable()
         {
-            helmetCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
-            vestCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
-            shoesCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
-
-            confirmBtn.GetComponent<Button>()?.onClick.RemoveListener(EnhanceArmor);
+            RemoveSlotSelectEvent();
+            confirmBtn.GetComponent<Button>().onClick.RemoveListener(EnhanceArmor);
         }
 
         void Start()
@@ -116,8 +113,6 @@ namespace EverScord.Augment
 
         private void TryUnlockConfirmBtn()
         {
-            Debug.Log("?");
-
             if (helmetCardUI.selectedSlotIndex == -1)
                 return;
             
@@ -127,21 +122,34 @@ namespace EverScord.Augment
             if (shoesCardUI.selectedSlotIndex == -1)
                 return;
 
-            Debug.Log("!");
             confirmBtn.UnlockButton();
+            RemoveSlotSelectEvent();
         }
 
         private void EnhanceArmor()
         {
-            enhanceCount++;
-
             string helmetTag = helmetAugmentTags[helmetCardUI.selectedSlotIndex];
+            var dealerAugments = augmentData.DealerHelmetAugmentDict;
 
             // check dealer or healer
-            HelmetAugment helmetAugment = (HelmetAugment)augmentData.DealerHelmetAugmentDict[helmetTag][enhanceCount];
+            HelmetAugment helmetAugment = (HelmetAugment)dealerAugments[helmetTag][enhanceCount];
             player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
 
+            Debug.Log(helmetTag);
+            Debug.Log(helmetAugment.SkillAttackBonus.additive);
+            Debug.Log(helmetAugment.SkillAttackBonus.multiplicative);
 
+            enhanceCount++;
+
+            if (enhanceCount >= dealerAugments[helmetTag].Count)
+                enhanceCount = dealerAugments[helmetTag].Count - 1;
+        }
+
+        private void RemoveSlotSelectEvent()
+        {
+            helmetCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
+            vestCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
+            shoesCardUI.RemoveSlotSelectEvent(TryUnlockConfirmBtn);
         }
     }
 }

@@ -4,13 +4,44 @@ namespace EverScord.Armor
 {
     public class HelmetDecorator : IHelmet
     {
-        private readonly IHelmet decoratedHelmet;
-        private readonly HelmetAugment augment;
+        public IHelmet decoratedHelmet { get; private set; }
+        public Helmet originalHelmet   { get; private set; }
+        public HelmetAugment augment   { get; private set; }
 
         public HelmetDecorator(IHelmet decoratedHelmet, HelmetAugment augment)
         {
             this.decoratedHelmet  = decoratedHelmet;
             this.augment          = augment;
+
+            if (originalHelmet == null)
+                originalHelmet = (Helmet)decoratedHelmet;
+            else
+                originalHelmet = ((HelmetDecorator)decoratedHelmet).originalHelmet;
+        }
+
+        public float BasicAttackDamage
+        {
+            get { return BasicAttackBonus.CalculateStat(originalHelmet.BasicAttackDamage); }
+        }
+
+        public float SkillDamage
+        {
+            get { return SkillAttackBonus.CalculateStat(originalHelmet.SkillDamage); }
+        }
+
+        public float BasicHealAmount
+        {
+            get { return BasicHealBonus.CalculateStat(originalHelmet.BasicHealAmount); }
+        }
+
+        public float SkillHealAmount
+        {
+            get { return SkillHealBonus.CalculateStat(originalHelmet.SkillHealAmount); }
+        }
+
+        public float AllroundHealAmount
+        {
+            get { return AllroundHealBonus.CalculateStat(originalHelmet.AllroundHealAmount); }
         }
 
         public StatBonus BasicAttackBonus

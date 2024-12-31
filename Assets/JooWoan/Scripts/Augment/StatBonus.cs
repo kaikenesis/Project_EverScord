@@ -12,15 +12,18 @@ namespace EverScord.Augment
             this.multiplicative = multiplicative;
         }
 
-        public void Init(float additive, float multiplicative)
-        {
-            this.additive = additive * 0.01f;
-            this.multiplicative = (multiplicative + 100f) * 0.01f;
-        }
-
         public float CalculateStat(float statValue)
         {
             return statValue * additive * multiplicative;
+        }
+
+        public static StatBonus CreateBonus(float additive, float multiplicative)
+        {
+            StatBonus bonus;
+            bonus.additive = additive * 0.01f;
+            bonus.multiplicative = (multiplicative + 100f) * 0.01f;
+
+            return bonus;
         }
 
         public static StatBonus MergeBonus(StatBonus bonus1, StatBonus bonus2)

@@ -20,78 +20,65 @@ namespace EverScord.Augment
 
             HelmetAugmentBuilder helmetAugmentBuilder = new();
 
-            HelmetAugment helmetAugment = helmetAugmentBuilder
-                .SetName("Basic Atk 1")
-                .SetDescription("Enhances basic attack x 10")
-                .SetBonus(IHelmet.BonusType.BasicAttack, 10f, 10f)
-                .Build();
-
-            HelmetAugment helmetAugment2 = helmetAugmentBuilder
-                .SetName("Basic Atk 2")
-                .SetDescription("Enhances basic attack x 15")
-                .SetBonus(IHelmet.BonusType.BasicAttack, 15f, 15f)
-                .Build();
-
-            dealerHelmetAugmentDict[helmetAugment.Name] = new()
             {
-                helmetAugment,
-                helmetAugment2
-            };
+                HelmetAugment helmetAugment = helmetAugmentBuilder
+                    .SetName("Basic Atk 1")
+                    .SetDescription("Basic attack x 10")
+                    .SetBonus(IHelmet.BonusType.BasicAttack, 10f, 10f)
+                    .Build();
 
+                HelmetAugment helmetAugment2 = helmetAugmentBuilder
+                    .SetName("Basic Atk 2")
+                    .SetDescription("Basic attack x 15")
+                    .SetBonus(IHelmet.BonusType.BasicAttack, 15f, 15f)
+                    .Build();
 
-
-            helmetAugment = helmetAugmentBuilder
-                .SetName("Skill Atk 1")
-                .SetDescription("Enhances skill attack x 10")
-                .SetBonus(IHelmet.BonusType.SkillAttack, 10f, 10f)
-                .Build();
-
-            helmetAugment2 = helmetAugmentBuilder
-                .SetName("Skill Atk 2")
-                .SetDescription("Enhances skill attack x 15")
-                .SetBonus(IHelmet.BonusType.SkillAttack, 15, 15f)
-                .Build();
-
-            dealerHelmetAugmentDict[helmetAugment.Name] = new()
-            {
-                helmetAugment,
-                helmetAugment2
-            };
-
-
-
-            helmetAugment = helmetAugmentBuilder
-                .SetName("All round heal 1")
-                .SetDescription("Enhances all round heal x 10")
-                .SetBonus(IHelmet.BonusType.AllroundHeal, 10f, 10f)
-                .Build();
-
-            helmetAugment2 = helmetAugmentBuilder
-                .SetName("All round heal 2")
-                .SetDescription("Enhances all round heal x 15")
-                .SetBonus(IHelmet.BonusType.AllroundHeal, 15, 15f)
-                .Build();
-
-            dealerHelmetAugmentDict[helmetAugment.Name] = new()
-            {
-                helmetAugment,
-                helmetAugment2
-            };
-        }
-
-        public List<ArmorAugment> GetAugment(string name)
-        {
-            {
-                if (dealerHelmetAugmentDict.TryGetValue(name, out var augmentList))
-                    return augmentList;
-            }
-            {
-                if (healerHelmetAugmentDict.TryGetValue(name, out var augmentList))
-                    return augmentList;
+                dealerHelmetAugmentDict[helmetAugment.Name] = new()
+                {
+                    helmetAugment,
+                    helmetAugment2
+                };
             }
 
-            Debug.LogWarning($"Augment load failed : {name}");
-            return null;
+            {
+                HelmetAugment helmetAugment = helmetAugmentBuilder
+                    .SetName("Skill Atk 1")
+                    .SetDescription("Skill attack x 10")
+                    .SetBonus(IHelmet.BonusType.SkillAttack, 10f, 10f)
+                    .Build();
+
+                HelmetAugment helmetAugment2 = helmetAugmentBuilder
+                    .SetName("Skill Atk 2")
+                    .SetDescription("Skill attack x 15")
+                    .SetBonus(IHelmet.BonusType.SkillAttack, 15, 15f)
+                    .Build();
+
+                dealerHelmetAugmentDict[helmetAugment.Name] = new()
+                {
+                    helmetAugment,
+                    helmetAugment2
+                };
+            }
+
+            {
+                HelmetAugment helmetAugment = helmetAugmentBuilder
+                        .SetName("All round heal 1")
+                        .SetDescription("All-round heal x 10")
+                        .SetBonus(IHelmet.BonusType.AllroundHeal, 10f, 10f)
+                        .Build();
+
+                HelmetAugment helmetAugment2 = helmetAugmentBuilder
+                    .SetName("All round heal 2")
+                    .SetDescription("All-round heal x 15")
+                    .SetBonus(IHelmet.BonusType.AllroundHeal, 15, 15f)
+                    .Build();
+
+                dealerHelmetAugmentDict[helmetAugment.Name] = new()
+                {
+                    helmetAugment,
+                    helmetAugment2
+                };
+            }
         }
     }
 }

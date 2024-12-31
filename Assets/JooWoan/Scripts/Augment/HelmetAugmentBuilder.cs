@@ -2,7 +2,7 @@ using EverScord.Armor;
 
 namespace EverScord.Augment
 {
-    public class HelmetAugmentBuilder : AugmentBuilder, IHelmet
+    public class HelmetAugmentBuilder : AugmentBuilder
     {
         public StatBonus BasicAttackBonus   { get; private set; }
         public StatBonus SkillAttackBonus   { get; private set; }
@@ -29,23 +29,23 @@ namespace EverScord.Augment
             switch (bonusType)
             {
                 case IHelmet.BonusType.BasicAttack:
-                    BasicAttackBonus.Init(additive, multiplicative);
+                    BasicAttackBonus = StatBonus.CreateBonus(additive, multiplicative);
                     break;
 
                 case IHelmet.BonusType.SkillAttack:
-                    BasicAttackBonus.Init(additive, multiplicative);
+                    SkillAttackBonus = StatBonus.CreateBonus(additive, multiplicative);
                     break;
 
                 case IHelmet.BonusType.BasicHeal:
-                    BasicHealBonus.Init(additive, multiplicative);
+                    BasicHealBonus = StatBonus.CreateBonus(additive, multiplicative);
                     break;
 
                 case IHelmet.BonusType.SkillHeal:
-                    SkillHealBonus.Init(additive, multiplicative);
+                    SkillHealBonus = StatBonus.CreateBonus(additive, multiplicative);
                     break;
 
                 case IHelmet.BonusType.AllroundHeal:
-                    AllroundHealBonus.Init(additive, multiplicative);
+                    AllroundHealBonus = StatBonus.CreateBonus(additive, multiplicative);
                     break;
 
                 default:
