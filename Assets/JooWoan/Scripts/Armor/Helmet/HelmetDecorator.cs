@@ -13,7 +13,7 @@ namespace EverScord.Armor
             this.decoratedHelmet  = decoratedHelmet;
             this.augment          = augment;
 
-            if (originalHelmet == null)
+            if (originalHelmet == null && decoratedHelmet is Helmet)
                 originalHelmet = (Helmet)decoratedHelmet;
             else
                 originalHelmet = ((HelmetDecorator)decoratedHelmet).originalHelmet;

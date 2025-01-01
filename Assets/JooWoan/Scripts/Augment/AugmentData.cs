@@ -27,6 +27,7 @@ namespace EverScord.Augment
                     .SetBonus(IHelmet.BonusType.BasicAttack, 10f, 10f)
                     .Build();
 
+                helmetAugmentBuilder.ResetBonus();
                 HelmetAugment helmetAugment2 = helmetAugmentBuilder
                     .SetName("Basic Atk 2")
                     .SetDescription("Basic attack x 15")
@@ -41,12 +42,14 @@ namespace EverScord.Augment
             }
 
             {
+                helmetAugmentBuilder.ResetBonus();
                 HelmetAugment helmetAugment = helmetAugmentBuilder
                     .SetName("Skill Atk 1")
                     .SetDescription("Skill attack x 10")
                     .SetBonus(IHelmet.BonusType.SkillAttack, 10f, 10f)
                     .Build();
 
+                helmetAugmentBuilder.ResetBonus();
                 HelmetAugment helmetAugment2 = helmetAugmentBuilder
                     .SetName("Skill Atk 2")
                     .SetDescription("Skill attack x 15")
@@ -61,12 +64,14 @@ namespace EverScord.Augment
             }
 
             {
+                helmetAugmentBuilder.ResetBonus();
                 HelmetAugment helmetAugment = helmetAugmentBuilder
                         .SetName("All round heal 1")
                         .SetDescription("All-round heal x 10")
                         .SetBonus(IHelmet.BonusType.AllroundHeal, 10f, 10f)
                         .Build();
 
+                helmetAugmentBuilder.ResetBonus();
                 HelmetAugment helmetAugment2 = helmetAugmentBuilder
                     .SetName("All round heal 2")
                     .SetDescription("All-round heal x 15")

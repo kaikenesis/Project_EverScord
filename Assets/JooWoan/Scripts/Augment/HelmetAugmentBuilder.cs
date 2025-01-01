@@ -10,7 +10,19 @@ namespace EverScord.Augment
         public StatBonus SkillHealBonus     { get; private set; }
         public StatBonus AllroundHealBonus  { get; private set; }
 
-        public HelmetAugmentBuilder() {}
+        public HelmetAugmentBuilder()
+        {
+            ResetBonus();
+        }
+
+        public void ResetBonus()
+        {
+            BasicAttackBonus  = StatBonus.GetDefaultBonus();
+            SkillAttackBonus  = StatBonus.GetDefaultBonus(); 
+            BasicHealBonus    = StatBonus.GetDefaultBonus();
+            SkillHealBonus    = StatBonus.GetDefaultBonus();
+            AllroundHealBonus = StatBonus.GetDefaultBonus();
+        }
 
         public HelmetAugmentBuilder SetName(string name)
         {

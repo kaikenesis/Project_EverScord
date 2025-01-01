@@ -24,11 +24,11 @@ namespace EverScord.Armor
             SkillHealAmount     = skillHealAmount;
             AllroundHealAmount  = allroundHealAmount;
 
-            BasicAttackBonus    = new StatBonus(1f, 1f);
-            SkillAttackBonus    = new StatBonus(1f, 1f);
-            BasicHealBonus      = new StatBonus(1f, 1f);
-            SkillHealBonus      = new StatBonus(1f, 1f);
-            AllroundHealBonus   = new StatBonus(1f, 1f);
+            BasicAttackBonus    = StatBonus.GetDefaultBonus();
+            SkillAttackBonus    = StatBonus.GetDefaultBonus();
+            BasicHealBonus      = StatBonus.GetDefaultBonus();
+            SkillHealBonus      = StatBonus.GetDefaultBonus();
+            AllroundHealBonus   = StatBonus.GetDefaultBonus();
         }
     }
 }

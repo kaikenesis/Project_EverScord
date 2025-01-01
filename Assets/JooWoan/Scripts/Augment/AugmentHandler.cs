@@ -135,10 +135,6 @@ namespace EverScord.Augment
             HelmetAugment helmetAugment = (HelmetAugment)dealerAugments[helmetTag][enhanceCount];
             player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
 
-            Debug.Log(helmetTag);
-            Debug.Log(helmetAugment.SkillAttackBonus.additive);
-            Debug.Log(helmetAugment.SkillAttackBonus.multiplicative);
-
             enhanceCount++;
 
             if (enhanceCount >= dealerAugments[helmetTag].Count)

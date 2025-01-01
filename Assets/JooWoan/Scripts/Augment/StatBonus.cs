@@ -6,15 +6,17 @@ namespace EverScord.Augment
         public float additive;
         public float multiplicative;
 
-        public StatBonus(float additive, float multiplicative)
-        {
-            this.additive = additive;
-            this.multiplicative = multiplicative;
-        }
-
         public float CalculateStat(float statValue)
         {
-            return statValue * additive * multiplicative;
+            return statValue * (additive + 1f) * multiplicative;
+        }
+
+        public static StatBonus GetDefaultBonus()
+        {
+            StatBonus bonus;
+            bonus.additive = 0f;
+            bonus.multiplicative = 1f;
+            return bonus;
         }
 
         public static StatBonus CreateBonus(float additive, float multiplicative)
