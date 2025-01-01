@@ -29,25 +29,22 @@ namespace EverScord.Augment
         void Awake()
         {
             augmentData.Init();
+        }
 
-            helmetCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
-            vestCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
-            shoesCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
-
+        void OnEnable()
+        {
+            AddSlotSelectEvent();
             confirmBtn.GetComponent<Button>().onClick.AddListener(EnhanceArmor);
+
+            SetAugmentTags(AugmentType.Helmet);
+            SetAugmentTags(AugmentType.Vest);
+            SetAugmentTags(AugmentType.Shoes);
         }
 
         void OnDisable()
         {
             RemoveSlotSelectEvent();
             confirmBtn.GetComponent<Button>().onClick.RemoveListener(EnhanceArmor);
-        }
-
-        void Start()
-        {
-            SetAugmentTags(AugmentType.Helmet);
-            SetAugmentTags(AugmentType.Vest);
-            SetAugmentTags(AugmentType.Shoes);
         }
 
         void SetAugmentTags(AugmentType type)
@@ -128,25 +125,32 @@ namespace EverScord.Augment
 
         private void EnhanceArmor()
         {
-            string helmetTag = helmetAugmentTags[helmetCardUI.selectedSlotIndex];
-
             // check dealer or healer
-            var augmentDict = augmentData.DealerHelmetAugmentDict;
-            HelmetAugment helmetAugment = (HelmetAugment)augmentDict[helmetTag][enhanceCount];
-            player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
+            var helmetAugmentDict       = augmentData.DealerHelmetAugmentDict;
 
-            string vestTag = vestAugmentTags[vestCardUI.selectedSlotIndex];
-            VestAugment vestAugment = (VestAugment)augmentData.VestAugmentDict[vestTag][enhanceCount];
+            string helmetTag            = helmetAugmentTags[helmetCardUI.selectedSlotIndex];
+            string vestTag              = vestAugmentTags[vestCardUI.selectedSlotIndex];
+            string shoesTag             = shoesAugmentTags[shoesCardUI.selectedSlotIndex];
+
+            HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[helmetTag][enhanceCount];
+            VestAugment vestAugment     = (VestAugment)augmentData.VestAugmentDict[vestTag][enhanceCount];
+            ShoesAugment shoesAugment   = (ShoesAugment)augmentData.ShoesAugmentDict[shoesTag][enhanceCount];
+
+            player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
             player.SetVest(new VestDecorator(player.vest, vestAugment));
-            
-            string shoesTag = shoesAugmentTags[shoesCardUI.selectedSlotIndex];
-            ShoesAugment shoesAugment = (ShoesAugment)augmentData.ShoesAugmentDict[shoesTag][enhanceCount];
             player.SetShoes(new ShoesDecorator(player.shoes, shoesAugment));
 
             enhanceCount++;
 
-            if (enhanceCount >= augmentDict[helmetTag].Count)
-                enhanceCount = augmentDict[helmetTag].Count - 1;
+            if (enhanceCount >= helmetAugmentDict[helmetTag].Count)
+                enhanceCount = helmetAugmentDict[helmetTag].Count - 1;
+        }
+
+        private void AddSlotSelectEvent()
+        {
+            helmetCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
+            vestCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
+            shoesCardUI.SetSlotSelectEvent(TryUnlockConfirmBtn);
         }
 
         private void RemoveSlotSelectEvent()
