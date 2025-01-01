@@ -1,6 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 using EverScord.Armor;
+using EverScord.FileIO;
 
 namespace EverScord.Augment
 {
@@ -18,75 +19,76 @@ namespace EverScord.Augment
         public IDictionary<string, List<ArmorAugment>> VestAugmentDict => vestAugmentDict;
         public IDictionary<string, List<ArmorAugment>> ShoesAugmentDict => shoesAugmentDict;
 
+        private const string SHEET_PATH = "CSVSheet/ArmorAugmentSheet";
+        private const string HELMET_KEY = "Helmet";
+        private const string VEST_KEY   = "Vest";
+        private const string SHOES_KEY  = "Shoes";
+
         public void Init()
         {
             // Initialize augment dict
 
-            HelmetAugmentBuilder helmetAugmentBuilder = new();
+            var sheet = CSVReader.ReadAugmentSheet(SHEET_PATH);
 
+            foreach (KeyValuePair<string, List<List<string>>> kvp in sheet)
             {
-                HelmetAugment helmetAugment = helmetAugmentBuilder
-                    .SetName("Basic Atk 1")
-                    .SetDescription("Basic attack x 10")
-                    .SetBonus(IHelmet.BonusType.BasicAttack, 10f, 10f)
-                    .Build();
-
-                helmetAugmentBuilder.ResetBonus();
-                HelmetAugment helmetAugment2 = helmetAugmentBuilder
-                    .SetName("Basic Atk 2")
-                    .SetDescription("Basic attack x 15")
-                    .SetBonus(IHelmet.BonusType.BasicAttack, 15f, 15f)
-                    .Build();
-
-                dealerHelmetAugmentDict[helmetAugment.Name] = new()
+                for (int i = 0; i < kvp.Value.Count; i++)
                 {
-                    helmetAugment,
-                    helmetAugment2
-                };
-            }
+                    if (kvp.Value[i].Count == 0)
+                        continue;
 
-            {
-                helmetAugmentBuilder.ResetBonus();
-                HelmetAugment helmetAugment = helmetAugmentBuilder
-                    .SetName("Skill Atk 1")
-                    .SetDescription("Skill attack x 10")
-                    .SetBonus(IHelmet.BonusType.SkillAttack, 10f, 10f)
-                    .Build();
+                    string name         = kvp.Value[i][0];
+                    string description  = kvp.Value[i][1];
 
-                helmetAugmentBuilder.ResetBonus();
-                HelmetAugment helmetAugment2 = helmetAugmentBuilder
-                    .SetName("Skill Atk 2")
-                    .SetDescription("Skill attack x 15")
-                    .SetBonus(IHelmet.BonusType.SkillAttack, 15, 15f)
-                    .Build();
+                    for (int j = 2; j < kvp.Value[i].Count; j += 2)
+                    {
+                        float.TryParse(kvp.Value[i][j],     out float additive);
+                        float.TryParse(kvp.Value[i][j + 1], out float multiplicative);
 
-                dealerHelmetAugmentDict[helmetAugment.Name] = new()
-                {
-                    helmetAugment,
-                    helmetAugment2
-                };
-            }
+                        switch (kvp.Key)
+                        {
+                            case HELMET_KEY:
+                            {
+                                HelmetAugmentBuilder helmetAugmentBuilder = new();
+                                HelmetAugment helmetAugment = helmetAugmentBuilder
+                                    .SetName(name)
+                                    .SetDescription(description)
+                                    .SetBonus((IHelmet.BonusType)i, additive, multiplicative)
+                                    .Build();
 
-            {
-                helmetAugmentBuilder.ResetBonus();
-                HelmetAugment helmetAugment = helmetAugmentBuilder
-                        .SetName("All round heal 1")
-                        .SetDescription("All-round heal x 10")
-                        .SetBonus(IHelmet.BonusType.AllroundHeal, 10f, 10f)
-                        .Build();
+                                if (i < 2 || i == 4)
+                                {
+                                    if (!dealerHelmetAugmentDict.ContainsKey(helmetAugment.Name) || dealerHelmetAugmentDict[helmetAugment.Name] == null)
+                                        dealerHelmetAugmentDict[helmetAugment.Name] = new();
 
-                helmetAugmentBuilder.ResetBonus();
-                HelmetAugment helmetAugment2 = helmetAugmentBuilder
-                    .SetName("All round heal 2")
-                    .SetDescription("All-round heal x 15")
-                    .SetBonus(IHelmet.BonusType.AllroundHeal, 15, 15f)
-                    .Build();
+                                    dealerHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
+                                }
 
-                dealerHelmetAugmentDict[helmetAugment.Name] = new()
-                {
-                    helmetAugment,
-                    helmetAugment2
-                };
+                                if (i >= 2 || i == 4)
+                                {
+                                    if (!healerHelmetAugmentDict.ContainsKey(helmetAugment.Name) || healerHelmetAugmentDict[helmetAugment.Name] == null)
+                                        healerHelmetAugmentDict[helmetAugment.Name] = new();
+
+                                    healerHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
+                                }
+                                break;
+                            }
+
+                            case VEST_KEY:
+                            {
+
+                                break;
+                            }
+
+                            case SHOES_KEY:
+                            {
+
+                                break;
+                            }
+                        }
+                    }
+
+                }
             }
         }
     }
