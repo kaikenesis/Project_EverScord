@@ -9,10 +9,14 @@ namespace EverScord.Augment
         #region Expression-bodied member source
         private IDictionary<string, List<ArmorAugment>> dealerHelmetAugmentDict = new Dictionary<string, List<ArmorAugment>>();
         private IDictionary<string, List<ArmorAugment>> healerHelmetAugmentDict = new Dictionary<string, List<ArmorAugment>>();
+        private IDictionary<string, List<ArmorAugment>> vestAugmentDict         = new Dictionary<string, List<ArmorAugment>>();
+        private IDictionary<string, List<ArmorAugment>> shoesAugmentDict        = new Dictionary<string, List<ArmorAugment>>();
         #endregion
 
         public IDictionary<string, List<ArmorAugment>> DealerHelmetAugmentDict => dealerHelmetAugmentDict;
         public IDictionary<string, List<ArmorAugment>> HealerHelmetAugmentDict => healerHelmetAugmentDict;
+        public IDictionary<string, List<ArmorAugment>> VestAugmentDict => vestAugmentDict;
+        public IDictionary<string, List<ArmorAugment>> ShoesAugmentDict => shoesAugmentDict;
 
         public void Init()
         {

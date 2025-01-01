@@ -46,8 +46,8 @@ namespace EverScord.Augment
         void Start()
         {
             SetAugmentTags(AugmentType.Helmet);
-            // SetAugmentTags(AugmentType.Vest);
-            // SetAugmentTags(AugmentType.Shoes);
+            SetAugmentTags(AugmentType.Vest);
+            SetAugmentTags(AugmentType.Shoes);
         }
 
         void SetAugmentTags(AugmentType type)
@@ -71,13 +71,13 @@ namespace EverScord.Augment
                     break;
 
                 case AugmentType.Vest:
-                    // augmentDict = augmentData.VestAugmentDict;
+                    augmentDict = augmentData.VestAugmentDict;
                     augmentTags = vestAugmentTags;
                     targetCard  = vestCardUI;
                     break;
 
                 case AugmentType.Shoes:
-                    // augmentDict = augmentData.ShoesAugmentDict;
+                    augmentDict = augmentData.ShoesAugmentDict;
                     augmentTags = shoesAugmentTags;
                     targetCard  = shoesCardUI;
                     break;
@@ -129,16 +129,24 @@ namespace EverScord.Augment
         private void EnhanceArmor()
         {
             string helmetTag = helmetAugmentTags[helmetCardUI.selectedSlotIndex];
-            var dealerAugments = augmentData.DealerHelmetAugmentDict;
 
             // check dealer or healer
-            HelmetAugment helmetAugment = (HelmetAugment)dealerAugments[helmetTag][enhanceCount];
+            var augmentDict = augmentData.DealerHelmetAugmentDict;
+            HelmetAugment helmetAugment = (HelmetAugment)augmentDict[helmetTag][enhanceCount];
             player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
+
+            string vestTag = vestAugmentTags[vestCardUI.selectedSlotIndex];
+            VestAugment vestAugment = (VestAugment)augmentData.VestAugmentDict[vestTag][enhanceCount];
+            player.SetVest(new VestDecorator(player.vest, vestAugment));
+            
+            string shoesTag = shoesAugmentTags[shoesCardUI.selectedSlotIndex];
+            ShoesAugment shoesAugment = (ShoesAugment)augmentData.ShoesAugmentDict[shoesTag][enhanceCount];
+            player.SetShoes(new ShoesDecorator(player.shoes, shoesAugment));
 
             enhanceCount++;
 
-            if (enhanceCount >= dealerAugments[helmetTag].Count)
-                enhanceCount = dealerAugments[helmetTag].Count - 1;
+            if (enhanceCount >= augmentDict[helmetTag].Count)
+                enhanceCount = augmentDict[helmetTag].Count - 1;
         }
 
         private void RemoveSlotSelectEvent()
