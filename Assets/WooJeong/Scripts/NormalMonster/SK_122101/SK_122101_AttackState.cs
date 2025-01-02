@@ -2,42 +2,42 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_122101_AttackState : MonoBehaviour, SK_122101_IState
+public class SK_122101_AttackState : MonoBehaviour, IState
 {
     private SK_122101_Controller monsterController;
-
     private Animator animator;
+    private BoxCollider boxCollider;
 
-    void Start()
+    void Setup()
     {
+        monsterController = GetComponent<SK_122101_Controller>();
         animator = GetComponentInChildren<Animator>();
+        boxCollider = GetComponent<BoxCollider>();
+    }
+   
+    void Awake()
+    {
+        Setup();
     }
 
-    public void Enter(SK_122101_Controller controller)
+    public void Enter()
     {
-        if (!monsterController)
-            monsterController = controller;
-
         if(animator == null)
-            animator = GetComponentInChildren<Animator>();
+            Setup();
 
         RandomAttack();
     }
 
     void RandomAttack()
     {
-        Debug.Log(animator.GetBool("isAttack"));
-
         float rand = Random.Range(0, 100);
-        if (rand < 100)
+        if (rand < 50)
         {
-            Debug.Log("Attack1");
-            animator.SetBool("isAttack", true);
+            animator.SetBool("isAttack1", true);
             StartCoroutine(Att1());
         }
         else
         {
-            Debug.Log("Attack2");
             animator.SetBool("isAttack2", true);
             StartCoroutine(Att2());
         }
@@ -48,26 +48,33 @@ public class SK_122101_AttackState : MonoBehaviour, SK_122101_IState
         for(int i = 0; i < 4; i++)
         {
             float time = animator.GetCurrentAnimatorClipInfo(0).Length;
+            if(i == 2)
+                boxCollider.enabled = true;
             yield return new WaitForSeconds(time);
+            boxCollider.enabled = false;
         }
-        animator.SetBool("isAttack", false);
-
-        animator.Play("Run", -1, 0f);
-
+        animator.SetBool("isAttack1", false);
         Exit();
     }
 
     IEnumerator Att2()
     {
         float time = animator.GetCurrentAnimatorClipInfo(0).Length;
+        boxCollider.enabled = true;
         yield return new WaitForSeconds(time);
+        boxCollider.enabled = false;
         animator.SetBool("isAttack2", false);
         Exit();
     }
 
     public void Exit()
     {
+        animator.Play("Run", -1, 0f);
         monsterController.MoveState();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("attack");
+    }
 }

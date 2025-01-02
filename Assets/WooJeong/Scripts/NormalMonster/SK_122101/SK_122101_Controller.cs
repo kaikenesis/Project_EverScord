@@ -5,25 +5,27 @@ using UnityEngine;
 
 public class SK_122101_Controller : MonoBehaviour
 {
-    private float moveSpeed = 3f;
+    [SerializeField] private float distance = 2.5f;
+    [SerializeField] private float moveSpeed = 3f;
     public float MoveSpeed { get { return moveSpeed; } }
+    public float Distance { get { return distance; } }
 
-    private SK_122101_IState currentState;
+    private IState currentState;
 
-    private SK_122101_IState moveState;
-    private SK_122101_IState attackState;
+    private IState moveState;
+    private IState attackState;
 
-    void Start()
+    void Awake()
     {
         moveState = gameObject.AddComponent<SK_122101_MoveState>();
         attackState = gameObject.AddComponent<SK_122101_AttackState>();
 
         MoveState();
     }
-    public void Transition(SK_122101_IState state)
+    public void Transition(IState state)
     {
         currentState = state;
-        currentState.Enter(this);
+        currentState.Enter();
     }
 
     public void MoveState()

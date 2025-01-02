@@ -2,35 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_122101_MoveState : MonoBehaviour, SK_122101_IState
+public class SK_122101_MoveState : MonoBehaviour, IState
 {
     private SK_122101_Controller monsterController;
     public GameObject player;
     private Animator animator;
     private bool isEnter = false;
-    private float distance = 0.5f;
 
     void Setup()
     {
+        monsterController = GetComponent<SK_122101_Controller>();
         animator = GetComponentInChildren<Animator>();
         player = GameObject.Find("Player");
     }
 
-    void Start()
+    void Awake()
     {
         Setup();
     }
 
-    public void Enter(SK_122101_Controller controller)
+    public void Enter()
     {
         isEnter = true;
-        if (!monsterController)
-            monsterController = controller;
 
         if (animator == null)
             Setup();
 
-        if (CalcDistance() < distance)
+        if (CalcDistance() < monsterController.Distance)
             Exit();
         else
             animator.SetBool("isRun", true);
@@ -49,7 +47,7 @@ public class SK_122101_MoveState : MonoBehaviour, SK_122101_IState
         if (!isEnter)
             return;
 
-        if(CalcDistance() < distance)
+        if(CalcDistance() < monsterController.Distance)
         {
             Exit();
             return;

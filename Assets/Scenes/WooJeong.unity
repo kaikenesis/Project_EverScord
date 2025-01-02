@@ -254,6 +254,7 @@ GameObject:
   - component: {fileID: 558513623}
   - component: {fileID: 558513622}
   - component: {fileID: 558513621}
+  - component: {fileID: 558513625}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -347,6 +348,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &558513625
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558513620}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &862639244
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,11 +697,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 36e6a8225ea0c084b98cd3d2a2b71fe2, type: 3}
-      insertIndex: 0
-      addedObject: {fileID: 927221693}
+    m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 36e6a8225ea0c084b98cd3d2a2b71fe2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2096347716}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 36e6a8225ea0c084b98cd3d2a2b71fe2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2096347714}
@@ -681,57 +709,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 186247719}
   m_SourcePrefab: {fileID: 100100000, guid: 36e6a8225ea0c084b98cd3d2a2b71fe2, type: 3}
---- !u!1 &927221692
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 927221693}
-  - component: {fileID: 927221694}
-  m_Layer: 0
-  m_Name: Projector
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &927221693
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927221692}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 6, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2096347715}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!119 &927221694
-Projector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927221692}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_NearClipPlane: 0.1
-  m_FarClipPlane: 6
-  m_FieldOfView: 12.6
-  m_AspectRatio: 1
-  m_Orthographic: 0
-  m_OrthographicSize: 10
-  m_Material: {fileID: 0}
-  m_IgnoreLayers:
-    serializedVersion: 2
-    m_Bits: 55
 --- !u!1 &996201306
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,11 +832,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ecd71097ba47564285522bcb3617cca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &2096347715 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 36e6a8225ea0c084b98cd3d2a2b71fe2, type: 3}
-  m_PrefabInstance: {fileID: 896800883}
+  distance: 1.5
+  moveSpeed: 3
+--- !u!65 &2096347716
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096347711}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.55, y: 0.45, z: 1.5}
+  m_Center: {x: 0, y: 0.15, z: 0.22}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
