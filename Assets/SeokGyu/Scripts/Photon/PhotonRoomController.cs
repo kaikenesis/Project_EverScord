@@ -20,7 +20,7 @@ public class PhotonRoomController : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        UIGameMode.OnGameModeSelected += HandleGameModeSelected;
+        //UIGameMode.OnGameModeSelected += HandleGameModeSelected;
         UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
         PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
         UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
@@ -29,7 +29,7 @@ public class PhotonRoomController : MonoBehaviourPunCallbacks
 
     private void OnDestroy()
     {
-        UIGameMode.OnGameModeSelected -= HandleGameModeSelected;
+        //UIGameMode.OnGameModeSelected -= HandleGameModeSelected;
         UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
         PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
         UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
@@ -59,7 +59,8 @@ public class PhotonRoomController : MonoBehaviourPunCallbacks
         {
             if(PhotonNetwork.InLobby)
             {
-                JoinPlayerRoom();
+                PhotonNetwork.JoinRoom(roomName);
+                PlayerPrefs.SetString("PHOTONROOM", "");
             }
         }
     }
@@ -109,7 +110,7 @@ public class PhotonRoomController : MonoBehaviourPunCallbacks
     {
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
-        ro.IsVisible = true;
+        ro.IsVisible = false;
         ro.MaxPlayers = selectedGameMode.MaxPlayers;
 
         string[] roomProperties = { GAME_MODE };
