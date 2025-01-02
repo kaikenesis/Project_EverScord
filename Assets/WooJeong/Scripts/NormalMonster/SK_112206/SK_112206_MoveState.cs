@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_122101_MoveState : MonoBehaviour, IState
+public class SK_112206_MoveState : MonoBehaviour, IState
 {
-    private SK_122101_Controller monsterController;
+    private SK_112206_Controller monsterController;
     public GameObject player;
     private Animator animator;
     private bool isEnter = false;
 
     void Setup()
     {
-        monsterController = GetComponent<SK_122101_Controller>();
+        monsterController = GetComponent<SK_112206_Controller>();
         animator = GetComponentInChildren<Animator>();
         player = GameObject.Find("Player");
     }

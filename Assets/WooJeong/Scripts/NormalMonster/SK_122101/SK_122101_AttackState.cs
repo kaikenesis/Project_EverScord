@@ -31,50 +31,58 @@ public class SK_122101_AttackState : MonoBehaviour, IState
     void RandomAttack()
     {
         float rand = Random.Range(0, 100);
-        if (rand < 50)
+        if (rand > 50)
         {
-            animator.SetBool("isAttack1", true);
             StartCoroutine(Att1());
         }
         else
         {
-            animator.SetBool("isAttack2", true);
             StartCoroutine(Att2());
         }
     }
 
     IEnumerator Att1()
     {
-        for(int i = 0; i < 4; i++)
+        animator.Play("AttackA_Start", -1, 0);
+        yield return null;
+        string lastClip = null;
+        for (int i = 0; i < 4;)
         {
-            float time = animator.GetCurrentAnimatorClipInfo(0).Length;
-            if(i == 2)
+            AnimatorClipInfo[] clip = animator.GetCurrentAnimatorClipInfo(0);
+            if (lastClip == clip[0].clip.name)
+            {
+                yield return null;
+                continue;
+            }    
+            float time = clip[0].clip.length;
+            if (i == 2)
                 boxCollider.enabled = true;
             yield return new WaitForSeconds(time);
             boxCollider.enabled = false;
+            lastClip = clip[0].clip.name;
+            i++;
         }
-        animator.SetBool("isAttack1", false);
         Exit();
     }
 
     IEnumerator Att2()
     {
-        float time = animator.GetCurrentAnimatorClipInfo(0).Length;
+        animator.Play("AttackC", -1, 0);
+        yield return null;
+        AnimatorClipInfo[] clip = animator.GetCurrentAnimatorClipInfo(0);
+        float time = clip[0].clip.length;
         boxCollider.enabled = true;
         yield return new WaitForSeconds(time);
         boxCollider.enabled = false;
-        animator.SetBool("isAttack2", false);
         Exit();
     }
 
     public void Exit()
     {
-        animator.Play("Run", -1, 0f);
         monsterController.MoveState();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("attack");
     }
 }
