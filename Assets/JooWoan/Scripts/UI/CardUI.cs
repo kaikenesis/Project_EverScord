@@ -19,7 +19,7 @@ namespace EverScord.UI
 
         private UnityEvent onSelectSlotEvent = new UnityEvent();
 
-        void Awake()
+        public void Init()
         {
             slotImages = slotParent.GetComponentsInChildren<Image>(true);
 

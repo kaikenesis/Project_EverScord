@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 using EverScord.UI;
 using EverScord.Armor;
 
@@ -16,6 +17,7 @@ namespace EverScord.Augment
         };
 
         [SerializeField] private TestPlayer player;
+        [SerializeField] private GameObject cardHub;
         [SerializeField] private CardUI helmetCardUI, vestCardUI, shoesCardUI;
         [SerializeField] private LockableButton confirmBtn;
         private AugmentData augmentData = new();
@@ -29,6 +31,7 @@ namespace EverScord.Augment
         void Awake()
         {
             augmentData.Init();
+            cardHub.SetActive(false);
         }
 
         void OnEnable()
@@ -43,9 +46,31 @@ namespace EverScord.Augment
             confirmBtn.GetComponent<Button>().onClick.RemoveListener(EnhanceArmor);
         }
 
-        void Start()
+        void Update()
         {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                ShowAugmentCards();
+            }
+        }
+
+        private void ShowAugmentCards()
+        {
+            cardHub.SetActive(true);
+
+            helmetCardUI.Init();
+            vestCardUI.Init();
+            shoesCardUI.Init();
             CreateAugmentTags();
+
+            DOTween.Rewind("AugmentCard_Appear");
+            DOTween.Play("AugmentCard_Appear");
+        }
+
+        private void HideAugmentCards()
+        {
+            DOTween.Rewind("AugmentCard_Disappear");
+            DOTween.Play("AugmentCard_Disappear");
         }
 
         private void CreateAugmentTags()

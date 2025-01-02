@@ -42,8 +42,6 @@ namespace EverScord.Augment
                     int start           = 2;
                     int statCount       = GetStatCount(kvp.Value[i], out stageCount);
 
-                    Debug.Log(statCount);
-
                     for (int j = 0; j < stageCount; j++)
                     {
                         List<(float, float)> bonusList = new();
