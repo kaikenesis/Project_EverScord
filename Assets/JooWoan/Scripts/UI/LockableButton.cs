@@ -9,15 +9,24 @@ namespace EverScord.UI
         [SerializeField] private float lockAlpha;
         private Button button;
         private Image buttonImg;
+        private bool initialState;
 
         void Awake()
         {
             button = GetComponent<Button>();
             buttonImg = GetComponent<Image>();
+            initialState = isLocked;
         }
 
-        void Start()
+        void OnEnable()
         {
+            ResetState();
+        }
+
+        public void ResetState()
+        {
+            isLocked = initialState;
+
             if (isLocked)
                 LockButton();
         }

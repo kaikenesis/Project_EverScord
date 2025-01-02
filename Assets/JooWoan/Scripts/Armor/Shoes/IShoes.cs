@@ -20,8 +20,6 @@ namespace EverScord.Armor
             MoveSpeed,
             Cooldown,
             ReloadSpeed,
-
-            END
         };
     }
 }

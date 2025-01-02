@@ -20,8 +20,6 @@ namespace EverScord.Armor
             Health,
             Defense,
             HealthRegeneration,
-
-            END
         };
     }
 }

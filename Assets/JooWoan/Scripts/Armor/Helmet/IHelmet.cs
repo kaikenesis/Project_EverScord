@@ -29,8 +29,6 @@ namespace EverScord.Armor
             BasicHeal,
             SkillHeal,
             AllroundHeal,
-
-            END
         };
     }
 }

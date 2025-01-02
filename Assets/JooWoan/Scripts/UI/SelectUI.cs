@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace EverScord.UI
 {
-    public class CardUI : MonoBehaviour
+    public class SelectUI : MonoBehaviour
     {
         [SerializeField] private Transform slotParent;
         [SerializeField] private Color selectedSlotColor;
@@ -19,17 +19,35 @@ namespace EverScord.UI
 
         private UnityEvent onSelectSlotEvent = new UnityEvent();
 
-        public void Init()
+        public void Init(UnityAction listener)
         {
-            slotImages = slotParent.GetComponentsInChildren<Image>(true);
+            onSelectSlotEvent?.AddListener(listener);
+            
+            if (slotImages == null)
+            {
+                slotImages = slotParent.GetComponentsInChildren<Image>(true);
 
-            foreach (Image slot in slotImages)
-                slotTexts.Add(slot.GetComponentInChildren<TextMeshProUGUI>(true));
+                foreach (Image slot in slotImages)
+                    slotTexts.Add(slot.GetComponentInChildren<TextMeshProUGUI>(true));
 
+                if (slotImages.Length > 0)
+                    initialColor = slotImages[0].color;
+            }
+
+            ResetState();
+        }
+
+        void OnDisable()
+        {
+            ResetState();
+        }
+
+        private void ResetState()
+        {
             selectedSlotIndex = -1;
 
-            if (slotImages.Length > 0)
-                initialColor = slotImages[0].color;
+            for (int i = 0; i < slotImages.Length; i++)
+                SetSlotColor(i, false);
         }
 
         public void OnSelectSlot(int index)
@@ -40,12 +58,7 @@ namespace EverScord.UI
 
             onSelectSlotEvent?.Invoke();
         }
-
-        public void SetSlotSelectEvent(UnityAction listener)
-        {
-            onSelectSlotEvent?.AddListener(listener);
-        }
-
+        
         public void RemoveSlotSelectEvent(UnityAction listener)
         {
             onSelectSlotEvent?.RemoveListener(listener);
