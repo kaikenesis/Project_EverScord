@@ -1,10 +1,7 @@
 using EverScord;
-using EverScord.Armor;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class TestDebugArmor : MonoBehaviour
 {
@@ -14,7 +11,7 @@ public class TestDebugArmor : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
+        if (Input.GetKeyDown(KeyCode.F2))
             debugArmor.SetActive(!debugArmor.activeSelf);
 
         ShowStat();

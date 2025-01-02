@@ -19,7 +19,9 @@ namespace EverScord.Armor
         {
             MoveSpeed,
             Cooldown,
-            ReloadSpeed
+            ReloadSpeed,
+
+            END
         };
     }
 }

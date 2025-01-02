@@ -26,8 +26,6 @@ namespace EverScord.Augment
 
         public void Init()
         {
-            // Initialize augment dict
-
             var sheet = CSVReader.ReadAugmentSheet(SHEET_PATH);
 
             foreach (KeyValuePair<string, List<List<string>>> kvp in sheet)
@@ -40,10 +38,26 @@ namespace EverScord.Augment
                     string name         = kvp.Value[i][0];
                     string description  = kvp.Value[i][1];
 
-                    for (int j = 2; j < kvp.Value[i].Count; j += 2)
+                    int stageCount;
+                    int start           = 2;
+                    int statCount       = GetStatCount(kvp.Value[i], out stageCount);
+
+                    Debug.Log(statCount);
+
+                    for (int j = 0; j < stageCount; j++)
                     {
-                        float.TryParse(kvp.Value[i][j],     out float additive);
-                        float.TryParse(kvp.Value[i][j + 1], out float multiplicative);
+                        List<(float, float)> bonusList = new();
+                        int end = start + statCount * 2;
+
+                        for (int k = start; k < end; k += 2)
+                        {
+                            float.TryParse(kvp.Value[i][k], out float additive);
+                            float.TryParse(kvp.Value[i][k + 1], out float multiplicative);
+
+                            bonusList.Add((additive, multiplicative));
+                        }
+
+                        start = end;
 
                         switch (kvp.Key)
                         {
@@ -53,7 +67,11 @@ namespace EverScord.Augment
                                 HelmetAugment helmetAugment = helmetAugmentBuilder
                                     .SetName(name)
                                     .SetDescription(description)
-                                    .SetBonus((IHelmet.BonusType)i, additive, multiplicative)
+                                    .SetBonus((IHelmet.BonusType)0, bonusList[0].Item1, bonusList[0].Item2)
+                                    .SetBonus((IHelmet.BonusType)1, bonusList[1].Item1, bonusList[1].Item2)
+                                    .SetBonus((IHelmet.BonusType)2, bonusList[2].Item1, bonusList[2].Item2)
+                                    .SetBonus((IHelmet.BonusType)3, bonusList[3].Item1, bonusList[3].Item2)
+                                    .SetBonus((IHelmet.BonusType)4, bonusList[4].Item1, bonusList[4].Item2)
                                     .Build();
 
                                 if (i < 2 || i == 4)
@@ -80,7 +98,9 @@ namespace EverScord.Augment
                                 VestAugment vestAugment = vestAugmentBuilder
                                     .SetName(name)
                                     .SetDescription(description)
-                                    .SetBonus((IVest.BonusType)i, additive, multiplicative)
+                                    .SetBonus((IVest.BonusType)0, bonusList[0].Item1, bonusList[0].Item2)
+                                    .SetBonus((IVest.BonusType)1, bonusList[1].Item1, bonusList[1].Item2)
+                                    .SetBonus((IVest.BonusType)2, bonusList[2].Item1, bonusList[2].Item2)
                                     .Build();
 
                                 if (!vestAugmentDict.ContainsKey(vestAugment.Name))
@@ -96,7 +116,9 @@ namespace EverScord.Augment
                                 ShoesAugment shoesAugment = shoesAugmentBuilder
                                     .SetName(name)
                                     .SetDescription(description)
-                                    .SetBonus((IShoes.BonusType)i, additive, multiplicative)
+                                    .SetBonus((IShoes.BonusType)0, bonusList[0].Item1, bonusList[0].Item2)
+                                    .SetBonus((IShoes.BonusType)1, bonusList[1].Item1, bonusList[1].Item2)
+                                    .SetBonus((IShoes.BonusType)2, bonusList[2].Item1, bonusList[2].Item2)
                                     .Build();
 
                                 if (!shoesAugmentDict.ContainsKey(shoesAugment.Name))
@@ -107,9 +129,33 @@ namespace EverScord.Augment
                             }
                         }
                     }
-
                 }
             }
+        }
+
+        private int GetStatCount(List<string> record, out int stageCount)
+        {
+            int count = 0;
+
+            for (int i = 2; i < record.Count; i++)
+            {
+                if (string.IsNullOrEmpty(record[i]))
+                    break;
+
+                count++;
+            }
+
+            for (int i = count - 1; i > 1; i--)
+            {
+                if (count % i == 0)
+                {
+                    stageCount = count / i;
+                    return i / 2;
+                }
+            }
+
+            stageCount = 1;
+            return 1;
         }
     }
 }

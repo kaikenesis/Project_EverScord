@@ -19,7 +19,9 @@ namespace EverScord.Armor
         {
             Health,
             Defense,
-            HealthRegeneration
+            HealthRegeneration,
+
+            END
         };
     }
 }
