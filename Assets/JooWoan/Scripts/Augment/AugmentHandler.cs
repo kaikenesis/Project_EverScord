@@ -137,16 +137,16 @@ namespace EverScord.Augment
             var helmetAugmentDict       = augmentData.DealerHelmetAugmentDict;
 
             string helmetTag            = helmetAugmentTags[helmetCardUI.selectedSlotIndex];
-            // string vestTag              = vestAugmentTags[vestCardUI.selectedSlotIndex];
-            // string shoesTag             = shoesAugmentTags[shoesCardUI.selectedSlotIndex];
+            string vestTag = vestAugmentTags[vestCardUI.selectedSlotIndex];
+            string shoesTag = shoesAugmentTags[shoesCardUI.selectedSlotIndex];
 
             HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[helmetTag][enhanceCount];
-            // VestAugment vestAugment     = (VestAugment)augmentData.VestAugmentDict[vestTag][enhanceCount];
-            // ShoesAugment shoesAugment   = (ShoesAugment)augmentData.ShoesAugmentDict[shoesTag][enhanceCount];
+            VestAugment vestAugment = (VestAugment)augmentData.VestAugmentDict[vestTag][enhanceCount];
+            ShoesAugment shoesAugment = (ShoesAugment)augmentData.ShoesAugmentDict[shoesTag][enhanceCount];
 
             player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
-            // player.SetVest(new VestDecorator(player.vest, vestAugment));
-            // player.SetShoes(new ShoesDecorator(player.shoes, shoesAugment));
+            player.SetVest(new VestDecorator(player.vest, vestAugment));
+            player.SetShoes(new ShoesDecorator(player.shoes, shoesAugment));
 
             enhanceCount++;
 

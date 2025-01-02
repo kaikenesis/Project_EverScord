@@ -392,8 +392,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -499,7 +499,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uD3C9\uD0C0 \uD68C\uBCF5\uB7C9:"
+  m_text: "\uD3C9\uD0C0 \uCE58\uC720\uB7C9:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0aad3355642076c40b64a729239c7b32, type: 2}
   m_sharedMaterial: {fileID: 8829981182033660656, guid: 0aad3355642076c40b64a729239c7b32, type: 2}
@@ -526,8 +526,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -591,7 +591,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &346076303
 RectTransform:
   m_ObjectHideFlags: 0
@@ -632,6 +632,7 @@ GameObject:
   m_Component:
   - component: {fileID: 453844326}
   - component: {fileID: 453844325}
+  - component: {fileID: 453844327}
   m_Layer: 0
   m_Name: TestPlayer
   m_TagString: Untagged
@@ -666,6 +667,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &453844327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453844324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4ee45768436eeb4397b432faebb3565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 453844325}
+  debugArmor: {fileID: 346076302}
+  helmetTexts:
+  - {fileID: 635210514}
+  - {fileID: 1638851062}
+  - {fileID: 345301313}
+  - {fileID: 1254063685}
+  - {fileID: 1920391171}
+  vestTexts:
+  - {fileID: 1244130582}
+  - {fileID: 594522970}
+  - {fileID: 1140814295}
+  shoesTexts:
+  - {fileID: 868316422}
+  - {fileID: 343915468}
+  - {fileID: 2007169610}
 --- !u!1001 &509202612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -926,7 +955,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -408.5, y: -357}
+  m_AnchoredPosition: {x: -317.99997, y: -357}
   m_SizeDelta: {x: 347, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &594522970
@@ -976,8 +1005,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1110,8 +1139,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1441,8 +1470,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1729,7 +1758,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -408.5, y: -407}
+  m_AnchoredPosition: {x: -317.99997, y: -407}
   m_SizeDelta: {x: 347, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1140814295
@@ -1779,8 +1808,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1863,7 +1892,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -408.50003, y: -307}
+  m_AnchoredPosition: {x: -318, y: -307}
   m_SizeDelta: {x: 347, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1244130582
@@ -1913,8 +1942,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2020,7 +2049,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC2A4\uD0AC \uD68C\uBCF5\uB7C9:"
+  m_text: "\uC2A4\uD0AC \uCE58\uC720\uB7C9:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0aad3355642076c40b64a729239c7b32, type: 2}
   m_sharedMaterial: {fileID: 8829981182033660656, guid: 0aad3355642076c40b64a729239c7b32, type: 2}
@@ -2047,8 +2076,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2192,8 +2221,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2501,7 +2530,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC2A4\uD0AC \uD68C\uBCF5\uB7C9:"
+  m_text: "\uC804\uCCB4 \uCE58\uC720\uB7C9:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0aad3355642076c40b64a729239c7b32, type: 2}
   m_sharedMaterial: {fileID: 8829981182033660656, guid: 0aad3355642076c40b64a729239c7b32, type: 2}
@@ -2528,8 +2557,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2662,8 +2691,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

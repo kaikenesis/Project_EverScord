@@ -58,7 +58,7 @@ namespace EverScord.Augment
 
                                 if (i < 2 || i == 4)
                                 {
-                                    if (!dealerHelmetAugmentDict.ContainsKey(helmetAugment.Name) || dealerHelmetAugmentDict[helmetAugment.Name] == null)
+                                    if (!dealerHelmetAugmentDict.ContainsKey(helmetAugment.Name))
                                         dealerHelmetAugmentDict[helmetAugment.Name] = new();
 
                                     dealerHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
@@ -66,7 +66,7 @@ namespace EverScord.Augment
 
                                 if (i >= 2 || i == 4)
                                 {
-                                    if (!healerHelmetAugmentDict.ContainsKey(helmetAugment.Name) || healerHelmetAugmentDict[helmetAugment.Name] == null)
+                                    if (!healerHelmetAugmentDict.ContainsKey(helmetAugment.Name))
                                         healerHelmetAugmentDict[helmetAugment.Name] = new();
 
                                     healerHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
@@ -76,13 +76,33 @@ namespace EverScord.Augment
 
                             case VEST_KEY:
                             {
+                                VestAugmentBuilder vestAugmentBuilder = new();
+                                VestAugment vestAugment = vestAugmentBuilder
+                                    .SetName(name)
+                                    .SetDescription(description)
+                                    .SetBonus((IVest.BonusType)i, additive, multiplicative)
+                                    .Build();
 
+                                if (!vestAugmentDict.ContainsKey(vestAugment.Name))
+                                    vestAugmentDict[vestAugment.Name] = new();
+
+                                vestAugmentDict[vestAugment.Name].Add(vestAugment);
                                 break;
                             }
 
                             case SHOES_KEY:
                             {
+                                ShoesAugmentBuilder shoesAugmentBuilder = new();
+                                ShoesAugment shoesAugment = shoesAugmentBuilder
+                                    .SetName(name)
+                                    .SetDescription(description)
+                                    .SetBonus((IShoes.BonusType)i, additive, multiplicative)
+                                    .Build();
 
+                                if (!shoesAugmentDict.ContainsKey(shoesAugment.Name))
+                                    shoesAugmentDict[shoesAugment.Name] = new();
+
+                                shoesAugmentDict[shoesAugment.Name].Add(shoesAugment);
                                 break;
                             }
                         }
