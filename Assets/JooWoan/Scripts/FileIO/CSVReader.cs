@@ -43,7 +43,7 @@ namespace EverScord.FileIO
 
                 for (int j = 1; j < cells.Length; j++)
                 {
-                    string cell = cells[j].TrimStart(TRIM_CHARS).TrimEnd(TRIM_CHARS).Replace("\\", "");
+                    string cell = TrimCell(cells[j]);
                     entry.Add(cell);
                 }
 
@@ -51,6 +51,44 @@ namespace EverScord.FileIO
             }
 
             return dict;
+        }
+
+        public static List<IDictionary<string, string>> ReadDataTableSheet(string file)
+        {
+            var list = new List<IDictionary<string, string>>();
+            TextAsset data = Resources.Load(file) as TextAsset;
+
+            var lines = Regex.Split(data.text, LINE_SPLIT);
+
+            if (lines.Length < 1)
+                return list;
+
+            var header = Regex.Split(lines[1], SPLIT);
+
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var values = Regex.Split(lines[i], SPLIT);
+
+                if (values.Length < 1 || string.IsNullOrEmpty(values[1]))
+                    continue;
+
+                var entry = new Dictionary<string, string>();
+
+                for (int j = 0; j < header.Length && j < values.Length; j++)
+                {
+                    string value = values[j];
+                    entry[header[j]] = TrimCell(value);
+                }
+
+                list.Add(entry);
+            }
+
+            return list;
+        }
+
+        private static string TrimCell(string value)
+        {
+            return value.TrimStart(TRIM_CHARS).TrimEnd(TRIM_CHARS).Replace("\\", "");
         }
     }
 }
