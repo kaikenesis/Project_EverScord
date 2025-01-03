@@ -73,6 +73,10 @@ public class PhotonRoomController : MonoBehaviourPunCallbacks
             PhotonNetwork.JoinRoom(roomName);
             PlayerPrefs.SetString("PHOTONNAME", "");
         }
+        //else
+        //{
+        //    CreatePhotonRoom();
+        //}
     }
 
     private void HandleLeaveRoom()
@@ -111,6 +115,7 @@ public class PhotonRoomController : MonoBehaviourPunCallbacks
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = false;
+        ro.PublishUserId = true;
         ro.MaxPlayers = selectedGameMode.MaxPlayers;
 
         string[] roomProperties = { GAME_MODE };
@@ -126,7 +131,7 @@ public class PhotonRoomController : MonoBehaviourPunCallbacks
     {
         string players = "";
         Dictionary<int, Player> playerList = PhotonNetwork.CurrentRoom.Players;
-        for (int i = 0; i < playerList.Count; i++)
+        for (int i = 1; i < playerList.Count; i++)
         {
             players += $"{playerList[i].NickName}, ";
         }

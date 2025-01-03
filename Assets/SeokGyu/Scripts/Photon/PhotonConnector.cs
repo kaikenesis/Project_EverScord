@@ -35,7 +35,7 @@ namespace EverScord
         {
             Debug.Log($"Connect to Photon as {nickName}");
             PhotonNetwork.AuthValues = new AuthenticationValues(nickName);
-            PhotonNetwork.AutomaticallySyncScene = true;    // 씬 동기화. 맨 처음 접속한 사람이 방장
+            PhotonNetwork.AutomaticallySyncScene = true;    // 씬 동기화. 맨 처음 접속한 사람이 방장, 방장이 씬 이동시 Room의 멤버들도 함께 이동
             PhotonNetwork.NickName = nickName;
             PhotonNetwork.ConnectUsingSettings();
         }
@@ -66,6 +66,8 @@ namespace EverScord
             //GetPhotonFriends?.Invoke();
             OnLobbyJoined?.Invoke();
         }
+
+        //public override 
         #endregion
     }
 }

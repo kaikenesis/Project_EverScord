@@ -1,16 +1,18 @@
-using System;
-using TMPro;
+using Photon.Chat;
 using Photon.Realtime;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Chat;
 
 namespace EverScord
 {
-    public class UIFriend : MonoBehaviour
+    public class UIPlayer : MonoBehaviour
     {
-        [SerializeField] private TMP_Text friendNameText;
-        [SerializeField] private string friendName;
+        [SerializeField] private TMP_Text playerNameText;
+        [SerializeField] private string playerName;
         [SerializeField] private bool isOnline;
         [SerializeField] private Image onlineImage;
         [SerializeField] private GameObject inviteButton;
@@ -40,14 +42,14 @@ namespace EverScord
 
         private void OnEnable()
         {
-            if (string.IsNullOrEmpty(friendName)) return;
-            OnGetCurrentStatus?.Invoke(friendName);
+            if (string.IsNullOrEmpty(playerName)) return;
+            OnGetCurrentStatus?.Invoke(playerName);
             OnGetRoomStatus?.Invoke();
         }
 
         private void HandleStatusUpdated(PhotonStatus status)
         {
-            if (string.Compare(friendName, status.playerName) == 0)
+            if (string.Compare(playerName, status.playerName) == 0)
             {
                 Debug.Log($"Updating status in UI for {status.playerName} to status {status.status}");
                 SetStatus(status.status);
@@ -66,8 +68,8 @@ namespace EverScord
 
         private void SetupUI()
         {
-            Debug.Log(friendName);
-            friendNameText.SetText(friendName);
+            Debug.Log(playerName);
+            playerNameText.SetText(playerName);
             inviteButton.SetActive(false);
         }
 
@@ -75,13 +77,13 @@ namespace EverScord
         {
             if (status == ChatUserStatus.Online)
             {
-                onlineImage.color = onlineColor;
+                if (onlineImage != null) onlineImage.color = onlineColor;
                 isOnline = true;
                 OnGetRoomStatus?.Invoke();
             }
             else
             {
-                onlineImage.color = offlineColor;
+                if(onlineImage != null) onlineImage.color = offlineColor;
                 isOnline = false;
                 inviteButton.SetActive(false);
             }
@@ -100,22 +102,16 @@ namespace EverScord
         public void Initialize(string friendName)
         {
             Debug.Log($"{friendName} is added");
-            this.friendName = friendName;
+            this.playerName = friendName;
 
             SetupUI();
             OnGetCurrentStatus?.Invoke(friendName);
         }
 
-        public void RemoveFriend()
+        public void InvitePlayer()
         {
-            Debug.Log($"Clicked to remove friend {friendName}");
-            OnRemoveFriend?.Invoke(friendName);
-        }
-
-        public void InviteFriend()
-        {
-            Debug.Log($"Clicked to invite friend {friendName}");
-            OnInviteFriend?.Invoke(friendName);
+            Debug.Log($"Clicked to invite friend {playerName}");
+            OnInviteFriend?.Invoke(playerName);
         }
 
         #endregion

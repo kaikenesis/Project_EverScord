@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using Photon.Pun;
+using System.Collections.Generic;
 
 namespace EverScord
 {
@@ -19,6 +20,8 @@ namespace EverScord
         {
             PhotonRoomController.OnJoinRoom += HandleJoinRoom;
             PhotonRoomController.OnRoomLeft += HandleRoomLeft;
+            
+            gameObject.SetActive(false);
         }
         private void OnDestroy()
         {
@@ -28,10 +31,11 @@ namespace EverScord
 
         private void HandleJoinRoom(GameMode gameMode)
         {
-            roomGameModeText.SetText(PhotonNetwork.CurrentRoom.CustomProperties["GAMEMODE"].ToString());
+            gameObject.SetActive(true);
+            //roomGameModeText.SetText(PhotonNetwork.CurrentRoom.CustomProperties["GAMEMODE"].ToString());
 
-            exitButton.SetActive(true);
-            roomContainer.SetActive(true);
+            if(exitButton != null) exitButton.SetActive(true);
+            if(roomContainer != null) roomContainer.SetActive(true);
 
             int count = hideObjects.Length;
             for (int i = 0; i < count; i++)
@@ -42,10 +46,11 @@ namespace EverScord
 
         private void HandleRoomLeft()
         {
-            roomGameModeText.SetText("JOINING ROOM");
+            gameObject.SetActive(false);
+            //roomGameModeText.SetText("JOINING ROOM");
 
-            exitButton.SetActive(false);
-            roomContainer.SetActive(false);
+            if (exitButton != null) exitButton.SetActive(false);
+            if (roomContainer != null) roomContainer.SetActive(false);
 
             int count = showObjects.Length;
             for (int i = 0; i < count; i++)
@@ -53,6 +58,22 @@ namespace EverScord
                 showObjects[i].SetActive(true);
             }
         }
+
+        // Room내 플레이어 목록 UI 갱신 (수정 필요)
+        //private void HandleDisplayChatFriends(List<string> friends)
+        //{
+        //    foreach (Transform child in friendContainer)
+        //    {
+        //        Destroy(child.gameObject);
+        //    }
+
+        //    foreach (string friend in friends)
+        //    {
+        //        UIFriend uifriend = Instantiate(uiFriendPrefab, friendContainer);
+        //        uifriend.Initialize(friend);
+        //        contentRect.sizeDelta += increaseSize;
+        //    }
+        //}
 
         public void LeaveRoom()
         {

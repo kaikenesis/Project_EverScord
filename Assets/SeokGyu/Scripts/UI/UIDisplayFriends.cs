@@ -4,59 +4,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIDisplayFriends : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private Transform friendContainer;
-    [SerializeField] private UIFriend uiFriendPrefab;
-    [SerializeField] private Vector2 orginalSize;
-    [SerializeField] private Vector2 increaseSize;
-
-    private RectTransform contentRect;
-    
-    private void Awake()
+    public class UIDisplayFriends : MonoBehaviour
     {
-        contentRect = friendContainer.GetComponent<RectTransform>();
-        orginalSize = contentRect.sizeDelta;
-        increaseSize = new Vector2(0, uiFriendPrefab.GetComponent<RectTransform>().sizeDelta.y);
-        PhotonFriendController.OnDisplayFriends += HandleDisplayFriends;
-        PhotonChatFriendController.OnDisplayFriends += HandleDisplayChatFriends;
-    }
+        [SerializeField] private Transform friendContainer;
+        [SerializeField] private UIFriend uiFriendPrefab;
+        [SerializeField] private Vector2 orginalSize;
+        [SerializeField] private Vector2 increaseSize;
 
-    
+        private RectTransform contentRect;
 
-    private void OnDestroy()
-    {
-        PhotonFriendController.OnDisplayFriends -= HandleDisplayFriends;
-        PhotonChatFriendController.OnDisplayFriends -= HandleDisplayChatFriends;
-    }
-
-    private void HandleDisplayFriends(List<FriendInfo> friends)
-    {
-        foreach(Transform child in friendContainer)
+        private void Awake()
         {
-            Destroy(child.gameObject);
+            contentRect = friendContainer.GetComponent<RectTransform>();
+            orginalSize = contentRect.sizeDelta;
+            increaseSize = new Vector2(0, uiFriendPrefab.GetComponent<RectTransform>().sizeDelta.y);
+            PhotonFriendController.OnDisplayFriends += HandleDisplayFriends;
+            PhotonChatFriendController.OnDisplayFriends += HandleDisplayChatFriends;
         }
 
-        foreach(FriendInfo friend in friends)
-        {
-            UIFriend uifriend = Instantiate(uiFriendPrefab, friendContainer);
-            uifriend.Initialize(friend);
-            contentRect.sizeDelta += increaseSize;
-        }
-    }
 
-    private void HandleDisplayChatFriends(List<string> friends)
-    {
-        foreach (Transform child in friendContainer)
+
+        private void OnDestroy()
         {
-            Destroy(child.gameObject);
+            PhotonFriendController.OnDisplayFriends -= HandleDisplayFriends;
+            PhotonChatFriendController.OnDisplayFriends -= HandleDisplayChatFriends;
         }
 
-        foreach (string friend in friends)
+        private void HandleDisplayFriends(List<FriendInfo> friends)
         {
-            UIFriend uifriend = Instantiate(uiFriendPrefab, friendContainer);
-            uifriend.Initialize(friend);
-            contentRect.sizeDelta += increaseSize;
+            foreach (Transform child in friendContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (FriendInfo friend in friends)
+            {
+                UIFriend uifriend = Instantiate(uiFriendPrefab, friendContainer);
+                uifriend.Initialize(friend);
+                contentRect.sizeDelta += increaseSize;
+            }
+        }
+
+        private void HandleDisplayChatFriends(List<string> friends)
+        {
+            foreach (Transform child in friendContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (string friend in friends)
+            {
+                UIFriend uifriend = Instantiate(uiFriendPrefab, friendContainer);
+                uifriend.Initialize(friend);
+                contentRect.sizeDelta += increaseSize;
+            }
         }
     }
 }

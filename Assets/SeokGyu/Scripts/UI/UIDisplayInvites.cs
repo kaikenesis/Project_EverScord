@@ -2,58 +2,61 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIDisplayInvites : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private Transform inviteContainer;
-    [SerializeField] private UIInvite uiInvitePrefab;
-    [SerializeField] private Vector2 originalSize;
-    [SerializeField] private Vector2 increaseSize;
-
-    private RectTransform contentRect;
-    private List<UIInvite> invites;
-
-    private void Awake()
+    public class UIDisplayInvites : MonoBehaviour
     {
-        invites = new List<UIInvite>();
-        contentRect = inviteContainer.GetComponent<RectTransform>();
-        originalSize = contentRect.sizeDelta;
-        increaseSize = new Vector2(0, uiInvitePrefab.GetComponent<RectTransform>().sizeDelta.y);
-        PhotonChatController.OnRoomInvite += HandleRoomInvite;
-        UIInvite.OnInviteAccept += HandleInviteAccept;
-        UIInvite.OnInviteDecline += HandleInviteDecline;
-    }
+        [SerializeField] private Transform inviteContainer;
+        [SerializeField] private UIInvite uiInvitePrefab;
+        [SerializeField] private Vector2 originalSize;
+        [SerializeField] private Vector2 increaseSize;
 
-    private void OnDestroy()
-    {
-        PhotonChatController.OnRoomInvite -= HandleRoomInvite;
-        UIInvite.OnInviteAccept -= HandleInviteAccept;
-        UIInvite.OnInviteDecline -= HandleInviteDecline;
-    }
+        private RectTransform contentRect;
+        private List<UIInvite> invites;
 
-    private void HandleRoomInvite(string friend, string room)
-    {
-        Debug.Log($"Room invite for {friend} to room {room}");
-        UIInvite uiInvite = Instantiate(uiInvitePrefab, inviteContainer);
-        uiInvite.Initialize(friend, room);
-        contentRect.sizeDelta += increaseSize;
-        invites.Add(uiInvite);
-    }
-
-    private void HandleInviteAccept(UIInvite invite)
-    {
-        if(invites.Contains(invite))
+        private void Awake()
         {
-            invites.Remove(invite);
-            Destroy(invite.gameObject);
+            invites = new List<UIInvite>();
+            contentRect = inviteContainer.GetComponent<RectTransform>();
+            originalSize = contentRect.sizeDelta;
+            increaseSize = new Vector2(0, uiInvitePrefab.GetComponent<RectTransform>().sizeDelta.y);
+            PhotonChatController.OnRoomInvite += HandleRoomInvite;
+            UIInvite.OnInviteAccept += HandleInviteAccept;
+            UIInvite.OnInviteDecline += HandleInviteDecline;
         }
-    }
 
-    private void HandleInviteDecline(UIInvite invite)
-    {
-        if (invites.Contains(invite))
+        private void OnDestroy()
         {
-            invites.Remove(invite);
-            Destroy(invite.gameObject);
+            PhotonChatController.OnRoomInvite -= HandleRoomInvite;
+            UIInvite.OnInviteAccept -= HandleInviteAccept;
+            UIInvite.OnInviteDecline -= HandleInviteDecline;
+        }
+
+        private void HandleRoomInvite(string friend, string room)
+        {
+            Debug.Log($"Room invite for {friend} to room {room}");
+            UIInvite uiInvite = Instantiate(uiInvitePrefab, inviteContainer);
+            uiInvite.Initialize(friend, room);
+            contentRect.sizeDelta += increaseSize;
+            invites.Add(uiInvite);
+        }
+
+        private void HandleInviteAccept(UIInvite invite)
+        {
+            if (invites.Contains(invite))
+            {
+                invites.Remove(invite);
+                Destroy(invite.gameObject);
+            }
+        }
+
+        private void HandleInviteDecline(UIInvite invite)
+        {
+            if (invites.Contains(invite))
+            {
+                invites.Remove(invite);
+                Destroy(invite.gameObject);
+            }
         }
     }
 }

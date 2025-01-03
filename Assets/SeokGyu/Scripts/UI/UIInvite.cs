@@ -11,19 +11,27 @@ public class UIInvite : MonoBehaviour
     public static Action<UIInvite> OnInviteAccept = delegate { };
     public static Action<string> OnRoomInviteAccept = delegate { };
     public static Action<UIInvite> OnInviteDecline = delegate { };
+    public static Action<string> OnPartyInviteAccept = delegate { };
 
     public void Initialize(string friendName, string roomName)
     {
         this.friendName = friendName;
         this.roomName = roomName;
 
-        friendNameText.SetText(friendName);
+        friendNameText.SetText($"Invite from\n{friendName}");
     }
 
     public void AcceptInvite()
     {
         OnInviteAccept?.Invoke(this);
-        OnRoomInviteAccept?.Invoke(roomName);
+        if(string.IsNullOrEmpty(roomName))
+        {
+            OnPartyInviteAccept?.Invoke(friendName);
+        }
+        else
+        {
+            OnRoomInviteAccept?.Invoke(roomName);
+        }
     }
 
     public void DeclineInvite()
