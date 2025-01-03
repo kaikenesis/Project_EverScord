@@ -58,9 +58,6 @@ namespace EverScord.UI
             elapsedTime += Time.deltaTime;
             timerText.text = (timeLimit - elapsedTime).ToString("F0");
 
-            if (Mathf.Abs(elapsedTime - timeLimit) < 5f)
-                timerText.color = new Color32(255, 28, 28, 255);
-
             if (elapsedTime >= timeLimit)
             {
                 onTimerEnd?.Invoke();

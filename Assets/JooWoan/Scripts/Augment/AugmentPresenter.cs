@@ -23,7 +23,7 @@ namespace EverScord.Augment
         [SerializeField] private GameObject uiHub;
         [SerializeField] private SelectUI helmetSelectUI, vestSelectUI, shoesSelectUI;
         [SerializeField] private UpgradeUI helmetUpgradeUI, vestUpgradeUI, shoesUpgradeUI;
-        [SerializeField] private GameTimer selectTimer;
+        [SerializeField] private GameTimer augmentTimer;
         [SerializeField] private LockableButton confirmBtn;
         [SerializeField] private Button upgradeBtn;
         [SerializeField] private float selectTimeLimit;
@@ -66,6 +66,7 @@ namespace EverScord.Augment
         private void ShowAugmentCards()
         {
             uiHub.SetActive(true);
+            augmentTimer.gameObject.SetActive(true);
 
             if (isAugmentSelectMode)
             {
@@ -78,8 +79,8 @@ namespace EverScord.Augment
                 confirmBtn.GetComponent<Button>().onClick.AddListener(EnhanceArmor);
                 confirmBtn.GetComponent<Button>().onClick.AddListener(HideAugmentCards);
 
-                selectTimer.SetTimer(selectTimeLimit, ProceedRandomEnhance);
-                selectTimer.StartTimer();
+                augmentTimer.SetTimer(selectTimeLimit, ProceedRandomEnhance);
+                augmentTimer.StartTimer();
 
                 helmetSelectUI.Init(TryUnlockConfirmBtn);
                 vestSelectUI.Init(TryUnlockConfirmBtn);
@@ -91,6 +92,9 @@ namespace EverScord.Augment
             {
                 SetSelectUI(false);
                 SetUpgradeUI(true);
+
+                augmentTimer.SetTimer(selectTimeLimit, ProceedUpgrade);
+                augmentTimer.StartTimer();
 
                 upgradeBtn.onClick.AddListener(EnhanceArmor);
                 upgradeBtn.onClick.AddListener(HideAugmentCards);
@@ -105,7 +109,8 @@ namespace EverScord.Augment
         private void HideAugmentCards()
         {
             OnDisable();
-            
+
+            augmentTimer.gameObject.SetActive(false);
             confirmBtn.gameObject.SetActive(false);
             upgradeBtn.gameObject.SetActive(false);
 
@@ -227,6 +232,11 @@ namespace EverScord.Augment
             }
 
             confirmBtn.GetComponent<Button>().onClick?.Invoke();
+        }
+
+        private void ProceedUpgrade()
+        {
+            upgradeBtn.GetComponent<Button>().onClick?.Invoke();
         }
 
         private void EnhanceArmor()
