@@ -64,6 +64,11 @@ namespace EverScord.UI
             onSelectSlotEvent?.RemoveListener(listener);
         }
 
+        public void SetSlotIndex(int index)
+        {
+            selectedSlotIndex = index;
+        }
+
         public void SetSlotText(int index, string description)
         {
             slotTexts[index].text = description;

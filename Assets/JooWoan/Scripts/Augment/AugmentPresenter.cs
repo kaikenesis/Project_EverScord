@@ -7,7 +7,7 @@ using EverScord.Armor;
 
 namespace EverScord.Augment
 {
-    public class AugmentHandler : MonoBehaviour
+    public class AugmentPresenter : MonoBehaviour
     {
         private enum AugmentType
         {
@@ -23,13 +23,15 @@ namespace EverScord.Augment
         [SerializeField] private GameObject uiHub;
         [SerializeField] private SelectUI helmetSelectUI, vestSelectUI, shoesSelectUI;
         [SerializeField] private UpgradeUI helmetUpgradeUI, vestUpgradeUI, shoesUpgradeUI;
+        [SerializeField] private GameTimer selectTimer;
         [SerializeField] private LockableButton confirmBtn;
         [SerializeField] private Button upgradeBtn;
-        private AugmentData augmentData = new();
+        [SerializeField] private float selectTimeLimit;
 
         private List<string> helmetAugmentTags = new();
         private List<string> vestAugmentTags = new();
         private List<string> shoesAugmentTags = new();
+        private AugmentData augmentData = new();
 
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
@@ -75,6 +77,9 @@ namespace EverScord.Augment
 
                 confirmBtn.GetComponent<Button>().onClick.AddListener(EnhanceArmor);
                 confirmBtn.GetComponent<Button>().onClick.AddListener(HideAugmentCards);
+
+                selectTimer.SetTimer(selectTimeLimit, ProceedRandomEnhance);
+                selectTimer.StartTimer();
 
                 helmetSelectUI.Init(TryUnlockConfirmBtn);
                 vestSelectUI.Init(TryUnlockConfirmBtn);
@@ -199,6 +204,29 @@ namespace EverScord.Augment
 
             confirmBtn.UnlockButton();
             RemoveSlotSelectEvent();
+        }
+
+        private void ProceedRandomEnhance()
+        {
+            if (helmetSelectUI.selectedSlotIndex < 0)
+            {
+                int index = Random.Range(0, helmetAugmentTags.Count);
+                helmetSelectUI.SetSlotIndex(index);
+            }
+
+            if (vestSelectUI.selectedSlotIndex < 0)
+            {
+                int index = Random.Range(0, vestAugmentTags.Count);
+                vestSelectUI.SetSlotIndex(index);
+            }
+
+            if (shoesSelectUI.selectedSlotIndex < 0)
+            {
+                int index = Random.Range(0, shoesAugmentTags.Count);
+                shoesSelectUI.SetSlotIndex(index);
+            }
+
+            confirmBtn.GetComponent<Button>().onClick?.Invoke();
         }
 
         private void EnhanceArmor()
