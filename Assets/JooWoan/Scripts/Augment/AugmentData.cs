@@ -8,14 +8,14 @@ namespace EverScord.Augment
     public class AugmentData
     {
         #region Expression-bodied member source
-        private IDictionary<string, List<ArmorAugment>> dealerHelmetAugmentDict = new Dictionary<string, List<ArmorAugment>>();
-        private IDictionary<string, List<ArmorAugment>> healerHelmetAugmentDict = new Dictionary<string, List<ArmorAugment>>();
+        private IDictionary<string, List<ArmorAugment>> offenseHelmetAugmentDict = new Dictionary<string, List<ArmorAugment>>();
+        private IDictionary<string, List<ArmorAugment>> supportHelmetAugmentDict = new Dictionary<string, List<ArmorAugment>>();
         private IDictionary<string, List<ArmorAugment>> vestAugmentDict         = new Dictionary<string, List<ArmorAugment>>();
         private IDictionary<string, List<ArmorAugment>> shoesAugmentDict        = new Dictionary<string, List<ArmorAugment>>();
         #endregion
 
-        public IDictionary<string, List<ArmorAugment>> DealerHelmetAugmentDict => dealerHelmetAugmentDict;
-        public IDictionary<string, List<ArmorAugment>> HealerHelmetAugmentDict => healerHelmetAugmentDict;
+        public IDictionary<string, List<ArmorAugment>> OffenseHelmetAugmentDict => offenseHelmetAugmentDict;
+        public IDictionary<string, List<ArmorAugment>> SupportHelmetAugmentDict => supportHelmetAugmentDict;
         public IDictionary<string, List<ArmorAugment>> VestAugmentDict => vestAugmentDict;
         public IDictionary<string, List<ArmorAugment>> ShoesAugmentDict => shoesAugmentDict;
 
@@ -74,18 +74,18 @@ namespace EverScord.Augment
 
                                 if (i < 2 || i == 4)
                                 {
-                                    if (!dealerHelmetAugmentDict.ContainsKey(helmetAugment.Name))
-                                        dealerHelmetAugmentDict[helmetAugment.Name] = new();
+                                    if (!offenseHelmetAugmentDict.ContainsKey(helmetAugment.Name))
+                                        offenseHelmetAugmentDict[helmetAugment.Name] = new();
 
-                                    dealerHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
+                                    offenseHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
                                 }
 
                                 if (i >= 2 || i == 4)
                                 {
-                                    if (!healerHelmetAugmentDict.ContainsKey(helmetAugment.Name))
-                                        healerHelmetAugmentDict[helmetAugment.Name] = new();
+                                    if (!supportHelmetAugmentDict.ContainsKey(helmetAugment.Name))
+                                        supportHelmetAugmentDict[helmetAugment.Name] = new();
 
-                                    healerHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
+                                    supportHelmetAugmentDict[helmetAugment.Name].Add(helmetAugment);
                                 }
                                 break;
                             }

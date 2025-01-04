@@ -139,7 +139,7 @@ namespace EverScord.Augment
             {
                 case AugmentType.Helmet:
                     // Check dealer or healer
-                    augmentDict = augmentData.DealerHelmetAugmentDict;
+                    augmentDict = augmentData.OffenseHelmetAugmentDict;
 
                     augmentTags = helmetAugmentTags;
                     targetUI    = helmetSelectUI;
@@ -189,7 +189,7 @@ namespace EverScord.Augment
         private void SetAugmentUpgradeText()
         {
             // Check dealer or healer
-            var helmetAugmentDict = augmentData.DealerHelmetAugmentDict;
+            var helmetAugmentDict = augmentData.OffenseHelmetAugmentDict;
 
             helmetUpgradeUI.SetText(helmetAugmentDict[selectedHelmetTag][enhanceCount]?.Description);
             vestUpgradeUI.SetText(augmentData.VestAugmentDict[selectedVestTag][enhanceCount]?.Description);
@@ -242,7 +242,7 @@ namespace EverScord.Augment
         private void EnhanceArmor()
         {
             // Check dealer or healer
-            var helmetAugmentDict       = augmentData.DealerHelmetAugmentDict;
+            var helmetAugmentDict       = augmentData.OffenseHelmetAugmentDict;
 
             if (isAugmentSelectMode)
             {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.Text.RegularExpressions;
-using System.Linq;
+using UnityEngine;
 
 namespace EverScord.FileIO
 {
@@ -53,28 +52,28 @@ namespace EverScord.FileIO
             return dict;
         }
 
-        public static List<IDictionary<string, string>> ReadDataTableSheet(string file)
+        public static List<IDictionary<string, string>> ReadDataSheet(string filePath)
         {
             var list = new List<IDictionary<string, string>>();
-            TextAsset data = Resources.Load(file) as TextAsset;
+            TextAsset data = Resources.Load(filePath) as TextAsset;
 
             var lines = Regex.Split(data.text, LINE_SPLIT);
 
-            if (lines.Length < 1)
+            if (lines.Length <= 3)
                 return list;
+            
+            var header = Regex.Split(lines[0], SPLIT);
 
-            var header = Regex.Split(lines[1], SPLIT);
-
-            for (int i = 1; i < lines.Length; i++)
+            for (int i = 3; i < lines.Length; i++)
             {
                 var values = Regex.Split(lines[i], SPLIT);
 
-                if (values.Length < 1 || string.IsNullOrEmpty(values[1]))
+                if (values.Length < 2 || string.IsNullOrEmpty(values[1]))
                     continue;
 
                 var entry = new Dictionary<string, string>();
 
-                for (int j = 0; j < header.Length && j < values.Length; j++)
+                for (int j = 1; j < header.Length && j < values.Length; j++)
                 {
                     string value = values[j];
                     entry[header[j]] = TrimCell(value);
