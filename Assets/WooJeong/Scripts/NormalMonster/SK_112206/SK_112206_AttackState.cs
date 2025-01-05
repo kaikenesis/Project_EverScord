@@ -80,6 +80,6 @@ public class SK_112206_AttackState : MonoBehaviour, IState
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("attack");
+        //Debug.Log("attack");
     }
 }

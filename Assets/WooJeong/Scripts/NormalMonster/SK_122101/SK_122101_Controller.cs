@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,13 +15,14 @@ public class SK_122101_Controller : MonoBehaviour
 
     private IState moveState;
     private IState attackState;
+    private IState idleState;
 
     void Awake()
     {
         moveState = gameObject.AddComponent<SK_122101_MoveState>();
         attackState = gameObject.AddComponent<SK_122101_AttackState>();
-
-        MoveState();
+        idleState = gameObject.AddComponent<SK_122101_IdleState>();
+        IdleState();
     }
     public void Transition(IState state)
     {
@@ -36,5 +38,10 @@ public class SK_122101_Controller : MonoBehaviour
     public void AttackState()
     {
         Transition(attackState);
+    }
+
+    public void IdleState()
+    {
+        Transition(idleState);
     }
 }

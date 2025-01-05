@@ -34,7 +34,7 @@ public class SK_122101_MoveState : MonoBehaviour, IState
             animator.Play("Run", -1, 0f);
     }
 
-    float CalcDistance()
+    private float CalcDistance()
     {
         Vector3 heading = player.transform.position - transform.position;
         float distance = heading.magnitude;
@@ -42,7 +42,7 @@ public class SK_122101_MoveState : MonoBehaviour, IState
         return distance;
     }
 
-    public void Update()
+    private void Update()
     {
         if (!isEnter)
             return;

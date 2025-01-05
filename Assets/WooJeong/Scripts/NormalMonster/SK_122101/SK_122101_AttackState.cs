@@ -79,7 +79,7 @@ public class SK_122101_AttackState : MonoBehaviour, IState
 
     public void Exit()
     {
-        monsterController.MoveState();
+        monsterController.IdleState();
     }
 
     private void OnTriggerEnter(Collider other)
