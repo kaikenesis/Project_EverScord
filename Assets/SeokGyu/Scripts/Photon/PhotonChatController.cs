@@ -17,7 +17,7 @@ namespace EverScord
         public static Action<PhotonStatus> OnStatusUpdated = delegate { };
         public static Action OnCreateParty = delegate { };
         // TODO:
-        private void Start()
+        private void Awake()
         {
             chatClient = new ChatClient(this);
             UIFriend.OnInviteFriend += HandleFriendInvite;
@@ -37,17 +37,8 @@ namespace EverScord
             chatClient.Service();
         }
 
-        public void ConnectToPhotonChat()
-        {
-            nickName = PlayerPrefs.GetString("USERNAME");
-
-            Debug.Log("Connecting to Photon Chat");
-            chatClient.AuthValues = new Photon.Chat.AuthenticationValues(nickName);
-            ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
-            chatClient.ConnectUsingSettings(chatSettings);
-        }
-
-        public void HandleFriendInvite(string recipient)
+        #region Handle Methods
+        private void HandleFriendInvite(string recipient)
         {
             chatClient.SendPrivateMessage(recipient, PhotonNetwork.CurrentRoom.Name);
         }
@@ -67,7 +58,9 @@ namespace EverScord
         {
             chatClient.SendPrivateMessage(recipient, "CreateParty");
         }
+        #endregion
 
+        #region Private Methods
         private void InviteMessage(string sender, string message)
         {
             Debug.Log($"{sender}: {message}");
@@ -77,6 +70,19 @@ namespace EverScord
         private void CreateParty()
         {
 
+        }
+
+        #endregion
+
+        #region Public Methods
+        public void ConnectToPhotonChat()
+        {
+            nickName = PlayerPrefs.GetString("USERNAME");
+
+            Debug.Log("Connecting to Photon Chat");
+            chatClient.AuthValues = new Photon.Chat.AuthenticationValues(nickName);
+            ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
+            chatClient.ConnectUsingSettings(chatSettings);
         }
 
         public void DebugReturn(DebugLevel level, string message)
@@ -117,9 +123,9 @@ namespace EverScord
 
             //if (!string.IsNullOrEmpty(message.ToString()))
             //{
-                
+
             //}
-            
+
             // Channel Name format [Sender : Recipient]
             string[] splitNames = channelName.Split(new char[] { ':' });
             string senderName = splitNames[0];
@@ -173,5 +179,6 @@ namespace EverScord
         {
 
         }
+        #endregion
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PhotonLogin : MonoBehaviour
 {
     [SerializeField] private TMP_InputField nickName;
-    private string username;
+    private string userName;
     public static Action<string> OnConnectToPhoton = delegate { };
 
     private void Awake()
@@ -20,9 +20,9 @@ public class PhotonLogin : MonoBehaviour
         OnConnectToPhoton?.Invoke(nickName);
     }
 
-    public void SetUsername(string name)
+    public void SetUserName(string name)
     {
-        username = nickName.text;
-        PlayerPrefs.SetString("USERNAME", username);
+        userName = nickName.text;
+        PlayerPrefs.SetString("USERNAME", userName);
     }
 }

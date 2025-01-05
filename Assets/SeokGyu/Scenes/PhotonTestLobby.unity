@@ -1388,7 +1388,7 @@ PrefabInstance:
       objectReference: {fileID: 754368247}
     - target: {fileID: 1597878202987336141, guid: 2d7d0561970da4d47b7abfa59151a537, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetUsername
+      value: SetUserName
       objectReference: {fileID: 0}
     - target: {fileID: 1597878202987336141, guid: 2d7d0561970da4d47b7abfa59151a537, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -1780,6 +1780,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIInvite
       objectReference: {fileID: 0}
+    - target: {fileID: 2744567738247625775, guid: 8e6b4a47c26bfaf4e853e550369040cf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3923111244612219352, guid: 8e6b4a47c26bfaf4e853e550369040cf, type: 3}
       propertyPath: m_Color.g
       value: 0.6738893
@@ -2162,6 +2166,10 @@ PrefabInstance:
     - target: {fileID: 7232568768677331788, guid: 14cbfed67382d5d46aacd02bd0ea7a91, type: 3}
       propertyPath: m_Name
       value: InviteSystem
+      objectReference: {fileID: 0}
+    - target: {fileID: 7232568768677331788, guid: 14cbfed67382d5d46aacd02bd0ea7a91, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7367843394449083261, guid: 14cbfed67382d5d46aacd02bd0ea7a91, type: 3}
       propertyPath: m_Pivot.x
