@@ -31,7 +31,7 @@ public class SK_122101_MoveState : MonoBehaviour, IState
         if (CalcDistance() < monsterController.Distance)
             Exit();
         else
-            animator.Play("Run", -1, 0f);
+            animator.Play("Run");
     }
 
     private float CalcDistance()

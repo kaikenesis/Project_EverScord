@@ -28,16 +28,28 @@ public class SK_112206_MoveState : MonoBehaviour, IState
         if (animator == null)
             Setup();
 
-        animator.Play("Run", -1, 0f);
+        animator.Play("Run");
     }
 
-    
+    private float CalcDistance()
+    {
+        Vector3 heading = player.transform.position - transform.position;
+        float distance = heading.magnitude;
+
+        return distance;
+    }
 
     public void Update()
     {
         if (!isEnter)
             return;
-       
+
+        if (CalcDistance() < monsterController.Distance)
+        {
+            Exit();
+            return;
+        }
+
         Vector3 moveVector = (player.transform.position - transform.position).normalized;
         transform.LookAt(player.transform);
         transform.Translate(monsterController.MoveSpeed * Time.deltaTime * moveVector, Space.World);
