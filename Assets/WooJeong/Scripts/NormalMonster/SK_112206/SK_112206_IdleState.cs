@@ -5,39 +5,60 @@ using UnityEngine;
 public class SK_112206_IdleState : MonoBehaviour, IState
 {
     private SK_112206_Controller monsterController;
-    private Animator animator;
-    public GameObject player;
+    private int lastAttack = 0;
 
-    private void Setup()
-    {
-        monsterController = GetComponent<SK_112206_Controller>();
-        animator = GetComponentInChildren<Animator>();
-        player = GameObject.Find("Player");
-    }
     void Awake()
     {
-        Setup();
-    }
-
-    float CalcDistance()
-    {
-        Vector3 heading = player.transform.position - transform.position;
-        float distance = heading.magnitude;
-
-        return distance;
+        monsterController = GetComponent<SK_112206_Controller>();
     }
 
     public void Enter()
     {
-        animator.Play("Idle");
-        if (CalcDistance() > monsterController.Distance)
+        monsterController.Animator.Play("Idle");
+        if (monsterController.CalcDistance() > monsterController.Distance)
         {
             Exit();
         }
         else
+            StartCoroutine(RandomAttack());
+    }
+
+    IEnumerator RandomAttack()
+    {
+        while (true)
         {
-            ExitToAttack();
+            if (monsterController.CalcDistance() > monsterController.Distance)
+            {
+                Exit();
+                yield break;
+            }
+
+            int transition = monsterController.CheckCoolDown();
+            switch (transition)
+            {
+                case 1:
+                {
+                    ExitToAttack1();
+                    yield break;
+                }
+                case 2:
+                {
+                    ExitToAttack2();
+                    yield break;
+                }
+                case 3:
+                {
+                    if(lastAttack == 1)
+                        ExitToAttack2();
+                    else
+                        ExitToAttack2();
+                    yield break;
+                }
+            }
+            
+            yield return new WaitForSeconds(1f);
         }
+
     }
 
     public void Exit()
@@ -45,8 +66,15 @@ public class SK_112206_IdleState : MonoBehaviour, IState
         monsterController.MoveState();
     }
 
-    public void ExitToAttack()
+    public void ExitToAttack1()
     {
-        monsterController.AttackState();
+        monsterController.AttackState1();
     }
+
+    public void ExitToAttack2()
+    {
+        monsterController.AttackState2();
+    }
+
+
 }

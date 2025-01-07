@@ -8,7 +8,6 @@ public class SK_122101_IdleState : MonoBehaviour, IState
     private Animator animator;
     public GameObject player;
 
-
     private void Setup()
     {
         monsterController = GetComponent<SK_122101_Controller>();
