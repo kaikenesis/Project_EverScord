@@ -62,7 +62,7 @@ namespace EverScord.FileIO
             if (lines.Length <= 3)
                 return list;
             
-            var header = Regex.Split(lines[0], SPLIT);
+            var header = Regex.Split(lines[1], SPLIT);
 
             for (int i = 3; i < lines.Length; i++)
             {
@@ -73,7 +73,7 @@ namespace EverScord.FileIO
 
                 var entry = new Dictionary<string, string>();
 
-                for (int j = 1; j < header.Length && j < values.Length; j++)
+                for (int j = 0; j < header.Length && j < values.Length; j++)
                 {
                     string value = values[j];
                     entry[header[j]] = TrimCell(value);
@@ -88,6 +88,33 @@ namespace EverScord.FileIO
         private static string TrimCell(string value)
         {
             return value.TrimStart(TRIM_CHARS).TrimEnd(TRIM_CHARS).Replace("\\", "");
+        }
+
+        public static List<int> SplitCellInt(string cell, char split = ',')
+        {
+            List<int> list = new List<int>();
+            string[] tags = cell.Split(',');
+
+            for (int i = 0; i < tags.Length; i++)
+            {
+                int.TryParse(tags[i], out int value);
+                list.Add(value);
+            }
+
+            return list;
+        }
+        public static List<float> SplitCellFloat(string cell, char split = ',')
+        {
+            List<float> list = new List<float>();
+            string[] tags = cell.Split(',');
+
+            for (int i = 0; i < tags.Length; i++)
+            {
+                float.TryParse(tags[i], out float value);
+                list.Add(value);
+            }
+
+            return list;
         }
     }
 }

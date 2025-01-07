@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EverScord.Skill
 {
-    public struct SkillInfo
+    public struct CharacterSkillInfo
     {
         public string tag;
         public string name;
