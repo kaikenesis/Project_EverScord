@@ -1,12 +1,35 @@
 using EverScord.Armor;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class TestPlayer : MonoBehaviour
+namespace EverScord
 {
-    public IHelmet helmet { get; private set; }
-
-    void Start()
+    public class TestPlayer : MonoBehaviour
     {
-        helmet = new Helmet(10, 10, 10, 10, 10);
+        public IHelmet helmet { get; private set; }
+        public IVest vest { get; private set; }
+        public IShoes shoes { get; private set; }
+
+        void Awake()
+        {
+            helmet = new Helmet(10, 10, 10, 10, 10);
+            vest = new Vest(10, 10, 10);
+            shoes = new Shoes(10, 10, 10);
+        }
+
+        public void SetHelmet(IHelmet newHelmet)
+        {
+            helmet = newHelmet;
+        }
+
+        public void SetVest(IVest newVest)
+        {
+            vest = newVest;
+        }
+
+        public void SetShoes(IShoes newShoes)
+        {
+            shoes = newShoes;
+        }
     }
 }
