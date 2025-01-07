@@ -8,6 +8,7 @@ public class SK_112206_Controller : MonoBehaviour
 {
     [SerializeField] private float distance = 7.5f;
     [SerializeField] private float moveSpeed = 3f;
+    [SerializeField] private float lookSpeed = 3f;
     [SerializeField] private float coolDown1;
     [SerializeField] private float coolDown2;
     public float MoveSpeed { get { return moveSpeed; } }
@@ -42,6 +43,13 @@ public class SK_112206_Controller : MonoBehaviour
         cool2 = GetComponent<SK_112206_AttackState2>();
 
         IdleState();
+    }
+
+    public void LookPlayer()
+    {
+        Vector3 dir = player.transform.position - this.transform.position;
+
+        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * lookSpeed);
     }
 
     public int CheckCoolDown()

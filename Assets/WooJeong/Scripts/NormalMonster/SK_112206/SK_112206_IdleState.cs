@@ -6,6 +6,7 @@ public class SK_112206_IdleState : MonoBehaviour, IState
 {
     private SK_112206_Controller monsterController;
     private int lastAttack = 0;
+    private bool isEnter = false;
 
     void Awake()
     {
@@ -14,13 +15,23 @@ public class SK_112206_IdleState : MonoBehaviour, IState
 
     public void Enter()
     {
+        isEnter = true;
         monsterController.Animator.Play("Idle");
         if (monsterController.CalcDistance() > monsterController.Distance)
         {
             Exit();
         }
         else
+        {
             StartCoroutine(RandomAttack());
+        }
+    }
+    private void Update()
+    {
+        if (!isEnter)
+            return;
+
+        monsterController.LookPlayer();
     }
 
     IEnumerator RandomAttack()
@@ -63,16 +74,19 @@ public class SK_112206_IdleState : MonoBehaviour, IState
 
     public void Exit()
     {
+        isEnter = false;
         monsterController.MoveState();
     }
 
     public void ExitToAttack1()
     {
+        isEnter = false;
         monsterController.AttackState1();
     }
 
     public void ExitToAttack2()
     {
+        isEnter = false;
         monsterController.AttackState2();
     }
 

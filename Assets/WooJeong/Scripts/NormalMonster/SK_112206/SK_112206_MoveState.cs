@@ -31,7 +31,8 @@ public class SK_112206_MoveState : MonoBehaviour, IState
         }
 
         Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        transform.LookAt(monsterController.player.transform);
+        //transform.LookAt(monsterController.player.transform);
+        monsterController.LookPlayer();
         transform.Translate(monsterController.MoveSpeed * Time.deltaTime * moveVector, Space.World);
 
         Debug.DrawRay(transform.position, moveVector * monsterController.MoveSpeed, Color.red);
