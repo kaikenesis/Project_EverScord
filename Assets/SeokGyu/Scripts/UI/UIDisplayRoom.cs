@@ -9,6 +9,7 @@ namespace EverScord
     public class UIDisplayRoom : MonoBehaviour
     {
         [SerializeField] private TMP_Text roomGameModeText;
+        [SerializeField] private UIRoomPlayer uiRoomPlayerPrefab;
         [SerializeField] private GameObject exitButton;
         [SerializeField] private GameObject roomContainer;
         [SerializeField] private GameObject[] hideObjects;
@@ -20,13 +21,16 @@ namespace EverScord
         {
             PhotonRoomController.OnJoinRoom += HandleJoinRoom;
             PhotonRoomController.OnRoomLeft += HandleRoomLeft;
-            
+            PhotonRoomController.OnDisplayPlayers += HandleDisplayPlayers;
+
+
             gameObject.SetActive(false);
         }
         private void OnDestroy()
         {
             PhotonRoomController.OnJoinRoom -= HandleJoinRoom;
             PhotonRoomController.OnRoomLeft -= HandleRoomLeft;
+            PhotonRoomController.OnDisplayPlayers -= HandleDisplayPlayers;
         }
 
         private void HandleJoinRoom(GameMode gameMode)
@@ -59,21 +63,20 @@ namespace EverScord
             }
         }
 
-        // Room내 플레이어 목록 UI 갱신 (수정 필요)
-        //private void HandleDisplayChatFriends(List<string> friends)
-        //{
-        //    foreach (Transform child in friendContainer)
-        //    {
-        //        Destroy(child.gameObject);
-        //    }
+        //Room내 플레이어 목록 UI 갱신(수정 필요)
+        private void HandleDisplayPlayers(List<string> players)
+        {
+            foreach (Transform child in roomContainer.transform)
+            {
+                Destroy(child.gameObject);
+            }
 
-        //    foreach (string friend in friends)
-        //    {
-        //        UIFriend uifriend = Instantiate(uiFriendPrefab, friendContainer);
-        //        uifriend.Initialize(friend);
-        //        contentRect.sizeDelta += increaseSize;
-        //    }
-        //}
+            foreach (string player in players)
+            {
+                UIRoomPlayer uiRoomPlayer = Instantiate(uiRoomPlayerPrefab, roomContainer.transform);
+                uiRoomPlayer.Initialize(player);
+            }
+        }
 
         public void LeaveRoom()
         {

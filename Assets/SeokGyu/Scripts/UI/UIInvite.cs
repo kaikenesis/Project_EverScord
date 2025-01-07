@@ -11,7 +11,6 @@ public class UIInvite : MonoBehaviour
     public static Action<UIInvite> OnInviteAccept = delegate { };
     public static Action<string> OnRoomInviteAccept = delegate { };
     public static Action<UIInvite> OnInviteDecline = delegate { };
-    public static Action<string> OnPartyInviteAccept = delegate { };
 
     public void Initialize(string friendName, string roomName)
     {
@@ -24,11 +23,7 @@ public class UIInvite : MonoBehaviour
     public void AcceptInvite()
     {
         OnInviteAccept?.Invoke(this);
-        if(string.IsNullOrEmpty(roomName))
-        {
-            OnPartyInviteAccept?.Invoke(friendName);
-        }
-        else
+        if(!string.IsNullOrEmpty(roomName))
         {
             OnRoomInviteAccept?.Invoke(roomName);
         }

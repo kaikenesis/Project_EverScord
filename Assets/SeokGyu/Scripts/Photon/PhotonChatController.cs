@@ -20,16 +20,14 @@ namespace EverScord
         private void Awake()
         {
             chatClient = new ChatClient(this);
-            UIFriend.OnInviteFriend += HandleFriendInvite;
-            UIInvitePlayer.OnSendInvite += HandleSendInvite;
-            UIInvite.OnPartyInviteAccept += HandlePartyInviteAccept;
+            PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            UISendInvite.OnSendInvite += HandleSendInvite;
         }
 
         private void OnDestroy()
         {
-            UIFriend.OnInviteFriend -= HandleFriendInvite;
-            UIInvitePlayer.OnSendInvite -= HandleSendInvite;
-            UIInvite.OnPartyInviteAccept -= HandlePartyInviteAccept;
+            PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            UISendInvite.OnSendInvite -= HandleSendInvite;
         }
 
         private void Update()
@@ -38,25 +36,20 @@ namespace EverScord
         }
 
         #region Handle Methods
-        private void HandleFriendInvite(string recipient)
+        private void HandleLobbyJoined()
         {
-            chatClient.SendPrivateMessage(recipient, PhotonNetwork.CurrentRoom.Name);
+            ConnectToPhotonChat();
         }
 
         private void HandleSendInvite(string recipient)
         {
             string message = "";
-            if (PhotonNetwork.CurrentRoom != null)
+            if (PhotonNetwork.InRoom)
             {
                 message = PhotonNetwork.CurrentRoom.Name;
             }
 
             chatClient.SendPrivateMessage(recipient, message);
-        }
-
-        private void HandlePartyInviteAccept(string recipient)
-        {
-            chatClient.SendPrivateMessage(recipient, "CreateParty");
         }
         #endregion
 
@@ -65,11 +58,6 @@ namespace EverScord
         {
             Debug.Log($"{sender}: {message}");
             OnRoomInvite?.Invoke(sender, message);
-        }
-
-        private void CreateParty()
-        {
-
         }
 
         #endregion
@@ -132,15 +120,7 @@ namespace EverScord
 
             if (!sender.Equals(senderName, StringComparison.OrdinalIgnoreCase))
             {
-                switch (message.ToString())
-                {
-                    case "CreateParty":
-                        CreateParty();
-                        break;
-                    default:
-                        InviteMessage(sender, message.ToString());
-                        break;
-                }
+                InviteMessage(sender, message.ToString());
             }
         }
 

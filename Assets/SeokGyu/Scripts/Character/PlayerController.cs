@@ -31,11 +31,11 @@ namespace EverScord
         private void Init()
         {
             //collider = character.GetComponent<Collider>();
-            rigidBody = character.GetComponent<Rigidbody>();
-            animator = character.GetComponent<Animator>();
+            rigidBody = character.GetComponentInChildren<Rigidbody>();
+            animator = character.GetComponentInChildren<Animator>();
             //camera = Camera.main;
 
-            photonView = character.GetComponent<PhotonView>();
+            photonView = character.GetComponentInChildren<PhotonView>();
         }
 
         private void Start()

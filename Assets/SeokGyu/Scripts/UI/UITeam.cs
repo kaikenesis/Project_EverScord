@@ -5,99 +5,102 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UITeam : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private int teamSize;
-    [SerializeField] private int maxTeamSize;
-    [SerializeField] private PhotonTeam team;
-    [SerializeField] private TMP_Text teamNameText;
-    [SerializeField] private Transform playerSelectionContainer;
-    [SerializeField] private UIPlayerSelection playerSelectionPrefab;
-    [SerializeField] private Dictionary<Player, UIPlayerSelection> playerSelections;
-
-    public static Action<PhotonTeam> OnSwitchToTeam = delegate { };
-
-    private void Awake()
+    public class UITeam : MonoBehaviour
     {
-        UIDisplayTeam.OnAddPlayerToTeam += HandleAddPlayerToTeam;
-        UIDisplayTeam.OnRemovePlayerFromTeam += HandleRemovePlayerFromTeam;
-        PhotonRoomController.OnRoomLeft += HandleLeaveRoom;
-    }
+        [SerializeField] private int teamSize;
+        [SerializeField] private int maxTeamSize;
+        [SerializeField] private PhotonTeam team;
+        [SerializeField] private TMP_Text teamNameText;
+        [SerializeField] private Transform playerSelectionContainer;
+        [SerializeField] private UIPlayerSelection playerSelectionPrefab;
+        [SerializeField] private Dictionary<Player, UIPlayerSelection> playerSelections;
 
-    private void OnDestroy()
-    {
-        UIDisplayTeam.OnAddPlayerToTeam -= HandleAddPlayerToTeam;
-        UIDisplayTeam.OnRemovePlayerFromTeam -= HandleRemovePlayerFromTeam;
-        PhotonRoomController.OnRoomLeft -= HandleLeaveRoom;
-    }
+        public static Action<PhotonTeam> OnSwitchToTeam = delegate { };
 
-    public void Initialize(PhotonTeam team, int teamSize)
-    {
-        this.team = team;
-        maxTeamSize = teamSize;
-        Debug.Log($"{team.Name} is added with ths size {maxTeamSize}");
-        playerSelections = new Dictionary<Player, UIPlayerSelection>();
-        UpdateTeamUI();
-
-        Player[] teamMembers;
-        if(PhotonTeamsManager.Instance.TryGetTeamMembers(team.Code, out teamMembers))
+        private void Awake()
         {
-            for (int i = 0; i < teamMembers.Length; i++)
+            UIDisplayTeam.OnAddPlayerToTeam += HandleAddPlayerToTeam;
+            UIDisplayTeam.OnRemovePlayerFromTeam += HandleRemovePlayerFromTeam;
+            PhotonRoomController.OnRoomLeft += HandleLeaveRoom;
+        }
+
+        private void OnDestroy()
+        {
+            UIDisplayTeam.OnAddPlayerToTeam -= HandleAddPlayerToTeam;
+            UIDisplayTeam.OnRemovePlayerFromTeam -= HandleRemovePlayerFromTeam;
+            PhotonRoomController.OnRoomLeft -= HandleLeaveRoom;
+        }
+
+        public void Initialize(PhotonTeam team, int teamSize)
+        {
+            this.team = team;
+            maxTeamSize = teamSize;
+            Debug.Log($"{team.Name} is added with ths size {maxTeamSize}");
+            playerSelections = new Dictionary<Player, UIPlayerSelection>();
+            UpdateTeamUI();
+
+            Player[] teamMembers;
+            if (PhotonTeamsManager.Instance.TryGetTeamMembers(team.Code, out teamMembers))
             {
-                AddPlayerToTeam(teamMembers[i]);
+                for (int i = 0; i < teamMembers.Length; i++)
+                {
+                    AddPlayerToTeam(teamMembers[i]);
+                }
             }
         }
-    }
 
-    private void HandleAddPlayerToTeam(Player player, PhotonTeam team)
-    {
-        if (this.team.Code == team.Code)
+        private void HandleAddPlayerToTeam(Player player, PhotonTeam team)
         {
-            Debug.Log($"Updating {this.team.Name} UI to add {player.NickName}");
-            AddPlayerToTeam(player);
+            if (this.team.Code == team.Code)
+            {
+                Debug.Log($"Updating {this.team.Name} UI to add {player.NickName}");
+                AddPlayerToTeam(player);
+            }
         }
-    }
 
-    private void HandleRemovePlayerFromTeam(Player player)
-    {
-        RemovePlayerFromTeam(player);
-    }
-
-    private void HandleLeaveRoom()
-    {
-        Destroy(gameObject);
-    }
-
-    private void UpdateTeamUI()
-    {
-        teamNameText.SetText($"{team.Name} \n {playerSelections.Count} / {maxTeamSize}");
-    }
-
-    private void AddPlayerToTeam(Player player)
-    {
-        UIPlayerSelection uiPlayerSelection = Instantiate(playerSelectionPrefab, playerSelectionContainer);
-        uiPlayerSelection.Initialize(player);
-        playerSelections.Add(player, uiPlayerSelection);
-        UpdateTeamUI();
-    }
-
-    private void RemovePlayerFromTeam(Player player)
-    {
-        if(playerSelections.ContainsKey(player))
+        private void HandleRemovePlayerFromTeam(Player player)
         {
-            Debug.Log($"Updating {team.Name} UI to remove {player.NickName}");
-            Destroy(playerSelections[player].gameObject);
-            playerSelections.Remove(player);
+            RemovePlayerFromTeam(player);
+        }
+
+        private void HandleLeaveRoom()
+        {
+            Destroy(gameObject);
+        }
+
+        private void UpdateTeamUI()
+        {
+            teamNameText.SetText($"{team.Name} \n {playerSelections.Count} / {maxTeamSize}");
+        }
+
+        private void AddPlayerToTeam(Player player)
+        {
+            UIPlayerSelection uiPlayerSelection = Instantiate(playerSelectionPrefab, playerSelectionContainer);
+            uiPlayerSelection.Initialize(player);
+            playerSelections.Add(player, uiPlayerSelection);
             UpdateTeamUI();
         }
-    }
 
-    public void SwitchToTeam()
-    {
-        Debug.Log($"Trying to switch to team {team.Name}");
-        if (teamSize >= maxTeamSize) return;
+        private void RemovePlayerFromTeam(Player player)
+        {
+            if (playerSelections.ContainsKey(player))
+            {
+                Debug.Log($"Updating {team.Name} UI to remove {player.NickName}");
+                Destroy(playerSelections[player].gameObject);
+                playerSelections.Remove(player);
+                UpdateTeamUI();
+            }
+        }
 
-        Debug.Log($"Switching to team {team.Name}");
-        OnSwitchToTeam?.Invoke(team);
+        public void SwitchToTeam()
+        {
+            Debug.Log($"Trying to switch to team {team.Name}");
+            if (teamSize >= maxTeamSize) return;
+
+            Debug.Log($"Switching to team {team.Name}");
+            OnSwitchToTeam?.Invoke(team);
+        }
     }
 }

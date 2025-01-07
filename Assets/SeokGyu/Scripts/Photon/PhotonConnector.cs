@@ -66,8 +66,6 @@ namespace EverScord
             //GetPhotonFriends?.Invoke();
             OnLobbyJoined?.Invoke();
         }
-
-        //public override 
         #endregion
     }
 }

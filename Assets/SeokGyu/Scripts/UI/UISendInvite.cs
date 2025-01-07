@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class UIInvitePlayer : MonoBehaviour
+    public class UISendInvite : MonoBehaviour
     {
         [SerializeField] private string displayName;
 
