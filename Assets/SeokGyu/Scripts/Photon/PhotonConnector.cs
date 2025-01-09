@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using System;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord
 {
@@ -67,5 +68,17 @@ namespace EverScord
             OnLobbyJoined?.Invoke();
         }
         #endregion
+
+        private void OnGUI()
+        {
+            if(GUI.Button(new Rect(600, 0, 150, 60), "Dealer"))
+            {
+                Debug.Log("Set Job Dealer");
+            }
+            if(GUI.Button(new Rect(600, 60, 150, 60), "Healer"))
+            {
+                Debug.Log("Set Job Healer");
+            }
+        }
     }
 }

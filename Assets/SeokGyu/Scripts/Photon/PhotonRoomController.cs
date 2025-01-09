@@ -3,6 +3,7 @@ using System;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 
 namespace EverScord
 {
@@ -19,7 +20,7 @@ namespace EverScord
         public static Action<Player> OnOtherPlayerLeftRoom = delegate { };
         public static Action<List<string>> OnDisplayPlayers = delegate { };
         public static Action OnMatchSoloPlay = delegate { };
-        public static Action OnMatchMultiPlay = delegate { };
+        public static Action<string, string> OnMatchMultiPlay = delegate { };
         public static Action OnJoinedMatch = delegate { };
 
         private void Awake()
@@ -124,13 +125,6 @@ namespace EverScord
             ro.PublishUserId = true;
             ro.MaxPlayers = selectedGameMode.MaxPlayers;
 
-            //string[] roomProperties = { GAME_MODE };
-
-            //Hashtable customRoomProperties = new Hashtable() { { GAME_MODE, selectedGameMode.Name } };
-
-            //ro.CustomRoomPropertiesForLobby = roomProperties;
-            //ro.CustomRoomProperties = customRoomProperties;
-
             return ro;
         }
         private void DebugPlayerList()
@@ -190,7 +184,8 @@ namespace EverScord
         public void OnClickedMultiPlay()
         {
             bMatch = true;
-            OnMatchMultiPlay?.Invoke();
+            // 필요한 직업과 난이도 레벨
+            //OnMatchMultiPlay?.Invoke();
         }
         #endregion
 
