@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_112206_IdleState : MonoBehaviour, IState
+public class SK_112206_WaitState : MonoBehaviour, IState
 {
     private SK_112206_Controller monsterController;
     private int lastAttack = 0;
@@ -16,7 +16,7 @@ public class SK_112206_IdleState : MonoBehaviour, IState
     public void Enter()
     {
         isEnter = true;
-        monsterController.Animator.Play("Idle");
+        monsterController.Animator.CrossFade("Wait", 0.25f);
         if (monsterController.CalcDistance() > monsterController.Distance)
         {
             Exit();
@@ -58,7 +58,7 @@ public class SK_112206_IdleState : MonoBehaviour, IState
                     yield break;
                 }
                 case 3:
-                {
+                {                    
                     if(lastAttack == 1)
                         ExitToAttack2();
                     else

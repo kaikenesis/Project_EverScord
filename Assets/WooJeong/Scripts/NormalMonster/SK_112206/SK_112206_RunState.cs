@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_112206_MoveState : MonoBehaviour, IState
+public class SK_112206_RunState : MonoBehaviour, IState
 {
     private SK_112206_Controller monsterController;
     private bool isEnter = false;
@@ -16,7 +16,7 @@ public class SK_112206_MoveState : MonoBehaviour, IState
     {
         isEnter = true;
 
-        monsterController.Animator.Play("Run");
+        monsterController.Animator.CrossFade("Run", 0.25f);
     }
 
     public void Update()

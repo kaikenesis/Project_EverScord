@@ -37,19 +37,30 @@ public class SK_112206_AttackState2 : MonoBehaviour, IState, ICoolDown
 
     IEnumerator Attack2()
     {
-        monsterController.Animator.Play("Attack2", -1, 0);
-        yield return null;
-        AnimatorClipInfo[] clip = monsterController.Animator.GetCurrentAnimatorClipInfo(0);
-        float time = clip[0].clip.length / 3;
+        monsterController.Projector.size = new Vector3(monsterController.AttackRangeX,
+                                                monsterController.AttackRangeY,
+                                                monsterController.AttackRangeZ);
+        monsterController.Projector.pivot = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
+        boxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
+        boxCollider.size = new Vector3(monsterController.AttackRangeX,
+                                        monsterController.AttackRangeY,
+                                        monsterController.AttackRangeZ);
+        monsterController.Projector.enabled = true;
+        yield return new WaitForSeconds(monsterController.ProjectionTime);
+        monsterController.Projector.enabled = false;
+
+        monsterController.Animator.CrossFade("Attack2", 0.25f);        
+        float time = monsterController.clipDict["Attack2"];
+        Debug.Log(time);
         for (int i = 0; i < 3; i++)
         {
-            yield return new WaitForSeconds(time / 4);
+            yield return new WaitForSeconds(time / 4 / 3);
             boxCollider.enabled = true;
-            yield return new WaitForSeconds(time / 4);
+            yield return new WaitForSeconds(time / 4 / 3);
             boxCollider.enabled = false;
-            yield return new WaitForSeconds(time / 4);
+            yield return new WaitForSeconds(time / 4 / 3);
         }
-        yield return new WaitForSeconds(time / 4 * 3);
+        yield return new WaitForSeconds(time / 4);
         StartCoroutine(CoolDown());
         Exit();
     }
