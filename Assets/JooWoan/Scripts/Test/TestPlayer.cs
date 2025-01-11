@@ -1,10 +1,10 @@
-using EverScord.Armor;
 using UnityEngine;
-using UnityEngine.Events;
+using EverScord.Armor;
+using EverScord.BehaviorTree;
 
 namespace EverScord
 {
-    public class TestPlayer : MonoBehaviour
+    public class TestPlayer : MonoBehaviour, IBlackboard
     {
         public IHelmet helmet { get; private set; }
         public IVest vest { get; private set; }
