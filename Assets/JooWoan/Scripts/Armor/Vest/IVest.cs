@@ -2,7 +2,7 @@ using EverScord.Augment;
 
 namespace EverScord.Armor
 {
-    public interface IVest
+    public interface IVest : IArmor
     {
         public float Health                         { get; }
         public float Defense                        { get; }

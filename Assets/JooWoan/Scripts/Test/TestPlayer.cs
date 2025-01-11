@@ -17,19 +17,22 @@ namespace EverScord
             shoes = new Shoes(10, 10, 10);
         }
 
-        public void SetHelmet(IHelmet newHelmet)
+        public void SetArmor(IArmor newArmor)
         {
-            helmet = newHelmet;
-        }
+            switch (newArmor)
+            {
+                case IHelmet newHelmet:
+                    helmet = newHelmet;
+                    break;
 
-        public void SetVest(IVest newVest)
-        {
-            vest = newVest;
-        }
+                case IVest newVest:
+                    vest = newVest;
+                    break;
 
-        public void SetShoes(IShoes newShoes)
-        {
-            shoes = newShoes;
+                case IShoes newShoes:
+                    shoes = newShoes;
+                    break;
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ using EverScord.Augment;
 
 namespace EverScord.Armor
 {
-    public interface IShoes
+    public interface IShoes : IArmor
     {
         public float MoveSpeed              { get; }
         public float Cooldown               { get; }
