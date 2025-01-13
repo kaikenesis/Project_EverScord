@@ -4,6 +4,7 @@ namespace EverScord.Character
 {
     public class TestPlayerControl : MonoBehaviour
     {
+        [Header("Character")]
         [SerializeField] private float speed, gravity;
 
         [Header("Ground Check")]
@@ -11,14 +12,21 @@ namespace EverScord.Character
         [SerializeField] private float groundCheckRadius;
         [SerializeField] private Vector3 groundCheckOffset;
 
+        [Header("Animation")]
+        [SerializeField] private Animator anim;
+        [SerializeField] private float transitionDampTime;
+
         private CharacterController characterControl;
         private Vector3 movement, lookPosition;
-        private float fallSpeed;
+        private float fallSpeed, horizontalInput, verticalInput;
 
+        private Camera mainCam;
+        private Vector3 camForward, moveInput, convertedInput;
 
         void Awake()
         {
             characterControl = GetComponent<CharacterController>();
+            mainCam = Camera.main;
 
             // Unity docs: Set skinwidth 10% of the Radius
             characterControl.skinWidth = characterControl.radius * 0.1f;
@@ -27,6 +35,10 @@ namespace EverScord.Character
         void Update()
         {
             ReceiveInput();
+            ConvertInput();
+
+            Animate();
+
             ApplyGravity();
             Move();
             Turn();
@@ -34,9 +46,31 @@ namespace EverScord.Character
 
         private void ReceiveInput()
         {
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
-            movement = new Vector3(horizontal, 0, vertical).normalized;
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput   = Input.GetAxisRaw("Vertical");
+
+            camForward = Vector3.Scale(mainCam.transform.up, new Vector3(1, 0, 1)).normalized;
+            
+            moveInput = (
+                horizontalInput * mainCam.transform.right +
+                verticalInput * camForward
+            );
+
+            movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        }
+
+        private void ConvertInput()
+        {
+            if (moveInput.magnitude > 1f)
+                moveInput.Normalize();
+            
+            convertedInput = transform.InverseTransformDirection(moveInput);
+        }
+
+        private void Animate()
+        {
+            anim.SetFloat("Horizontal", convertedInput.x, transitionDampTime, Time.deltaTime);
+            anim.SetFloat("Vertical",   convertedInput.z, transitionDampTime, Time.deltaTime);
         }
         
         private void ApplyGravity()
