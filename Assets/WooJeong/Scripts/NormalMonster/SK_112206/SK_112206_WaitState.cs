@@ -50,19 +50,27 @@ public class SK_112206_WaitState : MonoBehaviour, IState
                 case 1:
                 {
                     ExitToAttack1();
+                    lastAttack = 1;
                     yield break;
                 }
                 case 2:
                 {
                     ExitToAttack2();
+                    lastAttack = 2;
                     yield break;
                 }
                 case 3:
-                {                    
-                    if(lastAttack == 1)
+                {
+                    if (lastAttack == 1)
+                    {
                         ExitToAttack2();
+                        lastAttack = 2;
+                    }
                     else
-                        ExitToAttack2();
+                    {
+                        ExitToAttack1();
+                        lastAttack = 1;
+                    }
                     yield break;
                 }
             }

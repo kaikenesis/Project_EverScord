@@ -11,7 +11,7 @@ public class SK_112206_Controller : MonoBehaviour
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float coolDown1 = 5;
     [SerializeField] private float coolDown2 = 10;    
-    [SerializeField] private float lookSpeed = 3f;
+    [SerializeField] private float rotSpeed = 3f;
     [Tooltip("공격 사거리 표시 시간")]
     [SerializeField] private float projectionTime = 1;
     [SerializeField] private float attackRangeX = 0.5f;
@@ -33,7 +33,7 @@ public class SK_112206_Controller : MonoBehaviour
 
     private Animator animator;
     public Animator Animator { get { return animator; } }
-    public Dictionary<string, float> clipDict = new();
+    public Dictionary<string, AnimationClip> clipDict = new();
 
     private IState currentState;
 
@@ -60,7 +60,7 @@ public class SK_112206_Controller : MonoBehaviour
 
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
         {
-            clipDict[clip.name] = clip.length;
+            clipDict[clip.name] = clip;
         }
 
         IdleState();
@@ -68,9 +68,9 @@ public class SK_112206_Controller : MonoBehaviour
 
     public void LookPlayer()
     {
-        Vector3 dir = player.transform.position - this.transform.position;
+        Vector3 dir = player.transform.position - transform.position;
 
-        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * lookSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * rotSpeed);
     }
 
     public int CheckCoolDown()

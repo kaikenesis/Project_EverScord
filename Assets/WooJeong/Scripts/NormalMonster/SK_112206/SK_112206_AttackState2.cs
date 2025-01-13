@@ -50,7 +50,7 @@ public class SK_112206_AttackState2 : MonoBehaviour, IState, ICoolDown
         monsterController.Projector.enabled = false;
 
         monsterController.Animator.CrossFade("Attack2", 0.25f);        
-        float time = monsterController.clipDict["Attack2"];
+        float time = monsterController.clipDict["Attack2"].length;
         
         for (int i = 0; i < 3; i++)
         {

@@ -50,8 +50,13 @@ public class SK_112206_AttackState1 : MonoBehaviour, IState, ICoolDown
         monsterController.Projector.enabled = false;
 
         monsterController.Animator.CrossFade("Attack1", 0.25f);
-        float time = monsterController.clipDict["Attack1"];
-
+        float time = monsterController.clipDict["Attack1"].length;
+        var clips = monsterController.Animator.GetCurrentAnimatorClipInfo(0);
+        foreach( var c in clips )
+        {
+            Debug.Log(c.clip.name);
+            Debug.Log(c.clip.length);
+        }
         yield return new WaitForSeconds(time / 3);
         boxCollider.enabled = true;
         yield return new WaitForSeconds(time / 3);
