@@ -210,6 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86574baa77b3c554bb550b090a1b9e7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bDebug: 0
 --- !u!1 &224806467
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,8 +564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93ffc4a264235444fb9b1e1c3a4976fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedGameMode: {fileID: 11400000, guid: 115e3ed56011aed45b171a1b26ce3f87, type: 2}
-  availableGameModes: []
+  maxPlayers: 0
 --- !u!1 &541708588 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 816144525450218428, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
@@ -1279,6 +1279,7 @@ GameObject:
   - component: {fileID: 1458432971}
   - component: {fileID: 1458432970}
   - component: {fileID: 1458432969}
+  - component: {fileID: 1458432972}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1303,7 +1304,7 @@ Camera:
   m_GameObject: {fileID: 1458432968}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -1360,6 +1361,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1458432972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458432968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1001 &1558308909
 PrefabInstance:
   m_ObjectHideFlags: 0

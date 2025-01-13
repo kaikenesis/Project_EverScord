@@ -6,16 +6,16 @@ namespace EverScord
 {
     public enum ECharacter
     {
-        Uni,
-        Ned,
-        Us,
+        UNI,
+        NED,
+        US,
         MAX
     }
 
     public enum EJob
     {
-        Dealer,
-        Healer,
+        DEALER,
+        HEALER,
         MAX
     }
 
