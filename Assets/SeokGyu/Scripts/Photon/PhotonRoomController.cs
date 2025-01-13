@@ -9,12 +9,10 @@ namespace EverScord
 {
     public class PhotonRoomController : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private GameMode selectedGameMode;
-        [SerializeField] private GameMode[] availableGameModes;
-        //private const string GAME_MODE = "GAMEMODE";
+        [SerializeField] private int maxPlayers;
         private bool bMatch = false;
 
-        public static Action<GameMode> OnJoinRoom = delegate { };
+        public static Action OnJoinRoom = delegate { };
         public static Action<bool> OnRoomStatusChange = delegate { };
         public static Action OnRoomLeft = delegate { };
         public static Action<Player> OnOtherPlayerLeftRoom = delegate { };
@@ -25,35 +23,21 @@ namespace EverScord
 
         private void Awake()
         {
-            //UIGameMode.OnGameModeSelected += HandleGameModeSelected;
             UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
             PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
             UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
-            UIFriend.OnGetRoomStatus += HandleGetRoomStatus;
 
             PlayerPrefs.SetString("PHOTONROOM", "");
         }
 
         private void OnDestroy()
         {
-            //UIGameMode.OnGameModeSelected -= HandleGameModeSelected;
             UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
             PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
             UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
-            UIFriend.OnGetRoomStatus -= HandleGetRoomStatus;
         }
 
         #region Handle Methods
-        //private void HandleGameModeSelected(GameMode gameMode)
-        //{
-        //    if (!PhotonNetwork.IsConnectedAndReady) return;
-        //    if (PhotonNetwork.InRoom) return;
-
-        //    selectedGameMode = gameMode;
-        //    Debug.Log($"Joining new {selectedGameMode.Name} game");
-        //    JoinPhotonRoom();
-        //}
-
         private void HandleRoomInviteAccept(string roomName)
         {
             PlayerPrefs.SetString("PHOTONROOM", roomName);
@@ -94,21 +78,9 @@ namespace EverScord
                 PhotonNetwork.LeaveRoom();
             }
         }
-
-        private void HandleGetRoomStatus()
-        {
-            OnRoomStatusChange?.Invoke(PhotonNetwork.InRoom);
-        }
         #endregion
 
         #region Private Methods
-        //private void JoinPhotonRoom()
-        //{
-        //    Hashtable expectedCustomRoomProperties = new Hashtable() { { GAME_MODE, selectedGameMode.Name } };
-
-        //    PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, 0);
-        //}
-
         private void CreatePhotonRoom()
         {
             string roomName = Guid.NewGuid().ToString();
@@ -123,7 +95,7 @@ namespace EverScord
             ro.IsOpen = true;
             ro.IsVisible = false;
             ro.PublishUserId = true;
-            ro.MaxPlayers = selectedGameMode.MaxPlayers;
+            ro.MaxPlayers = maxPlayers;
 
             return ro;
         }
@@ -142,20 +114,6 @@ namespace EverScord
             }
             Debug.Log($"Current Room Players: {players}");
         }
-        //private GameMode GetRoomGameMode()
-        //{
-        //    string gameModeName = (string)PhotonNetwork.CurrentRoom.CustomProperties[GAME_MODE];
-        //    GameMode gameMode = null;
-        //    for (int i = 0; i < availableGameModes.Length; i++)
-        //    {
-        //        if (string.Compare(availableGameModes[i].Name, gameModeName) == 0)
-        //        {
-        //            gameMode = availableGameModes[i];
-        //            break;
-        //        }
-        //    }
-        //    return gameMode;
-        //}
         private void DisplayRoomPlayers()
         {
             List<string> players = new List<string>();
@@ -213,10 +171,7 @@ namespace EverScord
             else
             {
                 DebugPlayerList();
-
-                //selectedGameMode = GetRoomGameMode();
-                OnJoinRoom?.Invoke(selectedGameMode);
-                OnRoomStatusChange?.Invoke(PhotonNetwork.InRoom);
+                OnJoinRoom?.Invoke();
                 DisplayRoomPlayers();
             }
         }
@@ -228,8 +183,7 @@ namespace EverScord
             }
             else
             {
-                selectedGameMode = null;
-                OnRoomStatusChange?.Invoke(PhotonNetwork.InRoom);
+                //DisplayRoomPlayers();
             }
         }
         // RandomRoom Join 실패 시 오류 콜백 함수 실행

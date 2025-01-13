@@ -210,6 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86574baa77b3c554bb550b090a1b9e7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bDebug: 0
 --- !u!1 &224806467
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,8 +564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93ffc4a264235444fb9b1e1c3a4976fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedGameMode: {fileID: 11400000, guid: 115e3ed56011aed45b171a1b26ce3f87, type: 2}
-  availableGameModes: []
+  maxPlayers: 0
 --- !u!1 &541708588 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 816144525450218428, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
@@ -1304,7 +1304,7 @@ Camera:
   m_GameObject: {fileID: 1458432968}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
