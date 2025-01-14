@@ -3,7 +3,6 @@ using System;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
-using ExitGames.Client.Photon;
 
 namespace EverScord
 {
@@ -11,6 +10,7 @@ namespace EverScord
     {
         [SerializeField] private int maxPlayers;
         private bool bMatch = false;
+        [SerializeField] private bool bDebug = false;
 
         public static Action OnJoinRoom = delegate { };
         public static Action<bool> OnRoomStatusChange = delegate { };
@@ -151,14 +151,6 @@ namespace EverScord
         public override void OnCreatedRoom()
         {
             Debug.Log($"Created Room Successful.\nPhoton RoomName : {PhotonNetwork.CurrentRoom.Name}");
-            if(bMatch)
-            {
-
-            }
-            else
-            {
-
-            }
         }
         public override void OnJoinedRoom()
         {
@@ -171,6 +163,7 @@ namespace EverScord
             else
             {
                 DebugPlayerList();
+                GameManager.Instance.userDatas.Add(PlayerPrefs.GetString("USERNAME"), new PlayerData());
                 OnJoinRoom?.Invoke();
                 DisplayRoomPlayers();
             }
@@ -243,5 +236,33 @@ namespace EverScord
         }
 
         #endregion
+
+        private void OnGUI()
+        {
+            if (bDebug == true)
+            {
+                if (GUI.Button(new Rect(600, 0, 150, 60), "Dealer"))
+                {
+                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job = EJob.DEALER;
+                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job.ToString());
+                }
+                if (GUI.Button(new Rect(600, 60, 150, 60), "Healer"))
+                {
+                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job = EJob.HEALER;
+                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job.ToString());
+                }
+
+                if (GUI.Button(new Rect(900, 0, 150, 60), "Normal"))
+                {
+                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel = ELevel.NORMAL;
+                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel.ToString());
+                }
+                if (GUI.Button(new Rect(900, 60, 150, 60), "Hard"))
+                {
+                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel = ELevel.HARD;
+                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel.ToString());
+                }
+            }
+        }
     }
 }

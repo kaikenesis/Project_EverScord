@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
 namespace EverScord
@@ -19,9 +20,17 @@ namespace EverScord
         MAX
     }
 
+    public enum ELevel
+    {
+        NORMAL,
+        HARD,
+        MAX
+    }
+
     public class PlayerData : MonoBehaviour
     {
-        public ECharacter character;
-        public EJob job;
+        public ECharacter character = ECharacter.UNI;
+        public EJob job = EJob.DEALER;
+        public ELevel curLevel = ELevel.NORMAL;
     }
 }

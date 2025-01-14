@@ -9,7 +9,6 @@ namespace EverScord
 {
     public class PhotonConnector : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private bool bDebug = false;
         private readonly string version = "1.0"; // 게임 버전 체크
 
         public static Action GetPhotonFriends = delegate { };
@@ -69,20 +68,5 @@ namespace EverScord
             OnLobbyJoined?.Invoke();
         }
         #endregion
-
-        private void OnGUI()
-        {
-            if(bDebug == true)
-            {
-                if (GUI.Button(new Rect(600, 0, 150, 60), "Dealer"))
-                {
-                    Debug.Log("Set Job Dealer");
-                }
-                if (GUI.Button(new Rect(600, 60, 150, 60), "Healer"))
-                {
-                    Debug.Log("Set Job Healer");
-                }
-            }
-        }
     }
 }
