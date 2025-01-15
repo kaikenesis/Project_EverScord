@@ -37,7 +37,7 @@ public abstract class NRunState : MonoBehaviour, IState
         transform.Translate(monsterController.MoveSpeed * Time.deltaTime * moveVector, Space.World);
     }
 
-    IEnumerator RandomAttack()
+    protected virtual IEnumerator RandomAttack()
     {
         while (true)
         {

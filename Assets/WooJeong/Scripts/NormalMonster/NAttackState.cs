@@ -20,7 +20,7 @@ public abstract class NAttackState : MonoBehaviour, IState
         monsterController.Animator.CrossFade("Wait", 0.25f);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (canAttack)
             return;
@@ -43,14 +43,14 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     protected IEnumerator ProjectAttackRange()
     {
-        monsterController.Projector.size = new Vector3(monsterController.AttackRangeX,
-                                                                monsterController.AttackRangeY,
-                                                                monsterController.AttackRangeZ);
-        monsterController.Projector.pivot = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        monsterController.BoxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        monsterController.BoxCollider.size = new Vector3(monsterController.AttackRangeX,
-                                        monsterController.AttackRangeY,
-                                        monsterController.AttackRangeZ);
+        monsterController.Projector.size = new Vector3(monsterController.AttackRangeX1,
+                                                                monsterController.AttackRangeY1,
+                                                                monsterController.AttackRangeZ1);
+        monsterController.Projector.pivot = new Vector3(0, 0, monsterController.AttackRangeZ1 / 2);
+        monsterController.BoxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ1 / 2);
+        monsterController.BoxCollider.size = new Vector3(monsterController.AttackRangeX1,
+                                        monsterController.AttackRangeY1,
+                                        monsterController.AttackRangeZ1);
         monsterController.Projector.enabled = true;
         yield return new WaitForSeconds(monsterController.ProjectionTime);
         monsterController.Projector.enabled = false;

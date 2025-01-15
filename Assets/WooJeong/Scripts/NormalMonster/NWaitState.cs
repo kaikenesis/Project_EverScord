@@ -28,7 +28,7 @@ public abstract class NWaitState : MonoBehaviour, IState
         monsterController.LookPlayer();
     }
 
-    IEnumerator RandomAttack()
+    protected virtual IEnumerator RandomAttack()
     {
         while (true)
         {

@@ -12,12 +12,13 @@ public abstract class NController : MonoBehaviour
     [SerializeField] protected float coolDown2 = 10;
     [SerializeField] protected float lookSpeed = 3f;
 
-    [Tooltip("공격 사거리 표시 시간")]
+    [Header("공격 사거리 표시 시간")]
     [SerializeField] protected float projectionTime = 1;
+    [Header("공격1 사거리")]
+    [SerializeField] protected float attackRangeX1 = 0.5f;
+    [SerializeField] protected float attackRangeY1 = 1f;
+    [SerializeField] protected float attackRangeZ1 = 7.5f;
 
-    [SerializeField] protected float attackRangeX = 0.5f;
-    [SerializeField] protected float attackRangeY = 1f;
-    [SerializeField] protected float attackRangeZ = 7.5f;
     protected float angle = 0.1f;
 
     [HideInInspector] public int LastAttack = 0;
@@ -34,9 +35,10 @@ public abstract class NController : MonoBehaviour
     public float MoveSpeed { get { return moveSpeed; } }
     public float Distance { get { return distance; } }
     public float ProjectionTime { get { return projectionTime; } }
-    public float AttackRangeX { get { return attackRangeX; } }
-    public float AttackRangeY { get { return attackRangeY; } }
-    public float AttackRangeZ { get { return attackRangeZ; } }
+    public float AttackRangeX1 { get { return attackRangeX1; } }
+    public float AttackRangeY1 { get { return attackRangeY1; } }
+    public float AttackRangeZ1 { get { return attackRangeZ1; } }
+
     public DecalProjector Projector { get { return projector; } }
     public BoxCollider BoxCollider { get { return boxCollider; } }
     public Animator Animator { get { return animator; } }
@@ -74,23 +76,11 @@ public abstract class NController : MonoBehaviour
 
         if (Physics.Raycast(start, transform.forward, out hit, distance))
         {
-            Debug.Log(hit.transform.name);
             if (hit.transform.CompareTag("Player"))
             {
                 return true;
             }
         }
-        Debug.DrawRay(start, transform.forward * distance, Color.red);
-
-        //Vector3 dir = player.transform.position - transform.position;
-        //Quaternion lookRot = Quaternion.LookRotation(dir);
-        //Quaternion minRot = new(0, lookRot.y - angle, 0, lookRot.w);
-        //Quaternion maxRot = new(0, lookRot.y + angle, 0, lookRot.w);
-        //if (transform.rotation.y > minRot.y &&
-        //    transform.rotation.y < maxRot.y)
-        //{
-        //    return true;
-        //}
 
         return false;
     }
