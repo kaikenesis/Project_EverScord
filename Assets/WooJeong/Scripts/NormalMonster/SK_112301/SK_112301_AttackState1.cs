@@ -1,16 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
-public class SK_112206_AttackState1 : NAttackState
+public class SK_112301_AttackState1 : NAttackState
 {
     protected override void Setup()
     {
-        monsterController = GetComponent<SK_112206_Controller>();
+        monsterController = GetComponent<SK_112301_Controller>();
     }
-
+    
     protected override IEnumerator Attack()
     {
         yield return ProjectAttackRange();
