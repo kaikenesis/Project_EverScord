@@ -3,35 +3,38 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SK_112206_AttackState2 : MonoBehaviour, IState, ICoolDown
+public class SK_112206_AttackState2 : MonoBehaviour, IState
 {
     private SK_112206_Controller monsterController;
-    private BoxCollider boxCollider;
-
-    private float curCool;
-
-    public float CurCool { get { return curCool; } }
+    private bool canAttack = true;
 
     void Awake()
     {
         monsterController = GetComponent<SK_112206_Controller>();
-        boxCollider = GetComponent<BoxCollider>();
     }
 
     public void Enter()
     {
-        StartCoroutine(Attack2());
+        canAttack = false;
+        monsterController.Animator.CrossFade("Wait", 0.25f);
     }
 
-    IEnumerator CoolDown()
+    private void Update()
     {
-        curCool = monsterController.CoolDown2;
-        while (true)
+        if (canAttack)
+            return;
+
+        if (monsterController.CalcDistance() > monsterController.Distance)
         {
-            yield return new WaitForSeconds(0.1f);
-            curCool -= 0.1f;
-            if (curCool <= 0)
-                yield break;
+            canAttack = true;
+            ExitToRun();
+        }
+
+        monsterController.LookPlayer();
+        if (monsterController.IsLookPlayer())
+        {
+            canAttack = true;
+            StartCoroutine(Attack2());
         }
     }
 
@@ -41,8 +44,8 @@ public class SK_112206_AttackState2 : MonoBehaviour, IState, ICoolDown
                                                 monsterController.AttackRangeY,
                                                 monsterController.AttackRangeZ);
         monsterController.Projector.pivot = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        boxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        boxCollider.size = new Vector3(monsterController.AttackRangeX,
+        monsterController.BoxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
+        monsterController.BoxCollider.size = new Vector3(monsterController.AttackRangeX,
                                         monsterController.AttackRangeY,
                                         monsterController.AttackRangeZ);
         monsterController.Projector.enabled = true;
@@ -50,24 +53,41 @@ public class SK_112206_AttackState2 : MonoBehaviour, IState, ICoolDown
         monsterController.Projector.enabled = false;
 
         monsterController.Animator.CrossFade("Attack2", 0.25f);        
-        float time = monsterController.clipDict["Attack2"].length;
+        float time = monsterController.clipDict["Attack2"];
         
         for (int i = 0; i < 3; i++)
         {
             yield return new WaitForSeconds(time / 4 / 3);
-            boxCollider.enabled = true;
+            monsterController.BoxCollider.enabled = true;
             yield return new WaitForSeconds(time / 4 / 3);
-            boxCollider.enabled = false;
+            monsterController.BoxCollider.enabled = false;
             yield return new WaitForSeconds(time / 4 / 3);
         }
         yield return new WaitForSeconds(time / 4);
-        StartCoroutine(CoolDown());
+        StartCoroutine(monsterController.CoolDown2());
         Exit();
     }
 
     public void Exit()
     {
-        monsterController.IdleState();
+        if (monsterController.CalcDistance() > monsterController.Distance)
+        {
+            ExitToRun();
+        }
+        else
+        {
+            ExitToWait();
+        }
+    }
+
+    private void ExitToWait()
+    {
+        monsterController.WaitState();
+    }
+
+    private void ExitToRun()
+    {
+        monsterController.RunState();
     }
 
     private void OnTriggerEnter(Collider other)

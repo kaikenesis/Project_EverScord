@@ -5,7 +5,6 @@ using UnityEngine;
 public class SK_112206_WaitState : MonoBehaviour, IState
 {
     private SK_112206_Controller monsterController;
-    private int lastAttack = 0;
     private bool isEnter = false;
 
     void Awake()
@@ -17,15 +16,10 @@ public class SK_112206_WaitState : MonoBehaviour, IState
     {
         isEnter = true;
         monsterController.Animator.CrossFade("Wait", 0.25f);
-        if (monsterController.CalcDistance() > monsterController.Distance)
-        {
-            Exit();
-        }
-        else
-        {
-            StartCoroutine(RandomAttack());
-        }
+
+        Exit();
     }
+
     private void Update()
     {
         if (!isEnter)
@@ -40,7 +34,7 @@ public class SK_112206_WaitState : MonoBehaviour, IState
         {
             if (monsterController.CalcDistance() > monsterController.Distance)
             {
-                Exit();
+                ExitToRun();
                 yield break;
             }
 
@@ -50,49 +44,46 @@ public class SK_112206_WaitState : MonoBehaviour, IState
                 case 1:
                 {
                     ExitToAttack1();
-                    lastAttack = 1;
                     yield break;
                 }
                 case 2:
                 {
                     ExitToAttack2();
-                    lastAttack = 2;
                     yield break;
                 }
                 case 3:
-                {
-                    if (lastAttack == 1)
-                    {
+                {                    
+                    if(monsterController.LastAttack == 1)
                         ExitToAttack2();
-                        lastAttack = 2;
-                    }
                     else
-                    {
                         ExitToAttack1();
-                        lastAttack = 1;
-                    }
                     yield break;
                 }
             }
             
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.1f);
         }
 
     }
 
     public void Exit()
     {
-        isEnter = false;
-        monsterController.MoveState();
+        StartCoroutine(RandomAttack());
     }
 
-    public void ExitToAttack1()
+    private void ExitToRun()
+    {
+        isEnter = false;
+        monsterController.RunState();
+    }
+    
+    private void ExitToAttack1()
     {
         isEnter = false;
         monsterController.AttackState1();
     }
 
-    public void ExitToAttack2()
+    private void ExitToAttack2()
     {
         isEnter = false;
         monsterController.AttackState2();

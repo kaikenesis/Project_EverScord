@@ -1,26 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
-using Unity.IO.LowLevel.Unsafe;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class SK_112206_Controller : MonoBehaviour
+public class NController : MonoBehaviour
 {
-    [SerializeField] private float distance = 7.5f;
-    [SerializeField] private float moveSpeed = 3f;
-    [SerializeField] private float coolDown1 = 5;
-    [SerializeField] private float coolDown2 = 10;    
-    [SerializeField] private float lookSpeed = 3f;
+    [SerializeField] protected float distance = 7.5f;
+    [SerializeField] protected float moveSpeed = 3f;
+    [SerializeField] protected float coolDown1 = 5;
+    [SerializeField] protected float coolDown2 = 10;
+    [SerializeField] protected float lookSpeed = 3f;
 
     [Tooltip("공격 사거리 표시 시간")]
-    [SerializeField] private float projectionTime = 1;
-    
-    [SerializeField] private float attackRangeX = 0.5f;
-    [SerializeField] private float attackRangeY = 1f;
-    [SerializeField] private float attackRangeZ = 7.5f;
-    private float angle = 0.1f;
+    [SerializeField] protected float projectionTime = 1;
+
+    [SerializeField] protected float attackRangeX = 0.5f;
+    [SerializeField] protected float attackRangeY = 1f;
+    [SerializeField] protected float attackRangeZ = 7.5f;
+    protected float angle = 0.1f;
 
     [HideInInspector] public int LastAttack = 0;
     [HideInInspector] public GameObject player;
@@ -51,10 +48,16 @@ public class SK_112206_Controller : MonoBehaviour
 
     void Awake()
     {
+        Setup();
+        WaitState();
+    }
+
+    public virtual void Setup()
+    {
         animator = GetComponentInChildren<Animator>();
         runState = gameObject.AddComponent<SK_112206_RunState>();
         attackState1 = gameObject.AddComponent<SK_112206_AttackState1>();
-        attackState2 = gameObject.AddComponent<SK_112206_AttackState2>();       
+        attackState2 = gameObject.AddComponent<SK_112206_AttackState2>();
         waitState = gameObject.AddComponent<SK_112206_WaitState>();
         player = GameObject.Find("Player");
         projector = GetComponent<DecalProjector>();
@@ -64,8 +67,6 @@ public class SK_112206_Controller : MonoBehaviour
         {
             clipDict[clip.name] = clip.length;
         }
-
-        WaitState();
     }
 
     public void LookPlayer()
