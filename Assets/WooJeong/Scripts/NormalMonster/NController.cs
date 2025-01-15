@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class NController : MonoBehaviour
+public abstract class NController : MonoBehaviour
 {
+    [SerializeField] private Material decalMat;
     [SerializeField] protected float distance = 7.5f;
     [SerializeField] protected float moveSpeed = 3f;
     [SerializeField] protected float coolDown1 = 5;
@@ -21,14 +22,14 @@ public class NController : MonoBehaviour
 
     [HideInInspector] public int LastAttack = 0;
     [HideInInspector] public GameObject player;
-    private DecalProjector projector;
-    private BoxCollider boxCollider;
-    private Animator animator;
+    protected DecalProjector projector;
+    protected BoxCollider boxCollider;
+    protected Animator animator;
     public Dictionary<string, float> clipDict = new();
-    private RaycastHit hit;
+    protected RaycastHit hit;
 
-    private float curCool1 = 0;
-    private float curCool2 = 0;
+    protected float curCool1 = 0;
+    protected float curCool2 = 0;
 
     public float MoveSpeed { get { return moveSpeed; } }
     public float Distance { get { return distance; } }
@@ -40,11 +41,11 @@ public class NController : MonoBehaviour
     public BoxCollider BoxCollider { get { return boxCollider; } }
     public Animator Animator { get { return animator; } }
 
-    private IState currentState;
-    private IState runState;
-    private IState attackState1;
-    private IState attackState2;
-    private IState waitState;
+    protected IState currentState;
+    protected IState runState;
+    protected IState attackState1;
+    protected IState attackState2;
+    protected IState waitState;
 
     void Awake()
     {
@@ -52,21 +53,12 @@ public class NController : MonoBehaviour
         WaitState();
     }
 
-    public virtual void Setup()
-    {
-        animator = GetComponentInChildren<Animator>();
-        runState = gameObject.AddComponent<SK_112206_RunState>();
-        attackState1 = gameObject.AddComponent<SK_112206_AttackState1>();
-        attackState2 = gameObject.AddComponent<SK_112206_AttackState2>();
-        waitState = gameObject.AddComponent<SK_112206_WaitState>();
-        player = GameObject.Find("Player");
-        projector = GetComponent<DecalProjector>();
-        boxCollider = GetComponent<BoxCollider>();
+    protected abstract void Setup();
 
-        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
-        {
-            clipDict[clip.name] = clip.length;
-        }
+    protected void ProjectorSetup()
+    {
+        projector.renderingLayerMask = 2;
+        projector.material = decalMat;
     }
 
     public void LookPlayer()
@@ -78,26 +70,27 @@ public class NController : MonoBehaviour
 
     public bool IsLookPlayer()
     {
-        //Vector3 start = new(transform.position.x, transform.position.y + 0.3f, transform.position.z);
-        //if(Physics.Raycast(start, Vector3.forward, out hit, distance))
-        //{
-        //    Debug.Log(hit.transform.name);
-        //    if (hit.transform.CompareTag("Player"))
-        //    {
-        //        return true;
-        //    }
-        //}
-        //Debug.DrawRay(start, transform.forward * distance, Color.red);
+        Vector3 start = new(transform.position.x, transform.position.y + 0.3f, transform.position.z);        
 
-        Vector3 dir = player.transform.position - transform.position;
-        Quaternion lookRot = Quaternion.LookRotation(dir);
-        Quaternion minRot = new(0, lookRot.y - angle, 0, lookRot.w);
-        Quaternion maxRot = new(0, lookRot.y + angle, 0, lookRot.w);
-        if (transform.rotation.y > minRot.y &&
-            transform.rotation.y < maxRot.y)
+        if (Physics.Raycast(start, transform.forward, out hit, distance))
         {
-            return true;
+            Debug.Log(hit.transform.name);
+            if (hit.transform.CompareTag("Player"))
+            {
+                return true;
+            }
         }
+        Debug.DrawRay(start, transform.forward * distance, Color.red);
+
+        //Vector3 dir = player.transform.position - transform.position;
+        //Quaternion lookRot = Quaternion.LookRotation(dir);
+        //Quaternion minRot = new(0, lookRot.y - angle, 0, lookRot.w);
+        //Quaternion maxRot = new(0, lookRot.y + angle, 0, lookRot.w);
+        //if (transform.rotation.y > minRot.y &&
+        //    transform.rotation.y < maxRot.y)
+        //{
+        //    return true;
+        //}
 
         return false;
     }

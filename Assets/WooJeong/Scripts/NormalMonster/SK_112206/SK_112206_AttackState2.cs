@@ -3,54 +3,16 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SK_112206_AttackState2 : MonoBehaviour, IState
+public class SK_112206_AttackState2 : NAttackState
 {
-    private SK_112206_Controller monsterController;
-    private bool canAttack = true;
-
-    void Awake()
+    protected override void Setup()
     {
         monsterController = GetComponent<SK_112206_Controller>();
     }
 
-    public void Enter()
+    protected override IEnumerator Attack()
     {
-        canAttack = false;
-        monsterController.Animator.CrossFade("Wait", 0.25f);
-    }
-
-    private void Update()
-    {
-        if (canAttack)
-            return;
-
-        if (monsterController.CalcDistance() > monsterController.Distance)
-        {
-            canAttack = true;
-            ExitToRun();
-        }
-
-        monsterController.LookPlayer();
-        if (monsterController.IsLookPlayer())
-        {
-            canAttack = true;
-            StartCoroutine(Attack2());
-        }
-    }
-
-    IEnumerator Attack2()
-    {
-        monsterController.Projector.size = new Vector3(monsterController.AttackRangeX,
-                                                monsterController.AttackRangeY,
-                                                monsterController.AttackRangeZ);
-        monsterController.Projector.pivot = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        monsterController.BoxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        monsterController.BoxCollider.size = new Vector3(monsterController.AttackRangeX,
-                                        monsterController.AttackRangeY,
-                                        monsterController.AttackRangeZ);
-        monsterController.Projector.enabled = true;
-        yield return new WaitForSeconds(monsterController.ProjectionTime);
-        monsterController.Projector.enabled = false;
+        yield return ProjectAttackRange();
 
         monsterController.Animator.CrossFade("Attack2", 0.25f);        
         float time = monsterController.clipDict["Attack2"];
@@ -66,28 +28,6 @@ public class SK_112206_AttackState2 : MonoBehaviour, IState
         yield return new WaitForSeconds(time / 4);
         StartCoroutine(monsterController.CoolDown2());
         Exit();
-    }
-
-    public void Exit()
-    {
-        if (monsterController.CalcDistance() > monsterController.Distance)
-        {
-            ExitToRun();
-        }
-        else
-        {
-            ExitToWait();
-        }
-    }
-
-    private void ExitToWait()
-    {
-        monsterController.WaitState();
-    }
-
-    private void ExitToRun()
-    {
-        monsterController.RunState();
     }
 
     private void OnTriggerEnter(Collider other)
