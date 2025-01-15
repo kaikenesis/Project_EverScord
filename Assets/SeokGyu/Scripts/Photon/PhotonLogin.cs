@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class PhotonLogin : MonoBehaviour
     public void LoginPhoton()
     {
         string nickName = PlayerPrefs.GetString("USERNAME");
+        // 닉네임 중복체크 필요
         if (string.IsNullOrEmpty(nickName)) return;
         OnConnectToPhoton?.Invoke(nickName);
     }

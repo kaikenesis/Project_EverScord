@@ -33,10 +33,9 @@ namespace EverScord
             PhotonRoomController.OnDisplayPlayers -= HandleDisplayPlayers;
         }
 
-        private void HandleJoinRoom(GameMode gameMode)
+        private void HandleJoinRoom()
         {
             gameObject.SetActive(true);
-            //roomGameModeText.SetText(PhotonNetwork.CurrentRoom.CustomProperties["GAMEMODE"].ToString());
 
             if(exitButton != null) exitButton.SetActive(true);
             if(roomContainer != null) roomContainer.SetActive(true);
@@ -51,7 +50,6 @@ namespace EverScord
         private void HandleRoomLeft()
         {
             gameObject.SetActive(false);
-            //roomGameModeText.SetText("JOINING ROOM");
 
             if (exitButton != null) exitButton.SetActive(false);
             if (roomContainer != null) roomContainer.SetActive(false);

@@ -255,9 +255,9 @@ namespace EverScord.Augment
             VestAugment vestAugment     = (VestAugment)augmentData.VestAugmentDict[selectedVestTag][enhanceCount];
             ShoesAugment shoesAugment   = (ShoesAugment)augmentData.ShoesAugmentDict[selectedShoesTag][enhanceCount];
 
-            player.SetHelmet(new HelmetDecorator(player.helmet, helmetAugment));
-            player.SetVest(new VestDecorator(player.vest, vestAugment));
-            player.SetShoes(new ShoesDecorator(player.shoes, shoesAugment));
+            player.SetArmor(new HelmetDecorator(player.helmet, helmetAugment));
+            player.SetArmor(new VestDecorator(player.vest, vestAugment));
+            player.SetArmor(new ShoesDecorator(player.shoes, shoesAugment));
 
             enhanceCount++;
 
