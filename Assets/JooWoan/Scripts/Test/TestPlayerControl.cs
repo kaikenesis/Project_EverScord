@@ -40,7 +40,7 @@ namespace EverScord.Character
             ReceiveInput();
             ConvertInput();
 
-            Animate();
+            AnimateMovement();
 
             ApplyGravity();
             Move();
@@ -70,7 +70,7 @@ namespace EverScord.Character
             convertedInput = transform.InverseTransformDirection(moveInput);
         }
 
-        private void Animate()
+        private void AnimateMovement()
         {
             anim.SetFloat("Horizontal", convertedInput.x, transitionDampTime, Time.deltaTime);
             anim.SetFloat("Vertical",   convertedInput.z, transitionDampTime, Time.deltaTime);
