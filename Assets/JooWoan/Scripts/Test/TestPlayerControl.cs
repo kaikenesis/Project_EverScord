@@ -16,6 +16,9 @@ namespace EverScord.Character
         [SerializeField] private Animator anim;
         [SerializeField] private float transitionDampTime;
 
+        [Header("Weapon")]
+        [SerializeField] private GameObject weapon;
+
         private CharacterController characterControl;
         private Vector3 movement, lookPosition;
         private float fallSpeed, horizontalInput, verticalInput;
