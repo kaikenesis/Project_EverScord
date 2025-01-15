@@ -2,7 +2,7 @@ using EverScord.Augment;
 
 namespace EverScord.Armor
 {
-    public interface IHelmet
+    public interface IHelmet : IArmor
     {
         // Dealer
         public float BasicAttackDamage      { get; }

@@ -17,7 +17,7 @@ namespace EverScord
         public static Action<PhotonStatus> OnStatusUpdated = delegate { };
         public static Action OnCreateParty = delegate { };
         // TODO:
-        // MergeTest
+
         private void Awake()
         {
             chatClient = new ChatClient(this);
@@ -73,7 +73,9 @@ namespace EverScord
             ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
             chatClient.ConnectUsingSettings(chatSettings);
         }
+        #endregion
 
+        #region Callback Chat Methods
         public void DebugReturn(DebugLevel level, string message)
         {
 

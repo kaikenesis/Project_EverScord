@@ -1,27 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
 namespace EverScord
 {
     public enum ECharacter
     {
-        Uni,
-        Ned,
-        Us,
+        UNI,
+        NED,
+        US,
         MAX
     }
 
     public enum EJob
     {
-        Dealer,
-        Healer,
+        DEALER,
+        HEALER,
+        MAX
+    }
+
+    public enum ELevel
+    {
+        NORMAL,
+        HARD,
         MAX
     }
 
     public class PlayerData : MonoBehaviour
     {
-        public ECharacter character;
-        public EJob job;
+        public ECharacter character = ECharacter.UNI;
+        public EJob job = EJob.DEALER;
+        public ELevel curLevel = ELevel.NORMAL;
     }
 }
