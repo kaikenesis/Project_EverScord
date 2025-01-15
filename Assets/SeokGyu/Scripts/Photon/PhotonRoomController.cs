@@ -3,9 +3,17 @@ using System;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace EverScord
 {
+    public enum EMatchMode
+    {
+        NONE,
+        SINGLE,
+        MULTI
+    }
+
     public class PhotonRoomController : MonoBehaviourPunCallbacks
     {
         [SerializeField] private int maxPlayers;
@@ -18,8 +26,9 @@ namespace EverScord
         public static Action<Player> OnOtherPlayerLeftRoom = delegate { };
         public static Action<List<string>> OnDisplayPlayers = delegate { };
         public static Action OnMatchSoloPlay = delegate { };
-        public static Action<string, string> OnMatchMultiPlay = delegate { };
+        public static Action<int> OnMatchMultiPlay = delegate { };
         public static Action OnJoinedMatch = delegate { };
+        public static Action OnUpdateMatchRoom = delegate { };
 
         private void Awake()
         {
@@ -66,7 +75,7 @@ namespace EverScord
             }
             else
             {
-                CreatePhotonRoom();
+                //CreatePhotonRoom();
             }
         }
 
@@ -135,15 +144,13 @@ namespace EverScord
         #region Public Methods
         public void OnClickedSoloPlay()
         {
-            bMatch = true;
             OnMatchSoloPlay?.Invoke();
         }
 
         public void OnClickedMultiPlay()
         {
             bMatch = true;
-            // 필요한 직업과 난이도 레벨
-            //OnMatchMultiPlay?.Invoke();
+            OnMatchMultiPlay?.Invoke(0);
         }
         #endregion
 
@@ -155,15 +162,27 @@ namespace EverScord
         public override void OnJoinedRoom()
         {
             Debug.Log($"Joined Room Successful.\nPhoton RoomName : {PhotonNetwork.CurrentRoom.Name}");
-            if (bMatch)
+
+            switch(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
             {
-                // 현재 입장한 방에서 매칭조건이 부합하는지 확인. 부적합하다면 LeaveRoom()
-                OnJoinedMatch?.Invoke();
+                case EPhotonState.NONE:
+                    {
+                        DebugPlayerList();
+                        OnJoinRoom?.Invoke();
+                        DisplayRoomPlayers();
+                    }
+                    break;
+                case EPhotonState.MATCH:
+                    {
+                        OnJoinedMatch?.Invoke();
+                    }
+                    break;
             }
-            else
+
+            // 매칭중에는 막아야함
+            if(true)
             {
                 DebugPlayerList();
-                GameManager.Instance.userDatas.Add(PlayerPrefs.GetString("USERNAME"), new PlayerData());
                 OnJoinRoom?.Invoke();
                 DisplayRoomPlayers();
             }
@@ -183,14 +202,18 @@ namespace EverScord
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Random Failed {returnCode} : {message}");
-            if (bMatch)
+            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
             {
-
+                case EPhotonState.NONE:
+                    {
+                    }
+                    break;
+                case EPhotonState.MATCH:
+                    {
+                    }
+                    break;
             }
-            else
-            {
-                CreatePhotonRoom();
-            }
+            //CreatePhotonRoom();
         }
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
@@ -201,35 +224,61 @@ namespace EverScord
             }
             else
             {
-                CreatePhotonRoom();
+                //CreatePhotonRoom();
             }
         }
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             Debug.Log($"Another player has joined the room : {newPlayer.NickName}");
+
+            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            {
+                case EPhotonState.NONE:
+                    {
+                    }
+                    break;
+                case EPhotonState.MATCH:
+                    {
+                    }
+                    break;
+            }
+
             if (bMatch)
             {
-
+                OnUpdateMatchRoom?.Invoke();
             }
             else
             {
-                DebugPlayerList();
                 DisplayRoomPlayers();
             }
+            DebugPlayerList();
         }
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
             Debug.Log($"Player has left the room : {otherPlayer.NickName}");
+
+            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            {
+                case EPhotonState.NONE:
+                    {
+                    }
+                    break;
+                case EPhotonState.MATCH:
+                    {
+                    }
+                    break;
+            }
+
             if (bMatch)
             {
-
+                OnUpdateMatchRoom?.Invoke();
             }
             else
             {
                 OnOtherPlayerLeftRoom?.Invoke(otherPlayer);
-                DebugPlayerList();
                 DisplayRoomPlayers();
             }
+            DebugPlayerList();
         }
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
@@ -241,26 +290,31 @@ namespace EverScord
         {
             if (bDebug == true)
             {
+                if(GUI.Button(new Rect(400, 0, 150, 60), "JoinRoom"))
+                {
+                    CreatePhotonRoom();
+                }
+
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Dealer"))
                 {
-                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job = EJob.DEALER;
-                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job.ToString());
+                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job = EJob.DEALER;
+                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job.ToString());
                 }
                 if (GUI.Button(new Rect(600, 60, 150, 60), "Healer"))
                 {
-                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job = EJob.HEALER;
-                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].job.ToString());
+                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job = EJob.HEALER;
+                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job.ToString());
                 }
 
                 if (GUI.Button(new Rect(900, 0, 150, 60), "Normal"))
                 {
-                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel = ELevel.NORMAL;
-                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel.ToString());
+                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel = ELevel.NORMAL;
+                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel.ToString());
                 }
                 if (GUI.Button(new Rect(900, 60, 150, 60), "Hard"))
                 {
-                    GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel = ELevel.HARD;
-                    Debug.Log(GameManager.Instance.userDatas[PlayerPrefs.GetString("USERNAME")].curLevel.ToString());
+                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel = ELevel.HARD;
+                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel.ToString());
                 }
             }
         }
