@@ -83,8 +83,7 @@ namespace EverScord
         {
             if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
             {
-                //UpdatePhotonMatchRoom();
-                //HandleJoinedMatch();
+                UpdatePhotonMatchRoom();
             }
         }
         #endregion
@@ -149,21 +148,34 @@ namespace EverScord
             ELevel level = userDatas[PhotonNetwork.AuthValues.UserId].curLevel;
             string matchRoles = "";
             
-            if (bCreateRoom == false)
-            {
-                EJob job = userDatas[PhotonNetwork.AuthValues.UserId].job;
-                matchRoles += job.ToString();
-            }
-
+            
+            // 조건 만드는 방식에 대해 좀더 고민할 필요 있음
             if (healer > 0)
             {
                 if (matchRoles.IsNullOrEmpty() == false) matchRoles += ":";
                 matchRoles += EJob.HEALER.ToString();
             }
+            else
+            {
+                if (bCreateRoom == false)
+                {
+                    EJob job = userDatas[PhotonNetwork.AuthValues.UserId].job;
+                    matchRoles += job.ToString();
+                }
+            }
+
             if (dealer > 0)
             {
                 if (matchRoles.IsNullOrEmpty() == false) matchRoles += ":";
                 matchRoles += EJob.DEALER.ToString();
+            }
+            else
+            {
+                if (bCreateRoom == false)
+                {
+                    EJob job = userDatas[PhotonNetwork.AuthValues.UserId].job;
+                    matchRoles += job.ToString();
+                }
             }
 
             customRoomProperties = new Hashtable()
@@ -286,9 +298,27 @@ namespace EverScord
                     break;
             }
         }
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            {
+                case EPhotonState.MATCH:
+                    {
+                        HandleUpdateMatchRoom();
+                    }
+                    break;
+            }
+        }
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-
+            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            {
+                case EPhotonState.MATCH:
+                    {
+                        HandleUpdateMatchRoom();
+                    }
+                    break;
+            }
         }
         #endregion
     }
