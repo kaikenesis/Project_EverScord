@@ -164,11 +164,6 @@ namespace EverScord
                         DisplayRoomPlayers();
                     }
                     break;
-                case EPhotonState.MATCH:
-                    {
-                        OnJoinedMatch?.Invoke();
-                    }
-                    break;
             }
 
             DebugPlayerList();
@@ -176,13 +171,7 @@ namespace EverScord
         public override void OnLeftRoom()
         {
             Debug.Log("You have left Photon Room");
-            if (bMatch)
-            {
-            }
-            else
-            {
-                //DisplayRoomPlayers();
-            }
+            //DisplayRoomPlayers();
         }
         // RandomRoom Join 실패 시 오류 콜백 함수 실행
         public override void OnJoinRandomFailed(short returnCode, string message)
