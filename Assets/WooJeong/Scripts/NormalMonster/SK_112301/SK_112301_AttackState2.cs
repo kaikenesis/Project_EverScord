@@ -5,6 +5,7 @@ using UnityEngine;
 public class SK_112301_AttackState2 : NAttackState
 {
     private Vector3 moveVector;
+    private Vector3 startVector;
     private float attackRangeX2;
     private float attackRangeY2;
     private float attackRangeZ2;
@@ -22,15 +23,15 @@ public class SK_112301_AttackState2 : NAttackState
 
     protected override IEnumerator Attack()
     {
-        yield return ProjectAttackRange();
-
+        startVector = transform.position;
         moveVector = (monsterController.player.transform.position - transform.position).normalized;
+        yield return ProjectAttackRange();
         monsterController.Animator.CrossFade("Attack2", 0.25f);
         float time = monsterController.clipDict["Attack2"];
 
         yield return new WaitForSeconds(time / 4);
         monsterController.BoxCollider.enabled = true;
-        StartCoroutine(Charge(time / 4 * 3));
+        StartCoroutine(Charge(1f));
         yield return new WaitForSeconds(time / 4 * 3);
         monsterController.BoxCollider.enabled = false;
         StartCoroutine(monsterController.CoolDown2());
@@ -52,8 +53,9 @@ public class SK_112301_AttackState2 : NAttackState
     {
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            transform.position = Vector3.Lerp(transform.position, moveVector * chargeRange, t / duration);
-            yield return null;
+            transform.position = Vector3.Lerp(startVector, startVector + moveVector * chargeRange, t / duration);
+            yield return new WaitForSeconds(Time.deltaTime);
         }
+        Debug.Log("charge end");
     }
 }
