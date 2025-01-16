@@ -5,11 +5,13 @@ using UnityEngine.Rendering.Universal;
 
 public class SK_112301_Controller : NController
 {
-    [SerializeField] private float chargeRange;
     [Header("공격2 사거리")]
-    [SerializeField] protected float attackRangeX2 = 0.5f;
-    [SerializeField] protected float attackRangeY2 = 1f;
-    [SerializeField] protected float attackRangeZ2 = 7.5f;
+    [SerializeField] private float attackRangeX2 = 0.5f;
+    [SerializeField] private float attackRangeY2 = 1f;
+    [SerializeField] private float attackRangeZ2 = 7.5f;
+    [Header("돌진 거리")]
+    [SerializeField] private float chargeRange;
+
     public float ChargeRange { get { return chargeRange; } }
     public float AttackRangeX2 { get { return attackRangeX2; } }
     public float AttackRangeY2 { get { return attackRangeY2; } }

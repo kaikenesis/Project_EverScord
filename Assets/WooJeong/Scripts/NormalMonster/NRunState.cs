@@ -21,12 +21,12 @@ public abstract class NRunState : MonoBehaviour, IState
         monsterController.Animator.CrossFade("Run", 0.25f);
     }
 
-    public void Update()
+    protected virtual void Update()
     {
         if (!isEnter)
             return;
 
-        if (monsterController.CalcDistance() < monsterController.Distance)
+        if (monsterController.CalcDistance() < monsterController.AttackRangeZ1)
         {
             Exit();
             return;
@@ -39,39 +39,33 @@ public abstract class NRunState : MonoBehaviour, IState
 
     protected virtual IEnumerator RandomAttack()
     {
-        while (true)
+        int transition = monsterController.CheckCoolDown();
+        switch (transition)
         {
-            int transition = monsterController.CheckCoolDown();
-            switch (transition)
-            {
-                case 0:
-                    {
-                        ExitToWait();
-                        yield break;
-                    }
-                case 1:
-                    {
-                        ExitToAttack1();
-                        yield break;
-                    }
-                case 2:
-                    {
+            case 0:
+                {
+                    ExitToWait();
+                    yield break;
+                }
+            case 1:
+                {
+                    ExitToAttack1();
+                    yield break;
+                }
+            case 2:
+                {
+                    ExitToAttack2();
+                    yield break;
+                }
+            case 3:
+                {
+                    if (monsterController.LastAttack == 1)
                         ExitToAttack2();
-                        yield break;
-                    }
-                case 3:
-                    {
-                        if (monsterController.LastAttack == 1)
-                            ExitToAttack2();
-                        else
-                            ExitToAttack1();
-                        yield break;
-                    }
-            }
-
-            yield return new WaitForSeconds(0.1f);
+                    else
+                        ExitToAttack1();
+                    yield break;
+                }
         }
-
     }
 
     public void Exit()
@@ -80,17 +74,17 @@ public abstract class NRunState : MonoBehaviour, IState
         StartCoroutine(RandomAttack());
     }
 
-    private void ExitToWait()
+    protected void ExitToWait()
     {
         monsterController.WaitState();
     }
 
-    private void ExitToAttack1()
+    protected void ExitToAttack1()
     {
         monsterController.AttackState1();
     }
 
-    private void ExitToAttack2()
+    protected void ExitToAttack2()
     {
         monsterController.AttackState2();
     }

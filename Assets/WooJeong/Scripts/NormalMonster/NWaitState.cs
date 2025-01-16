@@ -32,7 +32,7 @@ public abstract class NWaitState : MonoBehaviour, IState
     {
         while (true)
         {
-            if (monsterController.CalcDistance() > monsterController.Distance)
+            if (monsterController.CalcDistance() > monsterController.AttackRangeZ1)
             {
                 ExitToRun();
                 yield break;
@@ -71,19 +71,19 @@ public abstract class NWaitState : MonoBehaviour, IState
         StartCoroutine(RandomAttack());
     }
 
-    private void ExitToRun()
+    protected void ExitToRun()
     {
         isEnter = false;
         monsterController.RunState();
     }
 
-    private void ExitToAttack1()
+    protected void ExitToAttack1()
     {
         isEnter = false;
         monsterController.AttackState1();
     }
 
-    private void ExitToAttack2()
+    protected void ExitToAttack2()
     {
         isEnter = false;
         monsterController.AttackState2();

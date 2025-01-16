@@ -41,22 +41,22 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     protected abstract IEnumerator Attack();
 
-    protected IEnumerator ProjectAttackRange()
+    protected virtual IEnumerator ProjectAttackRange()
     {
         monsterController.Projector.size = new Vector3(monsterController.AttackRangeX1,
-                                                                monsterController.AttackRangeY1,
-                                                                monsterController.AttackRangeZ1);
+                                                        monsterController.AttackRangeY1,
+                                                        monsterController.AttackRangeZ1);
         monsterController.Projector.pivot = new Vector3(0, 0, monsterController.AttackRangeZ1 / 2);
         monsterController.BoxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ1 / 2);
         monsterController.BoxCollider.size = new Vector3(monsterController.AttackRangeX1,
-                                        monsterController.AttackRangeY1,
-                                        monsterController.AttackRangeZ1);
+                                                        monsterController.AttackRangeY1,
+                                                        monsterController.AttackRangeZ1);
         monsterController.Projector.enabled = true;
         yield return new WaitForSeconds(monsterController.ProjectionTime);
         monsterController.Projector.enabled = false;
     }
 
-    public void Exit()
+    public virtual void Exit()
     {
         if (monsterController.CalcDistance() > monsterController.Distance)
         {
@@ -68,12 +68,12 @@ public abstract class NAttackState : MonoBehaviour, IState
         }
     }
 
-    private void ExitToWait()
+    protected void ExitToWait()
     {
         monsterController.WaitState();
     }
 
-    private void ExitToRun()
+    protected void ExitToRun()
     {
         monsterController.RunState();
     }
