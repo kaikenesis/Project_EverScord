@@ -85,6 +85,23 @@ public abstract class NController : MonoBehaviour
         return false;
     }
 
+    public bool IsCoolDown(int i)
+    {
+        if (i == 1)
+        {
+            if (curCool1 > 0)
+                return false;
+            return true;
+        }
+        else if (i == 2)
+        {
+            if (curCool2 > 0)
+                return false;
+            return true;
+        }
+        return false;
+    }
+
     public int CheckCoolDown()
     {
         if (curCool1 <= 0 && curCool2 <= 0)
@@ -129,7 +146,7 @@ public abstract class NController : MonoBehaviour
         }
     }
 
-    public void Transition(IState state)
+    private void Transition(IState state)
     {
         currentState = state;
         currentState.Enter();
