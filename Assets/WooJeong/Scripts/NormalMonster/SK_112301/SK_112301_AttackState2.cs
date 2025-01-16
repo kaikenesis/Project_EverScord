@@ -56,6 +56,5 @@ public class SK_112301_AttackState2 : NAttackState
             transform.position = Vector3.Lerp(startVector, startVector + moveVector * chargeRange, t / duration);
             yield return new WaitForSeconds(Time.deltaTime);
         }
-        Debug.Log("charge end");
     }
 }
