@@ -18,27 +18,28 @@ public class SK_112301_RunState : NRunState
         if (!isEnter)
             return;
 
-        if (monsterController.CalcDistance() < attackRangeZ2 && monsterController.IsCoolDown(2))
+        Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
+        monsterController.LookPlayer();
+        transform.Translate(monsterController.MoveSpeed * Time.deltaTime * moveVector, Space.World);
+
+        float distance = monsterController.CalcDistance();
+        if (distance < attackRangeZ2 && monsterController.IsCoolDown(2))
         {
             isEnter = false;
             ExitToAttack2();
             return;
         }
-        else if (monsterController.CalcDistance() < monsterController.AttackRangeZ1 && monsterController.IsCoolDown(1))
+        else if (distance < monsterController.AttackRangeZ1 && monsterController.IsCoolDown(1))
         {
             isEnter = false;
             ExitToAttack1();
             return;
         }
-        else if(monsterController.CalcDistance() < monsterController.AttackRangeZ1)
+        else if(distance < monsterController.AttackRangeZ1)
         {
             isEnter = false;
             ExitToWait(); 
             return;
         }
-
-        Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        monsterController.LookPlayer();
-        transform.Translate(monsterController.MoveSpeed * Time.deltaTime * moveVector, Space.World);
     }
 }
