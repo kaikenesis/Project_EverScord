@@ -17,17 +17,19 @@ namespace EverScord
         public static Action<PhotonStatus> OnStatusUpdated = delegate { };
         public static Action OnCreateParty = delegate { };
         // TODO:
-        // MergeTest
+
         private void Awake()
         {
             chatClient = new ChatClient(this);
-            PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonLogin.OnConnectToPhoton += HandleConnectToPhotonChat;
+            //PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
             UISendInvite.OnSendInvite += HandleSendInvite;
         }
 
         private void OnDestroy()
         {
-            PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonLogin.OnConnectToPhoton -= HandleConnectToPhotonChat;
+            //PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
             UISendInvite.OnSendInvite -= HandleSendInvite;
         }
 
@@ -37,7 +39,7 @@ namespace EverScord
         }
 
         #region Handle Methods
-        private void HandleLobbyJoined()
+        private void HandleConnectToPhotonChat(string nickName)
         {
             ConnectToPhotonChat();
         }
@@ -73,7 +75,9 @@ namespace EverScord
             ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
             chatClient.ConnectUsingSettings(chatSettings);
         }
+        #endregion
 
+        #region Callback Chat Methods
         public void DebugReturn(DebugLevel level, string message)
         {
 

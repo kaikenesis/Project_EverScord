@@ -1,47 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
-public class SK_122101_Controller : MonoBehaviour
+public class SK_122101_Controller : NController
 {
-    [SerializeField] private float distance = 2.5f;
-    [SerializeField] private float moveSpeed = 3f;
-    public float MoveSpeed { get { return moveSpeed; } }
-    public float Distance { get { return distance; } }
-
-    private IState currentState;
-
-    private IState moveState;
-    private IState attackState;
-    private IState idleState;
-
-    void Awake()
+    protected override void Setup()
     {
-        moveState = gameObject.AddComponent<SK_122101_MoveState>();
-        attackState = gameObject.AddComponent<SK_122101_AttackState>();
-        idleState = gameObject.AddComponent<SK_122101_IdleState>();
-        IdleState();
-    }
-    public void Transition(IState state)
-    {
-        currentState = state;
-        currentState.Enter();
-    }
+        player = GameObject.Find("Player");
+        animator = GetComponentInChildren<Animator>();
+        runState = gameObject.AddComponent<SK_122101_RunState>();
+        attackState1 = gameObject.AddComponent<SK_122101_AttackState1>();
+        attackState2 = gameObject.AddComponent<SK_122101_AttackState2>();
+        waitState = gameObject.AddComponent<SK_122101_WaitState>();
+        projector = gameObject.AddComponent<DecalProjector>();
+        boxCollider = gameObject.AddComponent<BoxCollider>();
 
-    public void MoveState()
-    {
-        Transition(moveState);
-    }
+        ProjectorSetup();
 
-    public void AttackState()
-    {
-        Transition(attackState);
-    }
+        projector.enabled = false;
+        boxCollider.enabled = false;
 
-    public void IdleState()
-    {
-        Transition(idleState);
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            clipDict[clip.name] = clip.length;
+        }
     }
 }

@@ -4,79 +4,26 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class SK_112206_AttackState1 : MonoBehaviour, IState, ICoolDown
+public class SK_112206_AttackState1 : NAttackState
 {
-    private SK_112206_Controller monsterController;
-    private BoxCollider boxCollider;
-    private float curCool;
-    public float CurCool { get { return curCool; } }
-   
-    void Awake()
+    protected override void Setup()
     {
         monsterController = GetComponent<SK_112206_Controller>();
-        boxCollider = GetComponent<BoxCollider>();
     }
 
-    public void Enter()
+    protected override IEnumerator Attack()
     {
-        StartCoroutine(Attack1());
-    }
-
-    IEnumerator CoolDown()
-    {
-        curCool = monsterController.CoolDown1;
-        while (true)
-        {
-            yield return new WaitForSeconds(0.1f);
-            curCool -= 0.1f;
-            if (curCool <= 0)
-                yield break;
-        }
-    }
-
-    IEnumerator Attack1()
-    {
-        //StartCoroutine(ProjectAttackRange());
-        monsterController.Projector.size = new Vector3(monsterController.AttackRangeX, 
-                                                        monsterController.AttackRangeY,
-                                                        monsterController.AttackRangeZ);
-        monsterController.Projector.pivot = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        boxCollider.center = new Vector3(0, 0, monsterController.AttackRangeZ / 2);
-        boxCollider.size = new Vector3(monsterController.AttackRangeX, 
-                                        monsterController.AttackRangeY, 
-                                        monsterController.AttackRangeZ);
-        monsterController.Projector.enabled = true;
-        yield return new WaitForSeconds(monsterController.ProjectionTime);
-        monsterController.Projector.enabled = false;
+        yield return ProjectAttackRange();
 
         monsterController.Animator.CrossFade("Attack1", 0.25f);
         float time = monsterController.clipDict["Attack1"];
 
         yield return new WaitForSeconds(time / 3);
-        boxCollider.enabled = true;
+        monsterController.BoxCollider.enabled = true;
         yield return new WaitForSeconds(time / 3);
-        boxCollider.enabled = false;
+        monsterController.BoxCollider.enabled = false;
         yield return new WaitForSeconds(time / 3);
-        StartCoroutine(CoolDown());
+        StartCoroutine(monsterController.CoolDown1());
         Exit();
-    }
-
-    IEnumerator ProjectAttackRange()
-    {
-        monsterController.Projector.size = new Vector3(0.5f, 1, 7.5f);
-        monsterController.Projector.pivot = new Vector3(0, 0, 7.5f / 2);
-        monsterController.Projector.enabled = true;
-        yield return new WaitForSeconds(1f);
-        monsterController.Projector.enabled = false;
-    }
-
-    public void Exit()
-    {
-        monsterController.IdleState();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log("attack");
     }
 }
