@@ -27,10 +27,18 @@ namespace EverScord
         MAX
     }
 
+    public enum EPhotonState
+    {
+        NONE,
+        MATCH,
+        MAX
+    }
+
     public class PlayerData : MonoBehaviour
     {
         public ECharacter character = ECharacter.UNI;
         public EJob job = EJob.DEALER;
         public ELevel curLevel = ELevel.NORMAL;
+        public EPhotonState curPhotonState = EPhotonState.NONE;
     }
 }

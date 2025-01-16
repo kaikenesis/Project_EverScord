@@ -21,13 +21,15 @@ namespace EverScord
         private void Awake()
         {
             chatClient = new ChatClient(this);
-            PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonLogin.OnConnectToPhoton += HandleConnectToPhotonChat;
+            //PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
             UISendInvite.OnSendInvite += HandleSendInvite;
         }
 
         private void OnDestroy()
         {
-            PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonLogin.OnConnectToPhoton -= HandleConnectToPhotonChat;
+            //PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
             UISendInvite.OnSendInvite -= HandleSendInvite;
         }
 
@@ -37,7 +39,7 @@ namespace EverScord
         }
 
         #region Handle Methods
-        private void HandleLobbyJoined()
+        private void HandleConnectToPhotonChat(string nickName)
         {
             ConnectToPhotonChat();
         }
