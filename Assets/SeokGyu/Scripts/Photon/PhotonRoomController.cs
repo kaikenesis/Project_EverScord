@@ -7,13 +7,6 @@ using System.Collections;
 
 namespace EverScord
 {
-    public enum EMatchMode
-    {
-        NONE,
-        SINGLE,
-        MULTI
-    }
-
     public class PhotonRoomController : MonoBehaviourPunCallbacks
     {
         [SerializeField] private int maxPlayers;
@@ -167,7 +160,6 @@ namespace EverScord
             {
                 case EPhotonState.NONE:
                     {
-                        DebugPlayerList();
                         OnJoinRoom?.Invoke();
                         DisplayRoomPlayers();
                     }
@@ -179,13 +171,7 @@ namespace EverScord
                     break;
             }
 
-            // 매칭중에는 막아야함
-            if(true)
-            {
-                DebugPlayerList();
-                OnJoinRoom?.Invoke();
-                DisplayRoomPlayers();
-            }
+            DebugPlayerList();
         }
         public override void OnLeftRoom()
         {
@@ -202,30 +188,14 @@ namespace EverScord
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Random Failed {returnCode} : {message}");
-            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
-            {
-                case EPhotonState.NONE:
-                    {
-                    }
-                    break;
-                case EPhotonState.MATCH:
-                    {
-                    }
-                    break;
-            }
+            
             //CreatePhotonRoom();
         }
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Room Failed {returnCode} : {message}");
-            if (bMatch)
-            {
-
-            }
-            else
-            {
-                //CreatePhotonRoom();
-            }
+            
+            //CreatePhotonRoom();
         }
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
@@ -235,21 +205,9 @@ namespace EverScord
             {
                 case EPhotonState.NONE:
                     {
+                        DisplayRoomPlayers();
                     }
                     break;
-                case EPhotonState.MATCH:
-                    {
-                    }
-                    break;
-            }
-
-            if (bMatch)
-            {
-                OnUpdateMatchRoom?.Invoke();
-            }
-            else
-            {
-                DisplayRoomPlayers();
             }
             DebugPlayerList();
         }
@@ -261,22 +219,10 @@ namespace EverScord
             {
                 case EPhotonState.NONE:
                     {
+                        OnOtherPlayerLeftRoom?.Invoke(otherPlayer);
+                        DisplayRoomPlayers();
                     }
                     break;
-                case EPhotonState.MATCH:
-                    {
-                    }
-                    break;
-            }
-
-            if (bMatch)
-            {
-                OnUpdateMatchRoom?.Invoke();
-            }
-            else
-            {
-                OnOtherPlayerLeftRoom?.Invoke(otherPlayer);
-                DisplayRoomPlayers();
             }
             DebugPlayerList();
         }

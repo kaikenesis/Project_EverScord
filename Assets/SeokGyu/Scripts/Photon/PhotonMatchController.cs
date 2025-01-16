@@ -47,6 +47,7 @@ namespace EverScord
             // 매치메이킹은 로비에서 진행되어야함; 에바야
 
             tryCount = count;
+            GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState = EPhotonState.MATCH;
             bMatching = true;
             if (PhotonNetwork.InRoom == true)
             {
@@ -263,19 +264,31 @@ namespace EverScord
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            if(bMatching)
+            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
             {
-                tryCount++;
-                HandleMatchMultiPlay(tryCount);
+                case EPhotonState.MATCH:
+                    {
+                        tryCount++;
+                        HandleMatchMultiPlay(tryCount);
+                    }
+                    break;
             }
         }
 
         public override void OnJoinedLobby()
         {
-            if (bMatching)
+            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
             {
-                HandleMatchMultiPlay(tryCount);
+                case EPhotonState.MATCH:
+                    {
+                        HandleMatchMultiPlay(tryCount);
+                    }
+                    break;
             }
+        }
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+
         }
         #endregion
     }
