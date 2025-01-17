@@ -5,29 +5,30 @@ public class BSequenceNode : BehaviorNode
 {
     public override NodeState Evaluate()
     {
-        bool anyChildIsRunning = false;
-
-        for (int i = 0; i < children.Count; i++)
+        for (int i = start; i < children.Count; i++)
         {
             switch (children[i].Evaluate())
             {
                 case NodeState.FAILURE:
                     state = NodeState.FAILURE;
+                    start = 0;
                     return state;
 
                 case NodeState.SUCCESS:
                     continue;
 
                 case NodeState.RUNNING:
-                    anyChildIsRunning = true;
-                    continue;
+                    start = i;
+                    state = NodeState.RUNNING;
+                    return state;
 
                 default:
                     continue;
             }
         }
 
-        state = anyChildIsRunning ? NodeState.RUNNING : NodeState.SUCCESS;
+        state = NodeState.SUCCESS;
+        start = 0;
         return state;
     }
 }

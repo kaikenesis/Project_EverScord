@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df17de535a9b87547906a5d314b19e28, type: 3}
-  m_Name: Sequence1
+  m_Script: {fileID: 11500000, guid: 1e160ac03ed8e26489bd2c902834af99, type: 3}
+  m_Name: BossData
   m_EditorClassIdentifier: 
-  children:
-  - {fileID: 11400000, guid: 193e48ac8cd59364e9d4f511cb2017d8, type: 2}
+  <Hp>k__BackingField: 100
+  <MaxHp>k__BackingField: 100
+  <Speed>k__BackingField: 3
+  <AttackRange>k__BackingField: 10
