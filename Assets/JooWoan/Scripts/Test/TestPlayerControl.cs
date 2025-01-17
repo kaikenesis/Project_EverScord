@@ -15,16 +15,18 @@ namespace EverScord.Character
         [Header("Animation")]
         [SerializeField] private Animator anim;
         [SerializeField] private float transitionDampTime;
+        [SerializeField] private float smoothRotation;
 
         [Header("Weapon")]
         [SerializeField] private GameObject weapon;
 
         private CharacterController characterControl;
         private Vector3 movement, lookPosition;
+        private Quaternion lookRotation;
         private float fallSpeed, horizontalInput, verticalInput;
 
         private Camera mainCam;
-        private Vector3 camForward, moveInput, convertedInput;
+        private Vector3 camForward, camRight, moveInput, convertedInput;
 
         void Awake()
         {
@@ -52,14 +54,10 @@ namespace EverScord.Character
             horizontalInput = Input.GetAxisRaw("Horizontal");
             verticalInput   = Input.GetAxisRaw("Vertical");
 
-            camForward = Vector3.Scale(mainCam.transform.up, new Vector3(1, 0, 1)).normalized;
+            camForward = Vector3.Scale(mainCam.transform.forward, new Vector3(1, 0, 1)).normalized;
+            camRight   = Vector3.Scale(mainCam.transform.right,   new Vector3(1, 0, 1)).normalized;
             
-            moveInput = (
-                horizontalInput * mainCam.transform.right +
-                verticalInput * camForward
-            );
-
-            movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
+            moveInput  = horizontalInput * camRight + verticalInput * camForward;
         }
 
         private void ConvertInput()
@@ -86,6 +84,8 @@ namespace EverScord.Character
 
         private void Move()
         {
+            movement = new Vector3(moveInput.x, 0, moveInput.z);
+
             Vector3 velocity = movement * speed;
             velocity.y = fallSpeed;
             
@@ -96,11 +96,14 @@ namespace EverScord.Character
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (Physics.Raycast(ray, out RaycastHit hit, groundLayer))
+            {
                 lookPosition = hit.point;
+                lookPosition.y = transform.position.y;
+                lookRotation = Quaternion.LookRotation(lookPosition - transform.position);
+            }
 
-            lookPosition.y = transform.position.y;
-            transform.LookAt(lookPosition, Vector3.up);
+            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * smoothRotation);
         }
 
         public bool IsGrounded
@@ -114,6 +117,8 @@ namespace EverScord.Character
                 );
             }
         }
+
+        public bool IsMoving => characterControl.velocity.magnitude > 0;
 
         #region GIZMO
         private void OnDrawGizmosSelected()
