@@ -25,8 +25,16 @@ namespace EverScord.Character
                 animDict[clip.name] = clip;
         }
 
-        public void AnimateMovement(Vector3 moveDir)
+        public void AnimateMovement(CharacterControl character, Vector3 moveDir)
         {
+            if (!character.IsMoving)
+            {
+                anim.SetBool("isMoving", false);
+                return;
+            }
+
+            anim.SetBool("isMoving", true);
+
             anim.SetFloat("Horizontal", moveDir.x, transitionDampTime, Time.deltaTime);
             anim.SetFloat("Vertical", moveDir.z, transitionDampTime, Time.deltaTime);
         }

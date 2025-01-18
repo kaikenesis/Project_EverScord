@@ -17,17 +17,17 @@ namespace EverScord.Character
         [SerializeField] private Animator anim;
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float smoothRotation;
-        [field: SerializeField] public float shootStanceDuration { get; private set; }
+        [field: SerializeField] public float ShootStanceDuration { get; private set; }
 
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private float coolDown;
 
-        public CharacterAnimation characterAnimation    { get; private set; }
-        public InputInfo playerInputInfo                { get; private set; }
+        public CharacterAnimation AnimationControl              { get; private set; }
+        public InputInfo PlayerInputInfo                        { get; private set; }
 
-        private CharacterController characterControl;
+        private CharacterController controller;
         private Weapon weapon;
         private Camera mainCam;
 
@@ -35,19 +35,20 @@ namespace EverScord.Character
         private Quaternion lookRotation;
         private float fallSpeed;
 
+
         void Awake()
         {
-            characterAnimation = new CharacterAnimation(
+            AnimationControl = new CharacterAnimation(
                 anim,
                 smoothRotation,
                 transitionDampTime
             );
 
             weapon = new Weapon(bulletPrefab, coolDown);
-            characterControl = GetComponent<CharacterController>();
+            controller = GetComponent<CharacterController>();
 
             // Unity docs: Set skinwidth 10% of the Radius
-            characterControl.skinWidth = characterControl.radius * 0.1f;
+            controller.skinWidth = controller.radius * 0.1f;
 
             mainCam = Camera.main;
         }
@@ -57,7 +58,7 @@ namespace EverScord.Character
             SetInput();
             SetMovingDirection();
 
-            characterAnimation.AnimateMovement(moveDir);
+            AnimationControl.AnimateMovement(this, moveDir);
 
             weapon.CooldownTimer();
             weapon.Shoot(this);
@@ -69,10 +70,10 @@ namespace EverScord.Character
 
         private void SetInput()
         {
-            playerInputInfo = InputControl.ReceiveInput();
-            playerInputInfo = InputControl.GetCameraRelativeInput(playerInputInfo, mainCam);
+            PlayerInputInfo = InputControl.ReceiveInput();
+            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, mainCam);
 
-            moveInput = playerInputInfo.cameraRelativeInput;
+            moveInput = PlayerInputInfo.cameraRelativeInput;
         }
 
         private void SetMovingDirection()
@@ -100,8 +101,8 @@ namespace EverScord.Character
 
             Vector3 velocity = movement * speed;
             velocity.y = fallSpeed;
-            
-            characterControl.Move(velocity * Time.deltaTime);
+
+            controller.Move(velocity * Time.deltaTime);
         }
 
         private void Turn()
@@ -115,7 +116,16 @@ namespace EverScord.Character
                 lookRotation = Quaternion.LookRotation(lookPosition - transform.position);
             }
 
-            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * smoothRotation);
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                lookRotation,
+                Time.deltaTime * smoothRotation
+            ).normalized;
+        }
+
+        public void SetIsAiming(bool state)
+        {
+            IsAiming = state;
         }
 
         public bool IsGrounded
@@ -134,11 +144,12 @@ namespace EverScord.Character
         {
             get
             {
-                return playerInputInfo.holdLeftMouseButton;
+                return PlayerInputInfo.holdLeftMouseButton;
             }
         }
 
-        public bool IsMoving => characterControl.velocity.magnitude > 0;
+        public bool IsAiming { get; private set; }
+        public bool IsMoving => moveInput.magnitude > 0;
 
         #region GIZMO
         private void OnDrawGizmosSelected()

@@ -7,8 +7,6 @@ namespace EverScord.Weapons
     {
         private GameObject bulletPrefab;
         private float cooldown, elapsedTime;
-
-        private bool flag = false;
         private bool isCooldown => elapsedTime < cooldown;
 
         public Weapon(GameObject bulletPrefab, float cooldown)
@@ -31,11 +29,11 @@ namespace EverScord.Weapons
         {
             float cooldownOvertime = elapsedTime - cooldown;
 
-            if (flag && (cooldownOvertime > shooter.shootStanceDuration))
+            if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
             {
-                flag = false;
-                shooter.characterAnimation.AdjustPosture(false);
-                shooter.characterAnimation.Play("Ned_ShootEnd");
+                shooter.SetIsAiming(false);
+                shooter.AnimationControl.AdjustPosture(false);
+                shooter.AnimationControl.Play("Ned_ShootEnd");
                 return;
             }
 
@@ -43,13 +41,13 @@ namespace EverScord.Weapons
                 return;
             
             elapsedTime = 0f;
-            flag = true;
+            shooter.SetIsAiming(true);
 
             // GameObject bullet = PoolManager.GetObject(bulletPrefab.name);
             // bullet.transform.position = shootTransform.position;
 
-            shooter.characterAnimation.AdjustPosture(true);
-            shooter.characterAnimation.Play("Ned_Shoot");
+            shooter.AnimationControl.AdjustPosture(true);
+            shooter.AnimationControl.Play("Ned_Shoot");
         }
     }
 }
