@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace EverScord
 {
@@ -11,9 +12,11 @@ namespace EverScord
         [SerializeField] private UIRoomPlayer uiRoomPlayerPrefab;
         [SerializeField] private GameObject exitButton;
         [SerializeField] private GameObject roomContainer;
+        [SerializeField] private GameObject sendInviteContainer;
         [SerializeField] private GameObject inviteButton;
         [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
+        private UIRoomPlayer[] uiRoomPlayers;
 
         public static Action OnLeaveRoom = delegate { };
 
@@ -37,6 +40,15 @@ namespace EverScord
             gameObject.SetActive(false);
 
             SetObjectsVisibility(false);
+
+            uiRoomPlayers = new UIRoomPlayer[3];
+            for (int i = 0; i < 3; i++)
+            {
+                UIRoomPlayer uiRoomPlayer = Instantiate(uiRoomPlayerPrefab, roomContainer.transform);
+                uiRoomPlayers[i] = uiRoomPlayer;
+            }
+
+            Instantiate(inviteButton, roomContainer.transform);
         }
 
         private void HandleJoinRoom()
@@ -77,26 +89,35 @@ namespace EverScord
         //Room내 플레이어 목록 UI 갱신(수정 필요)
         private void HandleDisplayPlayers(List<string> players)
         {
-            foreach (Transform child in roomContainer.transform)
+            int i = 0;
+            for (i = 0; i < players.Count; i++)
             {
-                Destroy(child.gameObject);
+                uiRoomPlayers[i].gameObject.SetActive(true);
+                uiRoomPlayers[i].Initialize(players[i]);
             }
 
-            foreach (string player in players)
+            for (; i < 3; i++)
             {
-                UIRoomPlayer uiRoomPlayer = Instantiate(uiRoomPlayerPrefab, roomContainer.transform);
-                uiRoomPlayer.Initialize(player);
+                uiRoomPlayers[i].gameObject.SetActive(false);
             }
 
-            if(players.Count < 3)
+            if (players.Count < 3)
             {
-                Instantiate(inviteButton, roomContainer.transform);
+                inviteButton.SetActive(true);
             }
+            else
+                inviteButton.SetActive(false);
         }
 
         public void LeaveRoom()
         {
             OnLeaveRoom?.Invoke();
+        }
+
+        public void ToggleSendInviteContainor()
+        {
+            Debug.Log("Click");
+            sendInviteContainer.SetActive(!sendInviteContainer.activeSelf);
         }
     }
 }

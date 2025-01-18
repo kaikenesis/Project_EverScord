@@ -44,7 +44,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5859969205126530442}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &7870418582757800614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,7 +146,6 @@ GameObject:
   - component: {fileID: 6048567651221834120}
   - component: {fileID: 5292244217138121242}
   - component: {fileID: 2084306738744507019}
-  - component: {fileID: 8074284289044286001}
   m_Layer: 5
   m_Name: InviteButton
   m_TagString: Untagged
@@ -202,7 +201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -255,29 +254,4 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5292244217138121242}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7693468032115892943, guid: 609b922041601a9499ae959ef986feaa, type: 3}
-        m_TargetAssemblyTypeName: EverScord.UISendInvite, Assembly-CSharp
-        m_MethodName: ToggleInvite
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &8074284289044286001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6528874814378902713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toggleObject: {fileID: 0}
+      m_Calls: []
