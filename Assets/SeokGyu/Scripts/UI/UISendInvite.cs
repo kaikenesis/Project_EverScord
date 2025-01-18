@@ -20,5 +20,10 @@ namespace EverScord
             if (string.IsNullOrEmpty(displayName)) return;
             OnSendInvite?.Invoke(displayName);
         }
+
+        public void ToggleInvite()
+        {
+            gameObject.SetActive(!gameObject.activeSelf);
+        }
     }
 }

@@ -8,10 +8,10 @@ namespace EverScord
 {
     public class UIDisplayRoom : MonoBehaviour
     {
-        [SerializeField] private TMP_Text roomGameModeText;
         [SerializeField] private UIRoomPlayer uiRoomPlayerPrefab;
         [SerializeField] private GameObject exitButton;
         [SerializeField] private GameObject roomContainer;
+        [SerializeField] private GameObject inviteButton;
         [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
 
@@ -23,14 +23,20 @@ namespace EverScord
             PhotonRoomController.OnRoomLeft += HandleRoomLeft;
             PhotonRoomController.OnDisplayPlayers += HandleDisplayPlayers;
 
-
-            gameObject.SetActive(false);
+            Init();
         }
         private void OnDestroy()
         {
             PhotonRoomController.OnJoinRoom -= HandleJoinRoom;
             PhotonRoomController.OnRoomLeft -= HandleRoomLeft;
             PhotonRoomController.OnDisplayPlayers -= HandleDisplayPlayers;
+        }
+
+        private void Init()
+        {
+            gameObject.SetActive(false);
+
+            SetObjectsVisibility(false);
         }
 
         private void HandleJoinRoom()
@@ -40,11 +46,7 @@ namespace EverScord
             if(exitButton != null) exitButton.SetActive(true);
             if(roomContainer != null) roomContainer.SetActive(true);
 
-            int count = hideObjects.Length;
-            for (int i = 0; i < count; i++)
-            {
-                hideObjects[i].SetActive(false);
-            }
+            SetObjectsVisibility(true);
         }
 
         private void HandleRoomLeft()
@@ -54,10 +56,21 @@ namespace EverScord
             if (exitButton != null) exitButton.SetActive(false);
             if (roomContainer != null) roomContainer.SetActive(false);
 
+            SetObjectsVisibility(false);
+        }
+
+        private void SetObjectsVisibility(bool bVisible)
+        {
             int count = showObjects.Length;
             for (int i = 0; i < count; i++)
             {
-                showObjects[i].SetActive(true);
+                showObjects[i].SetActive(bVisible);
+            }
+
+            count = hideObjects.Length;
+            for (int i = 0; i < count; i++)
+            {
+                hideObjects[i].SetActive(!bVisible);
             }
         }
 
@@ -73,6 +86,11 @@ namespace EverScord
             {
                 UIRoomPlayer uiRoomPlayer = Instantiate(uiRoomPlayerPrefab, roomContainer.transform);
                 uiRoomPlayer.Initialize(player);
+            }
+
+            if(players.Count < 3)
+            {
+                Instantiate(inviteButton, roomContainer.transform);
             }
         }
 

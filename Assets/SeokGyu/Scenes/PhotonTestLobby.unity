@@ -250,7 +250,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224806468}
-  - component: {fileID: 224806469}
   m_Layer: 5
   m_Name: Main
   m_TagString: Untagged
@@ -283,24 +282,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &224806469
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 224806467}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a8ac18d981409c43beec7d36a07a9b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomGameModeText: {fileID: 0}
-  uiRoomPlayerPrefab: {fileID: 2802581190963127729, guid: e9f0313e3f5c6c047a21e7993b1c8ce3, type: 3}
-  exitButton: {fileID: 0}
-  roomContainer: {fileID: 541708588}
-  hideObjects: []
-  showObjects: []
 --- !u!1 &252701337
 GameObject:
   m_ObjectHideFlags: 0
@@ -1381,7 +1362,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8549247223990952150, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1964840661}
   m_SourcePrefab: {fileID: 100100000, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
 --- !u!224 &598635803 stripped
 RectTransform:
@@ -3573,6 +3557,33 @@ Transform:
   - {fileID: 19080613}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1964840658 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8549247223990952150, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+  m_PrefabInstance: {fileID: 598635802}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1964840661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964840658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8ac18d981409c43beec7d36a07a9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiRoomPlayerPrefab: {fileID: 2802581190963127729, guid: e9f0313e3f5c6c047a21e7993b1c8ce3, type: 3}
+  exitButton: {fileID: 0}
+  roomContainer: {fileID: 541708588}
+  inviteButton: {fileID: 6528874814378902713, guid: 3de5c87ae6567154fad6c1d3231c5b6e, type: 3}
+  hideObjects: []
+  showObjects:
+  - {fileID: 721014613}
+  - {fileID: 1664030819}
+  - {fileID: 635771393}
+  - {fileID: 1676444511}
 --- !u!1 &2136023985
 GameObject:
   m_ObjectHideFlags: 0
