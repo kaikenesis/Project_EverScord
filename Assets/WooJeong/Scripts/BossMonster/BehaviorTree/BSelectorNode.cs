@@ -5,7 +5,7 @@ public class BSelectorNode : BehaviorNode
 {
     public override NodeState Evaluate()
     {
-        for (int i = 0; i < children.Count; i++)
+        for (int i = start; i < children.Count; i++)
         {
             switch (children[i].Evaluate())
             {

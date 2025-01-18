@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using UnityEngine;
 
 [UnityEngine.CreateAssetMenu(menuName = "ScriptableObjects/Composite/SequenceNode")]
 public class BSequenceNode : BehaviorNode

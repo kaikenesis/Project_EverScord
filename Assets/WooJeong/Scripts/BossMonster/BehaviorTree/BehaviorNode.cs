@@ -17,18 +17,6 @@ public abstract class BehaviorNode : ScriptableObject
     private Dictionary<string, object> blackBoard;
     protected int start = 0;
 
-    public virtual void Setup(GameObject gameObject)
-    {
-        if (children == null)
-            return;
-
-        int count = children.Count;
-        for (int i = 0; i < count; i++)
-        {
-            children[i].Setup(gameObject);
-        }
-    }
-
     public void Init()
     {
         if (children == null)
@@ -39,6 +27,18 @@ public abstract class BehaviorNode : ScriptableObject
         {
             children[i].parent = this;
             children[i].Init();
+        }
+    }
+
+    public virtual void Setup(GameObject gameObject)
+    {
+        if (children == null)
+            return;
+
+        int count = children.Count;
+        for (int i = 0; i < count; i++)
+        {
+            children[i].Setup(gameObject);
         }
     }
 

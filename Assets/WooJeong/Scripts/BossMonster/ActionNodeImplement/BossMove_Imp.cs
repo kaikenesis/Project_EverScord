@@ -1,49 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
-public class BossMove_Imp : MonoBehaviour
+public class BossMove_Imp : ActionNodeImplement
 {
     private GameObject player;
     private float speed;
     private float distance;
-    private bool isClose = false;
-    private Coroutine move;
 
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    public void Init(float sp, float dis)
+    public override void Setup(BossData bossData)
     {
-        speed = sp; 
-        distance = dis;
+        speed = bossData.Speed;
+        distance = bossData.AttackRange;
     }
 
-    public NodeState Evaluate()
+    protected override IEnumerator Action()
     {
-        if(isClose)
-            return NodeState.SUCCESS;
-
-        if(move != null)
-            return NodeState.RUNNING;
-        else
-            move = StartCoroutine(Move());
-        
-        return NodeState.RUNNING;
-    }
-
-    private IEnumerator Move()
-    {
-        isClose = false;
+        Debug.Log("move start");
         while (true)
         {
             Vector3 vec = (player.transform.position - transform.position);
             if (vec.magnitude < distance)
             {
-                isClose = true;
-                move = null;
+                Debug.Log("move end");
+                isEnd = true;
+                action = null;
                 yield break;
             }
             Vector3 moveVector = vec.normalized;

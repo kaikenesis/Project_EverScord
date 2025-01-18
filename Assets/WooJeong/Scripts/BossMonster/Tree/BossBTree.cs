@@ -12,7 +12,8 @@ public class BossBTree : BTree
     {
         root.Init();
         root.CreateBlackboard();
-        root.SetValue("BossData", bossData);       
+        bossData.ResetParams();
+        root.SetValue("BossData", bossData);
         root.Setup(gameObject);
         //navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
         //root.SetValue("NavMeshAgent", navMeshAgent);
