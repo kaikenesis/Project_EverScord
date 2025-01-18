@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EverScord.Character
 {
-    public class TestPlayerControl : MonoBehaviour
+    public class CharacterControl : MonoBehaviour
     {
         [Header("Character")]
         [SerializeField] private float speed, gravity;
@@ -20,66 +20,67 @@ namespace EverScord.Character
         [Header("Weapon")]
         [SerializeField] private GameObject weapon;
 
+        private CharacterAnimation characterAnimation;
         private CharacterController characterControl;
-        private Vector3 movement, lookPosition;
-        private Quaternion lookRotation;
-        private float fallSpeed, horizontalInput, verticalInput;
 
         private Camera mainCam;
-        private Vector3 camForward, camRight, moveInput, convertedInput;
+        private Vector3 movement, lookPosition, moveInput, moveDir;
+        private Quaternion lookRotation;
+        private float fallSpeed;
 
         void Awake()
         {
+            characterAnimation = new CharacterAnimation(
+                anim,
+                smoothRotation,
+                transitionDampTime
+            );
+
             characterControl = GetComponent<CharacterController>();
-            mainCam = Camera.main;
 
             // Unity docs: Set skinwidth 10% of the Radius
             characterControl.skinWidth = characterControl.radius * 0.1f;
+
+            mainCam = Camera.main;
         }
 
         void Update()
         {
-            ReceiveInput();
-            ConvertInput();
+            SetInput();
+            SetMovingDirection();
 
-            AnimateMovement();
+            characterAnimation.AnimateMovement(moveDir);
 
             ApplyGravity();
             Move();
             Turn();
         }
 
-        private void ReceiveInput()
+        private void SetInput()
         {
-            horizontalInput = Input.GetAxisRaw("Horizontal");
-            verticalInput   = Input.GetAxisRaw("Vertical");
-
-            camForward = Vector3.Scale(mainCam.transform.forward, new Vector3(1, 0, 1)).normalized;
-            camRight   = Vector3.Scale(mainCam.transform.right,   new Vector3(1, 0, 1)).normalized;
-            
-            moveInput  = horizontalInput * camRight + verticalInput * camForward;
+            moveInput = InputControl.ConvertRelativeInput(
+                InputControl.ReceiveInput(),
+                mainCam
+            );
         }
 
-        private void ConvertInput()
+        private void SetMovingDirection()
         {
             if (moveInput.magnitude > 1f)
                 moveInput.Normalize();
-            
-            convertedInput = transform.InverseTransformDirection(moveInput);
-        }
 
-        private void AnimateMovement()
-        {
-            anim.SetFloat("Horizontal", convertedInput.x, transitionDampTime, Time.deltaTime);
-            anim.SetFloat("Vertical",   convertedInput.z, transitionDampTime, Time.deltaTime);
+            moveDir = transform.InverseTransformDirection(moveInput);
         }
         
         private void ApplyGravity()
         {
             if (IsGrounded)
+            {
                 fallSpeed = -0.5f;
-            else
-                fallSpeed += gravity * Time.deltaTime;
+                return;
+            }
+
+            fallSpeed += gravity * Time.deltaTime;
         }
 
         private void Move()

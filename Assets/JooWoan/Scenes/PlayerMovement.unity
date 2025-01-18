@@ -590,12 +590,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  gravity: -40
+  gravity: -30
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   groundCheckRadius: 0.1
-  groundCheckOffset: {x: 0, y: 0.06, z: 0}
+  groundCheckOffset: {x: 0, y: 0.05, z: 0}
   anim: {fileID: 3177309430181569141}
   transitionDampTime: 0.05
   smoothRotation: 15
@@ -625,7 +625,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.037
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1.22, z: 0.11}
+  m_Center: {x: 0, y: 1.25, z: 0.11}
 --- !u!114 &1985457673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -834,7 +834,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2056050387}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}

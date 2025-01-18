@@ -4,7 +4,7 @@ namespace EverScord.Character
 {
     public class BulletSpawner : MonoBehaviour
     {
-        [SerializeField] private TestPlayerControl player;
+        [SerializeField] private CharacterControl player;
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private Animator anim;
         [SerializeField] private Transform shootTransform;
