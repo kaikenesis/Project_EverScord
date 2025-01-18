@@ -4,21 +4,36 @@ namespace EverScord.Character
 {
     public class InputControl
     {
-        public static Vector3 ReceiveInput()
+        public static InputInfo ReceiveInput()
         {
-            float horizontalInput = Input.GetAxisRaw("Horizontal");
-            float verticalInput = Input.GetAxisRaw("Vertical");
+            InputInfo info = new InputInfo();
 
-            return new Vector3(horizontalInput, 0, verticalInput);
+            info.horizontalInput        = Input.GetAxisRaw("Horizontal");
+            info.verticalInput          = Input.GetAxisRaw("Vertical");
+            info.holdLeftMouseButton = Input.GetMouseButton(0);
+
+            return info;
         }
 
-        public static Vector3 ConvertRelativeInput(Vector3 playerInput, Camera playerCam)
+        public static InputInfo GetCameraRelativeInput(InputInfo playerInput, Camera playerCam)
         {
             Vector3 camForward = Vector3.Scale(playerCam.transform.forward, new Vector3(1, 0, 1)).normalized;
             Vector3 camRight = Vector3.Scale(playerCam.transform.right, new Vector3(1, 0, 1)).normalized;
 
-            return playerInput.x * camRight + playerInput.z * camForward;
+            playerInput.cameraRelativeInput =
+                playerInput.horizontalInput * camRight +
+                playerInput.verticalInput * camForward;
+
+            return playerInput;
         }
+    }
+
+    public struct InputInfo
+    {
+        public Vector3 cameraRelativeInput;
+        public float horizontalInput;
+        public float verticalInput;
+        public bool holdLeftMouseButton;
     }
 }
 

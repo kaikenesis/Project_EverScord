@@ -1,4 +1,5 @@
 using UnityEngine;
+using EverScord.Weapons;
 
 namespace EverScord.Character
 {
@@ -16,14 +17,20 @@ namespace EverScord.Character
         [SerializeField] private Animator anim;
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float smoothRotation;
+        [field: SerializeField] public float shootStanceDuration { get; private set; }
 
         [Header("Weapon")]
-        [SerializeField] private GameObject weapon;
+        [SerializeField] private GameObject weaponPrefab;
+        [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private float coolDown;
 
-        private CharacterAnimation characterAnimation;
+        public CharacterAnimation characterAnimation    { get; private set; }
+        public InputInfo playerInputInfo                { get; private set; }
+
         private CharacterController characterControl;
-
+        private Weapon weapon;
         private Camera mainCam;
+
         private Vector3 movement, lookPosition, moveInput, moveDir;
         private Quaternion lookRotation;
         private float fallSpeed;
@@ -36,6 +43,7 @@ namespace EverScord.Character
                 transitionDampTime
             );
 
+            weapon = new Weapon(bulletPrefab, coolDown);
             characterControl = GetComponent<CharacterController>();
 
             // Unity docs: Set skinwidth 10% of the Radius
@@ -51,6 +59,9 @@ namespace EverScord.Character
 
             characterAnimation.AnimateMovement(moveDir);
 
+            weapon.CooldownTimer();
+            weapon.Shoot(this);
+
             ApplyGravity();
             Move();
             Turn();
@@ -58,10 +69,10 @@ namespace EverScord.Character
 
         private void SetInput()
         {
-            moveInput = InputControl.ConvertRelativeInput(
-                InputControl.ReceiveInput(),
-                mainCam
-            );
+            playerInputInfo = InputControl.ReceiveInput();
+            playerInputInfo = InputControl.GetCameraRelativeInput(playerInputInfo, mainCam);
+
+            moveInput = playerInputInfo.cameraRelativeInput;
         }
 
         private void SetMovingDirection()
@@ -116,6 +127,14 @@ namespace EverScord.Character
                     groundCheckRadius,
                     groundLayer
                 );
+            }
+        }
+
+        public bool IsShooting
+        {
+            get
+            {
+                return playerInputInfo.holdLeftMouseButton;
             }
         }
 

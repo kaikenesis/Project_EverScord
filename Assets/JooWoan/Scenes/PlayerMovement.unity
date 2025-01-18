@@ -552,7 +552,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1985457670}
   - component: {fileID: 1985457671}
-  - component: {fileID: 1985457673}
   - component: {fileID: 1985457672}
   m_Layer: 0
   m_Name: TestPlayer
@@ -599,7 +598,10 @@ MonoBehaviour:
   anim: {fileID: 3177309430181569141}
   transitionDampTime: 0.05
   smoothRotation: 15
-  weapon: {fileID: 1500956068}
+  <shootStanceDuration>k__BackingField: 2
+  weaponPrefab: {fileID: 1500956068}
+  bulletPrefab: {fileID: 0}
+  coolDown: 0.2
 --- !u!143 &1985457672
 CharacterController:
   m_ObjectHideFlags: 0
@@ -626,27 +628,6 @@ CharacterController:
   m_SkinWidth: 0.037
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1.25, z: 0.11}
---- !u!114 &1985457673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1985457668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d3b267cb4e50854098e08fe884b09c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 1985457671}
-  bulletPrefab: {fileID: 0}
-  anim: {fileID: 3177309430181569141}
-  shootTransform: {fileID: 0}
-  shootClip: {fileID: 7400000, guid: ae1bb34b40ae8b84ea9606c0ddf6c97d, type: 2}
-  shootEndClip: {fileID: 7400000, guid: 0281e902252276745884f100454a3548, type: 2}
-  adjustShootClip: {fileID: 7400000, guid: 0b2d8d6363573dd48aa4d31863ddb4a6, type: 2}
-  idleClip: {fileID: 7400000, guid: ef7e4d4af8a5a5742bf219b205af2317, type: 2}
-  coolDown: 0.2
 --- !u!1 &2044011227
 GameObject:
   m_ObjectHideFlags: 0
