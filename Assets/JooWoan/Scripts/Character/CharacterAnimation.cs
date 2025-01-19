@@ -10,16 +10,12 @@ namespace EverScord.Character
         public float transitionDampTime { get; private set; }
 
         private IDictionary<string, AnimationClip> animDict = new Dictionary<string, AnimationClip>();
-        private int adjustLayer;
 
         public CharacterAnimation(Animator anim, float smoothRotation, float transitionDampTime)
         {
             this.anim = anim;
             this.smoothRotation = smoothRotation;
             this.transitionDampTime = transitionDampTime;
-
-            adjustLayer = anim.GetLayerIndex("AdjustMask");
-            anim.SetLayerWeight(adjustLayer, 0f);
 
             foreach (AnimationClip clip in anim.runtimeAnimatorController.animationClips)
                 animDict[clip.name] = clip;
@@ -39,20 +35,11 @@ namespace EverScord.Character
             anim.SetFloat("Vertical", moveDir.z, transitionDampTime, Time.deltaTime);
         }
 
-        public void AdjustPosture(bool shouldAdjust)
+        public void SetAimRig(CharacterControl character)
         {
-            float layerWeight = anim.GetLayerWeight(adjustLayer);
-
-            if (shouldAdjust && layerWeight == 0f)
-            {
-                anim.SetLayerWeight(adjustLayer, 1f);
-                anim.Play("AdjustShoot", -1, 0f);
-            }
-            else if (!shouldAdjust && layerWeight > 0)
-            {
-                anim.SetLayerWeight(adjustLayer, 0f);
-                anim.Play("AdjustReset", -1, 0f);
-            }
+            float result = character.IsAiming ? 1f : 0f;
+            character.Aim.weight = result;
+            character.LeftHandIK.weight = result;
         }
 
         public void Play(string clipName)

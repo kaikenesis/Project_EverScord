@@ -32,7 +32,7 @@ namespace EverScord.Weapons
             if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
             {
                 shooter.SetIsAiming(false);
-                shooter.AnimationControl.AdjustPosture(false);
+                shooter.AnimationControl.SetAimRig(shooter);
                 shooter.AnimationControl.Play("Ned_ShootEnd");
                 return;
             }
@@ -42,11 +42,11 @@ namespace EverScord.Weapons
             
             elapsedTime = 0f;
             shooter.SetIsAiming(true);
+            shooter.AnimationControl.SetAimRig(shooter);
 
             // GameObject bullet = PoolManager.GetObject(bulletPrefab.name);
             // bullet.transform.position = shootTransform.position;
 
-            shooter.AnimationControl.AdjustPosture(true);
             shooter.AnimationControl.Play("Ned_Shoot");
         }
     }

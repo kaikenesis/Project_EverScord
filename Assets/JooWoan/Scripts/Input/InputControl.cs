@@ -10,7 +10,8 @@ namespace EverScord.Character
 
             info.horizontalInput        = Input.GetAxisRaw("Horizontal");
             info.verticalInput          = Input.GetAxisRaw("Vertical");
-            info.holdLeftMouseButton = Input.GetMouseButton(0);
+            info.holdLeftMouseButton    = Input.GetMouseButton(0);
+            info.mousePosition          = Input.mousePosition;
 
             return info;
         }
@@ -31,6 +32,7 @@ namespace EverScord.Character
     public struct InputInfo
     {
         public Vector3 cameraRelativeInput;
+        public Vector3 mousePosition;
         public float horizontalInput;
         public float verticalInput;
         public bool holdLeftMouseButton;
