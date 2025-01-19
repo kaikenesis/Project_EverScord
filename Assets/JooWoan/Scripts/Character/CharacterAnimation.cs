@@ -25,14 +25,13 @@ namespace EverScord.Character
         {
             if (!character.IsMoving)
             {
-                anim.SetBool("isMoving", false);
+                anim.SetBool(ConstStrings.PARAM_ISMOVING, false);
                 return;
             }
 
-            anim.SetBool("isMoving", true);
-
-            anim.SetFloat("Horizontal", moveDir.x, transitionDampTime, Time.deltaTime);
-            anim.SetFloat("Vertical", moveDir.z, transitionDampTime, Time.deltaTime);
+            anim.SetBool(ConstStrings.PARAM_ISMOVING, true);
+            anim.SetFloat(ConstStrings.PARAM_HORIZONTAL, moveDir.x, transitionDampTime, Time.deltaTime);
+            anim.SetFloat(ConstStrings.PARAM_VERTICAL, moveDir.z, transitionDampTime, Time.deltaTime);
         }
 
         public void SetAimRig(CharacterControl character)
@@ -40,6 +39,11 @@ namespace EverScord.Character
             float result = character.IsAiming ? 1f : 0f;
             character.Aim.weight = result;
             character.LeftHandIK.weight = result;
+        }
+
+        public void Rotate(bool state)
+        {
+            anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
         }
 
         public void Play(string clipName)

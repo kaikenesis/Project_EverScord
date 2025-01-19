@@ -8,8 +8,8 @@ namespace EverScord.Character
         {
             InputInfo info = new InputInfo();
 
-            info.horizontalInput        = Input.GetAxisRaw("Horizontal");
-            info.verticalInput          = Input.GetAxisRaw("Vertical");
+            info.horizontalInput        = Input.GetAxisRaw(ConstStrings.INPUT_HORIZONTAL);
+            info.verticalInput          = Input.GetAxisRaw(ConstStrings.INPUT_VERTICAL);
             info.holdLeftMouseButton    = Input.GetMouseButton(0);
             info.mousePosition          = Input.mousePosition;
 

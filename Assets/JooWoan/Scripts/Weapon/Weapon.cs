@@ -33,7 +33,7 @@ namespace EverScord.Weapons
             {
                 shooter.SetIsAiming(false);
                 shooter.AnimationControl.SetAimRig(shooter);
-                shooter.AnimationControl.Play("Ned_ShootEnd");
+                shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOTEND);
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace EverScord.Weapons
             // GameObject bullet = PoolManager.GetObject(bulletPrefab.name);
             // bullet.transform.position = shootTransform.position;
 
-            shooter.AnimationControl.Play("Ned_Shoot");
+            shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOT);
         }
     }
 }

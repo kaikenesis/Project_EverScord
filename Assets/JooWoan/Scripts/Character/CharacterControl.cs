@@ -1,10 +1,6 @@
-using System.Collections;
 using UnityEngine;
 using EverScord.Weapons;
 using UnityEngine.Animations.Rigging;
-using UnityEngine.UIElements;
-using Unity.VisualScripting;
-using UnityEngine.Animations;
 
 namespace EverScord.Character
 {
@@ -190,11 +186,15 @@ namespace EverScord.Character
             float angle = Vector3.Angle(lookDir, characterTransform.forward);
 
             if (angle <= rotateAngle)
+            {
+                AnimationControl.Rotate(false);
                 return;
+            }
             
+            AnimationControl.Rotate(!IsMoving);
             Quaternion lookRotation = Quaternion.LookRotation(lookDir);
 
-            characterTransform.rotation = Quaternion.Lerp(
+            characterTransform.rotation = Quaternion.Slerp(
                 characterTransform.rotation,
                 lookRotation,
                 Time.deltaTime * smoothRotation
