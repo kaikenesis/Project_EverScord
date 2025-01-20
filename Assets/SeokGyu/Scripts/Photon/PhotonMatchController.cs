@@ -3,15 +3,16 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using WebSocketSharp;
-using UnityEngine;
 using System;
+using UnityEngine;
 
 namespace EverScord
 {
     public class PhotonMatchController : MonoBehaviourPunCallbacks
     {
         private int maxPlayers = 3;
-        private string[] roomProperties = { "Match", "Difficulty" };
+        private string[] roomProperties = { "Job", "Difficulty" };
+        private string[] roleList = { "HEALER", "DEALER", "HEALER:DEALER" };
         private string[] UserIDs;
         private bool bMatching = false;
         private int tryCount = 0;
@@ -47,7 +48,7 @@ namespace EverScord
             // 매치메이킹은 로비에서 진행되어야함; 에바야
 
             tryCount = count;
-            GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState = EPhotonState.MATCH;
+            GameManager.Instance.userData.curPhotonState = EPhotonState.MATCH;
             bMatching = true;
             if (PhotonNetwork.InRoom == true)
             {
@@ -118,6 +119,7 @@ namespace EverScord
             else
                 PhotonNetwork.CurrentRoom.IsVisible = false;
 
+            UserIDs = GetRoomUserIDs();
             Hashtable customRoomProperties = GetCustomRoomProperties(true);
 
             PhotonNetwork.CurrentRoom.SetPropertiesListedInLobby(roomProperties);
@@ -128,61 +130,57 @@ namespace EverScord
         {
             int dealer = 2;
             int healer = 1;
-            Dictionary<string, PlayerData> userDatas = GameManager.Instance.userDatas;
-            string[] userIDs = UserIDs;
+            string[] userData = UserIDs;
 
-            for (int i = 0; i < userIDs.Length; i++)
+            for (int i = 0; i < UserIDs.Length; i++)
             {
-                switch (userDatas[userIDs[i]].job)
-                {
-                    case EJob.DEALER:
-                        dealer--;
-                        break;
-                    case EJob.HEALER:
-                        healer--;
-                        break;
-                }
+                userData = UserIDs[i].Split('|');
+
+                if (userData[1] == EJob.DEALER.ToString())
+                    dealer--;
+                else if (userData[1] == EJob.HEALER.ToString())
+                    healer--;
             }
 
-            Hashtable customRoomProperties;
-            ELevel level = userDatas[PhotonNetwork.AuthValues.UserId].curLevel;
+            Hashtable customRoomProperties = new Hashtable();
             string matchRoles = "";
-            
-            
-            // 조건 만드는 방식에 대해 좀더 고민할 필요 있음
-            if (healer > 0)
+
+            if(bCreateRoom == true)
             {
-                if (matchRoles.IsNullOrEmpty() == false) matchRoles += ":";
-                matchRoles += EJob.HEALER.ToString();
+                if (healer > 0)
+                {
+                    if (matchRoles.IsNullOrEmpty() == false) matchRoles += "|";
+                    matchRoles += EJob.HEALER.ToString();
+                }
+                if (dealer > 0)
+                {
+                    if (matchRoles.IsNullOrEmpty() == false) matchRoles += "|";
+                    matchRoles += EJob.DEALER.ToString();
+                }
             }
             else
             {
-                if (bCreateRoom == false)
+                if(UserIDs.Length == 1)
                 {
-                    EJob job = userDatas[PhotonNetwork.AuthValues.UserId].job;
-                    matchRoles += job.ToString();
+                    matchRoles = roleList[2];
+                }
+                else
+                {
+                    if (healer != 1)
+                    {
+                        matchRoles = roleList[2];
+                    }
+                    else 
+                    {
+                        matchRoles = roleList[1];
+                    }
                 }
             }
 
-            if (dealer > 0)
-            {
-                if (matchRoles.IsNullOrEmpty() == false) matchRoles += ":";
-                matchRoles += EJob.DEALER.ToString();
-            }
-            else
-            {
-                if (bCreateRoom == false)
-                {
-                    EJob job = userDatas[PhotonNetwork.AuthValues.UserId].job;
-                    matchRoles += job.ToString();
-                }
-            }
+            Debug.Log("new roomRole : " + matchRoles);
 
-            customRoomProperties = new Hashtable()
-            {
-                { roomProperties[0], matchRoles },
-                { roomProperties[1], level.ToString() }
-            };
+            customRoomProperties.Add(roomProperties[0], matchRoles);
+            customRoomProperties.Add(roomProperties[1], GameManager.Instance.userData.curLevel);
 
             return customRoomProperties;
         }
@@ -215,12 +213,42 @@ namespace EverScord
 
             return userIDs;
         }
+        private void FindRoomForRole()
+        {
+            Hashtable expectedRoomProperties = new Hashtable()
+            {
+                {"DEALER", 0 },
+                {"HEALER", 0 }
+            };
+            int curDealer = 0;
+            int curHealer = 0;
 
+            Dictionary<int, Player> players = PhotonNetwork.CurrentRoom.Players;
+            string playerJob = "";
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i].CustomProperties.ContainsKey("Job"))
+                {
+                    playerJob = (string)players[i].CustomProperties["Job"];
+                    if(playerJob == "DEALER")
+                    {
+                        expectedRoomProperties["DEALER"] = curDealer + 1;
+                    }
+                    else if(playerJob == "HEALER")
+                    {
+                        expectedRoomProperties["HEALER"] = curHealer + 1;
+                    }
+                }
+            }
+
+            //PhotonView.RPC("FollowLeaderToRoom", RpcTarget.All);
+        }
         private void SingleMatch(int tryCount)
         {
-            string nickName = PhotonNetwork.AuthValues.UserId;
-            PlayerData playerData = GameManager.Instance.userDatas[nickName];
+            PlayerData playerData = GameManager.Instance.userData;
             Hashtable customRoomProperties = new Hashtable();
+            customRoomProperties.Add("Job", playerData.job.ToString());
+            customRoomProperties.Add("Difficulty", playerData.curLevel);
 
             switch (tryCount)
             {
@@ -234,7 +262,7 @@ namespace EverScord
                         PhotonNetwork.JoinRandomRoom(customRoomProperties, maxPlayers, MatchmakingMode.FillRoom, null, null, UserIDs);
                     }
                     break;
-                case 1: // 내 직업이 들어갈수 있는 방 탐색 ( 2차 시도 ) ex. 딜러and힐러가 필요한 방
+                case 1: // 내 직업이 들어갈수 있는 방 탐색 ( 2차 시도 ) ex. 내가 딜러라면 딜러and힐러가 필요한 방
                     {
                         customRoomProperties = GetCustomRoomProperties(false);
                         PhotonNetwork.JoinRandomRoom(customRoomProperties, maxPlayers, MatchmakingMode.FillRoom, null, null, UserIDs);
@@ -260,7 +288,7 @@ namespace EverScord
                         PhotonNetwork.JoinRandomRoom(customRoomProperties, maxPlayers, MatchmakingMode.FillRoom, null, null, UserIDs);
                     }
                     break;
-                case 1: // 방 생성
+                case 1: // 들어갈 수 있는 방이 아무것도 없다면 방 생성
                     {
                         CreatePhotonMatchRoom();
                     }
@@ -272,11 +300,39 @@ namespace EverScord
         #region Photon Callbacks
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
+            base.OnRoomListUpdate(roomList);
+
+            switch (GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.MATCH:
+
+                    foreach (RoomInfo room in roomList)
+                    {
+                        // roomProperties[0] = job, roomProperties[1] = Difficulty
+                        if (room.CustomProperties.ContainsKey(roomProperties[0]) && room.CustomProperties.ContainsKey(roomProperties[1]))
+                        {
+                            string job = (string)room.CustomProperties["Job"];
+                            ELevel level = (ELevel)room.CustomProperties["Difficulty"];
+
+                            // 룸의 조건과 내 조건이 맞는지 확인
+                            if (level == GameManager.Instance.userData.curLevel && job.Contains(GameManager.Instance.userData.job.ToString()))
+                            {
+                                Debug.Log($"Found a matching room: {room.Name}");
+                                PhotonNetwork.JoinRoom(room.Name);  // 매칭된 룸에 참가
+                                return;
+                            }
+                        }
+                    }
+                    // 매칭되는 룸이 없으면 새로운 룸을 생성
+                    Debug.Log("No matching room found. Creating a new room...");
+
+                    break;
+            }
         }
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            switch (GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.MATCH:
                     {
@@ -289,7 +345,7 @@ namespace EverScord
 
         public override void OnJoinedLobby()
         {
-            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            switch (GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.MATCH:
                     {
@@ -300,7 +356,7 @@ namespace EverScord
         }
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            switch (GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.MATCH:
                     {
@@ -311,7 +367,7 @@ namespace EverScord
         }
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            switch (GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.MATCH:
                     {

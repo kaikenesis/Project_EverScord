@@ -3,7 +3,7 @@ using System;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
-using System.Collections;
+using ExitGames.Client.Photon;
 
 namespace EverScord
 {
@@ -16,7 +16,6 @@ namespace EverScord
         public static Action OnJoinRoom = delegate { };
         public static Action<bool> OnRoomStatusChange = delegate { };
         public static Action OnRoomLeft = delegate { };
-        public static Action<Player> OnOtherPlayerLeftRoom = delegate { };
         public static Action<List<string>> OnDisplayPlayers = delegate { };
         public static Action OnMatchSoloPlay = delegate { };
         public static Action<int> OnMatchMultiPlay = delegate { };
@@ -88,16 +87,25 @@ namespace EverScord
             string roomName = Guid.NewGuid().ToString();
             RoomOptions roomOptions = GetRoomOptions();
 
-            PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
+            PhotonNetwork.CreateRoom(roomName, roomOptions);
         }
 
-        private RoomOptions GetRoomOptions()
+        private RoomOptions GetRoomOptions() // 結 段奄 持失
         {
+            Hashtable roomProperties = new Hashtable()
+            {
+                {"DEALER",0 },
+                {"HEALER",0 },
+                {"LEVEL", ELevel.NORMAL }
+            };
+
             RoomOptions ro = new RoomOptions();
             ro.IsOpen = true;
             ro.IsVisible = false;
             ro.PublishUserId = true;
             ro.MaxPlayers = maxPlayers;
+            ro.CustomRoomProperties = roomProperties;
+            ro.CustomRoomPropertiesForLobby = new string[] { "DEALER", "HEALER", "LEVEL" };
 
             return ro;
         }
@@ -110,7 +118,7 @@ namespace EverScord
             {
                 if (playerList.ContainsKey(key) == true)
                 {
-                    players += $"{playerList[key].NickName}, ";
+                    players += $"{playerList[key].NickName},\n";
                     i++;
                 }
             }
@@ -125,12 +133,52 @@ namespace EverScord
             {
                 if (playerList.ContainsKey(key) == true)
                 {
-                    players.Add(playerList[key].NickName);
+                    string[] data = playerList[key].NickName.Split("|");
+                    players.Add(data[0]);
                     i++;
                 }
             }
 
             OnDisplayPlayers?.Invoke(players);
+        }
+        private void SetPlayerRole()
+        {
+            Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            int curDealers = (int)roomProperties["DEALER"];
+            int curHealers = (int)roomProperties["HEALER"];
+
+            PlayerData data = GameManager.Instance.userData;
+            if(data.job.ToString() == "DEALER" && curDealers < 2)
+            {
+                roomProperties["DEALER"] = curDealers + 1;
+                PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "DEALER" } });
+            }
+            else if(data.job.ToString() == "HEALER" && curHealers < 1)
+            {
+                roomProperties["HEALER"] = curDealers + 1;
+                PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "HEALER" } });
+            }
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+        }
+        private void UpdateRoom(Player otherPlayer)
+        {
+            Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+
+            if(otherPlayer.CustomProperties.ContainsKey("Job"))
+            {
+                string playerJob = (string)otherPlayer.CustomProperties["Job"];
+                if(playerJob == "DEALER")
+                {
+                    roomProperties["DEALER"] = (int)roomProperties["DEALER"] - 1;
+                }
+                else if(playerJob == "HEALER")
+                {
+                    roomProperties["HEALER"] = (int)roomProperties["HEALER"] - 1;
+                }
+
+                PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+            }
         }
         #endregion
 
@@ -151,12 +199,14 @@ namespace EverScord
         public override void OnCreatedRoom()
         {
             Debug.Log($"Created Room Successful.\nPhoton RoomName : {PhotonNetwork.CurrentRoom.Name}");
+
+            SetPlayerRole();
         }
         public override void OnJoinedRoom()
         {
             Debug.Log($"Joined Room Successful.\nPhoton RoomName : {PhotonNetwork.CurrentRoom.Name}");
 
-            switch(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            switch(GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.NONE:
                     {
@@ -190,7 +240,7 @@ namespace EverScord
         {
             Debug.Log($"Another player has joined the room : {newPlayer.NickName}");
 
-            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            switch (GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.NONE:
                     {
@@ -204,11 +254,11 @@ namespace EverScord
         {
             Debug.Log($"Player has left the room : {otherPlayer.NickName}");
 
-            switch (GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curPhotonState)
+            switch (GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.NONE:
                     {
-                        OnOtherPlayerLeftRoom?.Invoke(otherPlayer);
+                        UpdateRoom(otherPlayer);
                         DisplayRoomPlayers();
                     }
                     break;
@@ -232,24 +282,28 @@ namespace EverScord
 
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Dealer"))
                 {
-                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job = EJob.DEALER;
-                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job.ToString());
+                    GameManager.Instance.userData.job = EJob.DEALER;
+                    GameManager.Instance.SetUserName(EJob.DEALER, GameManager.Instance.userData.curLevel);
+                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
                 }
                 if (GUI.Button(new Rect(600, 60, 150, 60), "Healer"))
                 {
-                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job = EJob.HEALER;
-                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].job.ToString());
+                    GameManager.Instance.userData.job = EJob.HEALER;
+                    GameManager.Instance.SetUserName(EJob.HEALER, GameManager.Instance.userData.curLevel);
+                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
                 }
 
                 if (GUI.Button(new Rect(900, 0, 150, 60), "Normal"))
                 {
-                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel = ELevel.NORMAL;
-                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel.ToString());
+                    GameManager.Instance.userData.curLevel = ELevel.NORMAL;
+                    GameManager.Instance.SetUserName(GameManager.Instance.userData.job, ELevel.NORMAL);
+                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
                 }
                 if (GUI.Button(new Rect(900, 60, 150, 60), "Hard"))
                 {
-                    GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel = ELevel.HARD;
-                    Debug.Log(GameManager.Instance.userDatas[PhotonNetwork.AuthValues.UserId].curLevel.ToString());
+                    GameManager.Instance.userData.curLevel = ELevel.HARD;
+                    GameManager.Instance.SetUserName(GameManager.Instance.userData.job, ELevel.HARD);
+                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
                 }
             }
         }
