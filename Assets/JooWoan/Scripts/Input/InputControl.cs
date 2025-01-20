@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EverScord.Character
 {
-    public class InputControl
+    public static class InputControl
     {
         public static InputInfo ReceiveInput()
         {
