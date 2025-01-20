@@ -194,7 +194,7 @@ namespace EverScord.Character
             AnimationControl.Rotate(!IsMoving);
             Quaternion lookRotation = Quaternion.LookRotation(lookDir);
 
-            characterTransform.rotation = Quaternion.Slerp(
+            characterTransform.rotation = Quaternion.Lerp(
                 characterTransform.rotation,
                 lookRotation,
                 Time.deltaTime * smoothRotation
