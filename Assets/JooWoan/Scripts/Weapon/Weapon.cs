@@ -1,18 +1,33 @@
-using EverScord.Character;
 using UnityEngine;
+using EverScord.Character;
+using System.Collections.Generic;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Weapons
 {
-    public class Weapon
+    public class Weapon : MonoBehaviour
     {
-        private GameObject bulletPrefab;
-        private float cooldown, elapsedTime;
-        private bool isCooldown => elapsedTime < cooldown;
+        [SerializeField] private ParticleSystem shotEffect, hitEffect;
+        [SerializeField] private TrailRenderer tracerEffect;
+        [SerializeField] private Transform raycastOrigin;
+        [field: SerializeField] public Transform AimPoint           { get; private set; }
+        [field: SerializeField] public float AimSensitivity         { get; private set; }
+        [field: SerializeField] public float MinAimDistance         { get; private set; }
+        [field: SerializeField] public float Cooldown               { get; private set; }
 
-        public Weapon(GameObject bulletPrefab, float cooldown)
+        [SerializeField] public float bulletSpeed;
+        [SerializeField] public float bulletMaxLifetime;
+        [SerializeField] private int hitEffectCount;
+
+        private Ray ray;
+        private RaycastHit rayHit;
+        private LinkedList<Bullet> bullets = new();
+        private float elapsedTime;
+        private bool isCooldown => elapsedTime < Cooldown;
+
+        public void CreateAimPoint()
         {
-            this.bulletPrefab = bulletPrefab;
-            this.cooldown = cooldown;
+            AimPoint = Instantiate(AimPoint).transform;
         }
 
         public void CooldownTimer()
@@ -22,12 +37,12 @@ namespace EverScord.Weapons
 
         public void ResetCooldownTimer()
         {
-            elapsedTime = cooldown;
+            elapsedTime = Cooldown;
         }
 
         public void Shoot(CharacterControl shooter)
         {
-            float cooldownOvertime = elapsedTime - cooldown;
+            float cooldownOvertime = elapsedTime - Cooldown;
 
             if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
             {
@@ -41,13 +56,71 @@ namespace EverScord.Weapons
                 return;
             
             elapsedTime = 0f;
+            shotEffect.Emit(1);
+
             shooter.SetIsAiming(true);
             shooter.AnimationControl.SetAimRig(shooter);
-
-            // GameObject bullet = PoolManager.GetObject(bulletPrefab.name);
-            // bullet.transform.position = shootTransform.position;
-
             shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOT);
+
+            FireBullet();
+        }
+
+        private void FireBullet()
+        {
+            Bullet bullet = new Bullet(
+                raycastOrigin.position,
+                raycastOrigin.forward * bulletSpeed,
+                Instantiate(tracerEffect, raycastOrigin.position, Quaternion.identity)
+            );
+
+            bullets.AddLast(bullet);
+        }
+
+        public void UpdateBullets(float deltaTime)
+        {
+            LinkedListNode<Bullet> currentNode = bullets.First;
+
+            while (currentNode != null)
+            {
+                LinkedListNode<Bullet> nextNode = currentNode.Next;
+                Bullet bullet = currentNode.Value;
+
+                Vector3 currentPosition = bullet.GetPosition();
+                bullet.SetLifetime(bullet.Lifetime + deltaTime);
+                Vector3 nextPosition    = bullet.GetPosition();
+
+                if (bullet.Lifetime >= bulletMaxLifetime || !bullet.TracerEffect)
+                {
+                    bullets.Remove(currentNode);
+                    currentNode = nextNode;
+                    continue;
+                }
+
+                RaycastSegment(currentPosition, nextPosition, bullet);
+                currentNode = nextNode;
+            }
+        }
+
+        private void RaycastSegment(Vector3 startPoint, Vector3 endPoint, Bullet bullet)
+        {
+            Vector3 direction = endPoint - startPoint;
+            float distance = direction.magnitude;
+
+            ray.origin = startPoint;
+            ray.direction = direction;
+
+            if (Physics.Raycast(ray, out rayHit, distance))
+            {
+                hitEffect.transform.position = rayHit.point;
+                hitEffect.transform.forward  = rayHit.normal;
+                hitEffect.Emit(hitEffectCount);
+
+                bullet.SetTracerEffectPosition(rayHit.point);
+                bullet.SetLifetime(bulletMaxLifetime);
+                return;
+            }
+
+            bullet.SetTracerEffectPosition(endPoint); 
         }
     }
 }

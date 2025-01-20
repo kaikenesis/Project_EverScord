@@ -29,20 +29,15 @@ namespace EverScord.Character
 
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
-        [SerializeField] private GameObject bulletPrefab;
-        [SerializeField] private Transform aimPoint;
-        [SerializeField] private float aimSensitivity;
-        [SerializeField] private float minAimDistance;
-        [SerializeField] private float coolDown;
+        private Weapon weapon;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
         
-        private Weapon weapon;
         private Camera mainCam;
         private CharacterController controller;
         private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
-        private Transform characterTransform, characterSpine, weaponTransform;
+        private Transform characterTransform, weaponTransform;
         private float fallSpeed;
 
         void Awake()
@@ -55,10 +50,10 @@ namespace EverScord.Character
 
             mainCam = Camera.main;
 
-            weapon = new Weapon(bulletPrefab, coolDown);
+            weapon = weaponPrefab.GetComponent<Weapon>();
             weaponTransform = weaponPrefab.transform;
+            weapon.CreateAimPoint();
 
-            aimPoint = Instantiate(aimPoint).transform;
             InitRig();
 
             // Unity docs: Set skinwidth 10% of the Radius
@@ -66,9 +61,6 @@ namespace EverScord.Character
             controller.skinWidth = controller.radius * 0.1f;
 
             characterTransform = transform;
-
-            if (bodyAim.data.sourceObjects.Count > 0)
-                characterSpine = bodyAim.data.constrainedObject;
         }
 
         void Start()
@@ -88,6 +80,7 @@ namespace EverScord.Character
 
             weapon.CooldownTimer();
             weapon.Shoot(this);
+            weapon.UpdateBullets(Time.deltaTime);
 
             TrackAim();
             RotateBody();
@@ -101,7 +94,7 @@ namespace EverScord.Character
             {
                 var data = constraints[i].data.sourceObjects;
                 data.Clear();
-                data.Add(new WeightedTransform(aimPoint, 1));
+                data.Add(new WeightedTransform(weapon.AimPoint, 1));
                 constraints[i].data.sourceObjects = data;
             }
             
@@ -163,26 +156,20 @@ namespace EverScord.Character
             if (distance < 0.5f)
                 return;
 
-            if (distance < minAimDistance)
-                lookPosition = characterTransform.position + lookDir * minAimDistance;
+            if (distance < weapon.MinAimDistance)
+                lookPosition = characterTransform.position + lookDir * weapon.MinAimDistance;
 
             lookPosition.y = weaponTransform.position.y;
             
-            aimPoint.position = Vector3.Lerp(
-                aimPoint.position,
+            weapon.AimPoint.position = Vector3.Lerp(
+                weapon.AimPoint.position,
                 lookPosition,
-                Time.deltaTime * aimSensitivity
+                Time.deltaTime * weapon.AimSensitivity
             );
         }
 
         private void RotateBody()
         {
-            if (!characterSpine)
-            {
-                Debug.LogWarning("Body aim constrained object not initialized");
-                return;
-            }
-            
             float angle = Vector3.Angle(lookDir, characterTransform.forward);
 
             if (angle <= rotateAngle)
