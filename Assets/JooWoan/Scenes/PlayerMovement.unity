@@ -179,7 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 692976936}
   m_Layer: 0
-  m_Name: ShotPoint
+  m_Name: GunPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10518,13 +10518,13 @@ MonoBehaviour:
   shotEffect: {fileID: 1313671677}
   hitEffect: {fileID: 1190388540741239443}
   tracerEffect: {fileID: 7469494061097809063, guid: 8586dc5aeaebe804385f9e529eb9a69c, type: 3}
-  raycastOrigin: {fileID: 692976936}
+  gunPoint: {fileID: 692976936}
+  weaponRange: 30
   <AimPoint>k__BackingField: {fileID: 3787122344697598860, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
-  <AimSensitivity>k__BackingField: 15
+  <AimSensitivity>k__BackingField: 13
   <MinAimDistance>k__BackingField: 2
   <Cooldown>k__BackingField: 0.1
   bulletSpeed: 500
-  bulletMaxLifetime: 4
   hitEffectCount: 2
 --- !u!1 &1536007772
 GameObject:
@@ -10912,10 +10912,10 @@ MonoBehaviour:
   headAim: {fileID: 1536007774}
   <Aim>k__BackingField: {fileID: 1174157652}
   <LeftHandIK>k__BackingField: {fileID: 1368477108}
+  <ShootStanceDuration>k__BackingField: 2
   transitionDampTime: 0.05
   rotateAngle: 85
   smoothRotation: 3
-  <ShootStanceDuration>k__BackingField: 2
   weaponPrefab: {fileID: 1500956068}
 --- !u!143 &1985457672
 CharacterController:

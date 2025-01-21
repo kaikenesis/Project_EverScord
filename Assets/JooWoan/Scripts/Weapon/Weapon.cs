@@ -9,14 +9,14 @@ namespace EverScord.Weapons
     {
         [SerializeField] private ParticleSystem shotEffect, hitEffect;
         [SerializeField] private TrailRenderer tracerEffect;
-        [SerializeField] private Transform raycastOrigin;
+        [field: SerializeField] public Transform GunPoint           { get; private set; }
         [field: SerializeField] public Transform AimPoint           { get; private set; }
         [field: SerializeField] public float AimSensitivity         { get; private set; }
         [field: SerializeField] public float MinAimDistance         { get; private set; }
         [field: SerializeField] public float Cooldown               { get; private set; }
 
+        [SerializeField] private float weaponRange;
         [SerializeField] public float bulletSpeed;
-        [SerializeField] public float bulletMaxLifetime;
         [SerializeField] private int hitEffectCount;
 
         private Ray ray;
@@ -68,9 +68,9 @@ namespace EverScord.Weapons
         private void FireBullet()
         {
             Bullet bullet = new Bullet(
-                raycastOrigin.position,
-                raycastOrigin.forward * bulletSpeed,
-                Instantiate(tracerEffect, raycastOrigin.position, Quaternion.identity)
+                GunPoint.position,
+                (AimPoint.position - GunPoint.position).normalized * bulletSpeed,
+                Instantiate(tracerEffect)
             );
 
             bullets.AddLast(bullet);
@@ -89,8 +89,9 @@ namespace EverScord.Weapons
                 bullet.SetLifetime(bullet.Lifetime + deltaTime);
                 Vector3 nextPosition    = bullet.GetPosition();
 
-                if (bullet.Lifetime >= bulletMaxLifetime || !bullet.TracerEffect)
+                if (bullet.ShouldBeDestroyed(weaponRange))
                 {
+                    Destroy(bullet.TracerEffect.gameObject);
                     bullets.Remove(currentNode);
                     currentNode = nextNode;
                     continue;
@@ -116,7 +117,7 @@ namespace EverScord.Weapons
                 hitEffect.Emit(hitEffectCount);
 
                 bullet.SetTracerEffectPosition(rayHit.point);
-                bullet.SetLifetime(bulletMaxLifetime);
+                bullet.SetIsDestroyed(true);
                 return;
             }
 

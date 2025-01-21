@@ -22,22 +22,23 @@ namespace EverScord.Character
         [SerializeField] private MultiAimConstraint headAim;
         [field: SerializeField] public MultiAimConstraint Aim           { get; private set; }
         [field: SerializeField] public TwoBoneIKConstraint LeftHandIK   { get; private set; }
+        [field: SerializeField] public float ShootStanceDuration        { get; private set; }
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float rotateAngle;
         [SerializeField] private float smoothRotation;
-        [field: SerializeField] public float ShootStanceDuration        { get; private set; }
 
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
         private Weapon weapon;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
+        public Transform CharacterTransform                             { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
-        
+        public Vector3 AimPosition                                      { get; private set; }
+
         private Camera mainCam;
         private CharacterController controller;
         private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
-        private Transform characterTransform, weaponTransform;
         private float fallSpeed;
 
         void Awake()
@@ -51,7 +52,6 @@ namespace EverScord.Character
             mainCam = Camera.main;
 
             weapon = weaponPrefab.GetComponent<Weapon>();
-            weaponTransform = weaponPrefab.transform;
             weapon.CreateAimPoint();
 
             InitRig();
@@ -60,7 +60,12 @@ namespace EverScord.Character
             controller = GetComponent<CharacterController>();
             controller.skinWidth = controller.radius * 0.1f;
 
-            characterTransform = transform;
+            CharacterTransform = transform;
+        }
+
+        void OnApplicationFocus(bool focus)
+        {
+            Cursor.visible = !focus;    
         }
 
         void Start()
@@ -78,12 +83,12 @@ namespace EverScord.Character
 
             AnimationControl.AnimateMovement(this, moveDir);
 
+            TrackAim();
+            RotateBody();
+
             weapon.CooldownTimer();
             weapon.Shoot(this);
             weapon.UpdateBullets(Time.deltaTime);
-
-            TrackAim();
-            RotateBody();
         }
 
         private void InitRig()
@@ -114,7 +119,7 @@ namespace EverScord.Character
             if (moveInput.magnitude > 1f)
                 moveInput.Normalize();
 
-            moveDir = characterTransform.InverseTransformDirection(moveInput);
+            moveDir = CharacterTransform.InverseTransformDirection(moveInput);
         }
         
         private void ApplyGravity()
@@ -144,11 +149,12 @@ namespace EverScord.Character
 
             if (!Physics.Raycast(ray, out RaycastHit hit, groundLayer))
                 return;
-            
-            lookPosition = hit.point;
-            lookPosition.y = characterTransform.position.y;
 
-            lookDir = lookPosition - characterTransform.position;
+            AimPosition = hit.point;
+            lookPosition = hit.point;
+            lookPosition.y = CharacterTransform.position.y;
+
+            lookDir = lookPosition - CharacterTransform.position;
             float distance = lookDir.magnitude;
 
             lookDir.Normalize();
@@ -157,9 +163,9 @@ namespace EverScord.Character
                 return;
 
             if (distance < weapon.MinAimDistance)
-                lookPosition = characterTransform.position + lookDir * weapon.MinAimDistance;
+                lookPosition = CharacterTransform.position + lookDir * weapon.MinAimDistance;
 
-            lookPosition.y = weaponTransform.position.y;
+            lookPosition.y = weapon.GunPoint.position.y;
             
             weapon.AimPoint.position = Vector3.Lerp(
                 weapon.AimPoint.position,
@@ -170,7 +176,7 @@ namespace EverScord.Character
 
         private void RotateBody()
         {
-            float angle = Vector3.Angle(lookDir, characterTransform.forward);
+            float angle = Vector3.Angle(lookDir, CharacterTransform.forward);
 
             if (angle <= rotateAngle)
             {
@@ -181,8 +187,8 @@ namespace EverScord.Character
             AnimationControl.Rotate(!IsMoving);
             Quaternion lookRotation = Quaternion.LookRotation(lookDir);
 
-            characterTransform.rotation = Quaternion.Lerp(
-                characterTransform.rotation,
+            CharacterTransform.rotation = Quaternion.Lerp(
+                CharacterTransform.rotation,
                 lookRotation,
                 Time.deltaTime * smoothRotation
             ).normalized;
@@ -198,7 +204,7 @@ namespace EverScord.Character
             get
             {
                 return Physics.CheckSphere(
-                    characterTransform.TransformPoint(groundCheckOffset),
+                    CharacterTransform.TransformPoint(groundCheckOffset),
                     groundCheckRadius,
                     groundLayer
                 );

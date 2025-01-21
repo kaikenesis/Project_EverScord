@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.Asteroids;
 using UnityEngine;
 
 namespace EverScord.Weapons
@@ -8,13 +9,16 @@ namespace EverScord.Weapons
         public Vector3 InitialPosition      { get; private set; }
         public Vector3 InitialVelocity      { get; private set; }
         public TrailRenderer TracerEffect   { get; private set; }
+        public bool IsDestroyed             { get; private set; }
 
         public Bullet(Vector3 position, Vector3 velocity, TrailRenderer effect)
         {
             InitialPosition = position;
             InitialVelocity = velocity;
             TracerEffect    = effect;
+
             Lifetime = 0f;
+            IsDestroyed = false;
 
             TracerEffect.AddPosition(position);
         }
@@ -27,6 +31,22 @@ namespace EverScord.Weapons
         public void SetTracerEffectPosition(Vector3 position)
         {
             TracerEffect.transform.position = position;
+        }
+
+        public void SetIsDestroyed(bool state)
+        {
+            IsDestroyed = state;
+        }
+
+        public bool ShouldBeDestroyed(float weaponRange)
+        {
+            if (IsDestroyed)
+                return true;
+
+            if (!TracerEffect)
+                return true;
+
+            return Vector3.Distance(GetPosition(), InitialPosition) > weaponRange;
         }
 
         #region Projectile Motion Equation
