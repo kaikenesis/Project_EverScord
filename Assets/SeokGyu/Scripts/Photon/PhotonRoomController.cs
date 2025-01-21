@@ -221,7 +221,15 @@ namespace EverScord
         public override void OnLeftRoom()
         {
             Debug.Log("You have left Photon Room");
-            //DisplayRoomPlayers();
+
+            switch (GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.NONE:
+                    {
+                        DisplayRoomPlayers();
+                    }
+                    break;
+            }
         }
         // RandomRoom Join 실패 시 오류 콜백 함수 실행
         public override void OnJoinRandomFailed(short returnCode, string message)
@@ -248,6 +256,7 @@ namespace EverScord
                     }
                     break;
             }
+            UpdateRoom(newPlayer);
             DebugPlayerList();
         }
         public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -258,11 +267,11 @@ namespace EverScord
             {
                 case EPhotonState.NONE:
                     {
-                        UpdateRoom(otherPlayer);
                         DisplayRoomPlayers();
                     }
                     break;
             }
+            UpdateRoom(otherPlayer);
             DebugPlayerList();
         }
         public override void OnMasterClientSwitched(Player newMasterClient)

@@ -213,8 +213,17 @@ namespace EverScord
 
             return userIDs;
         }
-        private void FindRoomForRole()
+        private void FindRoomForRole(RoomInfo room, ELevel level, string job)
         {
+            if (level == GameManager.Instance.userData.curLevel && job.Contains(GameManager.Instance.userData.job.ToString()))
+            {
+                Debug.Log($"Found a matching room: {room.Name}");
+                PhotonNetwork.JoinRoom(room.Name);  // 매칭된 룸에 참가
+                return;
+            }
+
+            if (level != GameManager.Instance.userData.curLevel) return;
+
             Hashtable expectedRoomProperties = new Hashtable()
             {
                 {"DEALER", 0 },
@@ -232,16 +241,21 @@ namespace EverScord
                     playerJob = (string)players[i].CustomProperties["Job"];
                     if(playerJob == "DEALER")
                     {
-                        expectedRoomProperties["DEALER"] = curDealer + 1;
+                        curDealer++;
+                        expectedRoomProperties["DEALER"] = curDealer;
                     }
                     else if(playerJob == "HEALER")
                     {
-                        expectedRoomProperties["HEALER"] = curHealer + 1;
+                        curHealer++;
+                        expectedRoomProperties["HEALER"] = curHealer;
                     }
                 }
             }
 
-            //PhotonView.RPC("FollowLeaderToRoom", RpcTarget.All);
+            //room.CustomProperties
+            //
+            PhotonView photonView = PhotonView.Get(this);
+            photonView.RPC("FollowLeaderToRoom", RpcTarget.All, room.Name);
         }
         private void SingleMatch(int tryCount)
         {
@@ -295,16 +309,23 @@ namespace EverScord
                     break;
             }
         }
+        [PunRPC]
+        private void FollowLeaderToRoom(string roomName)
+        {
+
+        }
         #endregion
 
         #region Photon Callbacks
+        // 로비에 접속시, 새로운 룸이 만들어질 경우, 룸이 삭제되는 경우, 룸의 IsOpen값이 변화할 경우
+        // 변동사항이 있는 방만 넘어옴, 로비에서만 호출가능..
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             base.OnRoomListUpdate(roomList);
 
             switch (GameManager.Instance.userData.curPhotonState)
             {
-                case EPhotonState.MATCH:
+                case EPhotonState.NONE:
 
                     foreach (RoomInfo room in roomList)
                     {
@@ -313,18 +334,21 @@ namespace EverScord
                         {
                             string job = (string)room.CustomProperties["Job"];
                             ELevel level = (ELevel)room.CustomProperties["Difficulty"];
-
+                            Debug.Log($"job : {job}, level : {level}");
+                            
                             // 룸의 조건과 내 조건이 맞는지 확인
-                            if (level == GameManager.Instance.userData.curLevel && job.Contains(GameManager.Instance.userData.job.ToString()))
-                            {
-                                Debug.Log($"Found a matching room: {room.Name}");
-                                PhotonNetwork.JoinRoom(room.Name);  // 매칭된 룸에 참가
-                                return;
-                            }
+                            //FindRoomForRole(room, level, job);
+
+                            //if (level == GameManager.Instance.userData.curLevel && job.Contains(GameManager.Instance.userData.job.ToString()))
+                            //{
+                            //    Debug.Log($"Found a matching room: {room.Name}");
+                            //    PhotonNetwork.JoinRoom(room.Name);  // 매칭된 룸에 참가
+                            //    return;
+                            //}
                         }
                     }
                     // 매칭되는 룸이 없으면 새로운 룸을 생성
-                    Debug.Log("No matching room found. Creating a new room...");
+                    Debug.Log("No matching room found.");
 
                     break;
             }
