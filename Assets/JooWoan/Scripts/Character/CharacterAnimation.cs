@@ -10,7 +10,6 @@ namespace EverScord.Character
         public float transitionDampTime { get; private set; }
 
         private IDictionary<string, AnimationClip> animDict = new Dictionary<string, AnimationClip>();
-        private int adjustLayer;
 
         public CharacterAnimation(Animator anim, float smoothRotation, float transitionDampTime)
         {
@@ -18,33 +17,33 @@ namespace EverScord.Character
             this.smoothRotation = smoothRotation;
             this.transitionDampTime = transitionDampTime;
 
-            adjustLayer = anim.GetLayerIndex("AdjustMask");
-            anim.SetLayerWeight(adjustLayer, 0f);
-
             foreach (AnimationClip clip in anim.runtimeAnimatorController.animationClips)
                 animDict[clip.name] = clip;
         }
 
-        public void AnimateMovement(Vector3 moveDir)
+        public void AnimateMovement(CharacterControl character, Vector3 moveDir)
         {
-            anim.SetFloat("Horizontal", moveDir.x, transitionDampTime, Time.deltaTime);
-            anim.SetFloat("Vertical", moveDir.z, transitionDampTime, Time.deltaTime);
+            if (!character.IsMoving)
+            {
+                anim.SetBool(ConstStrings.PARAM_ISMOVING, false);
+                return;
+            }
+
+            anim.SetBool(ConstStrings.PARAM_ISMOVING, true);
+            anim.SetFloat(ConstStrings.PARAM_HORIZONTAL, moveDir.x, transitionDampTime, Time.deltaTime);
+            anim.SetFloat(ConstStrings.PARAM_VERTICAL, moveDir.z, transitionDampTime, Time.deltaTime);
         }
 
-        public void AdjustPosture(bool shouldAdjust)
+        public void SetAimRig(CharacterControl character)
         {
-            float layerWeight = anim.GetLayerWeight(adjustLayer);
+            float result = character.IsAiming ? 1f : 0f;
+            character.Aim.weight = result;
+            character.LeftHandIK.weight = result;
+        }
 
-            if (shouldAdjust && layerWeight == 0f)
-            {
-                anim.SetLayerWeight(adjustLayer, 1f);
-                anim.Play("AdjustShoot", -1, 0f);
-            }
-            else if (!shouldAdjust && layerWeight > 0)
-            {
-                anim.SetLayerWeight(adjustLayer, 0f);
-                anim.Play("AdjustReset", -1, 0f);
-            }
+        public void Rotate(bool state)
+        {
+            anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
         }
 
         public void Play(string clipName)

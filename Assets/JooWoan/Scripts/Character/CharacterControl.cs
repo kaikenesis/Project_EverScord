@@ -1,12 +1,14 @@
 using UnityEngine;
 using EverScord.Weapons;
+using UnityEngine.Animations.Rigging;
 
 namespace EverScord.Character
 {
     public class CharacterControl : MonoBehaviour
     {
         [Header("Character")]
-        [SerializeField] private float speed, gravity;
+        [SerializeField] private float speed;
+        [SerializeField] private float gravity;
 
         [Header("Ground Check")]
         [SerializeField] private LayerMask groundLayer;
@@ -15,41 +17,55 @@ namespace EverScord.Character
 
         [Header("Animation")]
         [SerializeField] private Animator anim;
+        [SerializeField] private RigBuilder rigBuilder;
+        [SerializeField] private MultiAimConstraint bodyAim;
+        [SerializeField] private MultiAimConstraint headAim;
+        [field: SerializeField] public MultiAimConstraint Aim           { get; private set; }
+        [field: SerializeField] public TwoBoneIKConstraint LeftHandIK   { get; private set; }
         [SerializeField] private float transitionDampTime;
+        [SerializeField] private float rotateAngle;
         [SerializeField] private float smoothRotation;
-        [field: SerializeField] public float shootStanceDuration { get; private set; }
+        [field: SerializeField] public float ShootStanceDuration        { get; private set; }
 
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
-        [SerializeField] private GameObject bulletPrefab;
-        [SerializeField] private float coolDown;
-
-        public CharacterAnimation characterAnimation    { get; private set; }
-        public InputInfo playerInputInfo                { get; private set; }
-
-        private CharacterController characterControl;
         private Weapon weapon;
-        private Camera mainCam;
 
-        private Vector3 movement, lookPosition, moveInput, moveDir;
-        private Quaternion lookRotation;
+        public CharacterAnimation AnimationControl                      { get; private set; }
+        public InputInfo PlayerInputInfo                                { get; private set; }
+        
+        private Camera mainCam;
+        private CharacterController controller;
+        private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
+        private Transform characterTransform, weaponTransform;
         private float fallSpeed;
 
         void Awake()
         {
-            characterAnimation = new CharacterAnimation(
+            AnimationControl = new CharacterAnimation(
                 anim,
                 smoothRotation,
                 transitionDampTime
             );
 
-            weapon = new Weapon(bulletPrefab, coolDown);
-            characterControl = GetComponent<CharacterController>();
+            mainCam = Camera.main;
+
+            weapon = weaponPrefab.GetComponent<Weapon>();
+            weaponTransform = weaponPrefab.transform;
+            weapon.CreateAimPoint();
+
+            InitRig();
 
             // Unity docs: Set skinwidth 10% of the Radius
-            characterControl.skinWidth = characterControl.radius * 0.1f;
+            controller = GetComponent<CharacterController>();
+            controller.skinWidth = controller.radius * 0.1f;
 
-            mainCam = Camera.main;
+            characterTransform = transform;
+        }
+
+        void Start()
+        {
+            AnimationControl.SetAimRig(this);
         }
 
         void Update()
@@ -57,22 +73,40 @@ namespace EverScord.Character
             SetInput();
             SetMovingDirection();
 
-            characterAnimation.AnimateMovement(moveDir);
+            ApplyGravity();
+            Move();
+
+            AnimationControl.AnimateMovement(this, moveDir);
 
             weapon.CooldownTimer();
             weapon.Shoot(this);
+            weapon.UpdateBullets(Time.deltaTime);
 
-            ApplyGravity();
-            Move();
-            Turn();
+            TrackAim();
+            RotateBody();
+        }
+
+        private void InitRig()
+        {
+            MultiAimConstraint[] constraints = { Aim, bodyAim, headAim };
+
+            for (int i = 0; i < constraints.Length; i++)
+            {
+                var data = constraints[i].data.sourceObjects;
+                data.Clear();
+                data.Add(new WeightedTransform(weapon.AimPoint, 1));
+                constraints[i].data.sourceObjects = data;
+            }
+            
+            rigBuilder.Build();
         }
 
         private void SetInput()
         {
-            playerInputInfo = InputControl.ReceiveInput();
-            playerInputInfo = InputControl.GetCameraRelativeInput(playerInputInfo, mainCam);
+            PlayerInputInfo = InputControl.ReceiveInput();
+            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, mainCam);
 
-            moveInput = playerInputInfo.cameraRelativeInput;
+            moveInput = PlayerInputInfo.cameraRelativeInput;
         }
 
         private void SetMovingDirection()
@@ -80,7 +114,7 @@ namespace EverScord.Character
             if (moveInput.magnitude > 1f)
                 moveInput.Normalize();
 
-            moveDir = transform.InverseTransformDirection(moveInput);
+            moveDir = characterTransform.InverseTransformDirection(moveInput);
         }
         
         private void ApplyGravity()
@@ -100,22 +134,63 @@ namespace EverScord.Character
 
             Vector3 velocity = movement * speed;
             velocity.y = fallSpeed;
-            
-            characterControl.Move(velocity * Time.deltaTime);
+
+            controller.Move(velocity * Time.deltaTime);
         }
 
-        private void Turn()
+        private void TrackAim()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCam.ScreenPointToRay(PlayerInputInfo.mousePosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, groundLayer))
+            if (!Physics.Raycast(ray, out RaycastHit hit, groundLayer))
+                return;
+            
+            lookPosition = hit.point;
+            lookPosition.y = characterTransform.position.y;
+
+            lookDir = lookPosition - characterTransform.position;
+            float distance = lookDir.magnitude;
+
+            lookDir.Normalize();
+
+            if (distance < 0.5f)
+                return;
+
+            if (distance < weapon.MinAimDistance)
+                lookPosition = characterTransform.position + lookDir * weapon.MinAimDistance;
+
+            lookPosition.y = weaponTransform.position.y;
+            
+            weapon.AimPoint.position = Vector3.Lerp(
+                weapon.AimPoint.position,
+                lookPosition,
+                Time.deltaTime * weapon.AimSensitivity
+            );
+        }
+
+        private void RotateBody()
+        {
+            float angle = Vector3.Angle(lookDir, characterTransform.forward);
+
+            if (angle <= rotateAngle)
             {
-                lookPosition = hit.point;
-                lookPosition.y = transform.position.y;
-                lookRotation = Quaternion.LookRotation(lookPosition - transform.position);
+                AnimationControl.Rotate(false);
+                return;
             }
+            
+            AnimationControl.Rotate(!IsMoving);
+            Quaternion lookRotation = Quaternion.LookRotation(lookDir);
 
-            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * smoothRotation);
+            characterTransform.rotation = Quaternion.Lerp(
+                characterTransform.rotation,
+                lookRotation,
+                Time.deltaTime * smoothRotation
+            ).normalized;
+        }
+
+        public void SetIsAiming(bool state)
+        {
+            IsAiming = state;
         }
 
         public bool IsGrounded
@@ -123,22 +198,16 @@ namespace EverScord.Character
             get
             {
                 return Physics.CheckSphere(
-                    transform.TransformPoint(groundCheckOffset),
+                    characterTransform.TransformPoint(groundCheckOffset),
                     groundCheckRadius,
                     groundLayer
                 );
             }
         }
-
-        public bool IsShooting
-        {
-            get
-            {
-                return playerInputInfo.holdLeftMouseButton;
-            }
-        }
-
-        public bool IsMoving => characterControl.velocity.magnitude > 0;
+        
+        public bool IsAiming { get; private set; }
+        public bool IsShooting => PlayerInputInfo.holdLeftMouseButton;
+        public bool IsMoving => moveInput.magnitude > 0;
 
         #region GIZMO
         private void OnDrawGizmosSelected()

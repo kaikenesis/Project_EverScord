@@ -52,7 +52,16 @@ namespace EverScord
                 message = PhotonNetwork.CurrentRoom.Name;
             }
 
-            chatClient.SendPrivateMessage(recipient, message);
+            string target = recipient;
+            for (int i = 0; i < (int)EJob.MAX; i++)
+            {
+                for (int j = 0; j < (int)ELevel.MAX; j++)
+                {
+                    target = recipient + "|" + ((EJob)i).ToString() + "|" + ((ELevel)j).ToString();
+                    chatClient.SendPrivateMessage(target, message);
+                }
+            }
+            
         }
         #endregion
 
@@ -60,7 +69,8 @@ namespace EverScord
         private void InviteMessage(string sender, string message)
         {
             Debug.Log($"{sender}: {message}");
-            OnRoomInvite?.Invoke(sender, message);
+            string[] data = sender.Split('|');
+            OnRoomInvite?.Invoke(data[0], message);
         }
 
         #endregion
@@ -120,6 +130,8 @@ namespace EverScord
             //}
 
             // Channel Name format [Sender : Recipient]
+            Debug.Log($"sender : {sender},\nmessage : {message},\nchannelName : {channelName}");
+
             string[] splitNames = channelName.Split(new char[] { ':' });
             string senderName = splitNames[0];
 

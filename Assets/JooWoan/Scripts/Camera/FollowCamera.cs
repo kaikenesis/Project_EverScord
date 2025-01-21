@@ -15,7 +15,7 @@ namespace EverScord.GameCamera
             initialHeight = transform.position.y;
         }
 
-        void Update()
+        void LateUpdate()
         {
             FollowTarget();
         }

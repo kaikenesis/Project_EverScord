@@ -11,7 +11,7 @@ public class DebugCam : MonoBehaviour
         debugCam.enabled = false;
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (Input.GetKeyDown(KeyCode.F1))
             ToggleCam();
