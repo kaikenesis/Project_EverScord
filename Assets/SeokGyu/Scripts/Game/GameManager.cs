@@ -1,4 +1,5 @@
 using EverScord;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,8 @@ namespace EverScord
     {
         private static GameManager instance;
 
-        public Dictionary<string, PlayerData> userDatas = new Dictionary<string, PlayerData>();
+        public string userName;
+        public PlayerData userData;
 
         public static GameManager Instance
         {
@@ -34,6 +36,12 @@ namespace EverScord
             {
                 Destroy(gameObject);
             }
+        }
+
+        public void SetUserName(EJob curJob, ELevel curLevel)
+        {
+            PlayerPrefs.SetString("USERNAME", userName + "|" + curJob.ToString() + "|" + curLevel.ToString());
+            PhotonNetwork.NickName = PlayerPrefs.GetString("USERNAME");
         }
     }
 }
