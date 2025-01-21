@@ -4,23 +4,22 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
+using UnityEditor.XR;
 
 namespace EverScord
 {
     public class PhotonRoomController : MonoBehaviourPunCallbacks
     {
         [SerializeField] private int maxPlayers;
-        private bool bMatch = false;
+        [SerializeField] private int maxDealers = 2;
+        [SerializeField] private int maxHealers = 1;
         [SerializeField] private bool bDebug = false;
 
         public static Action OnJoinRoom = delegate { };
-        public static Action<bool> OnRoomStatusChange = delegate { };
         public static Action OnRoomLeft = delegate { };
         public static Action<List<string>> OnDisplayPlayers = delegate { };
         public static Action OnMatchSoloPlay = delegate { };
-        public static Action<int> OnMatchMultiPlay = delegate { };
-        public static Action OnJoinedMatch = delegate { };
-        public static Action OnUpdateMatchRoom = delegate { };
+        public static Action OnMatchMultiPlay = delegate { };
 
         private void Awake()
         {
@@ -60,6 +59,7 @@ namespace EverScord
         private void HandleLobbyJoined()
         {
             string roomName = PlayerPrefs.GetString("PHOTONROOM");
+            SetPlayerRole();
             if (!string.IsNullOrEmpty(roomName))
             {
                 PhotonNetwork.JoinRoom(roomName);
@@ -103,82 +103,82 @@ namespace EverScord
             ro.IsOpen = true;
             ro.IsVisible = false;
             ro.PublishUserId = true;
-            ro.MaxPlayers = maxPlayers;
+            ro.MaxPlayers = maxDealers + maxHealers;
             ro.CustomRoomProperties = roomProperties;
             ro.CustomRoomPropertiesForLobby = new string[] { "DEALER", "HEALER", "LEVEL" };
 
             return ro;
         }
-        private void DebugPlayerList()
-        {
-            string players = "";
-            Dictionary<int, Player> playerList = PhotonNetwork.CurrentRoom.Players;
-            int key = 0;
-            for (int i = 1; i <= playerList.Count; key++)
-            {
-                if (playerList.ContainsKey(key) == true)
-                {
-                    players += $"{playerList[key].NickName},\n";
-                    i++;
-                }
-            }
-            Debug.Log($"Current Room Players: {players}");
-        }
+        
         private void DisplayRoomPlayers()
         {
-            List<string> players = new List<string>();
-            Dictionary<int, Player> playerList = PhotonNetwork.CurrentRoom.Players;
+            List<string> playerList = new List<string>();
+            Dictionary<int, Player> players = PhotonNetwork.CurrentRoom.Players;
             int key = 0;
-            for (int i = 1; i <= playerList.Count; key++)
+
+            for (int i = 1; i <= players.Count; key++)
             {
-                if (playerList.ContainsKey(key) == true)
+                if (players.ContainsKey(key) == true)
                 {
-                    string[] data = playerList[key].NickName.Split("|");
-                    players.Add(data[0]);
+                    playerList.Add(players[key].NickName);
                     i++;
                 }
             }
 
-            OnDisplayPlayers?.Invoke(players);
+            OnDisplayPlayers?.Invoke(playerList);
         }
         private void SetPlayerRole()
         {
-            Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
-            int curDealers = (int)roomProperties["DEALER"];
-            int curHealers = (int)roomProperties["HEALER"];
-
             PlayerData data = GameManager.Instance.userData;
-            if(data.job.ToString() == "DEALER" && curDealers < 2)
+            switch(data.job)
             {
-                roomProperties["DEALER"] = curDealers + 1;
-                PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "DEALER" } });
-            }
-            else if(data.job.ToString() == "HEALER" && curHealers < 1)
-            {
-                roomProperties["HEALER"] = curDealers + 1;
-                PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "HEALER" } });
+                case EJob.DEALER:
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "DEALER" } });
+                    break;
+                case EJob.HEALER:
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "HEALER" } });
+                    break;
             }
 
-            PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+            switch(data.curLevel)
+            {
+                case ELevel.NORMAL:
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "NORMAL" } });
+                    break;
+                case ELevel.HARD:
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "HARD" } });
+                    break;
+            }
         }
-        private void UpdateRoom(Player otherPlayer)
+        private void UpdateRoomCondition()
         {
             Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            int curDealers = 0;
+            int curHealers = 0;
 
-            if(otherPlayer.CustomProperties.ContainsKey("Job"))
+            Dictionary<int, Player> players = PhotonNetwork.CurrentRoom.Players;
+            int key = 0;
+
+            for (int i = 0; i < players.Count; key++)
             {
-                string playerJob = (string)otherPlayer.CustomProperties["Job"];
-                if(playerJob == "DEALER")
+                if (players.ContainsKey(key) && players[key].CustomProperties.ContainsKey("Job"))
                 {
-                    roomProperties["DEALER"] = (int)roomProperties["DEALER"] - 1;
-                }
-                else if(playerJob == "HEALER")
-                {
-                    roomProperties["HEALER"] = (int)roomProperties["HEALER"] - 1;
-                }
+                    string playerJob = (string)players[key].CustomProperties["Job"];
 
-                PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+                    if (playerJob == "DEALER")
+                        curDealers++;
+                    else if (playerJob == "HEALER")
+                        curHealers++;
+
+                    i++;
+                }
             }
+            roomProperties["DEALER"] = curDealers;
+            roomProperties["HEALER"] = curHealers;
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+            
+            DebugRoomProperties();
         }
         #endregion
 
@@ -190,8 +190,7 @@ namespace EverScord
 
         public void OnClickedMultiPlay()
         {
-            bMatch = true;
-            OnMatchMultiPlay?.Invoke(0);
+            OnMatchMultiPlay?.Invoke();
         }
         #endregion
 
@@ -199,8 +198,6 @@ namespace EverScord
         public override void OnCreatedRoom()
         {
             Debug.Log($"Created Room Successful.\nPhoton RoomName : {PhotonNetwork.CurrentRoom.Name}");
-
-            SetPlayerRole();
         }
         public override void OnJoinedRoom()
         {
@@ -221,28 +218,15 @@ namespace EverScord
         public override void OnLeftRoom()
         {
             Debug.Log("You have left Photon Room");
-
-            switch (GameManager.Instance.userData.curPhotonState)
-            {
-                case EPhotonState.NONE:
-                    {
-                        DisplayRoomPlayers();
-                    }
-                    break;
-            }
         }
         // RandomRoom Join 실패 시 오류 콜백 함수 실행
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Random Failed {returnCode} : {message}");
-            
-            //CreatePhotonRoom();
         }
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Room Failed {returnCode} : {message}");
-            
-            //CreatePhotonRoom();
         }
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
@@ -256,7 +240,6 @@ namespace EverScord
                     }
                     break;
             }
-            UpdateRoom(newPlayer);
             DebugPlayerList();
         }
         public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -271,8 +254,13 @@ namespace EverScord
                     }
                     break;
             }
-            UpdateRoom(otherPlayer);
+            UpdateRoomCondition();
             DebugPlayerList();
+        }
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        {
+            Debug.Log($"{targetPlayer} Properties Update");
+            UpdateRoomCondition();
         }
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
@@ -280,11 +268,12 @@ namespace EverScord
 
         #endregion
 
+        #region Debug Methods
         private void OnGUI()
         {
             if (bDebug == true)
             {
-                if(GUI.Button(new Rect(400, 0, 150, 60), "JoinRoom"))
+                if (GUI.Button(new Rect(400, 0, 150, 60), "JoinRoom"))
                 {
                     CreatePhotonRoom();
                 }
@@ -292,29 +281,57 @@ namespace EverScord
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Dealer"))
                 {
                     GameManager.Instance.userData.job = EJob.DEALER;
-                    GameManager.Instance.SetUserName(EJob.DEALER, GameManager.Instance.userData.curLevel);
-                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
+                    SetPlayerRole();
+                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
                 }
                 if (GUI.Button(new Rect(600, 60, 150, 60), "Healer"))
                 {
                     GameManager.Instance.userData.job = EJob.HEALER;
-                    GameManager.Instance.SetUserName(EJob.HEALER, GameManager.Instance.userData.curLevel);
-                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
+                    SetPlayerRole();
+                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
                 }
 
                 if (GUI.Button(new Rect(900, 0, 150, 60), "Normal"))
                 {
                     GameManager.Instance.userData.curLevel = ELevel.NORMAL;
-                    GameManager.Instance.SetUserName(GameManager.Instance.userData.job, ELevel.NORMAL);
-                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
+                    SetPlayerRole();
+                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
                 }
                 if (GUI.Button(new Rect(900, 60, 150, 60), "Hard"))
                 {
                     GameManager.Instance.userData.curLevel = ELevel.HARD;
-                    GameManager.Instance.SetUserName(GameManager.Instance.userData.job, ELevel.HARD);
-                    Debug.Log(PlayerPrefs.GetString("USERNAME"));
+                    SetPlayerRole();
+                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
                 }
             }
         }
+
+        private void DebugPlayerList()
+        {
+            string players = "";
+            Dictionary<int, Player> playerList = PhotonNetwork.CurrentRoom.Players;
+            int key = 0;
+            for (int i = 1; i <= playerList.Count; key++)
+            {
+                if (playerList.ContainsKey(key) == true)
+                {
+                    players += $"{playerList[key].NickName},\n";
+                    i++;
+                }
+            }
+            Debug.Log($"Current Room Players: {players}");
+        }
+
+        private void DebugRoomProperties()
+        {
+            if (PhotonNetwork.InRoom == false) return;
+
+            int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
+            int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
+            ELevel level = (ELevel)PhotonNetwork.CurrentRoom.CustomProperties["LEVEL"];
+
+            Debug.Log($"dealer : {curDealer}, healer : {curHealer}, level : ${level}");
+        }
+        #endregion
     }
 }

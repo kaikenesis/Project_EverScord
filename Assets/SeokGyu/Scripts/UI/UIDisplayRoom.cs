@@ -38,6 +38,7 @@ namespace EverScord
         private void Init()
         {
             gameObject.SetActive(false);
+            sendInviteContainer.SetActive(false);
 
             SetObjectsVisibility(false);
 
@@ -47,8 +48,7 @@ namespace EverScord
                 UIRoomPlayer uiRoomPlayer = Instantiate(uiRoomPlayerPrefab, roomContainer.transform);
                 uiRoomPlayers[i] = uiRoomPlayer;
             }
-
-            Instantiate(inviteButton, roomContainer.transform);
+            inviteButton.transform.SetAsLastSibling();
         }
 
         private void HandleJoinRoom()
@@ -116,7 +116,6 @@ namespace EverScord
 
         public void ToggleSendInviteContainor()
         {
-            Debug.Log("Click");
             sendInviteContainer.SetActive(!sendInviteContainer.activeSelf);
         }
     }

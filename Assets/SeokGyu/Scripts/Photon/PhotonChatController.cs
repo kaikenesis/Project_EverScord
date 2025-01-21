@@ -4,6 +4,7 @@ using Photon.Pun;
 using System;
 using ExitGames.Client.Photon;
 using Photon.Chat.Demo;
+using static UnityEngine.GraphicsBuffer;
 
 namespace EverScord
 {
@@ -16,20 +17,17 @@ namespace EverScord
         public static Action<ChatClient> OnChatConnected = delegate { };
         public static Action<PhotonStatus> OnStatusUpdated = delegate { };
         public static Action OnCreateParty = delegate { };
-        // TODO:
 
         private void Awake()
         {
             chatClient = new ChatClient(this);
             PhotonLogin.OnConnectToPhoton += HandleConnectToPhotonChat;
-            //PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
             UISendInvite.OnSendInvite += HandleSendInvite;
         }
 
         private void OnDestroy()
         {
             PhotonLogin.OnConnectToPhoton -= HandleConnectToPhotonChat;
-            //PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
             UISendInvite.OnSendInvite -= HandleSendInvite;
         }
 
@@ -51,17 +49,7 @@ namespace EverScord
             {
                 message = PhotonNetwork.CurrentRoom.Name;
             }
-
-            string target = recipient;
-            for (int i = 0; i < (int)EJob.MAX; i++)
-            {
-                for (int j = 0; j < (int)ELevel.MAX; j++)
-                {
-                    target = recipient + "|" + ((EJob)i).ToString() + "|" + ((ELevel)j).ToString();
-                    chatClient.SendPrivateMessage(target, message);
-                }
-            }
-            
+            chatClient.SendPrivateMessage(recipient, message);
         }
         #endregion
 
@@ -69,8 +57,7 @@ namespace EverScord
         private void InviteMessage(string sender, string message)
         {
             Debug.Log($"{sender}: {message}");
-            string[] data = sender.Split('|');
-            OnRoomInvite?.Invoke(data[0], message);
+            OnRoomInvite?.Invoke(sender, message);
         }
 
         #endregion
@@ -123,11 +110,6 @@ namespace EverScord
             // (누군가 보낸 메시지가 있다면 확인하는듯.. 현재 코드에서는 로그인시 내가 보내는
             // 내용이 있으니 그거 먼저 확인한 후 (ex. channelName -> user1 : user1)
             // 이후 다른 메시지를 체크 (ex. channelName -> user1 : other)
-
-            //if (!string.IsNullOrEmpty(message.ToString()))
-            //{
-
-            //}
 
             // Channel Name format [Sender : Recipient]
             Debug.Log($"sender : {sender},\nmessage : {message},\nchannelName : {channelName}");
