@@ -1,12 +1,10 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class NRunState : MonoBehaviour, IState
+public abstract class NStunState : MonoBehaviour, IState
 {
     protected NController monsterController;
-    protected bool isEnter = false;
 
     protected abstract void Setup();
 
@@ -17,28 +15,24 @@ public abstract class NRunState : MonoBehaviour, IState
 
     public void Enter()
     {
-        isEnter = true;
-        monsterController.Animator.CrossFade("Run", 0.25f);
+        monsterController.Animator.CrossFade("Wait", 0.3f);
+        StartCoroutine(Stun());
     }
 
-    protected virtual void Update()
+    private IEnumerator Stun()
     {
-        if (!isEnter)
-            return;
-
-        if (monsterController.CalcDistance() < monsterController.AttackRangeZ1)
-        {
-            Exit();
-            return;
-        }
-
-        Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        monsterController.LookPlayer();
-        transform.Translate(monsterController.MoveSpeed * Time.deltaTime * moveVector, Space.World);
+        yield return new WaitForSeconds(1f);
+        Exit();
     }
 
     protected virtual IEnumerator RandomAttack()
     {
+        if (monsterController.CalcDistance() > monsterController.AttackRangeZ1)
+        {
+            ExitToRun();
+            yield break;
+        }
+
         int transition = monsterController.CheckCoolDown();
         switch (transition)
         {
@@ -72,13 +66,16 @@ public abstract class NRunState : MonoBehaviour, IState
 
     public void Exit()
     {
-        isEnter = false;
         StartCoroutine(RandomAttack());
     }
-
     protected void ExitToWait()
     {
         monsterController.WaitState();
+    }
+
+    protected void ExitToRun()
+    {
+        monsterController.RunState();
     }
 
     protected void ExitToAttack1()

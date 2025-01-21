@@ -43,11 +43,13 @@ public abstract class NWaitState : MonoBehaviour, IState
             {
                 case 1:
                     {
+                        monsterController.LastAttack = 1;
                         ExitToAttack1();
                         yield break;
                     }
                 case 2:
                     {
+                        monsterController.LastAttack = 2;
                         ExitToAttack2();
                         yield break;
                     }
