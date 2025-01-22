@@ -1,6 +1,7 @@
 using UnityEngine;
 using EverScord.Weapons;
 using UnityEngine.Animations.Rigging;
+using Photon.Pun;
 
 namespace EverScord.Character
 {
@@ -38,11 +39,14 @@ namespace EverScord.Character
 
         private Camera mainCam;
         private CharacterController controller;
+        private PhotonView photonView;
         private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
         private float fallSpeed;
 
         void Awake()
         {
+            photonView = GetComponent<PhotonView>();
+
             AnimationControl = new CharacterAnimation(
                 anim,
                 smoothRotation,
@@ -135,6 +139,9 @@ namespace EverScord.Character
 
         private void Move()
         {
+            if (photonView.IsMine == false)
+                return;
+
             movement = new Vector3(moveInput.x, 0, moveInput.z);
 
             Vector3 velocity = movement * speed;
