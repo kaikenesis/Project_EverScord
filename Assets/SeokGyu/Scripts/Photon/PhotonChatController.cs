@@ -14,6 +14,7 @@ namespace EverScord
         private ChatClient chatClient;
 
         public static Action<string, string> OnRoomInvite = delegate { };
+        public static Action<string> OnRoomFollow = delegate { };
         public static Action<ChatClient> OnChatConnected = delegate { };
         public static Action<PhotonStatus> OnStatusUpdated = delegate { };
         public static Action OnCreateParty = delegate { };
@@ -22,12 +23,14 @@ namespace EverScord
         {
             chatClient = new ChatClient(this);
             PhotonLogin.OnConnectToPhoton += HandleConnectToPhotonChat;
+            PhotonMatchController.OnFollowRoom += HandleFollowRoom;
             UISendInvite.OnSendInvite += HandleSendInvite;
         }
 
         private void OnDestroy()
         {
             PhotonLogin.OnConnectToPhoton -= HandleConnectToPhotonChat;
+            PhotonMatchController.OnFollowRoom -= HandleFollowRoom;
             UISendInvite.OnSendInvite -= HandleSendInvite;
         }
 
@@ -39,7 +42,7 @@ namespace EverScord
         #region Handle Methods
         private void HandleConnectToPhotonChat(string nickName)
         {
-            ConnectToPhotonChat();
+            ConnectToPhotonChat(nickName);
         }
 
         private void HandleSendInvite(string recipient)
@@ -48,8 +51,15 @@ namespace EverScord
             if (PhotonNetwork.InRoom)
             {
                 message = PhotonNetwork.CurrentRoom.Name;
+                message += ":invite";
             }
             chatClient.SendPrivateMessage(recipient, message);
+        }
+
+        private void HandleFollowRoom(string recipient, string message)
+        {
+            string msg = message + ":follow";
+            chatClient.SendPrivateMessage(recipient, msg);
         }
         #endregion
 
@@ -60,13 +70,16 @@ namespace EverScord
             OnRoomInvite?.Invoke(sender, message);
         }
 
+        private void FollowMessage(string sender, string message)
+        {
+            OnRoomFollow?.Invoke(message);
+        }
+
         #endregion
 
         #region Public Methods
-        public void ConnectToPhotonChat()
+        public void ConnectToPhotonChat(string nickName)
         {
-            nickName = PlayerPrefs.GetString("USERNAME");
-
             Debug.Log("Connecting to Photon Chat");
             chatClient.AuthValues = new Photon.Chat.AuthenticationValues(nickName);
             ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
@@ -119,7 +132,14 @@ namespace EverScord
 
             if (!sender.Equals(senderName, StringComparison.OrdinalIgnoreCase))
             {
-                InviteMessage(sender, message.ToString());
+                string[] splitMsg = message.ToString().Split(':');
+                string roomName = splitMsg[0];
+                string typeName = splitMsg[1];
+
+                if (typeName == "invite")
+                    InviteMessage(sender, roomName);
+                else if (typeName == "follow")
+                    FollowMessage(sender, roomName);
             }
         }
 

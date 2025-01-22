@@ -4,7 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
-using UnityEditor.XR;
+using WebSocketSharp;
 
 namespace EverScord
 {
@@ -14,6 +14,7 @@ namespace EverScord
         [SerializeField] private int maxDealers = 2;
         [SerializeField] private int maxHealers = 1;
         [SerializeField] private bool bDebug = false;
+        private string inviteRoomName;
 
         public static Action OnJoinRoom = delegate { };
         public static Action OnRoomLeft = delegate { };
@@ -23,27 +24,50 @@ namespace EverScord
 
         private void Awake()
         {
-            UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
             PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonChatController.OnRoomFollow += HandleRoomInviteAccept;
+            UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
+            UIJobSelect.OnChangeJob += HandleChangeJob;
 
-            PlayerPrefs.SetString("PHOTONROOM", "");
+            inviteRoomName = "";
         }
+
+        
 
         private void OnDestroy()
         {
-            UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
             PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonChatController.OnRoomFollow -= HandleRoomInviteAccept;
+            UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
+            UIJobSelect.OnChangeJob -= HandleChangeJob;
         }
 
         #region Handle Methods
+        private void HandleLobbyJoined()
+        {
+            SetPlayerRole();
+            if(inviteRoomName.IsNullOrEmpty() == false)
+            {
+                PhotonNetwork.JoinRoom(inviteRoomName);
+                inviteRoomName = "";
+            }
+
+            //else
+            //{
+            //    //CreatePhotonRoom();
+            //}
+        }
+
         private void HandleRoomInviteAccept(string roomName)
         {
-            PlayerPrefs.SetString("PHOTONROOM", roomName);
+            inviteRoomName = roomName;
             if (PhotonNetwork.InRoom)
             {
-                OnRoomLeft?.Invoke();
+                if(GameManager.Instance.userData.curPhotonState == EPhotonState.NONE)
+                    OnRoomLeft?.Invoke();
+
                 PhotonNetwork.LeaveRoom();
             }
             else
@@ -51,23 +75,7 @@ namespace EverScord
                 if (PhotonNetwork.InLobby)
                 {
                     PhotonNetwork.JoinRoom(roomName);
-                    PlayerPrefs.SetString("PHOTONROOM", "");
                 }
-            }
-        }
-
-        private void HandleLobbyJoined()
-        {
-            string roomName = PlayerPrefs.GetString("PHOTONROOM");
-            SetPlayerRole();
-            if (!string.IsNullOrEmpty(roomName))
-            {
-                PhotonNetwork.JoinRoom(roomName);
-                PlayerPrefs.SetString("PHOTONNAME", "");
-            }
-            else
-            {
-                //CreatePhotonRoom();
             }
         }
 
@@ -78,6 +86,12 @@ namespace EverScord
                 OnRoomLeft?.Invoke();
                 PhotonNetwork.LeaveRoom();
             }
+        }
+
+        private void HandleChangeJob()
+        {
+            SetPlayerRole();
+            Debug.Log($"nickName : {GameManager.Instance.name}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
         }
         #endregion
 
@@ -277,31 +291,23 @@ namespace EverScord
                 {
                     CreatePhotonRoom();
                 }
-
-                if (GUI.Button(new Rect(600, 0, 150, 60), "Dealer"))
+                
+                if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
                 {
-                    GameManager.Instance.userData.job = EJob.DEALER;
-                    SetPlayerRole();
-                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
-                }
-                if (GUI.Button(new Rect(600, 60, 150, 60), "Healer"))
-                {
-                    GameManager.Instance.userData.job = EJob.HEALER;
-                    SetPlayerRole();
-                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
+                    PhotonNetwork.LoadLevel("PhotonTestPlay");
                 }
 
                 if (GUI.Button(new Rect(900, 0, 150, 60), "Normal"))
                 {
                     GameManager.Instance.userData.curLevel = ELevel.NORMAL;
                     SetPlayerRole();
-                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
+                    Debug.Log($"nickName : {GameManager.Instance.name}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
                 }
                 if (GUI.Button(new Rect(900, 60, 150, 60), "Hard"))
                 {
                     GameManager.Instance.userData.curLevel = ELevel.HARD;
                     SetPlayerRole();
-                    Debug.Log($"nickName : {GameManager.Instance.name},\nJob : {GameManager.Instance.userData.job},\nLevel : {GameManager.Instance.userData.curLevel}");
+                    Debug.Log($"nickName : {GameManager.Instance.name}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
                 }
             }
         }
@@ -315,7 +321,7 @@ namespace EverScord
             {
                 if (playerList.ContainsKey(key) == true)
                 {
-                    players += $"{playerList[key].NickName},\n";
+                    players += $"{playerList[key].NickName}, ";
                     i++;
                 }
             }

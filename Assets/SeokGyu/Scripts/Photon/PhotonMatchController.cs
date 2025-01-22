@@ -2,7 +2,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
-using WebSocketSharp;
 using System;
 using UnityEngine;
 
@@ -14,9 +13,14 @@ namespace EverScord
         private int maxHealers = 1;
         Dictionary<int, Player> matchPlayers;
         private Hashtable expectedRoomProperties = new Hashtable();
+        private PhotonView pv;
+
+        public static Action<string, string> OnFollowRoom = delegate { };
+        public static Action OnStateUpdate = delegate { };
 
         private void Awake()
         {
+            pv = GetComponent<PhotonView>();
             PhotonRoomController.OnMatchSoloPlay += HandleMatchSoloPlay;
             PhotonRoomController.OnMatchMultiPlay += HandleMatchMultiPlay;
         }
@@ -38,13 +42,14 @@ namespace EverScord
         {
             // 멀티 플레이인 Normal, Hard는 직업조건에 맞춰 매칭을 할 필요가 있으므로 매칭 대기열에 등록
             // 랜덤매칭할 경우 랜덤매칭 실패시 (조건에 맞는 방을 찾지 못했을 경우) 새로 Room을 만들고 RoomOptions를 변경하여 매칭으로 참여가능한 방으로 생성
-            // 매치메이킹은 로비에서 진행되어야함; 에바야
-            if (PhotonNetwork.IsMasterClient != false) return;
-            if (GameManager.Instance.userData.curPhotonState == EPhotonState.MATCH) return;
+            // 매치메이킹은 로비에서 진행되어야함
+            if (PhotonNetwork.IsMasterClient == false) return;
+            EPhotonState state = GameManager.Instance.userData.curPhotonState;
+            if (state == EPhotonState.MATCH || state == EPhotonState.FOLLOW) return;
 
-            PhotonView pv = new PhotonView();
-            pv.RPC("SetStateMatch", RpcTarget.All);
-            
+            pv.RPC("SetStateMatch", RpcTarget.Others);
+            GameManager.Instance.userData.curPhotonState = EPhotonState.MATCH;
+
             if (PhotonNetwork.InRoom == true)
             {
                 matchPlayers = PhotonNetwork.CurrentRoom.Players;
@@ -96,17 +101,37 @@ namespace EverScord
 
             Debug.Log($"{room.Name}");
             if (matchPlayers.Count != 0)
-                InviteMatchPlayers();
+                FollowRoom(room.Name);
             return PhotonNetwork.JoinRoom(room.Name);
         }
         private Hashtable GetCurrentRoomProperties()
         {
             return PhotonNetwork.CurrentRoom.CustomProperties;
         }
-        private void InviteMatchPlayers()
+        private void FollowRoom(string roomName)
         {
             // 이미 로비로 나와 룸을 탐색했기 때문에 RPC는 활용하기 힘듬.
             // 플레이어 초대와 동일한 수단으로 진행하지만, 수락하는 과정은 거치지않고 바로 데려오는 방식으로 진행
+            // 첫번째 인자에 recipient, 두번째 인자에 roomName message
+            string message = roomName;
+            int key = 0;
+            for (int i = 0; i < matchPlayers.Count; key++)
+            {
+                if(matchPlayers.ContainsKey(key))
+                {
+                    OnFollowRoom?.Invoke(matchPlayers[key].NickName, message);
+                    i++;
+                }
+            }
+        }
+        #endregion
+
+        #region Coroutine Methods
+        private System.Collections.IEnumerator WaitCreatePhotonMatchRoom()
+        {
+            yield return new WaitForSeconds(2.0f);
+
+            CreatePhotonMatchRoom();
         }
         #endregion
 
@@ -114,7 +139,7 @@ namespace EverScord
         [PunRPC]
         private void SetStateMatch()
         {
-            GameManager.Instance.userData.curPhotonState = EPhotonState.MATCH;
+            GameManager.Instance.userData.curPhotonState = EPhotonState.FOLLOW;
         }
         #endregion
 
@@ -136,7 +161,7 @@ namespace EverScord
                     // 매칭되는 룸이 없으면 새로운 룸을 생성
                     Debug.Log("No matching room found.");
 
-                    CreatePhotonMatchRoom();
+                    StartCoroutine(WaitCreatePhotonMatchRoom());
                     break;
             }
         }

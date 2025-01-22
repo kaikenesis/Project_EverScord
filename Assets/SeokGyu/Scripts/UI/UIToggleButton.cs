@@ -4,10 +4,22 @@ using UnityEngine;
 
 public class UIToggleButton : MonoBehaviour
 {
-    [SerializeField] private GameObject toggleObject;
+    [SerializeField] private GameObject[] toggleObject;
+
+    private void Awake()
+    {
+        for (int i = 0; i < toggleObject.Length; i++)
+        {
+            toggleObject[i].SetActive(false);
+        }
+    }
 
     public void ToggleObject()
     {
-        toggleObject.SetActive(!toggleObject.activeSelf);
+        for (int i = 0; i < toggleObject.Length; i++)
+        {
+            toggleObject[i].SetActive(!toggleObject[i].activeSelf);
+        }
+        
     }
 }
