@@ -1,7 +1,6 @@
 using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
-using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Weapons
 {
@@ -19,14 +18,14 @@ namespace EverScord.Weapons
         [SerializeField] public float bulletSpeed;
         [SerializeField] private int hitEffectCount;
 
-        private Ray ray;
-        private RaycastHit rayHit;
         private LinkedList<Bullet> bullets = new();
+        private BulletCollisionParam bulletCollisionParam;
         private float elapsedTime;
         private bool isCooldown => elapsedTime < Cooldown;
 
-        public void CreateAimPoint()
+        public void Init()
         {
+            bulletCollisionParam = new();
             AimPoint = Instantiate(AimPoint).transform;
         }
 
@@ -76,7 +75,7 @@ namespace EverScord.Weapons
             bullets.AddLast(bullet);
         }
 
-        public void UpdateBullets(float deltaTime)
+        public void UpdateBullets(CharacterControl shooter, float deltaTime)
         {
             LinkedListNode<Bullet> currentNode = bullets.First;
 
@@ -97,31 +96,16 @@ namespace EverScord.Weapons
                     continue;
                 }
 
-                RaycastSegment(currentPosition, nextPosition, bullet);
+                bulletCollisionParam.StartPoint     = currentPosition;
+                bulletCollisionParam.EndPoint       = nextPosition;
+                bulletCollisionParam.PlayerCam      = shooter.MainCam;
+                bulletCollisionParam.ShootableLayer = shooter.ShootableLayer;
+                bulletCollisionParam.HitEffect      = hitEffect;
+                bulletCollisionParam.HitEffectCount = hitEffectCount;
+
+                bullet.CheckCollision(bulletCollisionParam);
                 currentNode = nextNode;
             }
-        }
-
-        private void RaycastSegment(Vector3 startPoint, Vector3 endPoint, Bullet bullet)
-        {
-            Vector3 direction = endPoint - startPoint;
-            float distance = direction.magnitude;
-
-            ray.origin = startPoint;
-            ray.direction = direction;
-
-            if (Physics.Raycast(ray, out rayHit, distance))
-            {
-                hitEffect.transform.position = rayHit.point;
-                hitEffect.transform.forward  = rayHit.normal;
-                hitEffect.Emit(hitEffectCount);
-
-                bullet.SetTracerEffectPosition(rayHit.point);
-                bullet.SetIsDestroyed(true);
-                return;
-            }
-
-            bullet.SetTracerEffectPosition(endPoint); 
         }
     }
 }

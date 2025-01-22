@@ -30,14 +30,15 @@ namespace EverScord.Character
 
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
+        [field: SerializeField] public LayerMask ShootableLayer         { get; private set; }
         private Weapon weapon;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
         public Transform CharacterTransform                             { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
         public Vector3 AimPosition                                      { get; private set; }
+        public Camera MainCam                                           { get; private set; }
 
-        private Camera mainCam;
         private CharacterController controller;
         private PhotonView photonView;
         private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
@@ -53,10 +54,10 @@ namespace EverScord.Character
                 transitionDampTime
             );
 
-            mainCam = Camera.main;
+            MainCam = Camera.main;
 
             weapon = weaponPrefab.GetComponent<Weapon>();
-            weapon.CreateAimPoint();
+            weapon.Init();
 
             InitRig();
 
@@ -92,7 +93,7 @@ namespace EverScord.Character
 
             weapon.CooldownTimer();
             weapon.Shoot(this);
-            weapon.UpdateBullets(Time.deltaTime);
+            weapon.UpdateBullets(this, Time.deltaTime);
         }
 
         private void InitRig()
@@ -113,7 +114,7 @@ namespace EverScord.Character
         private void SetInput()
         {
             PlayerInputInfo = InputControl.ReceiveInput();
-            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, mainCam);
+            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, MainCam);
 
             moveInput = PlayerInputInfo.cameraRelativeInput;
         }
@@ -152,9 +153,9 @@ namespace EverScord.Character
 
         private void TrackAim()
         {
-            Ray ray = mainCam.ScreenPointToRay(PlayerInputInfo.mousePosition);
+            Ray ray = MainCam.ScreenPointToRay(PlayerInputInfo.mousePosition);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, groundLayer))
+            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
                 return;
 
             AimPosition = hit.point;
