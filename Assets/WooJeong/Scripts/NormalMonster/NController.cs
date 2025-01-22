@@ -5,49 +5,31 @@ using UnityEngine.Rendering.Universal;
 
 public abstract class NController : MonoBehaviour
 {
-    [SerializeField] private Material decalMat;
-    [SerializeField] protected float distance = 7.5f;
-    [SerializeField] protected float moveSpeed = 3f;
-    [SerializeField] protected float coolDown1 = 5;
-    [SerializeField] protected float coolDown2 = 10;
-    [SerializeField] protected float lookSpeed = 3f;
-
-    [Header("공격 사거리 표시 시간")]
-    [SerializeField] protected float projectionTime = 1;
-    [Header("공격1 사거리")]
-    [SerializeField] protected float attackRangeX1 = 0.5f;
-    [SerializeField] protected float attackRangeY1 = 1f;
-    [SerializeField] protected float attackRangeZ1 = 7.5f;
-
-    protected float angle = 0.1f;
+    [SerializeField] public NMonsterData monsterData;
 
     [HideInInspector] public int LastAttack = 0;
     [HideInInspector] public GameObject player;
-    protected DecalProjector projector;
-    protected BoxCollider boxCollider;
-    protected Animator animator;
     public Dictionary<string, float> clipDict = new();
-    protected RaycastHit hit;
-
+    public float stunTime = 2;
+    public bool isStun = false;
+    public bool isDead = false;
     protected float curCool1 = 0;
     protected float curCool2 = 0;
+    protected RaycastHit hit;
 
-    public float MoveSpeed { get { return moveSpeed; } }
-    public float Distance { get { return distance; } }
-    public float ProjectionTime { get { return projectionTime; } }
-    public float AttackRangeX1 { get { return attackRangeX1; } }
-    public float AttackRangeY1 { get { return attackRangeY1; } }
-    public float AttackRangeZ1 { get { return attackRangeZ1; } }
-
-    public DecalProjector Projector { get { return projector; } }
-    public BoxCollider BoxCollider { get { return boxCollider; } }
-    public Animator Animator { get { return animator; } }
+    public DecalProjector Projector1 { get; protected set; }
+    public DecalProjector Projector2 { get; protected set; }
+    public BoxCollider BoxCollider1 { get; protected set; }
+    public BoxCollider BoxCollider2 { get; protected set; }
+    public Animator Animator { get; protected set; }
 
     protected IState currentState;
     protected IState runState;
     protected IState attackState1;
     protected IState attackState2;
     protected IState waitState;
+    protected IState stunState;
+    protected IState deathState;
 
     void Awake()
     {
@@ -59,18 +41,47 @@ public abstract class NController : MonoBehaviour
 
     protected void ProjectorSetup()
     {
-        projector.renderingLayerMask = 2;
-        projector.material = decalMat;
+        Projector1.renderingLayerMask = 2;
+        Projector1.material = monsterData.DecalMat;
+        Projector2.renderingLayerMask = 2;
+        Projector2.material = monsterData.DecalMat;
+        Projector1.size = new Vector3(monsterData.AttackRangeX1,
+                                      monsterData.AttackRangeY1,
+                                      monsterData.AttackRangeZ1);
+
+        Projector1.pivot = new Vector3(0, transform.position.y,
+                                       monsterData.AttackRangeZ1 / 2);
+
+        Projector2.size = new Vector3(monsterData.AttackRangeX2,
+                                      monsterData.AttackRangeY2,
+                                      monsterData.AttackRangeZ2);
+
+        Projector2.pivot = new Vector3(0, transform.position.y,
+                                       monsterData.AttackRangeZ2 / 2);
+
+        BoxCollider1.center = new Vector3(0, transform.position.y,
+                                          monsterData.AttackRangeZ1 / 2);
+
+        BoxCollider1.size = new Vector3(monsterData.AttackRangeX1,
+                                        monsterData.AttackRangeY1,
+                                        monsterData.AttackRangeZ1);
+
+        BoxCollider2.center = new Vector3(0, transform.position.y,
+                                        monsterData.AttackRangeZ2 / 2);
+
+        BoxCollider2.size = new Vector3(monsterData.AttackRangeX2,
+                                        monsterData.AttackRangeY2,
+                                        monsterData.AttackRangeZ2);
     }
 
     public void LookPlayer()
     {
         Vector3 dir = player.transform.position - transform.position;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * lookSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * monsterData.SmoothAngleSpeed);
         transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
     }
 
-    public bool IsLookPlayer()
+    public bool IsLookPlayer(float distance)
     {
         Vector3 start = new(transform.position.x, transform.position.y + 0.3f, transform.position.z);        
 
@@ -124,7 +135,7 @@ public abstract class NController : MonoBehaviour
 
     public IEnumerator CoolDown1()
     {
-        curCool1 = coolDown1;
+        curCool1 = monsterData.CoolDown1;
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
@@ -136,7 +147,7 @@ public abstract class NController : MonoBehaviour
 
     public IEnumerator CoolDown2()
     {
-        curCool2 = coolDown2;
+        curCool2 = monsterData.CoolDown2;
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
@@ -171,4 +182,15 @@ public abstract class NController : MonoBehaviour
     {
         Transition(attackState2);
     }
+
+    public void StunState()
+    {
+        Transition(stunState);
+    }
+
+    public void DeathState()
+    {
+        Transition(deathState);
+    }
+
 }

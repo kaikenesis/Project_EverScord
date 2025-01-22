@@ -21,13 +21,14 @@ public abstract class NStunState : MonoBehaviour, IState
 
     private IEnumerator Stun()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(monsterController.stunTime);
+        monsterController.isStun = false;
         Exit();
     }
 
     protected virtual IEnumerator RandomAttack()
     {
-        if (monsterController.CalcDistance() > monsterController.AttackRangeZ1)
+        if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
         {
             ExitToRun();
             yield break;

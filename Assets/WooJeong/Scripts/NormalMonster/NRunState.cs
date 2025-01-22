@@ -26,7 +26,21 @@ public abstract class NRunState : MonoBehaviour, IState
         if (!isEnter)
             return;
 
-        if (monsterController.CalcDistance() < monsterController.AttackRangeZ1)
+        if (monsterController.isStun)
+        {
+            isEnter = false;
+            ExitToStun();
+            return;
+        }
+
+        if (monsterController.isDead)
+        {
+            isEnter = false;
+            ExitToDeath();
+            return;
+        }
+
+        if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
         {
             Exit();
             return;
@@ -34,7 +48,7 @@ public abstract class NRunState : MonoBehaviour, IState
 
         Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
         monsterController.LookPlayer();
-        transform.Translate(monsterController.MoveSpeed * Time.deltaTime * moveVector, Space.World);
+        transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
     }
 
     protected virtual IEnumerator RandomAttack()
@@ -72,22 +86,36 @@ public abstract class NRunState : MonoBehaviour, IState
 
     public void Exit()
     {
-        isEnter = false;
         StartCoroutine(RandomAttack());
     }
 
     protected void ExitToWait()
     {
+        isEnter = false;
         monsterController.WaitState();
     }
 
     protected void ExitToAttack1()
     {
+        isEnter = false;
         monsterController.AttackState1();
     }
 
     protected void ExitToAttack2()
     {
+        isEnter = false;
         monsterController.AttackState2();
+    }
+
+    protected void ExitToStun()
+    {
+        isEnter = false;
+        monsterController.StunState();
+    }
+
+    protected void ExitToDeath()
+    {
+        isEnter = false;
+        monsterController.DeathState();
     }
 }

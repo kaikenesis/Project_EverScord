@@ -21,7 +21,7 @@ public abstract class NDeathState : MonoBehaviour, IState
 
     private IEnumerator Death()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(monsterController.clipDict["Dying"]);
         Exit();
     }
 

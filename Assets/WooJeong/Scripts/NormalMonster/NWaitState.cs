@@ -25,6 +25,20 @@ public abstract class NWaitState : MonoBehaviour, IState
         if (!isEnter)
             return;
 
+        if (monsterController.isStun)
+        {
+            isEnter = false;
+            ExitToStun();
+            return;
+        }
+
+        if (monsterController.isDead)
+        {
+            isEnter = false;
+            ExitToDeath();
+            return;
+        }
+
         monsterController.LookPlayer();
     }
 
@@ -32,7 +46,7 @@ public abstract class NWaitState : MonoBehaviour, IState
     {
         while (true)
         {
-            if (monsterController.CalcDistance() > monsterController.AttackRangeZ1)
+            if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
             {
                 ExitToRun();
                 yield break;
@@ -89,5 +103,17 @@ public abstract class NWaitState : MonoBehaviour, IState
     {
         isEnter = false;
         monsterController.AttackState2();
+    }
+
+    protected void ExitToStun()
+    {
+        isEnter = false;
+        monsterController.StunState();
+    }
+
+    protected void ExitToDeath()
+    {
+        isEnter = false;
+        monsterController.DeathState();
     }
 }
