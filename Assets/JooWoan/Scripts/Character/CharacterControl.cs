@@ -65,7 +65,7 @@ namespace EverScord.Character
 
         void OnApplicationFocus(bool focus)
         {
-            Cursor.visible = !focus;    
+            //Cursor.visible = !focus;
         }
 
         void Start()
