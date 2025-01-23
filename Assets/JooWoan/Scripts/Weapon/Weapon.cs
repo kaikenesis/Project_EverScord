@@ -63,7 +63,7 @@ namespace EverScord.Weapons
             {
                 shooter.SetIsAiming(false);
                 shooter.AnimationControl.SetAimRig(shooter);
-                shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOTEND);
+                shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOT_END);
                 return;
             }
 
@@ -78,6 +78,7 @@ namespace EverScord.Weapons
 
             --CurrentAmmo;
             elapsedTime = 0f;
+
             shotEffect.Emit(1);
 
             shooter.SetIsAiming(true);
@@ -93,13 +94,18 @@ namespace EverScord.Weapons
 
             shooter.AnimationControl.SetAimRig(false);
             shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_RELOAD);
+            
+            StartCoroutine(shooter.PlayerUIControl.RollAmmoText(this));
 
             yield return new WaitForSeconds(ReloadTime);
 
-            shooter.AnimationControl.SetAimRig(false);
-            shooter.AnimationControl.Play("Default");
-
             CurrentAmmo = MaxAmmo;
+            elapsedTime = 0f;
+
+            shooter.SetIsAiming(true);
+            shooter.AnimationControl.SetAimRig(true);
+            shooter.AnimationControl.Trigger(ConstStrings.PARAM_STANCE_TRIGGER);
+
             isReloading = false;
         }
 

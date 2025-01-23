@@ -1,6 +1,9 @@
-using EverScord.Character;
+using System.Collections;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
+using EverScord.Character;
+using EverScord.Weapons;
 
 namespace EverScord.UI
 {
@@ -11,6 +14,7 @@ namespace EverScord.UI
         public RectTransform CanvasRect                         { get; private set; }
 
         [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText;
+        [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
 
         public void Init(CharacterControl player)
         {
@@ -28,7 +32,23 @@ namespace EverScord.UI
 
         public void SetAmmoText(int count)
         {
+            DOTween.Rewind(ConstStrings.TWEEN_AMMOCHANGE);
+            DOTween.Play(ConstStrings.TWEEN_AMMOCHANGE);
+            
             currentAmmoText.text = $"{count}";
+            currentAmmoText.color = count <= 1 ? outOfAmmoTextColor : initialAmmoTextColor;
+        }
+
+        public IEnumerator RollAmmoText(Weapon weapon)
+        {
+            int count = 0;
+            float interval = weapon.ReloadTime / weapon.MaxAmmo;
+
+            for (int i = 0; count <= weapon.MaxAmmo; i++)
+            {
+                currentAmmoText.text = $"{count++}";
+                yield return new WaitForSeconds(interval);
+            }
         }
     }
 }

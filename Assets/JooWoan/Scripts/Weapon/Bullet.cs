@@ -5,10 +5,11 @@ namespace EverScord.Weapons
 {
     public class Bullet
     {
-        public float Lifetime               { get; private set; }
+        private const float COLLISION_STEP = 0.5f;
+        public TrailRenderer TracerEffect   { get; private set; }
         public Vector3 InitialPosition      { get; private set; }
         public Vector3 InitialVelocity      { get; private set; }
-        public TrailRenderer TracerEffect   { get; private set; }
+        public float Lifetime               { get; private set; }
         public bool IsDestroyed             { get; private set; }
 
         public Bullet(Vector3 position, Vector3 velocity, TrailRenderer effect)
@@ -60,7 +61,7 @@ namespace EverScord.Weapons
 
             direction.Normalize();
 
-            for (float distance = 0f; distance <= totalDistance; distance += 0.5f)
+            for (float distance = 0f; distance <= totalDistance; distance += COLLISION_STEP)
             {
                 Vector3 currentPoint = param.StartPoint + direction * distance;
                 Vector3 currentScreenPoint = param.PlayerCam.WorldToScreenPoint(currentPoint);

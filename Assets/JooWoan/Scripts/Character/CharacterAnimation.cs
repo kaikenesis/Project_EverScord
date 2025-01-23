@@ -9,17 +9,16 @@ namespace EverScord.Character
         private Animator anim;
         private MultiAimConstraint aim;
         private TwoBoneIKConstraint leftHandIK;
-        private float smoothRotation, transitionDampTime;
+        private float transitionDampTime;
 
         private IDictionary<string, AnimationClip> animDict = new Dictionary<string, AnimationClip>();
 
-        public CharacterAnimation(Animator anim, MultiAimConstraint aim, TwoBoneIKConstraint leftHand, float smooth, float damp)
+        public CharacterAnimation(Animator anim, MultiAimConstraint aim, TwoBoneIKConstraint leftHand, float dampTime)
         {
             this.anim           = anim;
             this.aim            = aim;
             leftHandIK          = leftHand;
-            smoothRotation      = smooth;
-            transitionDampTime  = damp;
+            transitionDampTime  = dampTime;
 
             foreach (AnimationClip clip in anim.runtimeAnimatorController.animationClips)
                 animDict[clip.name] = clip;
@@ -55,6 +54,12 @@ namespace EverScord.Character
         public void Rotate(bool state)
         {
             anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
+        }
+
+        public void Trigger(string triggerName)
+        {
+            anim.SetTrigger(triggerName);
+            anim.ResetTrigger(triggerName);
         }
 
         public void Play(string clipName)

@@ -21,8 +21,8 @@ namespace EverScord.UI
             Vector2 viewPortPosition = mainCam.WorldToViewportPoint(aimPoint.position);
 
             Vector2 screenPosition = new Vector2(
-                ((viewPortPosition.x - 0.5f) * playerUI.CanvasRect.sizeDelta.x),
-                ((viewPortPosition.y - 0.5f) * playerUI.CanvasRect.sizeDelta.y)
+                (viewPortPosition.x - 0.5f) * playerUI.CanvasRect.sizeDelta.x,
+                (viewPortPosition.y - 0.5f) * playerUI.CanvasRect.sizeDelta.y
             );
 
             playerUI.CursorRect.anchoredPosition = screenPosition;

@@ -38,7 +38,7 @@ namespace EverScord.Character
 
         [Header("UI")]
         [SerializeField] private GameObject playerUIPrefab;
-        private PlayerUI playerUI;
+        public PlayerUI PlayerUIControl                                 { get; private set; }
         private Transform uiCanvas;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
@@ -60,7 +60,6 @@ namespace EverScord.Character
                 anim,
                 aim,
                 leftHandIK,
-                smoothRotation,
                 transitionDampTime
             );
 
@@ -72,13 +71,13 @@ namespace EverScord.Character
             controller.skinWidth = controller.radius * 0.1f;
 
             uiCanvas = GameObject.FindGameObjectWithTag(ConstStrings.TAG_PLAYERUI).transform;
-            playerUI = Instantiate(playerUIPrefab, uiCanvas).GetComponent<PlayerUI>();
+            PlayerUIControl = Instantiate(playerUIPrefab, uiCanvas).GetComponent<PlayerUI>();
 
             weapon = weaponPrefab.GetComponent<Weapon>();
-            weapon.Init(playerUI.SetAmmoText);
+            weapon.Init(PlayerUIControl.SetAmmoText);
             InitRig();
 
-            playerUI.Init(this);
+            PlayerUIControl.Init(this);
         }
 
         void OnApplicationFocus(bool focus)
