@@ -21,16 +21,16 @@ namespace EverScord.Character
         [SerializeField] private RigBuilder rigBuilder;
         [SerializeField] private MultiAimConstraint bodyAim;
         [SerializeField] private MultiAimConstraint headAim;
-        [field: SerializeField] public MultiAimConstraint Aim           { get; private set; }
-        [field: SerializeField] public TwoBoneIKConstraint LeftHandIK   { get; private set; }
-        [field: SerializeField] public float ShootStanceDuration        { get; private set; }
+        [SerializeField] private MultiAimConstraint aim;
+        [SerializeField] private TwoBoneIKConstraint leftHandIK;
+        [SerializeField] private float shootStanceDuration;
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float rotateAngle;
         [SerializeField] private float smoothRotation;
+        public float ShootStanceDuration => shootStanceDuration;
 
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
-        [field: SerializeField] public LayerMask ShootableLayer         { get; private set; }
         private Weapon weapon;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
@@ -50,6 +50,8 @@ namespace EverScord.Character
 
             AnimationControl = new CharacterAnimation(
                 anim,
+                aim,
+                leftHandIK,
                 smoothRotation,
                 transitionDampTime
             );
@@ -98,7 +100,7 @@ namespace EverScord.Character
 
         private void InitRig()
         {
-            MultiAimConstraint[] constraints = { Aim, bodyAim, headAim };
+            MultiAimConstraint[] constraints = { aim, bodyAim, headAim };
 
             for (int i = 0; i < constraints.Length; i++)
             {
@@ -174,7 +176,7 @@ namespace EverScord.Character
                 lookPosition = CharacterTransform.position + lookDir * weapon.MinAimDistance;
 
             lookPosition.y = weapon.GunPoint.position.y;
-            
+
             weapon.AimPoint.position = Vector3.Lerp(
                 weapon.AimPoint.position,
                 lookPosition,

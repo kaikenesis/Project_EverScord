@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.Asteroids;
 using UnityEngine;
 
 namespace EverScord.Weapons
@@ -32,6 +33,14 @@ namespace EverScord.Weapons
             TracerEffect.transform.position = position;
         }
 
+        public void DestroyTracerEffect()
+        {
+            if (TracerEffect == null)
+                return;
+
+            Object.Destroy(TracerEffect.gameObject);
+        }
+
         public bool ShouldBeDestroyed(float weaponRange)
         {
             if (IsDestroyed)
@@ -45,8 +54,10 @@ namespace EverScord.Weapons
 
         public void CheckCollision(BulletCollisionParam param)
         {
+            RaycastHit hit = new RaycastHit();
             Vector3 direction = param.EndPoint - param.StartPoint;
             float totalDistance = direction.magnitude;
+
             direction.Normalize();
 
             for (float distance = 0f; distance <= totalDistance; distance += 0.5f)
@@ -54,19 +65,23 @@ namespace EverScord.Weapons
                 Vector3 currentPoint = param.StartPoint + direction * distance;
                 Vector3 currentScreenPoint = param.PlayerCam.WorldToScreenPoint(currentPoint);
 
-                Ray ray = param.PlayerCam.ScreenPointToRay(currentScreenPoint);
-                Debug.DrawRay(ray.origin, ray.direction.normalized * 0.5f, Color.red, 1f);
+                bool isWithinScreen = Screen.safeArea.Contains(currentScreenPoint);
 
-                if (!Physics.Raycast(ray, out RaycastHit hit, 50f, param.ShootableLayer))
-                    continue;
+                if (isWithinScreen)
+                {
+                    Ray ray = param.PlayerCam.ScreenPointToRay(currentScreenPoint);
 
-                param.HitEffect.transform.position = hit.point;
-                param.HitEffect.transform.forward  = -direction;
-                param.HitEffect.Emit(param.HitEffectCount);
+                    if (!Physics.Raycast(ray, out hit, 50f, param.ShootableLayer))
+                        continue;
 
-                SetTracerEffectPosition(hit.point);
+                    param.HitEffect.transform.position = hit.point;
+                    param.HitEffect.transform.forward = -direction;
+                    param.HitEffect.Emit(param.HitEffectCount);
+
+                    SetTracerEffectPosition(hit.point);
+                }
+
                 IsDestroyed = true;
-
                 return;
             }
 
@@ -94,8 +109,8 @@ namespace EverScord.Weapons
     {
         public Vector3 StartPoint;
         public Vector3 EndPoint;
-        public Camera PlayerCam;
         public LayerMask ShootableLayer;
+        public Camera PlayerCam;
         public ParticleSystem HitEffect;
         public int HitEffectCount;
     }

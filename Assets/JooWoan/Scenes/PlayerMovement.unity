@@ -5056,11 +5056,14 @@ MonoBehaviour:
   tracerEffect: {fileID: 7469494061097809063, guid: 8586dc5aeaebe804385f9e529eb9a69c, type: 3}
   <GunPoint>k__BackingField: {fileID: 1249513962}
   <AimPoint>k__BackingField: {fileID: 3787122344697598860, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
+  <ShootableLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 256
   <AimSensitivity>k__BackingField: 13
   <MinAimDistance>k__BackingField: 2
   <Cooldown>k__BackingField: 0.1
   weaponRange: 30
-  bulletSpeed: 500
+  bulletSpeed: 200
   hitEffectCount: 2
 --- !u!4 &312548072 stripped
 Transform:
@@ -30858,111 +30861,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1194342619}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2083097109
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2083097113}
-  - component: {fileID: 2083097112}
-  - component: {fileID: 2083097111}
-  - component: {fileID: 2083097110}
-  m_Layer: 8
-  m_Name: Enemy (3)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!65 &2083097110
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2083097109}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &2083097111
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2083097109}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 2321ecdb7a6892f4db5a8355100f06ee, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &2083097112
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2083097109}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &2083097113
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2083097109}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.75, y: 15.71, z: 9.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2142508507
 GameObject:
   m_ObjectHideFlags: 0
@@ -31867,16 +31765,13 @@ MonoBehaviour:
   rigBuilder: {fileID: 8786810637592777287}
   bodyAim: {fileID: 1967179149}
   headAim: {fileID: 1335208905}
-  <Aim>k__BackingField: {fileID: 149361697}
-  <LeftHandIK>k__BackingField: {fileID: 1720934036}
-  <ShootStanceDuration>k__BackingField: 2
+  aim: {fileID: 149361697}
+  leftHandIK: {fileID: 1720934036}
+  shootStanceDuration: 2
   transitionDampTime: 0.05
   rotateAngle: 85
   smoothRotation: 3
   weaponPrefab: {fileID: 312548070}
-  <ShootableLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &2233863199465382783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34355,7 +34250,6 @@ SceneRoots:
   - {fileID: 1542203794}
   - {fileID: 2053370360}
   - {fileID: 1002742718}
-  - {fileID: 2083097113}
   - {fileID: 414929615}
   - {fileID: 1194342619}
   - {fileID: 2233863199465382780}

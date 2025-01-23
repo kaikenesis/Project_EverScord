@@ -10,6 +10,7 @@ namespace EverScord.Weapons
         [SerializeField] private TrailRenderer tracerEffect;
         [field: SerializeField] public Transform GunPoint           { get; private set; }
         [field: SerializeField] public Transform AimPoint           { get; private set; }
+        [field: SerializeField] public LayerMask ShootableLayer     { get; private set; }
         [field: SerializeField] public float AimSensitivity         { get; private set; }
         [field: SerializeField] public float MinAimDistance         { get; private set; }
         [field: SerializeField] public float Cooldown               { get; private set; }
@@ -19,13 +20,12 @@ namespace EverScord.Weapons
         [SerializeField] private int hitEffectCount;
 
         private LinkedList<Bullet> bullets = new();
-        private BulletCollisionParam bulletCollisionParam;
+        private BulletCollisionParam bulletCollisionParam = new();
         private float elapsedTime;
         private bool isCooldown => elapsedTime < Cooldown;
 
         public void Init()
         {
-            bulletCollisionParam = new();
             AimPoint = Instantiate(AimPoint).transform;
         }
 
@@ -90,7 +90,7 @@ namespace EverScord.Weapons
 
                 if (bullet.ShouldBeDestroyed(weaponRange))
                 {
-                    Destroy(bullet.TracerEffect.gameObject);
+                    bullet.DestroyTracerEffect();
                     bullets.Remove(currentNode);
                     currentNode = nextNode;
                     continue;
@@ -99,7 +99,7 @@ namespace EverScord.Weapons
                 bulletCollisionParam.StartPoint     = currentPosition;
                 bulletCollisionParam.EndPoint       = nextPosition;
                 bulletCollisionParam.PlayerCam      = shooter.MainCam;
-                bulletCollisionParam.ShootableLayer = shooter.ShootableLayer;
+                bulletCollisionParam.ShootableLayer = ShootableLayer;
                 bulletCollisionParam.HitEffect      = hitEffect;
                 bulletCollisionParam.HitEffectCount = hitEffectCount;
 
