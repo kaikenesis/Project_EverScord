@@ -6,7 +6,7 @@ namespace EverScord
         // Animation
         public const string ANIMATION_NED_SHOOT = "Ned_Shoot";
         public const string ANIMATION_NED_SHOOTEND = "Ned_ShootEnd";
-        public const string ANIMATION_NED_RELOAD = "Ned_Reload";
+        public const string ANIMATION_NED_RELOAD = "Ned_Shoot_Reload";
 
         // Animator Parameters
         public const string PARAM_ISMOVING = "isMoving";
