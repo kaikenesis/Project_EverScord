@@ -45,6 +45,13 @@ namespace EverScord.Character
             leftHandIK.weight = result;
         }
 
+        public void SetAimRig(bool forceRig)
+        {
+            float result = forceRig ? 1f : 0f;
+            aim.weight = result;
+            leftHandIK.weight = result;
+        }
+
         public void Rotate(bool state)
         {
             anim.SetBool(ConstStrings.PARAM_ISROTATING, state);

@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
@@ -17,6 +17,7 @@ namespace EverScord.Weapons
         [field: SerializeField] public float AimSensitivity         { get; private set; }
         [field: SerializeField] public float MinAimDistance         { get; private set; }
         [field: SerializeField] public float Cooldown               { get; private set; }
+        [field: SerializeField] public float ReloadTime             { get; private set; }
         [field: SerializeField] public int MaxAmmo                  { get; private set; }
 
         [SerializeField] private float weaponRange;
@@ -30,6 +31,7 @@ namespace EverScord.Weapons
         private float elapsedTime;
         private int currentAmmo;
         private bool isCooldown => elapsedTime < Cooldown;
+        private bool isReloading = false;
 
         public void Init(OnShotFired setText)
         {
@@ -52,6 +54,9 @@ namespace EverScord.Weapons
 
         public void Shoot(CharacterControl shooter)
         {
+            if (isReloading)
+                return;
+
             float cooldownOvertime = elapsedTime - Cooldown;
 
             if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
@@ -67,8 +72,7 @@ namespace EverScord.Weapons
 
             if (currentAmmo <= 0)
             {
-                Debug.Log("Reloading...");
-                currentAmmo = MaxAmmo;
+                StartCoroutine(ReloadWeapon(shooter));
                 return;
             }
 
@@ -81,6 +85,22 @@ namespace EverScord.Weapons
             shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOT);
 
             FireBullet();
+        }
+
+        private IEnumerator ReloadWeapon(CharacterControl shooter)
+        {
+            isReloading = true;
+
+            shooter.AnimationControl.SetAimRig(false);
+            shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_RELOAD);
+
+            yield return new WaitForSeconds(ReloadTime);
+
+            shooter.AnimationControl.SetAimRig(false);
+            shooter.AnimationControl.Play("Default");
+
+            CurrentAmmo = MaxAmmo;
+            isReloading = false;
         }
 
         private void FireBullet()
