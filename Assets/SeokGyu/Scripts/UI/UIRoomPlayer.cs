@@ -1,15 +1,15 @@
-using EverScord;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UIRoomPlayer : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private TMP_Text nameText;
-    public void Initialize(string name)
+    public class UIRoomPlayer : MonoBehaviour
     {
-        //플레이어 이름, 이미지1(캐릭터 초상화), 이미지2(포지션)
-        nameText.text = name;
+        [SerializeField] private TMP_Text nameText;
+        public void Initialize(string name)
+        {
+            //플레이어 이름, 이미지1(캐릭터 초상화), 이미지2(포지션)
+            nameText.text = name;
+        }
     }
 }

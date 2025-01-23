@@ -615,7 +615,7 @@ GameObject:
   - component: {fileID: 3634280116412812652}
   - component: {fileID: 4056758150991721599}
   m_Layer: 5
-  m_Name: SendInviteContainer
+  m_Name: SendInvite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1253,11 +1253,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiRoomPlayerPrefab: {fileID: 2802581190963127729, guid: e9f0313e3f5c6c047a21e7993b1c8ce3, type: 3}
-  exitButton: {fileID: 0}
   roomContainer: {fileID: 816144525450218428}
   inviteButton: {fileID: 7139936580103585115}
-  hideObjects: []
+  sendInvite: {fileID: 6452556817387225380}
   showObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  singleOnlyButtons:
+  - {fileID: 0}
+  masterOnlyButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  gameSettingButtons:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -1516,8 +1527,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InviteButton
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 113237652805547022, guid: 3de5c87ae6567154fad6c1d3231c5b6e, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 6047165327387853604, guid: 3de5c87ae6567154fad6c1d3231c5b6e, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6528874814378902713, guid: 3de5c87ae6567154fad6c1d3231c5b6e, type: 3}

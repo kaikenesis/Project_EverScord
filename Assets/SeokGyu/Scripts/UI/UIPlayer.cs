@@ -1,8 +1,6 @@
 using Photon.Chat;
 using Photon.Realtime;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,12 +26,12 @@ namespace EverScord
 
         private void Awake()
         {
-            PhotonChatController.OnStatusUpdated += HandleStatusUpdated;
+            //PhotonChatController.OnStatusUpdated += HandleStatusUpdated;
         }
 
         private void OnDestroy()
         {
-            PhotonChatController.OnStatusUpdated -= HandleStatusUpdated;
+            //PhotonChatController.OnStatusUpdated -= HandleStatusUpdated;
         }
 
         private void OnEnable()

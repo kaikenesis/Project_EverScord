@@ -14,6 +14,7 @@ namespace EverScord
         [SerializeField] private int maxDealers = 2;
         [SerializeField] private int maxHealers = 1;
         [SerializeField] private bool bDebug = false;
+        private PhotonView pv;
         private string inviteRoomName;
 
         public static Action OnJoinRoom = delegate { };
@@ -21,6 +22,7 @@ namespace EverScord
         public static Action<List<string>> OnDisplayPlayers = delegate { };
         public static Action OnMatchSoloPlay = delegate { };
         public static Action OnMatchMultiPlay = delegate { };
+        public static Action OnUpdateRoom = delegate { };
 
         private void Awake()
         {
@@ -28,12 +30,12 @@ namespace EverScord
             PhotonChatController.OnRoomFollow += HandleRoomInviteAccept;
             UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
-            UIJobSelect.OnChangeJob += HandleChangeJob;
+            UISelect.OnChangeUserData += HandleChangeUserData;
+            UISelect.OnGameStart += HandleGameStart;
 
             inviteRoomName = "";
+            pv = GetComponent<PhotonView>();
         }
-
-        
 
         private void OnDestroy()
         {
@@ -41,23 +43,39 @@ namespace EverScord
             PhotonChatController.OnRoomFollow -= HandleRoomInviteAccept;
             UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
-            UIJobSelect.OnChangeJob -= HandleChangeJob;
+            UISelect.OnChangeUserData -= HandleChangeUserData;
+            UISelect.OnGameStart -= HandleGameStart;
         }
 
         #region Handle Methods
         private void HandleLobbyJoined()
         {
             SetPlayerRole();
-            if(inviteRoomName.IsNullOrEmpty() == false)
+            switch(GameManager.Instance.userData.curPhotonState)
             {
-                PhotonNetwork.JoinRoom(inviteRoomName);
-                inviteRoomName = "";
+                case EPhotonState.NONE:
+                    {
+                        if (inviteRoomName.IsNullOrEmpty() == false)
+                        {
+                            PhotonNetwork.JoinRoom(inviteRoomName);
+                            inviteRoomName = "";
+                        }
+                        else
+                        {
+                            CreatePhotonRoom();
+                        }
+                    }
+                    break;
+                case EPhotonState.FOLLOW:
+                    {
+                        if (inviteRoomName.IsNullOrEmpty() == false)
+                        {
+                            PhotonNetwork.JoinRoom(inviteRoomName);
+                            inviteRoomName = "";
+                        }
+                    }
+                    break;
             }
-
-            //else
-            //{
-            //    //CreatePhotonRoom();
-            //}
         }
 
         private void HandleRoomInviteAccept(string roomName)
@@ -88,10 +106,35 @@ namespace EverScord
             }
         }
 
-        private void HandleChangeJob()
+        private void HandleChangeUserData()
         {
+            pv.RPC("SetLevel", RpcTarget.Others, GameManager.Instance.userData.curLevel);
             SetPlayerRole();
             Debug.Log($"nickName : {GameManager.Instance.name}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
+        }
+
+        private void HandleGameStart()
+        {
+            switch(GameManager.Instance.userData.curLevel)
+            {
+                case ELevel.STORY:
+                    OnMatchSoloPlay?.Invoke();
+                    break;
+                case ELevel.NORMAL:
+                    OnMatchMultiPlay?.Invoke();
+                    break;
+                case ELevel.HARD:
+                    OnMatchMultiPlay?.Invoke();
+                    break;
+            }
+        }
+        #endregion
+
+        #region PunRPC Methods
+        [PunRPC]
+        private void SetLevel(ELevel newLevel)
+        {
+            GameManager.Instance.userData.curLevel = newLevel;
         }
         #endregion
 
@@ -189,22 +232,11 @@ namespace EverScord
             }
             roomProperties["DEALER"] = curDealers;
             roomProperties["HEALER"] = curHealers;
+            roomProperties["LEVEL"] = GameManager.Instance.userData.curLevel;
 
             PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
             
             DebugRoomProperties();
-        }
-        #endregion
-
-        #region Public Methods
-        public void OnClickedSoloPlay()
-        {
-            OnMatchSoloPlay?.Invoke();
-        }
-
-        public void OnClickedMultiPlay()
-        {
-            OnMatchMultiPlay?.Invoke();
         }
         #endregion
 
@@ -222,6 +254,7 @@ namespace EverScord
                 case EPhotonState.NONE:
                     {
                         OnJoinRoom?.Invoke();
+                        OnUpdateRoom?.Invoke();
                         DisplayRoomPlayers();
                     }
                     break;
@@ -251,6 +284,7 @@ namespace EverScord
                 case EPhotonState.NONE:
                     {
                         DisplayRoomPlayers();
+                        OnUpdateRoom?.Invoke();
                     }
                     break;
             }
@@ -265,6 +299,7 @@ namespace EverScord
                 case EPhotonState.NONE:
                     {
                         DisplayRoomPlayers();
+                        OnUpdateRoom?.Invoke();
                     }
                     break;
             }

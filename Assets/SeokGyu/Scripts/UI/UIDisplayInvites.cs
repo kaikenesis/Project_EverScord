@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,6 +33,8 @@ namespace EverScord
 
         private void HandleRoomInvite(string friend, string room)
         {
+            if (GameManager.Instance.userData.curPhotonState != EPhotonState.NONE) return;
+
             Debug.Log($"Room invite for {friend} to room {room}");
             UIInvite uiInvite = Instantiate(uiInvitePrefab, inviteContainer);
             uiInvite.Initialize(friend, room);

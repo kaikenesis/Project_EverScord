@@ -4,7 +4,6 @@ using Photon.Pun;
 using System;
 using ExitGames.Client.Photon;
 using Photon.Chat.Demo;
-using static UnityEngine.GraphicsBuffer;
 
 namespace EverScord
 {
@@ -14,16 +13,16 @@ namespace EverScord
         private ChatClient chatClient;
 
         public static Action<string, string> OnRoomInvite = delegate { };
-        public static Action<string> OnRoomFollow = delegate { };
         public static Action<ChatClient> OnChatConnected = delegate { };
-        public static Action<PhotonStatus> OnStatusUpdated = delegate { };
-        public static Action OnCreateParty = delegate { };
+        public static Action<string> OnRoomFollow = delegate { };
+        public static Action OnStopMatch = delegate { };
 
         private void Awake()
         {
             chatClient = new ChatClient(this);
             PhotonLogin.OnConnectToPhoton += HandleConnectToPhotonChat;
             PhotonMatchController.OnFollowRoom += HandleFollowRoom;
+            PhotonMatchController.OnSendMsgToMaster += HandleSendMsgToMaster;
             UISendInvite.OnSendInvite += HandleSendInvite;
         }
 
@@ -31,12 +30,14 @@ namespace EverScord
         {
             PhotonLogin.OnConnectToPhoton -= HandleConnectToPhotonChat;
             PhotonMatchController.OnFollowRoom -= HandleFollowRoom;
+            PhotonMatchController.OnSendMsgToMaster -= HandleSendMsgToMaster;
             UISendInvite.OnSendInvite -= HandleSendInvite;
         }
 
         private void Update()
         {
             chatClient.Service();
+
         }
 
         #region Handle Methods
@@ -61,6 +62,12 @@ namespace EverScord
             string msg = message + ":follow";
             chatClient.SendPrivateMessage(recipient, msg);
         }
+
+        private void HandleSendMsgToMaster(string recipient, string message)
+        {
+            string msg = message + ":stopMatch";
+            chatClient.SendPrivateMessage(recipient, msg);
+        }
         #endregion
 
         #region Private Methods
@@ -68,6 +75,8 @@ namespace EverScord
         {
             Debug.Log($"{sender}: {message}");
             OnRoomInvite?.Invoke(sender, message);
+
+            // 추후 시스템메시지를 띄워야할 일이 있다면 bool값을 반환받는 Func으로 변환 후 보내는 사람에게 시스템메시지 출력
         }
 
         private void FollowMessage(string sender, string message)
@@ -75,6 +84,10 @@ namespace EverScord
             OnRoomFollow?.Invoke(message);
         }
 
+        private void StopMatchMessage(string sender)
+        {
+            OnStopMatch?.Invoke();
+        }
         #endregion
 
         #region Public Methods
@@ -140,6 +153,8 @@ namespace EverScord
                     InviteMessage(sender, roomName);
                 else if (typeName == "follow")
                     FollowMessage(sender, roomName);
+                else if (typeName == "stopMatch")
+                    StopMatchMessage(sender);
             }
         }
 
@@ -166,7 +181,6 @@ namespace EverScord
             Debug.Log($"Photon Chat OnStatusUpdate: {user} changed to {status}: {message}");
             PhotonStatus newStatus = new PhotonStatus(user, status, (string)message);
             Debug.Log($"Status Update for {user} and its now {status}.");
-            OnStatusUpdated?.Invoke(newStatus);
         }
 
         public void OnUserSubscribed(string channel, string user)

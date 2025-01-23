@@ -11,7 +11,6 @@ namespace EverScord
     {
         private readonly string version = "1.0"; // 게임 버전 체크
 
-        public static Action GetPhotonFriends = delegate { };
         public static Action OnLobbyJoined = delegate { };
 
         #region Private Methods
