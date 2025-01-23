@@ -8,15 +8,17 @@ public abstract class NWaitState : MonoBehaviour, IState
     protected bool isEnter = false;
 
     protected abstract void Setup();
+    
     void Awake()
     {
         Setup();
     }
+
     public void Enter()
     {
         isEnter = true;
-        monsterController.Animator.CrossFade("Wait", 0.25f);
-
+        monsterController.Animator.CrossFade("Wait", 0.3f);
+        
         Exit();
     }
 

@@ -12,18 +12,26 @@ public class SK_121201_AttackState1 : NAttackState
     }
     protected override IEnumerator Attack()
     {
-        yield return project = StartCoroutine(ProjectAttackRange(1));
+        Fire();
+        monsterController.Animator.CrossFade("Attack1", 0.3f, -1, 0);
 
-        monsterController.Animator.CrossFade("Attack1", 0.3f);
-        float time = monsterController.clipDict["Attack1"];
-
-
-        monsterController.BoxCollider1.enabled = true;
+        float time = monsterController.clipDict["Attack1"]
+                    + monsterController.clipDict["Attack1_Loop"]
+                    + monsterController.clipDict["Attack1_End"];
         yield return new WaitForSeconds(time);
-        monsterController.BoxCollider1.enabled = false;
 
         StartCoroutine(monsterController.CoolDown1());
         attack = null;
         Exit();
+    }
+
+    private void Fire()
+    {
+        GameObject attackObj = new GameObject();
+        attackObj.transform.position = monsterController.player.transform.position;
+        MonsterAttack ma = attackObj.AddComponent<MonsterAttack>();
+        ma.Setup(monsterController.monsterData.AttackRangeX1,
+            monsterController.monsterData.ProjectionTime,
+            monsterController.monsterData.DecalMat);
     }
 }

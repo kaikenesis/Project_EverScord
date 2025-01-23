@@ -1,3 +1,4 @@
+using EverScord.Monster;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,20 +8,28 @@ public class MonsterAttack : MonoBehaviour
 {
     private DecalProjector projector;
     private CapsuleCollider capCollider;
+    private Material decalMat;
     private float radius;
     private float projectTime;
 
-    public MonsterAttack(float radius, float projectTime)
+    public void Setup(float radius, float projectTime, Material decalMat)
     {
         this.radius = radius;
         this.projectTime = projectTime;
+        this.decalMat = decalMat;
+        
         projector = gameObject.AddComponent<DecalProjector>();
+        projector.renderingLayerMask = 2;
+        projector.material = decalMat;
         capCollider = gameObject.AddComponent<CapsuleCollider>();
-        projector.size = new Vector3(radius, radius, radius);
+        projector.size = new Vector3(radius * 2, radius * 2, radius * 2);
         capCollider.radius = radius;
 
+        gameObject.transform.Rotate(90, 0, 0);
         projector.enabled = false;
         capCollider.enabled = false;
+
+        StartCoroutine(Attack());
     }
 
     public IEnumerator Attack()
@@ -28,6 +37,7 @@ public class MonsterAttack : MonoBehaviour
         projector.enabled = true;
         yield return new WaitForSeconds(projectTime);
         projector.enabled = false;
+
         capCollider.enabled = true;
         yield return new WaitForSeconds(projectTime);
         capCollider.enabled = false;

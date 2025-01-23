@@ -31,9 +31,13 @@ public abstract class NController : MonoBehaviour
     protected IState stunState;
     protected IState deathState;
 
-    void Awake()
+    protected void Awake()
     {
         Setup();
+    }
+
+    protected void Start()
+    {
         WaitState();
     }
 

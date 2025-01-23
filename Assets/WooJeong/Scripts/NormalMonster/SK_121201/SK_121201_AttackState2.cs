@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SK_121201_AttackState2 : NAttackState
 {
-    private GameObject player;
+    //private GameObject player;
 
     protected override void Setup()
     {
@@ -12,19 +12,29 @@ public class SK_121201_AttackState2 : NAttackState
     }
     protected override IEnumerator Attack()
     {
-
-        yield return project = StartCoroutine(ProjectAttackRange(2));
-
-        monsterController.Animator.CrossFade("Attack2", 0.3f);
         float time = monsterController.clipDict["Attack2"];
+        monsterController.Animator.CrossFade("Attack2", 0.3f, -1, 0);
+        
+        for(int i = 0; i < 3; i++)
+        {
+            Fire();
+            yield return new WaitForSeconds(2f);
+        }
 
-
-        monsterController.BoxCollider2.enabled = true;
-        yield return new WaitForSeconds(time);
-        monsterController.BoxCollider2.enabled = false;
+        yield return new WaitForSeconds(time - 6f);
 
         StartCoroutine(monsterController.CoolDown2());
         attack = null;
         Exit();
+    }
+
+    private void Fire()
+    {
+        GameObject attackObj = new GameObject();
+        attackObj.transform.position = monsterController.player.transform.position;
+        MonsterAttack ma = attackObj.AddComponent<MonsterAttack>();
+        ma.Setup(monsterController.monsterData.AttackRangeX2,
+            monsterController.monsterData.ProjectionTime,
+            monsterController.monsterData.DecalMat);
     }
 }

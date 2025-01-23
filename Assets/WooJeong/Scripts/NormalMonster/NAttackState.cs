@@ -107,8 +107,17 @@ public abstract class NAttackState : MonoBehaviour, IState
             StopCoroutine(attack);
         if (project != null)
             StopCoroutine(project);
-        monsterController.Projector1.enabled = false;
-        monsterController.BoxCollider1.enabled = false;
+
+        if(monsterController.Projector1 != null)
+            monsterController.Projector1.enabled = false;
+        if(monsterController.Projector2 != null)
+            monsterController.Projector2.enabled = false;
+
+        if (monsterController.BoxCollider1 != null)
+            monsterController.BoxCollider1.enabled = false;
+        if (monsterController.BoxCollider2 != null)
+            monsterController.BoxCollider2.enabled = false;
+
         monsterController.StunState();
     }
 
@@ -119,8 +128,17 @@ public abstract class NAttackState : MonoBehaviour, IState
             StopCoroutine(attack);
         if (project != null)
             StopCoroutine(project);
-        monsterController.Projector1.enabled = false;
-        monsterController.BoxCollider1.enabled = false;
+
+        if (monsterController.Projector1 != null)
+            monsterController.Projector1.enabled = false;
+        if (monsterController.Projector2 != null)
+            monsterController.Projector2.enabled = false;
+
+        if (monsterController.BoxCollider1 != null)
+            monsterController.BoxCollider1.enabled = false;
+        if (monsterController.BoxCollider2 != null)
+            monsterController.BoxCollider2.enabled = false;
+
         monsterController.DeathState();
     }
 
