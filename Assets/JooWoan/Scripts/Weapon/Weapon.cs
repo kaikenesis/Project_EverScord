@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
 
 namespace EverScord.Weapons
 {
+    public delegate void OnShotFired(int count);
+
     public class Weapon : MonoBehaviour
     {
         [SerializeField] private ParticleSystem shotEffect, hitEffect;
@@ -14,19 +17,27 @@ namespace EverScord.Weapons
         [field: SerializeField] public float AimSensitivity         { get; private set; }
         [field: SerializeField] public float MinAimDistance         { get; private set; }
         [field: SerializeField] public float Cooldown               { get; private set; }
+        [field: SerializeField] public int MaxAmmo                  { get; private set; }
 
         [SerializeField] private float weaponRange;
         [SerializeField] public float bulletSpeed;
         [SerializeField] private int hitEffectCount;
 
+        private OnShotFired onShotFired;
+
         private LinkedList<Bullet> bullets = new();
         private BulletCollisionParam bulletCollisionParam = new();
         private float elapsedTime;
+        private int currentAmmo;
         private bool isCooldown => elapsedTime < Cooldown;
 
-        public void Init()
+        public void Init(OnShotFired setText)
         {
             AimPoint = Instantiate(AimPoint).transform;
+            currentAmmo = MaxAmmo;
+
+            onShotFired -= setText;
+            onShotFired += setText;
         }
 
         public void CooldownTimer()
@@ -51,9 +62,17 @@ namespace EverScord.Weapons
                 return;
             }
 
-            if (isCooldown || !shooter.IsShooting)
+            if (!CanShoot(shooter))
                 return;
-            
+
+            if (currentAmmo <= 0)
+            {
+                Debug.Log("Reloading...");
+                currentAmmo = MaxAmmo;
+                return;
+            }
+
+            --CurrentAmmo;
             elapsedTime = 0f;
             shotEffect.Emit(1);
 
@@ -105,6 +124,29 @@ namespace EverScord.Weapons
 
                 bullet.CheckCollision(bulletCollisionParam);
                 currentNode = nextNode;
+            }
+        }
+
+        private bool CanShoot(CharacterControl shooter)
+        {
+            if (isCooldown)
+                return false;
+
+            if (!shooter.IsShooting)
+                return false;
+
+            return true;
+        }
+
+        public int CurrentAmmo
+        {
+            get { return currentAmmo; }
+            set
+            {
+                currentAmmo = value;
+
+                if (onShotFired != null)
+                    onShotFired(currentAmmo);
             }
         }
     }

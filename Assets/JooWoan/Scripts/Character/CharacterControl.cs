@@ -2,6 +2,8 @@ using UnityEngine;
 using EverScord.Weapons;
 using UnityEngine.Animations.Rigging;
 using Photon.Pun;
+using EverScord.UI;
+using Unity.VisualScripting;
 
 namespace EverScord.Character
 {
@@ -32,6 +34,12 @@ namespace EverScord.Character
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
         private Weapon weapon;
+        public Weapon PlayerWeapon => weapon;
+
+        [Header("UI")]
+        [SerializeField] private GameObject playerUIPrefab;
+        private PlayerUI playerUI;
+        private Transform uiCanvas;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
         public Transform CharacterTransform                             { get; private set; }
@@ -57,17 +65,20 @@ namespace EverScord.Character
             );
 
             MainCam = Camera.main;
-
-            weapon = weaponPrefab.GetComponent<Weapon>();
-            weapon.Init();
-
-            InitRig();
+            CharacterTransform = transform;
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller = GetComponent<CharacterController>();
             controller.skinWidth = controller.radius * 0.1f;
 
-            CharacterTransform = transform;
+            uiCanvas = GameObject.FindGameObjectWithTag(ConstStrings.TAG_PLAYERUI).transform;
+            playerUI = Instantiate(playerUIPrefab, uiCanvas).GetComponent<PlayerUI>();
+
+            weapon = weaponPrefab.GetComponent<Weapon>();
+            weapon.Init(playerUI.SetAmmoText);
+            InitRig();
+
+            playerUI.Init(this);
         }
 
         void OnApplicationFocus(bool focus)

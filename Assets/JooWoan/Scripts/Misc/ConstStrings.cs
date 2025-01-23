@@ -15,7 +15,10 @@ namespace EverScord
 
         // Input GetAxis
         public const string INPUT_HORIZONTAL = "Horizontal";
-        public const string INPUT_VERTICAL = "Vertical"; 
+        public const string INPUT_VERTICAL = "Vertical";
+
+        // Tags
+        public const string TAG_PLAYERUI = "PlayerUI";
 
     }
 }

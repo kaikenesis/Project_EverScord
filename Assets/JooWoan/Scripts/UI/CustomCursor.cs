@@ -1,41 +1,31 @@
 using UnityEngine;
-using EverScord.Weapons;
+using EverScord.Character;
 
 namespace EverScord.UI
 {
-    public class CustomCursor : MonoBehaviour
+    public class CustomCursor
     {
-        [SerializeField] private Weapon weapon;
-        [SerializeField] private RectTransform canvasRect;
-
         private Transform aimPoint;
-        private RectTransform uiRect;
         private Camera mainCam;
 
-        void Start()
+        public CustomCursor(CharacterControl player)
         {
-            uiRect = GetComponent<RectTransform>();
-            mainCam = Camera.main;
-            aimPoint = weapon.AimPoint;
-        }
-
-        void Update()
-        {
-            SetCursorPosition();
+            mainCam  = player.MainCam;
+            aimPoint = player.PlayerWeapon.AimPoint;
         }
 
         // 0,0 for the canvas is at the center of the screen
         // WorldToViewPortPoint treats the lower left corner as 0,0
-        private void SetCursorPosition()
+        public void SetCursorPosition(PlayerUI playerUI)
         {
             Vector2 viewPortPosition = mainCam.WorldToViewportPoint(aimPoint.position);
 
             Vector2 screenPosition = new Vector2(
-                ((viewPortPosition.x - 0.5f) * canvasRect.sizeDelta.x),
-                ((viewPortPosition.y - 0.5f) * canvasRect.sizeDelta.y)
+                ((viewPortPosition.x - 0.5f) * playerUI.CanvasRect.sizeDelta.x),
+                ((viewPortPosition.y - 0.5f) * playerUI.CanvasRect.sizeDelta.y)
             );
 
-            uiRect.anchoredPosition = screenPosition;
+            playerUI.CursorRect.anchoredPosition = screenPosition;
         }
     }
 }
