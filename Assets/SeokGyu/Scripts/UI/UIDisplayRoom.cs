@@ -13,6 +13,7 @@ namespace EverScord
         [SerializeField] private GameObject roomContainer;
         [SerializeField] private GameObject inviteButton;
         [SerializeField] private GameObject sendInvite;
+        [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
         [SerializeField] private Button[] singleOnlyButtons;
         [SerializeField] private Button[] masterOnlyButtons;
@@ -45,7 +46,7 @@ namespace EverScord
         {
             gameObject.SetActive(false);
 
-            SetObjectsVisibility(false);
+            OnHideObjects();
 
             uiRoomPlayers = new UIRoomPlayer[3];
             for (int i = 0; i < 3; i++)
@@ -65,7 +66,7 @@ namespace EverScord
                 roomContainer.SetActive(true);
             }
 
-            SetObjectsVisibility(true);
+            OnShowObjects();
         }
 
         private void HandleRoomLeft()
@@ -77,7 +78,7 @@ namespace EverScord
                 roomContainer.SetActive(false);
             }
 
-            SetObjectsVisibility(false);
+            OnHideObjects();
         }
 
         private void HandleDisplayPlayers(List<string> players)
@@ -124,13 +125,19 @@ namespace EverScord
         }
         #endregion // Handle Methods
 
-
-        private void SetObjectsVisibility(bool bVisible)
+        private void OnHideObjects()
         {
-            int count = showObjects.Length;
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < hideObjects.Length; i++)
             {
-                showObjects[i].SetActive(bVisible);
+                hideObjects[i].SetActive(false);
+            }
+        }
+
+        private void OnShowObjects()
+        {
+            for (int i = 0; i < showObjects.Length; i++)
+            {
+                showObjects[i].SetActive(true);
             }
         }
 
@@ -154,15 +161,35 @@ namespace EverScord
         {
             // 파티장만 초대버튼 활성화/비활성화
             // 나머지 버튼들은 비활성화
-            if(inviteButton.activeSelf == true)
+            if(inviteButton.activeSelf == false)
             {
-                sendInvite.SetActive(false);
+                inviteButton.SetActive(PhotonNetwork.IsMasterClient);
+            }
+            else if(inviteButton.activeSelf == true)
+            {
                 inviteButton.SetActive(false);
+                if (bActive == false)
+                {
+                    InitToggleButtons(inviteButton);
+                }
             }
 
             for (int i = 0; i < gameSettingButtons.Length; i++)
             {
                 gameSettingButtons[i].interactable = bActive;
+                if(bActive == false)
+                {
+                    InitToggleButtons(gameSettingButtons[i].gameObject);
+                }
+            }
+        }
+
+        private void InitToggleButtons(GameObject gameObject)
+        {
+            UIToggleButton uiToggle = gameObject.gameObject.GetComponent<UIToggleButton>();
+            if (uiToggle != null)
+            {
+                uiToggle.Init();
             }
         }
 

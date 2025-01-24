@@ -23,6 +23,7 @@ namespace EverScord
         public static Action OnMatchSoloPlay = delegate { };
         public static Action OnMatchMultiPlay = delegate { };
         public static Action OnUpdateRoom = delegate { };
+        public static Action OnCheckGame = delegate { };
 
         private void Awake()
         {
@@ -121,10 +122,38 @@ namespace EverScord
                     OnMatchSoloPlay?.Invoke();
                     break;
                 case ELevel.NORMAL:
-                    OnMatchMultiPlay?.Invoke();
+                    if(PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+                    {
+                        OnMatchMultiPlay?.Invoke();
+                    }
+                    else
+                    {
+                        if(IsCanStart())
+                        {
+                            Debug.Log("You Can Start Game");
+                        }
+                        else
+                        {
+                            Debug.Log("Cannot Start Game");
+                        }
+                    }
                     break;
                 case ELevel.HARD:
-                    OnMatchMultiPlay?.Invoke();
+                    if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+                    {
+                        OnMatchMultiPlay?.Invoke();
+                    }
+                    else
+                    {
+                        if (IsCanStart())
+                        {
+                            Debug.Log("You Can Start Game");
+                        }
+                        else
+                        {
+                            Debug.Log("Cannot Start Game");
+                        }
+                    }
                     break;
             }
         }
@@ -238,6 +267,18 @@ namespace EverScord
             
             DebugRoomProperties();
         }
+        private bool IsCanStart()
+        {
+            if (PhotonNetwork.InRoom == false) return false;
+
+            int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
+            int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
+
+            if (curDealer < maxDealers) return false;
+            if (curHealer < maxHealers) return false;
+
+            return true;
+        }
         #endregion
 
         #region Photon Callbacks
@@ -294,6 +335,7 @@ namespace EverScord
         {
             Debug.Log($"Player has left the room : {otherPlayer.NickName}");
 
+            UpdateRoomCondition();
             switch (GameManager.Instance.userData.curPhotonState)
             {
                 case EPhotonState.NONE:
@@ -303,13 +345,21 @@ namespace EverScord
                     }
                     break;
             }
-            UpdateRoomCondition();
             DebugPlayerList();
         }
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             Debug.Log($"{targetPlayer} Properties Update");
             UpdateRoomCondition();
+            OnCheckGame?.Invoke();
+            switch(GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.NONE:
+                    {
+                        // 현재 방 인원이 max일때 직업조건을 확인하고 플레이가 불가능하면 시스템메시지 출력 ( 일단은 반응x으로)
+                    }
+                    break;
+            }
         }
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
@@ -330,19 +380,6 @@ namespace EverScord
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
                 {
                     PhotonNetwork.LoadLevel("PhotonTestPlay");
-                }
-
-                if (GUI.Button(new Rect(900, 0, 150, 60), "Normal"))
-                {
-                    GameManager.Instance.userData.curLevel = ELevel.NORMAL;
-                    SetPlayerRole();
-                    Debug.Log($"nickName : {GameManager.Instance.name}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
-                }
-                if (GUI.Button(new Rect(900, 60, 150, 60), "Hard"))
-                {
-                    GameManager.Instance.userData.curLevel = ELevel.HARD;
-                    SetPlayerRole();
-                    Debug.Log($"nickName : {GameManager.Instance.name}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
                 }
             }
         }
