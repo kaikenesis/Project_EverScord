@@ -10,4 +10,10 @@ public class BossDeathNode : BActionNode
         actionNodeImplement = gameObject.AddComponent<BossDeath_Imp>();
         base.Setup(gameObject);
     }
+
+    public override NodeState Evaluate()
+    {        
+        state = actionNodeImplement.Evaluate();
+        return state;
+    }
 }

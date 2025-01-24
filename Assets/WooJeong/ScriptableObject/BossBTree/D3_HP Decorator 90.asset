@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32a946d0a1ed9e34aaf88e3e4b0b477d, type: 3}
-  m_Name: D3_Boss Pattern Node 06
+  m_Script: {fileID: 11500000, guid: da2b52ae59c308d42b5b3a5ff2ff3efe, type: 3}
+  m_Name: D3_HP Decorator 90
   m_EditorClassIdentifier: 
-  children: []
+  children:
+  - {fileID: 11400000, guid: a959d37a873b94242964294f87cdb3b0, type: 2}

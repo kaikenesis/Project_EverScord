@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern02_Imp : AttackPatternImplement
+public class BossPattern02_Imp : ActionNodeImplement
 {
     protected override IEnumerator Action()
     {

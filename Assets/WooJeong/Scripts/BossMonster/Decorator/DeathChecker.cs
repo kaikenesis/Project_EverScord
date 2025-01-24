@@ -5,8 +5,14 @@ public class DeathChecker : BDecoratorNode
 {
     public override NodeState Evaluate()
     {
-        if(bossData.Hp > 0)
+        if(bossData.HP > 0)
             return NodeState.SUCCESS;
+
+        if(bossData.Phase == 1)
+        {
+            bossData.PhaseUp();
+            return NodeState.SUCCESS;
+        }
 
         state = children[0].Evaluate();
         if(state == NodeState.SUCCESS)

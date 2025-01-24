@@ -21,7 +21,7 @@ public abstract class BehaviorNode : ScriptableObject
     {
         if (children == null)
             return;
-
+        start = 0;
         int count = children.Count;
         for (int i = 0; i < count; i++)
         {

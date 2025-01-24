@@ -5,27 +5,35 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/Data/BossData")]
 public class BossData : ScriptableObject
 {
-    public float Hp { get; protected set; }
+    public bool CanAttack {  get; protected set; }
+    public float HP { get; protected set; }
     public int Phase { get; protected set; }
-    [field: SerializeField] public float MaxHp { get; protected set; }
+    [field: SerializeField] public float MaxHP { get; protected set; }
     [field: SerializeField] public float Speed { get; protected set; }
     [field: SerializeField] public float AttackRange { get; protected set; }
 
     public void ResetParams()
-    {
-        Hp = MaxHp;
+    {       
+        HP = MaxHP;
         Phase = 1;
+        CanAttack = false;
+    }
+
+    public void SetIsCoolDown(bool b)
+    {
+        CanAttack = b;
     }
 
     public void ReduceHp(int decrease)
     {
-        Hp -= decrease;
-        if (Hp < 0) 
-            Hp = 0;
+        HP -= decrease;
+        if (HP < 0) 
+            HP = 0;
     }
 
     public void PhaseUp()
     {
         Phase++;
+        HP = 50;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
-public class BossPattern01_Imp : AttackPatternImplement
+public class BossPattern01_Imp : ActionNodeImplement
 {
 
     protected override IEnumerator Action()
