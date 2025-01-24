@@ -21,7 +21,8 @@ namespace EverScord
         public const string INPUT_VERTICAL = "Vertical";
 
         // Tags
-        public const string TAG_PLAYERUI = "PlayerUI";
+        public const string TAG_UIHUB = "UIHub";
+        public const string TAG_CHARACTERCAM = "CharacterCamera";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";

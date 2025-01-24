@@ -143,7 +143,7 @@ namespace EverScord.Weapons
 
                 bulletCollisionParam.StartPoint     = currentPosition;
                 bulletCollisionParam.EndPoint       = nextPosition;
-                bulletCollisionParam.PlayerCam      = shooter.MainCam;
+                bulletCollisionParam.PlayerCam      = shooter.CameraControl.Cam;
                 bulletCollisionParam.ShootableLayer = ShootableLayer;
                 bulletCollisionParam.HitEffect      = hitEffect;
                 bulletCollisionParam.HitEffectCount = hitEffectCount;

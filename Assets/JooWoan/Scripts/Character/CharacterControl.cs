@@ -3,7 +3,7 @@ using EverScord.Weapons;
 using UnityEngine.Animations.Rigging;
 using Photon.Pun;
 using EverScord.UI;
-using Unity.VisualScripting;
+using EverScord.GameCamera;
 
 namespace EverScord.Character
 {
@@ -25,11 +25,10 @@ namespace EverScord.Character
         [SerializeField] private MultiAimConstraint headAim;
         [SerializeField] private MultiAimConstraint aim;
         [SerializeField] private TwoBoneIKConstraint leftHandIK;
-        [SerializeField] private float shootStanceDuration;
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float rotateAngle;
         [SerializeField] private float smoothRotation;
-        public float ShootStanceDuration => shootStanceDuration;
+        [field: SerializeField] public float ShootStanceDuration        { get; private set; }
 
         [Header("Weapon")]
         [SerializeField] private GameObject weaponPrefab;
@@ -37,15 +36,18 @@ namespace EverScord.Character
         public Weapon PlayerWeapon => weapon;
 
         [Header("UI")]
-        [SerializeField] private GameObject playerUIPrefab;
+        [SerializeField] private PlayerUI uiPrefab;
         public PlayerUI PlayerUIControl                                 { get; private set; }
-        private Transform uiCanvas;
+        private Transform uiHub;
+
+        [Header("Camera")]
+        [SerializeField] private float cameraSmoothness;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
-        public Transform CharacterTransform                             { get; private set; }
+        public CharacterCamera CameraControl                            { get; private set; }
+        public Transform PlayerTransform                                { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
         public Vector3 AimPosition                                      { get; private set; }
-        public Camera MainCam                                           { get; private set; }
 
         private CharacterController controller;
         private PhotonView photonView;
@@ -54,7 +56,16 @@ namespace EverScord.Character
 
         void Awake()
         {
-            photonView = GetComponent<PhotonView>();
+            photonView       = GetComponent<PhotonView>();
+            controller       = GetComponent<CharacterController>();
+            weapon           = weaponPrefab.GetComponent<Weapon>();
+
+            uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIHUB).transform;
+
+            CameraControl    = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CHARACTERCAM)
+                               .GetComponent<CharacterCamera>();
+
+            PlayerUIControl  = Instantiate(uiPrefab, uiHub);
 
             AnimationControl = new CharacterAnimation(
                 anim,
@@ -63,31 +74,22 @@ namespace EverScord.Character
                 transitionDampTime
             );
 
-            MainCam = Camera.main;
-            CharacterTransform = transform;
+            PlayerTransform = transform;
 
             // Unity docs: Set skinwidth 10% of the Radius
-            controller = GetComponent<CharacterController>();
             controller.skinWidth = controller.radius * 0.1f;
 
-            uiCanvas = GameObject.FindGameObjectWithTag(ConstStrings.TAG_PLAYERUI).transform;
-            PlayerUIControl = Instantiate(playerUIPrefab, uiCanvas).GetComponent<PlayerUI>();
-
-            weapon = weaponPrefab.GetComponent<Weapon>();
             weapon.Init(PlayerUIControl.SetAmmoText);
             InitRig();
+            AnimationControl.SetAimRig(this);
 
+            CameraControl.Init(PlayerTransform, Camera.main, cameraSmoothness);
             PlayerUIControl.Init(this);
         }
 
         void OnApplicationFocus(bool focus)
         {
             //Cursor.visible = !focus;
-        }
-
-        void Start()
-        {
-            AnimationControl.SetAimRig(this);
         }
 
         void Update()
@@ -126,7 +128,7 @@ namespace EverScord.Character
         private void SetInput()
         {
             PlayerInputInfo = InputControl.ReceiveInput();
-            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, MainCam);
+            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, CameraControl.Cam);
 
             moveInput = PlayerInputInfo.cameraRelativeInput;
         }
@@ -136,7 +138,7 @@ namespace EverScord.Character
             if (moveInput.magnitude > 1f)
                 moveInput.Normalize();
 
-            moveDir = CharacterTransform.InverseTransformDirection(moveInput);
+            moveDir = PlayerTransform.InverseTransformDirection(moveInput);
         }
         
         private void ApplyGravity()
@@ -165,16 +167,16 @@ namespace EverScord.Character
 
         private void TrackAim()
         {
-            Ray ray = MainCam.ScreenPointToRay(PlayerInputInfo.mousePosition);
+            Ray ray = CameraControl.Cam.ScreenPointToRay(PlayerInputInfo.mousePosition);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
                 return;
 
             AimPosition = hit.point;
             lookPosition = hit.point;
-            lookPosition.y = CharacterTransform.position.y;
+            lookPosition.y = PlayerTransform.position.y;
 
-            lookDir = lookPosition - CharacterTransform.position;
+            lookDir = lookPosition - PlayerTransform.position;
             float distance = lookDir.magnitude;
 
             lookDir.Normalize();
@@ -183,7 +185,7 @@ namespace EverScord.Character
                 return;
 
             if (distance < weapon.MinAimDistance)
-                lookPosition = CharacterTransform.position + lookDir * weapon.MinAimDistance;
+                lookPosition = PlayerTransform.position + lookDir * weapon.MinAimDistance;
 
             lookPosition.y = weapon.GunPoint.position.y;
 
@@ -196,7 +198,7 @@ namespace EverScord.Character
 
         private void RotateBody()
         {
-            float angle = Vector3.Angle(lookDir, CharacterTransform.forward);
+            float angle = Vector3.Angle(lookDir, PlayerTransform.forward);
 
             if (angle <= rotateAngle)
             {
@@ -207,8 +209,8 @@ namespace EverScord.Character
             AnimationControl.Rotate(!IsMoving);
             Quaternion lookRotation = Quaternion.LookRotation(lookDir);
 
-            CharacterTransform.rotation = Quaternion.Lerp(
-                CharacterTransform.rotation,
+            PlayerTransform.rotation = Quaternion.Lerp(
+                PlayerTransform.rotation,
                 lookRotation,
                 Time.deltaTime * smoothRotation
             ).normalized;
@@ -224,7 +226,7 @@ namespace EverScord.Character
             get
             {
                 return Physics.CheckSphere(
-                    CharacterTransform.TransformPoint(groundCheckOffset),
+                    PlayerTransform.TransformPoint(groundCheckOffset),
                     groundCheckRadius,
                     groundLayer
                 );

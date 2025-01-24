@@ -2,21 +2,29 @@ using UnityEngine;
 
 namespace EverScord.GameCamera
 {
-    public class FollowCamera : MonoBehaviour
+    public class CharacterCamera : MonoBehaviour
     {
-        [SerializeField] private Transform target;
-        [SerializeField] private float smoothTime;
+        public Camera Cam { get; private set; }
+        private float smoothTime;
+
+        private Transform target;
         private Vector3 velocity = Vector3.zero;
         private Vector3 nextPos;
         private float initialHeight;
 
-        void Start()
+        public void Init(Transform target, Camera cam, float smoothTime)
         {
+            Cam = cam;
+            this.target = target;
+            this.smoothTime = smoothTime;
             initialHeight = transform.position.y;
         }
 
         void LateUpdate()
         {
+            if (target == null)
+                return;
+
             FollowTarget();
         }
 

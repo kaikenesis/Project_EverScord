@@ -10,7 +10,7 @@ namespace EverScord.UI
 
         public CustomCursor(CharacterControl player)
         {
-            mainCam  = player.MainCam;
+            mainCam  = player.CameraControl.Cam;
             aimPoint = player.PlayerWeapon.AimPoint;
         }
 
