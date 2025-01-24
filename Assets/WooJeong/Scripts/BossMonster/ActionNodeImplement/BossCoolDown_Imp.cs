@@ -5,7 +5,7 @@ using UnityEngine;
 public class BossCoolDown_Imp : ActionNodeImplement
 {
     float coolDown = 10;
-    float curCool = 0;
+
     protected override IEnumerator Action()
     {
         Debug.Log("CoolDown start");

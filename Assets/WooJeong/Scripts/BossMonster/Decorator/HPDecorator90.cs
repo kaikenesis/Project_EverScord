@@ -12,6 +12,11 @@ public class HPDecorator90 : BDecoratorNode
             state = children[0].Evaluate();
             return state;
         }
+        else if (state == NodeState.RUNNING)
+        {
+            state = children[0].Evaluate();
+            return state;
+        }
 
         return NodeState.FAILURE;
     }

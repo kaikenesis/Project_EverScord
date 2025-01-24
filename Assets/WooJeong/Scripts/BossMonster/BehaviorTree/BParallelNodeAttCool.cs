@@ -5,14 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/Composite/ParallelNodeAttCool")]
 public class BParallelNodeAttCool : BehaviorNode
 {    
-    private BossData bossData;
-
-    public override void Setup(GameObject gameObject)
-    {
-        bossData = GetValue<BossData>("BossData");
-        base.Setup(gameObject);
-    }
-
     public override NodeState Evaluate()
     {
         for (int i = start; i < children.Count; i++)
@@ -23,7 +15,6 @@ public class BParallelNodeAttCool : BehaviorNode
             {
                 start++;
             }
-
         }
         if (start < children.Count) 
             return NodeState.RUNNING;

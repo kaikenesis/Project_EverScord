@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/Data/BossData")]
 public class BossData : ScriptableObject
 {
-    public bool CanAttack {  get; protected set; }
     public float HP { get; protected set; }
     public int Phase { get; protected set; }
     [field: SerializeField] public float MaxHP { get; protected set; }
@@ -16,12 +15,6 @@ public class BossData : ScriptableObject
     {       
         HP = MaxHP;
         Phase = 1;
-        CanAttack = false;
-    }
-
-    public void SetIsCoolDown(bool b)
-    {
-        CanAttack = b;
     }
 
     public void ReduceHp(int decrease)
@@ -29,10 +22,12 @@ public class BossData : ScriptableObject
         HP -= decrease;
         if (HP < 0) 
             HP = 0;
+        Debug.Log(decrease + " 데미지, 남은 체력 : " + HP);
     }
 
     public void PhaseUp()
     {
+        Debug.Log("2페이즈 진입");
         Phase++;
         HP = 50;
     }
