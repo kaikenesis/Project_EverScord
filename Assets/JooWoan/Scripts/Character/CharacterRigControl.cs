@@ -28,6 +28,10 @@ namespace EverScord.Character
             LeftHandIK.data.tip             = anim.GetBoneTransform(HumanBodyBones.LeftHand);
 
             Aim.data.constrainedObject      = weapon.transform.parent;
+
+            if (!weapon.LeftTarget)
+                return;
+
             LeftHandIK.data.target          = weapon.LeftTarget;
             LeftHandIK.data.hint            = weapon.LeftHint;
         }
