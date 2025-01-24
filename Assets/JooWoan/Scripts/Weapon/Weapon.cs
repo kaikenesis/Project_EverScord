@@ -13,6 +13,8 @@ namespace EverScord.Weapons
         [SerializeField] private TrailRenderer tracerEffect;
         [field: SerializeField] public Transform GunPoint           { get; private set; }
         [field: SerializeField] public Transform AimPoint           { get; private set; }
+        [field: SerializeField] public Transform LeftTarget         { get; private set; }
+        [field: SerializeField] public Transform LeftHint           { get; private set; }
         [field: SerializeField] public LayerMask ShootableLayer     { get; private set; }
         [field: SerializeField] public float AimSensitivity         { get; private set; }
         [field: SerializeField] public float MinAimDistance         { get; private set; }
@@ -25,13 +27,13 @@ namespace EverScord.Weapons
         [SerializeField] private int hitEffectCount;
 
         private OnShotFired onShotFired;
-
         private LinkedList<Bullet> bullets = new();
         private BulletCollisionParam bulletCollisionParam = new();
+
         private float elapsedTime;
         private int currentAmmo;
-        private bool isCooldown => elapsedTime < Cooldown;
         private bool isReloading = false;
+        private bool isCooldown => elapsedTime < Cooldown;
 
         public void Init(OnShotFired setText)
         {
@@ -58,12 +60,13 @@ namespace EverScord.Weapons
                 return;
 
             float cooldownOvertime = elapsedTime - Cooldown;
+            CharacterAnimation animControl = shooter.AnimationControl;
 
             if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
             {
                 shooter.SetIsAiming(false);
-                shooter.AnimationControl.SetAimRig(shooter);
-                shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOT_END);
+                shooter.RigControl.SetAimWeight(false);
+                animControl.Play(animControl.AnimInfo.Shoot_End);
                 return;
             }
 
@@ -72,7 +75,7 @@ namespace EverScord.Weapons
 
             if (currentAmmo <= 0)
             {
-                StartCoroutine(ReloadWeapon(shooter));
+                StartCoroutine(Reload(shooter));
                 return;
             }
 
@@ -82,19 +85,21 @@ namespace EverScord.Weapons
             shotEffect.Emit(1);
 
             shooter.SetIsAiming(true);
-            shooter.AnimationControl.SetAimRig(shooter);
-            shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOT);
+            shooter.RigControl.SetAimWeight(true);
+            animControl.Play(animControl.AnimInfo.Shoot);
 
             FireBullet();
         }
 
-        private IEnumerator ReloadWeapon(CharacterControl shooter)
+        private IEnumerator Reload(CharacterControl shooter)
         {
             isReloading = true;
+            CharacterAnimation animControl = shooter.AnimationControl;
 
-            shooter.AnimationControl.SetAimRig(false);
-            shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_RELOAD);
-            
+            shooter.RigControl.SetAimWeight(false);
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
+            animControl.Play(animControl.AnimInfo.Reload);
+
             StartCoroutine(shooter.PlayerUIControl.RollAmmoText(this));
 
             yield return new WaitForSeconds(ReloadTime);
@@ -103,10 +108,10 @@ namespace EverScord.Weapons
             elapsedTime = 0f;
 
             shooter.SetIsAiming(true);
-            shooter.AnimationControl.SetAimRig(true);
-            shooter.AnimationControl.Trigger(ConstStrings.PARAM_STANCE_TRIGGER);
+            shooter.RigControl.SetAimWeight(true);
 
             isReloading = false;
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
         }
 
         private void FireBullet()

@@ -20,18 +20,16 @@ namespace EverScord.Character
 
         [Header("Animation")]
         [SerializeField] private Animator anim;
-        [SerializeField] private RigBuilder rigBuilder;
-        [SerializeField] private MultiAimConstraint bodyAim;
-        [SerializeField] private MultiAimConstraint headAim;
-        [SerializeField] private MultiAimConstraint aim;
-        [SerializeField] private TwoBoneIKConstraint leftHandIK;
+        [SerializeField] private AnimationInfo info;
+        [SerializeField] private CharacterRigControl rigLayerPrefab;
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float rotateAngle;
         [SerializeField] private float smoothRotation;
         [field: SerializeField] public float ShootStanceDuration        { get; private set; }
+        public CharacterRigControl RigControl                           { get; private set; }
 
         [Header("Weapon")]
-        [SerializeField] private GameObject weaponPrefab;
+        [SerializeField] private GameObject playerWeapon;
         private Weapon weapon;
         public Weapon PlayerWeapon => weapon;
 
@@ -58,7 +56,7 @@ namespace EverScord.Character
         {
             photonView       = GetComponent<PhotonView>();
             controller       = GetComponent<CharacterController>();
-            weapon           = weaponPrefab.GetComponent<Weapon>();
+            weapon           = playerWeapon.GetComponent<Weapon>();
 
             uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIHUB).transform;
 
@@ -66,23 +64,19 @@ namespace EverScord.Character
                                .GetComponent<CharacterCamera>();
 
             PlayerUIControl  = Instantiate(uiPrefab, uiHub);
+            RigControl       = Instantiate(rigLayerPrefab, anim.transform);
 
-            AnimationControl = new CharacterAnimation(
-                anim,
-                aim,
-                leftHandIK,
-                transitionDampTime
-            );
-
-            PlayerTransform = transform;
+            PlayerTransform  = transform;
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * 0.1f;
 
             weapon.Init(PlayerUIControl.SetAmmoText);
             InitRig();
-            AnimationControl.SetAimRig(this);
 
+            AnimationControl = new CharacterAnimation(anim, info, transitionDampTime);
+
+            RigControl.SetAimWeight(false);
             CameraControl.Init(PlayerTransform, Camera.main, cameraSmoothness);
             PlayerUIControl.Init(this);
         }
@@ -112,7 +106,9 @@ namespace EverScord.Character
 
         private void InitRig()
         {
-            MultiAimConstraint[] constraints = { aim, bodyAim, headAim };
+            RigControl.Init(anim.transform, GetComponent<Animator>(), weapon);
+
+            MultiAimConstraint[] constraints = { RigControl.Aim, RigControl.BodyAim, RigControl.HeadAim };
 
             for (int i = 0; i < constraints.Length; i++)
             {
@@ -121,8 +117,8 @@ namespace EverScord.Character
                 data.Add(new WeightedTransform(weapon.AimPoint, 1));
                 constraints[i].data.sourceObjects = data;
             }
-            
-            rigBuilder.Build();
+
+            RigControl.Builder.Build();
         }
 
         private void SetInput()

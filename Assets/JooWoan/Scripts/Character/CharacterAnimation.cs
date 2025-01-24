@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine.Animations.Rigging;
 using UnityEngine;
 
 namespace EverScord.Character
@@ -7,21 +5,14 @@ namespace EverScord.Character
     public class CharacterAnimation
     {
         private Animator anim;
-        private MultiAimConstraint aim;
-        private TwoBoneIKConstraint leftHandIK;
         private float transitionDampTime;
+        public AnimationInfo AnimInfo { get; private set; }
 
-        private IDictionary<string, AnimationClip> animDict = new Dictionary<string, AnimationClip>();
-
-        public CharacterAnimation(Animator anim, MultiAimConstraint aim, TwoBoneIKConstraint leftHand, float dampTime)
+        public CharacterAnimation(Animator anim, AnimationInfo info, float dampTime)
         {
             this.anim           = anim;
-            this.aim            = aim;
-            leftHandIK          = leftHand;
+            AnimInfo            = info;
             transitionDampTime  = dampTime;
-
-            foreach (AnimationClip clip in anim.runtimeAnimatorController.animationClips)
-                animDict[clip.name] = clip;
         }
 
         public void AnimateMovement(CharacterControl character, Vector3 moveDir)
@@ -37,34 +28,19 @@ namespace EverScord.Character
             anim.SetFloat(ConstStrings.PARAM_VERTICAL, moveDir.z, transitionDampTime, Time.deltaTime);
         }
 
-        public void SetAimRig(CharacterControl character)
-        {
-            float result = character.IsAiming ? 1f : 0f;
-            aim.weight = result;
-            leftHandIK.weight = result;
-        }
-
-        public void SetAimRig(bool forceRig)
-        {
-            float result = forceRig ? 1f : 0f;
-            aim.weight = result;
-            leftHandIK.weight = result;
-        }
-
         public void Rotate(bool state)
         {
             anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
         }
 
-        public void Trigger(string triggerName)
+        public void SetBool(string name, bool state)
         {
-            anim.SetTrigger(triggerName);
-            anim.ResetTrigger(triggerName);
+            anim.SetBool(name, state);
         }
 
-        public void Play(string clipName)
+        public void Play(AnimationClip clip)
         {
-            anim.Play(clipName, -1, 0f);
+            anim.Play(clip.name, -1, 0f);
         }
     }
 }
