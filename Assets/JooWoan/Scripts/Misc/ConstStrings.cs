@@ -17,6 +17,7 @@ namespace EverScord
         // Tags
         public const string TAG_UIHUB = "UIHub";
         public const string TAG_CHARACTERCAM = "CharacterCamera";
+        public const string TAG_POOLROOT = "PoolRoot";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
