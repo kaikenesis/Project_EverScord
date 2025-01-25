@@ -38,22 +38,5 @@ namespace EverScord.UI
             currentAmmoText.text = $"{count}";
             currentAmmoText.color = count <= 1 ? outOfAmmoTextColor : initialAmmoTextColor;
         }
-
-        public IEnumerator RollAmmoText(Weapon weapon)
-        {
-            int count = 0;
-            float interval = weapon.ReloadTime / weapon.MaxAmmo;
-
-            DOTween.Rewind("ReloadAmmo");
-            DOTween.Play("ReloadAmmo");
-
-            for (int i = 0; count <= weapon.MaxAmmo; i++)
-            {
-                currentAmmoText.text = $"{count++}";
-                yield return new WaitForSeconds(interval);
-            }
-
-            DOTween.Rewind("ReloadAmmo");
-        }
     }
 }

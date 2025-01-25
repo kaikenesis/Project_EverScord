@@ -100,8 +100,6 @@ namespace EverScord.Weapons
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
             animControl.Play(animControl.AnimInfo.Reload);
 
-            StartCoroutine(shooter.PlayerUIControl.RollAmmoText(this));
-
             yield return new WaitForSeconds(ReloadTime);
 
             CurrentAmmo = MaxAmmo;

@@ -38,9 +38,6 @@ namespace EverScord.Character
         public PlayerUI PlayerUIControl                                 { get; private set; }
         private Transform uiHub;
 
-        [Header("Camera")]
-        [SerializeField] private float cameraSmoothness;
-
         public CharacterAnimation AnimationControl                      { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
@@ -77,7 +74,7 @@ namespace EverScord.Character
             AnimationControl = new CharacterAnimation(anim, info, transitionDampTime);
 
             RigControl.SetAimWeight(false);
-            CameraControl.Init(PlayerTransform, Camera.main, cameraSmoothness);
+            CameraControl.Init(PlayerTransform, Camera.main);
             PlayerUIControl.Init(this);
         }
 
