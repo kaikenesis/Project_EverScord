@@ -13,8 +13,6 @@ namespace EverScord.Character
         [field: SerializeField] public TwoBoneIKConstraint LeftHandIK   { get; private set; }
         public RigBuilder Builder                                       { get; private set; }
 
-        private WaitForSeconds wait = new WaitForSeconds(0.1f);
-
         public void Init(Transform root, Animator anim, Weapon weapon)
         {
             Builder = root.GetComponent<RigBuilder>();

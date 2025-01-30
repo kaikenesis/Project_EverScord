@@ -9912,7 +9912,7 @@ MonoBehaviour:
   <ReloadTime>k__BackingField: 3
   <MaxAmmo>k__BackingField: 30
   weaponRange: 10
-  bulletSpeed: 200
+  bulletSpeed: 100
   hitEffectCount: 2
 --- !u!4 &312548072 stripped
 Transform:
@@ -19573,7 +19573,7 @@ MonoBehaviour:
   <ReloadTime>k__BackingField: 3
   <MaxAmmo>k__BackingField: 30
   weaponRange: 10
-  bulletSpeed: 200
+  bulletSpeed: 100
   hitEffectCount: 2
 --- !u!1 &814017028
 GameObject:
@@ -34163,7 +34163,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: a1faa99d02e1a534abeac2d01fe839f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -63273,31 +63273,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.68243736
+      value: 0.692141
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7250015
+      value: 0.71939945
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.09250913
+      value: 0.048823506
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.00970552
+      value: -0.03196096
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 82.451
+      value: 87.403
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -121.359
+      value: -208.466
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -113.051
+      value: -215.017
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_ConstrainProportionsScale
@@ -63358,11 +63358,11 @@ MonoBehaviour:
     m_Bits: 256
   <AimSensitivity>k__BackingField: 13
   <MinAimDistance>k__BackingField: 2
-  <Cooldown>k__BackingField: 0.15
+  <Cooldown>k__BackingField: 0.04
   <ReloadTime>k__BackingField: 3
   <MaxAmmo>k__BackingField: 30
   weaponRange: 10
-  bulletSpeed: 200
+  bulletSpeed: 100
   hitEffectCount: 2
 --- !u!1 &1249513961
 GameObject:
@@ -90052,7 +90052,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1472481741893338602
 GameObject:
   m_ObjectHideFlags: 0
@@ -93194,7 +93194,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 44
+  field of view: 32
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -96088,7 +96088,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7024483453004938451
 Transform:
   m_ObjectHideFlags: 0

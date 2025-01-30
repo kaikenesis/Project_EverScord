@@ -65,7 +65,7 @@ namespace EverScord.Weapons
             {
                 Vector3 currentPoint = param.StartPoint + direction * distance;
                 Vector3 currentScreenPoint = param.PlayerCam.WorldToScreenPoint(currentPoint);
-
+                
                 bool isWithinScreen = Screen.safeArea.Contains(currentScreenPoint);
 
                 if (isWithinScreen)
@@ -79,14 +79,14 @@ namespace EverScord.Weapons
                     param.HitEffect.transform.forward = -direction;
                     param.HitEffect.Emit(param.HitEffectCount);
 
-                    SetTracerEffectPosition(hit.point);
+                    SetTracerEffectPosition(currentPoint);
                 }
 
                 IsDestroyed = true;
                 return;
             }
 
-            SetTracerEffectPosition(param.EndPoint); 
+            SetTracerEffectPosition(param.EndPoint);
         }
 
         #region Projectile Motion Equation
