@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,10 +22,25 @@ public abstract class NStunState : MonoBehaviour, IState
 
     private IEnumerator Stun()
     {
-        yield return new WaitForSeconds(monsterController.stunTime);
-        monsterController.isStun = false;
-        Exit();
+        float time = 0f;
+        while (true)
+        {
+            yield return new WaitForSeconds(Time.deltaTime);
+            if (monsterController.isDead)
+            {
+                ExitToDeath();
+                yield break;
+            }
+            time += Time.deltaTime;
+            if (time >= monsterController.stunTime)
+            {
+                monsterController.isStun = false;
+                Exit();
+                yield break;
+            } 
+        }
     }
+
 
     protected virtual IEnumerator RandomAttack()
     {
@@ -87,5 +103,9 @@ public abstract class NStunState : MonoBehaviour, IState
     protected void ExitToAttack2()
     {
         monsterController.AttackState2();
+    }
+    private void ExitToDeath()
+    {
+        monsterController.DeathState();
     }
 }
