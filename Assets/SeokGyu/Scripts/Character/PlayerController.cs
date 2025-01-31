@@ -1,6 +1,5 @@
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 namespace EverScord
 {
@@ -12,6 +11,7 @@ namespace EverScord
         // 재장전 E or 장탄수 모두 소모시 자동으로 수행
         [SerializeField] private GameObject character;
         //private Collider collider;
+        //private CharacterController controller;
         private Rigidbody rigidBody;
         private Animator animator;
         //private Camera camera;
@@ -30,6 +30,7 @@ namespace EverScord
 
         private void Init()
         {
+            //controller = character.GetComponent<CharacterController>();
             //collider = character.GetComponent<Collider>();
             rigidBody = character.GetComponentInChildren<Rigidbody>();
             animator = character.GetComponentInChildren<Animator>();
@@ -55,7 +56,7 @@ namespace EverScord
 
         private void InputKey()
         {
-            if(photonView.IsMine)
+            if (photonView.IsMine)
             {
                 Move();
             }
@@ -88,7 +89,10 @@ namespace EverScord
             dir = dir.normalized;
             dir *= speed;
 
-            transform.Translate(dir);
+            //controller.SimpleMove(dir * 50);
+            rigidBody.position = Vector3.MoveTowards(rigidBody.position, rigidBody.position + dir, 1.0f);
+            //rigidBody.MovePosition(dir);
+            //transform.Translate(dir);
         }
 
         #endregion

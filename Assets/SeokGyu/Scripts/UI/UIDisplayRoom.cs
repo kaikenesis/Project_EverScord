@@ -10,12 +10,11 @@ namespace EverScord
     public class UIDisplayRoom : MonoBehaviour
     {
         [SerializeField] private UIRoomPlayer uiRoomPlayerPrefab;
-        [SerializeField] private GameObject exitButton;
         [SerializeField] private GameObject roomContainer;
-        [SerializeField] private GameObject sendInviteContainer;
         [SerializeField] private GameObject inviteButton;
         [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
+        [SerializeField] private Button[] masterButtons;
         private UIRoomPlayer[] uiRoomPlayers;
 
         public static Action OnLeaveRoom = delegate { };
@@ -47,46 +46,29 @@ namespace EverScord
                 UIRoomPlayer uiRoomPlayer = Instantiate(uiRoomPlayerPrefab, roomContainer.transform);
                 uiRoomPlayers[i] = uiRoomPlayer;
             }
-
-            Instantiate(inviteButton, roomContainer.transform);
+            inviteButton.transform.SetAsLastSibling();
         }
-
+        #region Handle Methods
         private void HandleJoinRoom()
         {
             gameObject.SetActive(true);
 
-            if(exitButton != null) exitButton.SetActive(true);
-            if(roomContainer != null) roomContainer.SetActive(true);
+            if (roomContainer != null) roomContainer.SetActive(true);
 
             SetObjectsVisibility(true);
+
+            if (PhotonNetwork.IsMasterClient == false)
+                SetActiveUI(false);
         }
 
         private void HandleRoomLeft()
         {
             gameObject.SetActive(false);
 
-            if (exitButton != null) exitButton.SetActive(false);
             if (roomContainer != null) roomContainer.SetActive(false);
 
             SetObjectsVisibility(false);
         }
-
-        private void SetObjectsVisibility(bool bVisible)
-        {
-            int count = showObjects.Length;
-            for (int i = 0; i < count; i++)
-            {
-                showObjects[i].SetActive(bVisible);
-            }
-
-            count = hideObjects.Length;
-            for (int i = 0; i < count; i++)
-            {
-                hideObjects[i].SetActive(!bVisible);
-            }
-        }
-
-        //Room내 플레이어 목록 UI 갱신(수정 필요)
         private void HandleDisplayPlayers(List<string> players)
         {
             int i = 0;
@@ -108,16 +90,37 @@ namespace EverScord
             else
                 inviteButton.SetActive(false);
         }
+        #endregion
+
+
+        private void SetObjectsVisibility(bool bVisible)
+        {
+            int count = showObjects.Length;
+            for (int i = 0; i < count; i++)
+            {
+                showObjects[i].SetActive(bVisible);
+            }
+
+            count = hideObjects.Length;
+            for (int i = 0; i < count; i++)
+            {
+                hideObjects[i].SetActive(!bVisible);
+            }
+        }
+
+        private void SetActiveUI(bool bActive)
+        {
+            inviteButton.SetActive(false);
+
+            for (int i = 0; i < masterButtons.Length; i++)
+            {
+                masterButtons[i].interactable = bActive;
+            }
+        }
 
         public void LeaveRoom()
         {
             OnLeaveRoom?.Invoke();
-        }
-
-        public void ToggleSendInviteContainor()
-        {
-            Debug.Log("Click");
-            sendInviteContainer.SetActive(!sendInviteContainer.activeSelf);
         }
     }
 }

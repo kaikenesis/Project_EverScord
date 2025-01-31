@@ -29,13 +29,11 @@ namespace EverScord
         private void Awake()
         {
             PhotonChatController.OnStatusUpdated += HandleStatusUpdated;
-            PhotonRoomController.OnRoomStatusChange += HandleInRoom;
         }
 
         private void OnDestroy()
         {
             PhotonChatController.OnStatusUpdated -= HandleStatusUpdated;
-            PhotonRoomController.OnRoomStatusChange -= HandleInRoom;
         }
 
         private void OnEnable()

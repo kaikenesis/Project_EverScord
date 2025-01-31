@@ -16,12 +16,10 @@ public class PhotonPlayerController : MonoBehaviour
     private void Awake()
     {
         playerList = new List<FriendInfo>();
-        //PlayfabFriendController.OnFriendListUpdated += HandlePlayersUpdated;
     }
 
     private void OnDestroy()
     {
-        //PlayfabFriendController.OnFriendListUpdated -= HandlePlayersUpdated;
     }
 
     private void Update()
@@ -63,9 +61,4 @@ public class PhotonPlayerController : MonoBehaviour
             OnDisplayPlayers?.Invoke(friendList);
         }
     }
-
-    //public override void HandlePlayersUpdated(List<Player> friendList)
-    //{
-    //    OnDisplayPlayers?.Invoke(friendList);
-    //}
 }

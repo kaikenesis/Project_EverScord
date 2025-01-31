@@ -22,6 +22,7 @@ namespace EverScord
 
     public enum ELevel
     {
+        STORY,
         NORMAL,
         HARD,
         MAX
@@ -31,10 +32,11 @@ namespace EverScord
     {
         NONE,
         MATCH,
+        FOLLOW,
         MAX
     }
 
-    public class PlayerData : MonoBehaviour
+    public class PlayerData
     {
         public ECharacter character = ECharacter.UNI;
         public EJob job = EJob.DEALER;
