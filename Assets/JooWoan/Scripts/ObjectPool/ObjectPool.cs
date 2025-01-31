@@ -1,57 +1,31 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace EverScord.Pool
 {
-    public class ObjectPool
+    public class ObjectPool<T> where T : class, new()
     {
-        private Queue<GameObject> poolingQueue = new();
-        public GameObject OriginalPrefab { get; private set; }
-        public Transform Root { get; private set; }
-
-        public ObjectPool(GameObject poolingPrefab, int initCount = 5)
-        {
-            OriginalPrefab = poolingPrefab;
-            Root = new GameObject().transform;
-            Root.name = $"{OriginalPrefab.name}_Root";
-
-            Initialize(initCount);
-        }
-
-        private void Initialize(int count)
+        protected Queue<T> poolingQueue = new Queue<T>();
+        public ObjectPool(int count = 5)
         {
             for (int i = 0; i < count; i++)
-                poolingQueue.Enqueue(CreateNewObject());
+                poolingQueue.Enqueue(CreateObject());
         }
 
-        private GameObject CreateNewObject()
+        public virtual T CreateObject()
         {
-            GameObject newObject = Object.Instantiate(OriginalPrefab, Root);
-            newObject.name = OriginalPrefab.name;
-            newObject.gameObject.SetActive(false);
-            return newObject;
+            return new T();
         }
 
-        public GameObject GetObject()
+        public virtual T GetObject()
         {
             if (poolingQueue.Count > 0)
-            {
-                GameObject obj = poolingQueue.Dequeue();
-                obj.transform.SetParent(Root.parent);
-                obj.gameObject.SetActive(true);
-                return obj;
-            }
+                return poolingQueue.Dequeue();
 
-            GameObject newObj = CreateNewObject();
-            newObj.transform.SetParent(Root.parent);
-            newObj.gameObject.SetActive(true);
-            return newObj;
+            return CreateObject();
         }
 
-        public void ReturnObject(GameObject obj)
+        public virtual void ReturnObject(T obj)
         {
-            obj.gameObject.SetActive(false);
-            obj.transform.SetParent(Root);
             poolingQueue.Enqueue(obj);
         }
     }

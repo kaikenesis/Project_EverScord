@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using EverScord.Weapons;
 
 namespace EverScord.Pool
 {
@@ -20,8 +21,10 @@ namespace EverScord.Pool
         }
         #endregion
 
-        [SerializeField] private List<PoolableInfo> poolableInfos;
-        private IDictionary<string, ObjectPool> poolDict = new Dictionary<string, ObjectPool>();
+        [SerializeField] private List<PoolableGameObjectInfo> poolableGameObjects;
+        private IDictionary<GameObjectPool.PoolType, GameObjectPool> gameObjectPoolDict = new Dictionary<GameObjectPool.PoolType, GameObjectPool>();
+        private ObjectPool<Bullet> bulletPool = new ObjectPool<Bullet>();
+
         private Transform poolRoot = null;
         public Transform PoolRoot
         {
@@ -36,49 +39,40 @@ namespace EverScord.Pool
 
         public void Init()
         {
-            if (poolDict.Count > 0)
-                poolDict.Clear();
-
-            poolDict = new Dictionary<string, ObjectPool>();
-
-            foreach (PoolableInfo info in poolableInfos)
-                CreatePool(info);
+            CreateGameObjectPool();
         }
 
-        private void CreatePool(PoolableInfo info)
+        private void CreateGameObjectPool()
         {
-            ObjectPool pool = new ObjectPool(info.poolablePrefab, info.initCount);
-            pool.Root.parent = PoolRoot;
-            poolDict[pool.OriginalPrefab.name] = pool;
-        }
+            if (gameObjectPoolDict.Count > 0)
+                gameObjectPoolDict.Clear();
 
-        public static GameObject GetObject(string poolableType)
-        {
-            if (!Instance.poolDict.ContainsKey(poolableType))
+            gameObjectPoolDict = new Dictionary<GameObjectPool.PoolType, GameObjectPool>();
+
+            foreach (PoolableGameObjectInfo info in poolableGameObjects)
             {
-                Debug.LogWarning($"Poolable type : '{poolableType}' does not exist.");
-                return null;
+                GameObjectPool pool = new GameObjectPool(info.prefab);
+                pool.Root.parent = PoolRoot;
+                gameObjectPoolDict[info.type] = pool;
             }
-
-            return Instance.poolDict[poolableType].GetObject();
         }
 
-        public static void ReturnObject(GameObject obj)
+        public static GameObject Get(GameObjectPool.PoolType type)
         {
-            if (!Instance.poolDict.ContainsKey(obj.name))
-            {
-                Destroy(obj);
-                return;
-            }
-
-            Instance.poolDict[obj.name].ReturnObject(obj);
+            return Instance.gameObjectPoolDict[type].GetObject();
         }
+
+        public static void Return(GameObject obj, GameObjectPool.PoolType type)
+        {
+            Instance.gameObjectPoolDict[type].ReturnObject(obj);
+        }
+
     }
 
     [System.Serializable]
-    public class PoolableInfo
+    public class PoolableGameObjectInfo
     {
-        public GameObject poolablePrefab;
-        public int initCount;
+        public GameObjectPool.PoolType type;
+        public GameObject prefab;
     }
 }

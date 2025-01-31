@@ -1,4 +1,3 @@
-using Photon.Pun.Demo.Asteroids;
 using UnityEngine;
 
 namespace EverScord.Weapons
@@ -12,7 +11,7 @@ namespace EverScord.Weapons
         public float Lifetime               { get; private set; }
         public bool IsDestroyed             { get; private set; }
 
-        public Bullet(Vector3 position, Vector3 velocity, TrailRenderer effect)
+        public void Init(Vector3 position, Vector3 velocity, TrailRenderer effect)
         {
             InitialPosition = position;
             InitialVelocity = velocity;

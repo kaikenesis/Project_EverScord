@@ -114,13 +114,13 @@ namespace EverScord.Weapons
 
         private void FireBullet()
         {
-            Bullet bullet = new Bullet(
-                GunPoint.position,
-                (AimPoint.position - GunPoint.position).normalized * bulletSpeed,
-                Instantiate(tracerEffect)
-            );
+            //Bullet bullet = new Bullet(
+                //GunPoint.position,
+                //(AimPoint.position - GunPoint.position).normalized * bulletSpeed,
+                //Instantiate(tracerEffect)
+            //);
 
-            bullets.AddLast(bullet);
+            //bullets.AddLast(bullet);
         }
 
         public void UpdateBullets(CharacterControl shooter, float deltaTime)
