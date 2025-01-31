@@ -5,21 +5,28 @@ public class SK_122101_Controller : NController
 {
     protected override void Setup()
     {
-        player = GameObject.Find("Player");
-        animator = GetComponentInChildren<Animator>();
         runState = gameObject.AddComponent<SK_122101_RunState>();
         attackState1 = gameObject.AddComponent<SK_122101_AttackState1>();
         attackState2 = gameObject.AddComponent<SK_122101_AttackState2>();
         waitState = gameObject.AddComponent<SK_122101_WaitState>();
-        projector = gameObject.AddComponent<DecalProjector>();
-        boxCollider = gameObject.AddComponent<BoxCollider>();
+        stunState = gameObject.AddComponent<SK_122101_StunState>();
+        deathState = gameObject.AddComponent<SK_122101_DeathState>();
+
+        player = GameObject.Find("Player");
+        Animator = GetComponentInChildren<Animator>();
+        Projector1 = gameObject.AddComponent<DecalProjector>();
+        Projector2 = gameObject.AddComponent<DecalProjector>();
+        BoxCollider1 = gameObject.AddComponent<BoxCollider>();
+        BoxCollider2 = gameObject.AddComponent<BoxCollider>();
 
         ProjectorSetup();
 
-        projector.enabled = false;
-        boxCollider.enabled = false;
+        Projector1.enabled = false;
+        Projector2.enabled = false;
+        BoxCollider1.enabled = false;
+        BoxCollider2.enabled = false;
 
-        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        foreach (AnimationClip clip in Animator.runtimeAnimatorController.animationClips)
         {
             clipDict[clip.name] = clip.length;
         }

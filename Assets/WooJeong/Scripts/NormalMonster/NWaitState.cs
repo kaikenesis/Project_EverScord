@@ -8,15 +8,17 @@ public abstract class NWaitState : MonoBehaviour, IState
     protected bool isEnter = false;
 
     protected abstract void Setup();
+    
     void Awake()
     {
         Setup();
     }
+
     public void Enter()
     {
         isEnter = true;
-        monsterController.Animator.CrossFade("Wait", 0.25f);
-
+        monsterController.Animator.CrossFade("Wait", 0.3f);
+        
         Exit();
     }
 
@@ -25,6 +27,20 @@ public abstract class NWaitState : MonoBehaviour, IState
         if (!isEnter)
             return;
 
+        if (monsterController.isStun)
+        {
+            isEnter = false;
+            ExitToStun();
+            return;
+        }
+
+        if (monsterController.isDead)
+        {
+            isEnter = false;
+            ExitToDeath();
+            return;
+        }
+
         monsterController.LookPlayer();
     }
 
@@ -32,7 +48,7 @@ public abstract class NWaitState : MonoBehaviour, IState
     {
         while (true)
         {
-            if (monsterController.CalcDistance() > monsterController.AttackRangeZ1)
+            if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
             {
                 ExitToRun();
                 yield break;
@@ -43,11 +59,13 @@ public abstract class NWaitState : MonoBehaviour, IState
             {
                 case 1:
                     {
+                        monsterController.LastAttack = 1;
                         ExitToAttack1();
                         yield break;
                     }
                 case 2:
                     {
+                        monsterController.LastAttack = 2;
                         ExitToAttack2();
                         yield break;
                     }
@@ -87,5 +105,17 @@ public abstract class NWaitState : MonoBehaviour, IState
     {
         isEnter = false;
         monsterController.AttackState2();
+    }
+
+    protected void ExitToStun()
+    {
+        isEnter = false;
+        monsterController.StunState();
+    }
+
+    protected void ExitToDeath()
+    {
+        isEnter = false;
+        monsterController.DeathState();
     }
 }
