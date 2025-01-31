@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Weapons;
+using System;
 
 namespace EverScord.Pool
 {
@@ -21,9 +22,11 @@ namespace EverScord.Pool
         }
         #endregion
 
-        [SerializeField] private List<PoolableGameObjectInfo> poolableGameObjects;
-        private IDictionary<GameObjectPool.PoolType, GameObjectPool> gameObjectPoolDict = new Dictionary<GameObjectPool.PoolType, GameObjectPool>();
-        private ObjectPool<Bullet> bulletPool = new ObjectPool<Bullet>();
+        [SerializeField] private List<PoolableInfo> poolableGameObjects;
+        [SerializeField] private List<BulletTracerInfo> poolableBulletTracers;
+        private IDictionary<PoolableType, GameObjectPool> gameObjectPoolDict;
+        private IDictionary<TracerType, BulletPool> bulletPoolDict;
+        private IDictionary<Type, object> poolDict = new Dictionary<Type, object>();
 
         private Transform poolRoot = null;
         public Transform PoolRoot
@@ -40,16 +43,17 @@ namespace EverScord.Pool
         public void Init()
         {
             CreateGameObjectPool();
+            CreateBulletPool();
         }
 
         private void CreateGameObjectPool()
         {
-            if (gameObjectPoolDict.Count > 0)
+            if (gameObjectPoolDict != null && gameObjectPoolDict.Count > 0)
                 gameObjectPoolDict.Clear();
 
-            gameObjectPoolDict = new Dictionary<GameObjectPool.PoolType, GameObjectPool>();
+            gameObjectPoolDict = new Dictionary<PoolableType, GameObjectPool>();
 
-            foreach (PoolableGameObjectInfo info in poolableGameObjects)
+            foreach (PoolableInfo info in poolableGameObjects)
             {
                 GameObjectPool pool = new GameObjectPool(info.prefab);
                 pool.Root.parent = PoolRoot;
@@ -57,22 +61,81 @@ namespace EverScord.Pool
             }
         }
 
-        public static GameObject Get(GameObjectPool.PoolType type)
+        private void CreateBulletPool()
+        {
+            if (bulletPoolDict != null && gameObjectPoolDict.Count > 0)
+                gameObjectPoolDict.Clear();
+            
+            bulletPoolDict = new Dictionary<TracerType, BulletPool>();
+
+            foreach (BulletTracerInfo info in poolableBulletTracers)
+            {
+                BulletPool pool = new BulletPool(info.prefab);
+                pool.Root.parent = PoolRoot;
+                bulletPoolDict[info.type] = pool;
+            }
+        }
+        
+        private void CreatePool<T>() where T : class, new()
+        {
+            ObjectPool<T> pool = new();
+            poolDict[typeof(T)] = pool;
+        }
+
+        public static GameObject Get(PoolableType type)
         {
             return Instance.gameObjectPoolDict[type].GetObject();
         }
 
-        public static void Return(GameObject obj, GameObjectPool.PoolType type)
+        public static void Return(GameObject obj, PoolableType type)
         {
             Instance.gameObjectPoolDict[type].ReturnObject(obj);
         }
 
+        public static Bullet Get(TracerType type)
+        {
+            return Instance.bulletPoolDict[type].GetObject();
+        }
+
+        public static void Return(Bullet obj, TracerType type)
+        {
+            Instance.bulletPoolDict[type].ReturnObject(obj);
+        }
+
+        public static T Get<T>() where T : class, new()
+        {
+            if (!Instance.poolDict.TryGetValue(typeof(T), out object pool))
+            {
+                Debug.LogWarning($"Failed to get pool type : {typeof(T)}");
+                return default;
+            }
+            
+            return ((ObjectPool<T>)pool).GetObject();
+        }
+
+        public static void Return<T>(T obj) where T : class, new()
+        {
+            if (!Instance.poolDict.TryGetValue(typeof(T), out object pool))
+            {
+                Debug.LogWarning($"Failed to get pool type : {typeof(T)}");
+                return;
+            }
+            
+            ((ObjectPool<T>)pool).ReturnObject(obj);
+        }
     }
 
     [System.Serializable]
-    public class PoolableGameObjectInfo
+    public class PoolableInfo
     {
-        public GameObjectPool.PoolType type;
+        public PoolableType type;
+        public GameObject prefab;
+    }
+
+    [System.Serializable]
+    public class BulletTracerInfo
+    {
+        public TracerType type;
         public GameObject prefab;
     }
 }

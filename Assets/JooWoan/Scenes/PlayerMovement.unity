@@ -14795,7 +14795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shotEffect: {fileID: 914333577}
   hitEffect: {fileID: 2091249311}
-  tracerEffect: {fileID: 7469494061097809063, guid: c90458e623d0db24fa2a99fe2fa08eb1, type: 3}
+  tracerType: 2
   <GunPoint>k__BackingField: {fileID: 97668269}
   <AimPoint>k__BackingField: {fileID: 3787122344697598860, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
   <LeftTarget>k__BackingField: {fileID: 0}
@@ -44059,7 +44059,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shotEffect: {fileID: 309877334}
   hitEffect: {fileID: 2073344192}
-  tracerEffect: {fileID: 7469494061097809063, guid: 853d585829bc37242b16c03149928072, type: 3}
+  tracerType: 1
   <GunPoint>k__BackingField: {fileID: 621149516}
   <AimPoint>k__BackingField: {fileID: 3787122344697598860, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
   <LeftTarget>k__BackingField: {fileID: 0}
@@ -44105,6 +44105,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolableGameObjects: []
+  poolableBulletTracers:
+  - type: 0
+    prefab: {fileID: 5646419254799589958, guid: 8586dc5aeaebe804385f9e529eb9a69c, type: 3}
+  - type: 1
+    prefab: {fileID: 5646419254799589958, guid: 853d585829bc37242b16c03149928072, type: 3}
+  - type: 2
+    prefab: {fileID: 5646419254799589958, guid: c90458e623d0db24fa2a99fe2fa08eb1, type: 3}
 --- !u!4 &1259768405
 Transform:
   m_ObjectHideFlags: 0
@@ -60867,6 +60874,10 @@ PrefabInstance:
     - target: {fileID: 1168435554659620443, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
       propertyPath: m_Name
       value: Ned
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168435554659620443, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3248218375862574777, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
       propertyPath: sceneViewId

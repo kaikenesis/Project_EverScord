@@ -11,11 +11,10 @@ namespace EverScord.Weapons
         public float Lifetime               { get; private set; }
         public bool IsDestroyed             { get; private set; }
 
-        public void Init(Vector3 position, Vector3 velocity, TrailRenderer effect)
+        public void Init(Vector3 position, Vector3 velocity)
         {
             InitialPosition = position;
             InitialVelocity = velocity;
-            TracerEffect    = effect;
 
             Lifetime = 0f;
             IsDestroyed = false;
@@ -28,17 +27,14 @@ namespace EverScord.Weapons
             Lifetime = lifeTime;
         }
 
+        public void SetTracerEffect(TrailRenderer effect)
+        {
+            TracerEffect = effect;
+        }
+
         private void SetTracerEffectPosition(Vector3 position)
         {
             TracerEffect.transform.position = position;
-        }
-
-        public void DestroyTracerEffect()
-        {
-            if (TracerEffect == null)
-                return;
-
-            Object.Destroy(TracerEffect.gameObject);
         }
 
         public bool ShouldBeDestroyed(float weaponRange)

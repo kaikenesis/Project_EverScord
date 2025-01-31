@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
+using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
@@ -10,7 +11,7 @@ namespace EverScord.Weapons
     public class Weapon : MonoBehaviour
     {
         [SerializeField] private ParticleSystem shotEffect, hitEffect;
-        [SerializeField] private TrailRenderer tracerEffect;
+        [SerializeField] private TracerType tracerType;
         [field: SerializeField] public Transform GunPoint           { get; private set; }
         [field: SerializeField] public Transform AimPoint           { get; private set; }
         [field: SerializeField] public Transform LeftTarget         { get; private set; }
@@ -114,13 +115,14 @@ namespace EverScord.Weapons
 
         private void FireBullet()
         {
-            //Bullet bullet = new Bullet(
-                //GunPoint.position,
-                //(AimPoint.position - GunPoint.position).normalized * bulletSpeed,
-                //Instantiate(tracerEffect)
-            //);
+            Bullet bullet = PoolManager.Get(tracerType);
 
-            //bullets.AddLast(bullet);
+            bullet.Init(
+                GunPoint.position,
+                (AimPoint.position - GunPoint.position).normalized * bulletSpeed
+            );
+
+            bullets.AddLast(bullet);
         }
 
         public void UpdateBullets(CharacterControl shooter, float deltaTime)
@@ -138,7 +140,7 @@ namespace EverScord.Weapons
 
                 if (bullet.ShouldBeDestroyed(weaponRange))
                 {
-                    bullet.DestroyTracerEffect();
+                    PoolManager.Return(bullet, tracerType);
                     bullets.Remove(currentNode);
                     currentNode = nextNode;
                     continue;

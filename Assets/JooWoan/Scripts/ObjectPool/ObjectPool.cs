@@ -29,4 +29,9 @@ namespace EverScord.Pool
             poolingQueue.Enqueue(obj);
         }
     }
+
+    public enum PoolableType
+    {
+        GAMEOBJECT_1
+    }
 }
