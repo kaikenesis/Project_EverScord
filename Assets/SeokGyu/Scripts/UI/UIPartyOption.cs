@@ -26,6 +26,11 @@ namespace EverScord
             UIRoomPlayer.OnDisplayPartyOption -= HandleDisplayPartyOption;
         }
 
+        private void Update()
+        {
+            MouseInput();
+        }
+
         private void HandleDisplayPartyOption(bool isMasterClient, string targetName, string myName)
         {
             if (isMasterClient)
@@ -43,6 +48,24 @@ namespace EverScord
             {
                 gameObject.SetActive(false);
             }
+        }
+
+        private void MouseInput()
+        {
+            //if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+            //{
+            //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //    Debug.DrawRay(ray.origin, ray.direction * 1000, Color.blue);
+            //    RaycastHit hit;
+
+            //    if (Physics.Raycast(ray, out hit))
+            //    {
+            //        if(hit.transform.tag != "UIPlayer")
+            //        {
+            //            gameObject.SetActive(false);
+            //        }
+            //    }
+            //}
         }
 
         public void ClickedExit()

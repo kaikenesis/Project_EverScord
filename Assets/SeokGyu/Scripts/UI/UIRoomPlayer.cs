@@ -29,8 +29,6 @@ namespace EverScord
             //    partyMasterImg.color = new Color(0, 0, 1, 1);
         }
 
-        
-
         public void OnPointerClick(PointerEventData eventData)
         {
             switch (eventData.button)
