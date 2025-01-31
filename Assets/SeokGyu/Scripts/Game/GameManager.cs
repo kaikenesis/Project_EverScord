@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EverScord
@@ -9,6 +10,8 @@ namespace EverScord
 
         public string userName;
         public PlayerData userData;
+
+        public List<PhotonView> playerPhotonViews;
 
         public static GameManager Instance
         {
