@@ -2,35 +2,38 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class UIInvite : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private string friendName;
-    [SerializeField] private string roomName;
-    [SerializeField] private TMP_Text friendNameText;
-
-    public static Action<UIInvite> OnInviteAccept = delegate { };
-    public static Action<string> OnRoomInviteAccept = delegate { };
-    public static Action<UIInvite> OnInviteDecline = delegate { };
-
-    public void Initialize(string friendName, string roomName)
+    public class UIInvite : MonoBehaviour
     {
-        this.friendName = friendName;
-        this.roomName = roomName;
+        [SerializeField] private string friendName;
+        [SerializeField] private string roomName;
+        [SerializeField] private TMP_Text friendNameText;
 
-        friendNameText.SetText($"Invite from\n{friendName}");
-    }
+        public static Action<UIInvite> OnInviteAccept = delegate { };
+        public static Action<string> OnRoomInviteAccept = delegate { };
+        public static Action<UIInvite> OnInviteDecline = delegate { };
 
-    public void AcceptInvite()
-    {
-        OnInviteAccept?.Invoke(this);
-        if(!string.IsNullOrEmpty(roomName))
+        public void Initialize(string friendName, string roomName)
         {
-            OnRoomInviteAccept?.Invoke(roomName);
-        }
-    }
+            this.friendName = friendName;
+            this.roomName = roomName;
 
-    public void DeclineInvite()
-    {
-        OnInviteDecline?.Invoke(this);
+            friendNameText.SetText($"Invite from\n{friendName}");
+        }
+
+        public void AcceptInvite()
+        {
+            OnInviteAccept?.Invoke(this);
+            if (!string.IsNullOrEmpty(roomName))
+            {
+                OnRoomInviteAccept?.Invoke(roomName);
+            }
+        }
+
+        public void DeclineInvite()
+        {
+            OnInviteDecline?.Invoke(this);
+        }
     }
 }

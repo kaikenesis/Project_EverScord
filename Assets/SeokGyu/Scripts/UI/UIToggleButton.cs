@@ -1,13 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class UIToggleButton : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private GameObject toggleObject;
-
-    public void ToggleObject()
+    public class UIToggleButton : MonoBehaviour
     {
-        toggleObject.SetActive(!toggleObject.activeSelf);
+        [SerializeField] private GameObject[] toggleObject;
+
+        private void Awake()
+        {
+            Init();
+        }
+
+        public void Init()
+        {
+            for (int i = 0; i < toggleObject.Length; i++)
+            {
+                toggleObject[i].SetActive(false);
+            }
+        }
+
+        public void ToggleObject()
+        {
+            for (int i = 0; i < toggleObject.Length; i++)
+            {
+                toggleObject[i].SetActive(!toggleObject[i].activeSelf);
+            }
+        }
     }
 }

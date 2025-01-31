@@ -1,41 +1,26 @@
-using EverScord;
-using Photon.Pun;
 using System;
 using TMPro;
 using UnityEngine;
 
-public class PhotonLogin : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private TMP_InputField nickName;
-    public static Action<string> OnConnectToPhoton = delegate { };
-
-    private void Awake()
+    public class PhotonLogin : MonoBehaviour
     {
-        PlayerPrefs.SetString("USERNAME", "");
-    }
+        [SerializeField] private TMP_InputField nickName;
 
-    public void LoginPhoton()
-    {
-        string nickName = PlayerPrefs.GetString("USERNAME");
-        if (string.IsNullOrEmpty(nickName)) return;
+        public static Action<string> OnConnectToPhoton = delegate { };
 
-        // 닉네임 중복체크 필요
-        //for(int i = 0; i< PhotonNetwork; i++)
-        //{
-        //    if (PhotonNetwork.PlayerList[i].NickName == nickName)
-        //    {
-        //        Debug.Log("Already have same nickName.");
-        //        return;
-        //    }
-        //}
+        public void LoginPhoton()
+        {
+            string name = GameManager.Instance.userName;
+            if (string.IsNullOrEmpty(name)) return;
 
-        OnConnectToPhoton?.Invoke(nickName);
-    }
+            OnConnectToPhoton?.Invoke(name);
+        }
 
-    public void SetUserName(string name)
-    {
-        GameManager.Instance.userName = nickName.text;
-        GameManager.Instance.SetUserName(EJob.DEALER, ELevel.NORMAL);
-        //PlayerPrefs.SetString("USERNAME", GameManager.Instance.userName);
+        public void SetUserName()
+        {
+            GameManager.Instance.userName = nickName.text;
+        }
     }
 }

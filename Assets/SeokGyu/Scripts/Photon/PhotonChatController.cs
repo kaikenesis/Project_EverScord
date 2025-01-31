@@ -14,34 +14,39 @@ namespace EverScord
 
         public static Action<string, string> OnRoomInvite = delegate { };
         public static Action<ChatClient> OnChatConnected = delegate { };
-        public static Action<PhotonStatus> OnStatusUpdated = delegate { };
-        public static Action OnCreateParty = delegate { };
-        // TODO:
+        public static Action<string> OnRoomFollow = delegate { };
+        public static Action OnStopMatch = delegate { };
+        public static Action OnExile = delegate { };
 
         private void Awake()
         {
             chatClient = new ChatClient(this);
             PhotonLogin.OnConnectToPhoton += HandleConnectToPhotonChat;
-            //PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonMatchController.OnFollowRoom += HandleFollowRoom;
+            PhotonMatchController.OnSendMsgToMaster += HandleSendMsgToMaster;
             UISendInvite.OnSendInvite += HandleSendInvite;
+            UIPartyOption.OnClickedExile += HandleClickedExile;
         }
 
         private void OnDestroy()
         {
             PhotonLogin.OnConnectToPhoton -= HandleConnectToPhotonChat;
-            //PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonMatchController.OnFollowRoom -= HandleFollowRoom;
+            PhotonMatchController.OnSendMsgToMaster -= HandleSendMsgToMaster;
             UISendInvite.OnSendInvite -= HandleSendInvite;
+            UIPartyOption.OnClickedExile -= HandleClickedExile;
         }
 
         private void Update()
         {
             chatClient.Service();
+
         }
 
         #region Handle Methods
         private void HandleConnectToPhotonChat(string nickName)
         {
-            ConnectToPhotonChat();
+            ConnectToPhotonChat(nickName);
         }
 
         private void HandleSendInvite(string recipient)
@@ -50,18 +55,27 @@ namespace EverScord
             if (PhotonNetwork.InRoom)
             {
                 message = PhotonNetwork.CurrentRoom.Name;
+                message += ":invite";
             }
+            chatClient.SendPrivateMessage(recipient, message);
+        }
 
-            string target = recipient;
-            for (int i = 0; i < (int)EJob.MAX; i++)
-            {
-                for (int j = 0; j < (int)ELevel.MAX; j++)
-                {
-                    target = recipient + "|" + ((EJob)i).ToString() + "|" + ((ELevel)j).ToString();
-                    chatClient.SendPrivateMessage(target, message);
-                }
-            }
-            
+        private void HandleFollowRoom(string recipient, string message)
+        {
+            string msg = message + ":follow";
+            chatClient.SendPrivateMessage(recipient, msg);
+        }
+
+        private void HandleSendMsgToMaster(string recipient, string message)
+        {
+            string msg = message + ":stopMatch";
+            chatClient.SendPrivateMessage(recipient, msg);
+        }
+
+        private void HandleClickedExile(string recipient)
+        {
+            string msg = ":exile";
+            chatClient.SendPrivateMessage(recipient, msg);
         }
         #endregion
 
@@ -69,17 +83,30 @@ namespace EverScord
         private void InviteMessage(string sender, string message)
         {
             Debug.Log($"{sender}: {message}");
-            string[] data = sender.Split('|');
-            OnRoomInvite?.Invoke(data[0], message);
+            OnRoomInvite?.Invoke(sender, message);
+
+            // 추후 시스템메시지를 띄워야할 일이 있다면 bool값을 반환받는 Func으로 변환 후 보내는 사람에게 시스템메시지 출력
         }
 
+        private void FollowMessage(string sender, string message)
+        {
+            OnRoomFollow?.Invoke(message);
+        }
+
+        private void StopMatchMessage(string sender)
+        {
+            OnStopMatch?.Invoke();
+        }
+
+        private void ExileMessage(string sender)
+        {
+            OnExile?.Invoke();
+        }
         #endregion
 
         #region Public Methods
-        public void ConnectToPhotonChat()
+        public void ConnectToPhotonChat(string nickName)
         {
-            nickName = PlayerPrefs.GetString("USERNAME");
-
             Debug.Log("Connecting to Photon Chat");
             chatClient.AuthValues = new Photon.Chat.AuthenticationValues(nickName);
             ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
@@ -124,11 +151,6 @@ namespace EverScord
             // 내용이 있으니 그거 먼저 확인한 후 (ex. channelName -> user1 : user1)
             // 이후 다른 메시지를 체크 (ex. channelName -> user1 : other)
 
-            //if (!string.IsNullOrEmpty(message.ToString()))
-            //{
-
-            //}
-
             // Channel Name format [Sender : Recipient]
             Debug.Log($"sender : {sender},\nmessage : {message},\nchannelName : {channelName}");
 
@@ -137,7 +159,18 @@ namespace EverScord
 
             if (!sender.Equals(senderName, StringComparison.OrdinalIgnoreCase))
             {
-                InviteMessage(sender, message.ToString());
+                string[] splitMsg = message.ToString().Split(':');
+                string roomName = splitMsg[0];
+                string typeName = splitMsg[1];
+
+                if (typeName == "invite")
+                    InviteMessage(sender, roomName);
+                else if (typeName == "follow")
+                    FollowMessage(sender, roomName);
+                else if (typeName == "stopMatch")
+                    StopMatchMessage(sender);
+                else if (typeName == "exile")
+                    ExileMessage(sender);
             }
         }
 
@@ -164,7 +197,6 @@ namespace EverScord
             Debug.Log($"Photon Chat OnStatusUpdate: {user} changed to {status}: {message}");
             PhotonStatus newStatus = new PhotonStatus(user, status, (string)message);
             Debug.Log($"Status Update for {user} and its now {status}.");
-            OnStatusUpdated?.Invoke(newStatus);
         }
 
         public void OnUserSubscribed(string channel, string user)

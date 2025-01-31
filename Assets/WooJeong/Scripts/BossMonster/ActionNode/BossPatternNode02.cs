@@ -7,8 +7,14 @@ public class BossPatternNode02 : BAttackPatternNode
 {
     public override void Setup(GameObject gameObject)
     {
-        BossData bossData = GetValue<BossData>("BossData");
+        bossData = GetValue<BossData>("BossData");
         actionNodeImplement = gameObject.AddComponent<BossPattern02_Imp>();
         base.Setup(gameObject);
+    }
+
+    public override NodeState Evaluate()
+    {
+        state = actionNodeImplement.Evaluate();
+        return state;
     }
 }

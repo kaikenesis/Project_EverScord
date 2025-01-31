@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,6 +19,7 @@ namespace EverScord
             contentRect = inviteContainer.GetComponent<RectTransform>();
             originalSize = contentRect.sizeDelta;
             increaseSize = new Vector2(0, uiInvitePrefab.GetComponent<RectTransform>().sizeDelta.y);
+
             PhotonChatController.OnRoomInvite += HandleRoomInvite;
             UIInvite.OnInviteAccept += HandleInviteAccept;
             UIInvite.OnInviteDecline += HandleInviteDecline;
@@ -34,6 +34,8 @@ namespace EverScord
 
         private void HandleRoomInvite(string friend, string room)
         {
+            if (GameManager.Instance.userData.curPhotonState != EPhotonState.NONE) return;
+
             Debug.Log($"Room invite for {friend} to room {room}");
             UIInvite uiInvite = Instantiate(uiInvitePrefab, inviteContainer);
             uiInvite.Initialize(friend, room);

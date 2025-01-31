@@ -5,35 +5,43 @@ using UnityEngine.Rendering.Universal;
 
 public class SK_112301_Controller : NController
 {
-    [Header("공격2 사거리")]
-    [SerializeField] private float attackRangeX2 = 0.5f;
-    [SerializeField] private float attackRangeY2 = 1f;
-    [SerializeField] private float attackRangeZ2 = 7.5f;
-    [Header("돌진 거리")]
-    [SerializeField] private float chargeRange;
+    private float chargeRange;
 
     public float ChargeRange { get { return chargeRange; } }
-    public float AttackRangeX2 { get { return attackRangeX2; } }
-    public float AttackRangeY2 { get { return attackRangeY2; } }
-    public float AttackRangeZ2 { get { return attackRangeZ2; } }
 
     protected override void Setup()
     {
-        player = GameObject.Find("Player");
-        animator = GetComponentInChildren<Animator>();
         runState = gameObject.AddComponent<SK_112301_RunState>();
         attackState1 = gameObject.AddComponent<SK_112301_AttackState1>();
         attackState2 = gameObject.AddComponent<SK_112301_AttackState2>();
         waitState = gameObject.AddComponent<SK_112301_WaitState>();
-        projector = gameObject.AddComponent<DecalProjector>();
-        boxCollider = gameObject.AddComponent<BoxCollider>();
+        stunState = gameObject.AddComponent<SK_112301_StunState>();
+        deathState = gameObject.AddComponent<SK_112301_DeathState>();
+
+        var temp = monsterData as NMD_112301;
+        chargeRange = temp.ChargeRange;
+        
+        player = GameObject.Find("Player");
+        Animator = GetComponentInChildren<Animator>();
+        Projector1 = gameObject.AddComponent<DecalProjector>();
+        Projector2 = gameObject.AddComponent<DecalProjector>();
+        BoxCollider1 = gameObject.AddComponent<BoxCollider>();
+        BoxCollider2 = gameObject.AddComponent<BoxCollider>();
 
         ProjectorSetup();
+        Projector2.size = new Vector3(monsterData.AttackRangeX2,
+                              monsterData.AttackRangeY2,
+                              chargeRange);
 
-        projector.enabled = false;
-        boxCollider.enabled = false;
+        Projector2.pivot = new Vector3(0, transform.position.y,
+                                       chargeRange / 2);
 
-        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        Projector1.enabled = false;
+        Projector2.enabled = false;
+        BoxCollider1.enabled = false;
+        BoxCollider2.enabled = false;
+
+        foreach (AnimationClip clip in Animator.runtimeAnimatorController.animationClips)
         {
             clipDict[clip.name] = clip.length;
         }
