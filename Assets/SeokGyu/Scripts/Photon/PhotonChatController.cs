@@ -16,6 +16,7 @@ namespace EverScord
         public static Action<ChatClient> OnChatConnected = delegate { };
         public static Action<string> OnRoomFollow = delegate { };
         public static Action OnStopMatch = delegate { };
+        public static Action OnExile = delegate { };
 
         private void Awake()
         {
@@ -24,6 +25,7 @@ namespace EverScord
             PhotonMatchController.OnFollowRoom += HandleFollowRoom;
             PhotonMatchController.OnSendMsgToMaster += HandleSendMsgToMaster;
             UISendInvite.OnSendInvite += HandleSendInvite;
+            UIPartyOption.OnClickedExile += HandleClickedExile;
         }
 
         private void OnDestroy()
@@ -32,6 +34,7 @@ namespace EverScord
             PhotonMatchController.OnFollowRoom -= HandleFollowRoom;
             PhotonMatchController.OnSendMsgToMaster -= HandleSendMsgToMaster;
             UISendInvite.OnSendInvite -= HandleSendInvite;
+            UIPartyOption.OnClickedExile -= HandleClickedExile;
         }
 
         private void Update()
@@ -68,6 +71,12 @@ namespace EverScord
             string msg = message + ":stopMatch";
             chatClient.SendPrivateMessage(recipient, msg);
         }
+
+        private void HandleClickedExile(string recipient)
+        {
+            string msg = ":exile";
+            chatClient.SendPrivateMessage(recipient, msg);
+        }
         #endregion
 
         #region Private Methods
@@ -87,6 +96,11 @@ namespace EverScord
         private void StopMatchMessage(string sender)
         {
             OnStopMatch?.Invoke();
+        }
+
+        private void ExileMessage(string sender)
+        {
+            OnExile?.Invoke();
         }
         #endregion
 
@@ -155,6 +169,8 @@ namespace EverScord
                     FollowMessage(sender, roomName);
                 else if (typeName == "stopMatch")
                     StopMatchMessage(sender);
+                else if (typeName == "exile")
+                    ExileMessage(sender);
             }
         }
 

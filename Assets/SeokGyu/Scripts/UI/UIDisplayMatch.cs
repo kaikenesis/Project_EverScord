@@ -73,7 +73,6 @@ namespace EverScord
         {
             while(bPlayTimer)
             {
-                Debug.Log("Loop");
                 if (seconds > 59)
                 {
                     minutes++;

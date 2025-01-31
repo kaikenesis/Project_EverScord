@@ -1,9 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using TMPro;
 using System;
-using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord
 {

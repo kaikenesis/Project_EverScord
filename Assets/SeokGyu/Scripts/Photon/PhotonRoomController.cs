@@ -24,15 +24,18 @@ namespace EverScord
         public static Action OnMatchMultiPlay = delegate { };
         public static Action OnUpdateRoom = delegate { };
         public static Action OnCheckGame = delegate { };
+        public static Action<string> OnSendExile = delegate { };
 
         private void Awake()
         {
             PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
             PhotonChatController.OnRoomFollow += HandleRoomInviteAccept;
+            PhotonChatController.OnExile += HandleExile;
             UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
             UISelect.OnChangeUserData += HandleChangeUserData;
             UISelect.OnGameStart += HandleGameStart;
+            UIPartyOption.OnClickedExit += HandleClickedExit;
 
             inviteRoomName = "";
             pv = GetComponent<PhotonView>();
@@ -42,10 +45,12 @@ namespace EverScord
         {
             PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
             PhotonChatController.OnRoomFollow -= HandleRoomInviteAccept;
+            PhotonChatController.OnExile -= HandleExile;
             UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
             UISelect.OnChangeUserData -= HandleChangeUserData;
             UISelect.OnGameStart -= HandleGameStart;
+            UIPartyOption.OnClickedExit -= HandleClickedExit;
         }
 
         #region Handle Methods
@@ -156,6 +161,18 @@ namespace EverScord
                     }
                     break;
             }
+        }
+
+        private void HandleClickedExit()
+        {
+            if (PhotonNetwork.InRoom)
+                PhotonNetwork.LeaveRoom();
+        }
+
+        private void HandleExile()
+        {
+            if (PhotonNetwork.InRoom)
+                PhotonNetwork.LeaveRoom();
         }
         #endregion
 

@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1179,7 +1179,7 @@ GameObject:
   - component: {fileID: 1886709744607732084}
   - component: {fileID: 788549286250761825}
   m_Layer: 5
-  m_Name: PartyContainer
+  m_Name: RoomPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1256,9 +1256,11 @@ MonoBehaviour:
   roomContainer: {fileID: 816144525450218428}
   inviteButton: {fileID: 7139936580103585115}
   sendInvite: {fileID: 6452556817387225380}
+  hideObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   showObjects:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -1493,6 +1495,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 374816675967165340, guid: 3de5c87ae6567154fad6c1d3231c5b6e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084306738744507019, guid: 3de5c87ae6567154fad6c1d3231c5b6e, type: 3}
+      propertyPath: m_Navigation.m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2084306738744507019, guid: 3de5c87ae6567154fad6c1d3231c5b6e, type: 3}

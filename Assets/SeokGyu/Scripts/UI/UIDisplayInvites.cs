@@ -19,6 +19,7 @@ namespace EverScord
             contentRect = inviteContainer.GetComponent<RectTransform>();
             originalSize = contentRect.sizeDelta;
             increaseSize = new Vector2(0, uiInvitePrefab.GetComponent<RectTransform>().sizeDelta.y);
+
             PhotonChatController.OnRoomInvite += HandleRoomInvite;
             UIInvite.OnInviteAccept += HandleInviteAccept;
             UIInvite.OnInviteDecline += HandleInviteDecline;

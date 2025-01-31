@@ -13,6 +13,7 @@ namespace EverScord
         [SerializeField] private GameObject roomContainer;
         [SerializeField] private GameObject inviteButton;
         [SerializeField] private GameObject sendInvite;
+        [SerializeField] private GameObject partyOption;
         [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
         [SerializeField] private Button[] singleOnlyButtons;
@@ -87,7 +88,7 @@ namespace EverScord
             for (i = 0; i < players.Count; i++)
             {
                 uiRoomPlayers[i].gameObject.SetActive(true);
-                uiRoomPlayers[i].Initialize(players[i]);
+                uiRoomPlayers[i].Initialize(players[i], partyOption);
             }
 
             for (; i < 3; i++)
