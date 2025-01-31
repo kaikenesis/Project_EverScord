@@ -12,9 +12,13 @@ namespace EverScord
         [SerializeField] private UIRoomPlayer uiRoomPlayerPrefab;
         [SerializeField] private GameObject roomContainer;
         [SerializeField] private GameObject inviteButton;
+        [SerializeField] private GameObject sendInvite;
+        [SerializeField] private GameObject partyOption;
         [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
-        [SerializeField] private Button[] masterButtons;
+        [SerializeField] private Button[] singleOnlyButtons;
+        [SerializeField] private Button[] masterOnlyButtons;
+        [SerializeField] private Button[] gameSettingButtons;
         private UIRoomPlayer[] uiRoomPlayers;
 
         public static Action OnLeaveRoom = delegate { };
@@ -24,21 +28,26 @@ namespace EverScord
             PhotonRoomController.OnJoinRoom += HandleJoinRoom;
             PhotonRoomController.OnRoomLeft += HandleRoomLeft;
             PhotonRoomController.OnDisplayPlayers += HandleDisplayPlayers;
+            PhotonRoomController.OnUpdateRoom += HandleUpdateRoom;
+            PhotonMatchController.OnUpdateUI += HandleUpdateUI;
 
             Init();
         }
+
         private void OnDestroy()
         {
             PhotonRoomController.OnJoinRoom -= HandleJoinRoom;
             PhotonRoomController.OnRoomLeft -= HandleRoomLeft;
             PhotonRoomController.OnDisplayPlayers -= HandleDisplayPlayers;
+            PhotonRoomController.OnUpdateRoom -= HandleUpdateRoom;
+            PhotonMatchController.OnUpdateUI -= HandleUpdateUI;
         }
 
         private void Init()
         {
             gameObject.SetActive(false);
 
-            SetObjectsVisibility(false);
+            OnHideObjects();
 
             uiRoomPlayers = new UIRoomPlayer[3];
             for (int i = 0; i < 3; i++)
@@ -53,29 +62,33 @@ namespace EverScord
         {
             gameObject.SetActive(true);
 
-            if (roomContainer != null) roomContainer.SetActive(true);
+            if (roomContainer != null)
+            {
+                roomContainer.SetActive(true);
+            }
 
-            SetObjectsVisibility(true);
-
-            if (PhotonNetwork.IsMasterClient == false)
-                SetActiveUI(false);
+            OnShowObjects();
         }
 
         private void HandleRoomLeft()
         {
             gameObject.SetActive(false);
 
-            if (roomContainer != null) roomContainer.SetActive(false);
+            if (roomContainer != null)
+            {
+                roomContainer.SetActive(false);
+            }
 
-            SetObjectsVisibility(false);
+            OnHideObjects();
         }
+
         private void HandleDisplayPlayers(List<string> players)
         {
             int i = 0;
             for (i = 0; i < players.Count; i++)
             {
                 uiRoomPlayers[i].gameObject.SetActive(true);
-                uiRoomPlayers[i].Initialize(players[i]);
+                uiRoomPlayers[i].Initialize(players[i], partyOption);
             }
 
             for (; i < 3; i++)
@@ -85,36 +98,99 @@ namespace EverScord
 
             if (players.Count < 3)
             {
-                inviteButton.SetActive(true);
+                inviteButton.SetActive(PhotonNetwork.IsMasterClient);
             }
             else
+            {
                 inviteButton.SetActive(false);
-        }
-        #endregion
-
-
-        private void SetObjectsVisibility(bool bVisible)
-        {
-            int count = showObjects.Length;
-            for (int i = 0; i < count; i++)
-            {
-                showObjects[i].SetActive(bVisible);
-            }
-
-            count = hideObjects.Length;
-            for (int i = 0; i < count; i++)
-            {
-                hideObjects[i].SetActive(!bVisible);
             }
         }
 
-        private void SetActiveUI(bool bActive)
+        private void HandleUpdateRoom()
         {
-            inviteButton.SetActive(false);
+            SetActiveMasterButton(PhotonNetwork.IsMasterClient);
 
-            for (int i = 0; i < masterButtons.Length; i++)
+            if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
             {
-                masterButtons[i].interactable = bActive;
+                SetActiveSingleButton(false);
+            }
+            else
+            {
+                SetActiveSingleButton(true);
+            }
+        }
+
+        private void HandleUpdateUI(bool bActive)
+        {
+            SetActiveGameUI(bActive);
+        }
+        #endregion // Handle Methods
+
+        private void OnHideObjects()
+        {
+            for (int i = 0; i < hideObjects.Length; i++)
+            {
+                hideObjects[i].SetActive(false);
+            }
+        }
+
+        private void OnShowObjects()
+        {
+            for (int i = 0; i < showObjects.Length; i++)
+            {
+                showObjects[i].SetActive(true);
+            }
+        }
+
+        private void SetActiveMasterButton(bool bActive)
+        {
+            for (int i = 0; i < masterOnlyButtons.Length; i++)
+            {
+                masterOnlyButtons[i].interactable = bActive;
+            }
+        }
+
+        private void SetActiveSingleButton(bool bActive)
+        {
+            for (int i = 0; i < singleOnlyButtons.Length; i++)
+            {
+                singleOnlyButtons[i].interactable = bActive;
+            }
+        }
+
+        private void SetActiveGameUI(bool bActive)
+        {
+            // 파티장만 초대버튼 활성화/비활성화
+            // 나머지 버튼들은 비활성화
+            if(inviteButton.activeSelf == false)
+            {
+                inviteButton.SetActive(PhotonNetwork.IsMasterClient);
+            }
+            else if(inviteButton.activeSelf == true)
+            {
+                inviteButton.SetActive(false);
+                if (bActive == false)
+                {
+                    InitToggleButtons(inviteButton);
+                }
+            }
+
+            for (int i = 0; i < gameSettingButtons.Length; i++)
+            {
+                gameSettingButtons[i].interactable = bActive;
+                if(bActive == false)
+                {
+                    InitToggleButtons(gameSettingButtons[i].gameObject);
+                }
+            }
+        }
+
+        private void InitToggleButtons(GameObject gameObject)
+        {
+            UIToggleButton uiToggle = gameObject.gameObject.GetComponent<UIToggleButton>();
+            if (uiToggle != null)
+            {
+                uiToggle.Init();
             }
         }
 

@@ -1,26 +1,26 @@
-using EverScord;
-using Photon.Pun;
-using Photon.Realtime;
 using System;
 using TMPro;
 using UnityEngine;
 
-public class PhotonLogin : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private TMP_InputField nickName;
-
-    public static Action<string> OnConnectToPhoton = delegate { };
-
-    public void LoginPhoton()
+    public class PhotonLogin : MonoBehaviour
     {
-        string name = GameManager.Instance.userName;
-        if (string.IsNullOrEmpty(name)) return;
+        [SerializeField] private TMP_InputField nickName;
 
-        OnConnectToPhoton?.Invoke(name);
-    }
+        public static Action<string> OnConnectToPhoton = delegate { };
 
-    public void SetUserName(string name)
-    {
-        GameManager.Instance.userName = nickName.text;
+        public void LoginPhoton()
+        {
+            string name = GameManager.Instance.userName;
+            if (string.IsNullOrEmpty(name)) return;
+
+            OnConnectToPhoton?.Invoke(name);
+        }
+
+        public void SetUserName()
+        {
+            GameManager.Instance.userName = nickName.text;
+        }
     }
 }

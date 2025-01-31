@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using System;
 using UnityEngine;
+using Unity.VisualScripting;
 
 namespace EverScord
 {
@@ -14,21 +15,36 @@ namespace EverScord
         Dictionary<int, Player> matchPlayers;
         private Hashtable expectedRoomProperties = new Hashtable();
         private PhotonView pv;
+        private Player matchMaster;
 
         public static Action<string, string> OnFollowRoom = delegate { };
         public static Action OnStateUpdate = delegate { };
+        public static Action<string, string> OnSendMsgToMaster = delegate { };
+        public static Action<bool> OnUpdateUI = delegate { };
+        public static Action OnStartTimer = delegate { };
+        public static Action OnStopTimer = delegate { };
+        public static Action OnMatchComplete = delegate { };
 
         private void Awake()
         {
-            pv = GetComponent<PhotonView>();
             PhotonRoomController.OnMatchSoloPlay += HandleMatchSoloPlay;
             PhotonRoomController.OnMatchMultiPlay += HandleMatchMultiPlay;
+            PhotonRoomController.OnCheckGame += HandleCheckGame;
+            PhotonChatController.OnStopMatch += HandleStopMatch;
+            PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            UIDisplayMatch.OnRequestStopMatch += HandleRequestStopMatch;
+
+            pv = GetComponent<PhotonView>();
         }
 
         private void OnDestroy()
         {
             PhotonRoomController.OnMatchSoloPlay -= HandleMatchSoloPlay;
             PhotonRoomController.OnMatchMultiPlay -= HandleMatchMultiPlay;
+            PhotonRoomController.OnCheckGame -= HandleCheckGame;
+            PhotonChatController.OnStopMatch -= HandleStopMatch;
+            PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            UIDisplayMatch.OnRequestStopMatch -= HandleRequestStopMatch;
         }
 
         #region Handle Methods
@@ -47,8 +63,11 @@ namespace EverScord
             EPhotonState state = GameManager.Instance.userData.curPhotonState;
             if (state == EPhotonState.MATCH || state == EPhotonState.FOLLOW) return;
 
-            pv.RPC("SetStateMatch", RpcTarget.Others);
+            pv.RPC("SetMatchMaster", RpcTarget.All, PhotonNetwork.MasterClient);
+            pv.RPC("SetPhotonState", RpcTarget.Others, EPhotonState.FOLLOW);
             GameManager.Instance.userData.curPhotonState = EPhotonState.MATCH;
+            OnUpdateUI?.Invoke(false);
+            OnStartTimer?.Invoke();
 
             if (PhotonNetwork.InRoom == true)
             {
@@ -62,7 +81,51 @@ namespace EverScord
                 PhotonNetwork.JoinRandomRoom(expectedRoomProperties, maxDealers + maxHealers);
             }
         }
-        #endregion
+        private void HandleRequestStopMatch()
+        {
+            if (PhotonNetwork.InRoom == false) return;
+            if (GameManager.Instance.userData.curPhotonState == EPhotonState.NONE ||
+                GameManager.Instance.userData.curPhotonState == EPhotonState.STOPMATCH) return;
+
+            if(PhotonNetwork.LocalPlayer == matchMaster)
+            {
+                HandleStopMatch();
+            }
+            else
+            {
+                OnSendMsgToMaster?.Invoke(matchMaster.NickName, "");
+            }
+        }
+
+        private void HandleStopMatch()
+        {
+            GameManager.Instance.userData.curPhotonState = EPhotonState.STOPMATCH;
+            PhotonNetwork.LeaveRoom();
+        }
+
+        private void HandleLobbyJoined()
+        {
+            switch(GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.STOPMATCH:
+                    CreatePhotonMatchRoom();
+                    break;
+            }
+        }
+
+        private void HandleCheckGame()
+        {
+            switch(GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.MATCH:
+                    if(PhotonNetwork.IsMasterClient)
+                    {
+                        CheckMatch();
+                    }
+                    break;
+            }
+        }
+        #endregion // Handle Methods
 
         #region Private Methods
         private void CreatePhotonMatchRoom()
@@ -78,6 +141,8 @@ namespace EverScord
             ro.CustomRoomPropertiesForLobby = new string[] { "DEALER", "HEALER", "LEVEL" };
 
             PhotonNetwork.CreateRoom(roomName, ro);
+            if (matchPlayers.Count != 0)
+                FollowRoom(roomName);
         }
 
         private bool FindRoomForRole(RoomInfo room)
@@ -124,28 +189,108 @@ namespace EverScord
                 }
             }
         }
-        #endregion
+
+        private void CheckMatch()
+        {
+            if (PhotonNetwork.InRoom == false) return;
+
+            int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
+            int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
+
+            if (curDealer < maxDealers) return;
+            if (curHealer < maxHealers) return;
+
+            pv.RPC("MatchComplete", RpcTarget.All);
+        }
+        #endregion // Private Methods
 
         #region Coroutine Methods
         private System.Collections.IEnumerator WaitCreatePhotonMatchRoom()
         {
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(1.0f);
 
             CreatePhotonMatchRoom();
         }
-        #endregion
+        #endregion // Coroutine Methods
 
         #region PunRPC Methods
         [PunRPC]
-        private void SetStateMatch()
+        private void SetPhotonState(EPhotonState newState)
         {
-            GameManager.Instance.userData.curPhotonState = EPhotonState.FOLLOW;
+            GameManager.Instance.userData.curPhotonState = newState;
+            Debug.Log(GameManager.Instance.userData.curPhotonState);
+            
+            switch(GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.MATCH:
+                    //OnUpdateUI?.Invoke(false);
+                    //OnStartTimer?.Invoke();
+                    break;
+                case EPhotonState.FOLLOW:
+                    OnUpdateUI?.Invoke(false);
+                    OnStartTimer?.Invoke();
+                    break;
+                case EPhotonState.NONE:
+                    OnUpdateUI?.Invoke(true);
+                    OnStopTimer?.Invoke();
+                    break;
+            }
         }
-        #endregion
+
+        [PunRPC]
+        private void SetMatchMaster(Player masterPlayer)
+        {
+            matchMaster = masterPlayer;
+            Debug.Log(matchMaster.NickName);
+        }
+
+        [PunRPC]
+        private void MatchComplete()
+        {
+            OnMatchComplete?.Invoke();
+        }
+        #endregion // PunRPC Methods
 
         #region Photon Callbacks
         // 로비에 접속시, 새로운 룸이 만들어질 경우, 룸이 삭제되는 경우, 룸의 IsOpen값이 변화할 경우
         // 변동사항이 있는 방만 넘어옴, 로비에서만 호출가능..
+        public override void OnCreatedRoom()
+        {
+            switch (GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.STOPMATCH:
+                    PhotonNetwork.CurrentRoom.IsVisible = false;
+                    Debug.Log("StopMatch and CreateRoom");
+                    break;
+            }
+        }
+
+        public override void OnJoinedRoom()
+        {
+            switch (GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.STOPMATCH:
+                    {
+                        GameManager.Instance.userData.curPhotonState = EPhotonState.NONE;
+                        Debug.Log(GameManager.Instance.userData.curPhotonState);
+                        OnUpdateUI?.Invoke(true);
+                        OnStopTimer?.Invoke();
+                    }
+                    break;
+                case EPhotonState.FOLLOW:
+                    {
+                        if(PhotonNetwork.CurrentRoom.IsVisible == false)
+                        {
+                            GameManager.Instance.userData.curPhotonState = EPhotonState.NONE;
+                            Debug.Log(GameManager.Instance.userData.curPhotonState);
+                            OnUpdateUI?.Invoke(true);
+                            OnStopTimer?.Invoke();
+                        }
+                    }
+                    break;
+            }
+        }
+
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             Debug.Log("UpdateRoomList");
@@ -165,6 +310,6 @@ namespace EverScord
                     break;
             }
         }
-        #endregion
+        #endregion // Photon Callbacks
     }
 }

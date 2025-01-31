@@ -1,33 +1,47 @@
+using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
-using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Weapons
 {
+    public delegate void OnShotFired(int count);
+
     public class Weapon : MonoBehaviour
     {
         [SerializeField] private ParticleSystem shotEffect, hitEffect;
         [SerializeField] private TrailRenderer tracerEffect;
-        [SerializeField] private Transform raycastOrigin;
+        [field: SerializeField] public Transform GunPoint           { get; private set; }
         [field: SerializeField] public Transform AimPoint           { get; private set; }
+        [field: SerializeField] public Transform LeftTarget         { get; private set; }
+        [field: SerializeField] public Transform LeftHint           { get; private set; }
+        [field: SerializeField] public LayerMask ShootableLayer     { get; private set; }
         [field: SerializeField] public float AimSensitivity         { get; private set; }
         [field: SerializeField] public float MinAimDistance         { get; private set; }
         [field: SerializeField] public float Cooldown               { get; private set; }
+        [field: SerializeField] public float ReloadTime             { get; private set; }
+        [field: SerializeField] public int MaxAmmo                  { get; private set; }
 
+        [SerializeField] private float weaponRange;
         [SerializeField] public float bulletSpeed;
-        [SerializeField] public float bulletMaxLifetime;
         [SerializeField] private int hitEffectCount;
 
-        private Ray ray;
-        private RaycastHit rayHit;
+        private OnShotFired onShotFired;
         private LinkedList<Bullet> bullets = new();
+        private BulletCollisionParam bulletCollisionParam = new();
+
         private float elapsedTime;
+        private int currentAmmo;
+        private bool isReloading = false;
         private bool isCooldown => elapsedTime < Cooldown;
 
-        public void CreateAimPoint()
+        public void Init(OnShotFired setText)
         {
             AimPoint = Instantiate(AimPoint).transform;
+            currentAmmo = MaxAmmo;
+
+            onShotFired -= setText;
+            onShotFired += setText;
         }
 
         public void CooldownTimer()
@@ -42,41 +56,74 @@ namespace EverScord.Weapons
 
         public void Shoot(CharacterControl shooter)
         {
+            if (isReloading)
+                return;
+
             float cooldownOvertime = elapsedTime - Cooldown;
+            CharacterAnimation animControl = shooter.AnimationControl;
 
             if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
             {
                 shooter.SetIsAiming(false);
-                shooter.AnimationControl.SetAimRig(shooter);
-                shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOTEND);
+                shooter.RigControl.SetAimWeight(false);
+                animControl.Play(animControl.AnimInfo.Shoot_End);
                 return;
             }
 
-            if (isCooldown || !shooter.IsShooting)
+            if (!CanShoot(shooter))
                 return;
-            
+
+            if (currentAmmo <= 0)
+            {
+                StartCoroutine(Reload(shooter));
+                return;
+            }
+
+            --CurrentAmmo;
             elapsedTime = 0f;
+
             shotEffect.Emit(1);
 
             shooter.SetIsAiming(true);
-            shooter.AnimationControl.SetAimRig(shooter);
-            shooter.AnimationControl.Play(ConstStrings.ANIMATION_NED_SHOOT);
+            shooter.RigControl.SetAimWeight(true);
+            animControl.Play(animControl.AnimInfo.Shoot);
 
             FireBullet();
+        }
+
+        private IEnumerator Reload(CharacterControl shooter)
+        {
+            isReloading = true;
+            CharacterAnimation animControl = shooter.AnimationControl;
+
+            shooter.RigControl.SetAimWeight(false);
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
+            animControl.Play(animControl.AnimInfo.Reload);
+
+            yield return new WaitForSeconds(ReloadTime);
+
+            CurrentAmmo = MaxAmmo;
+            elapsedTime = 0f;
+
+            shooter.SetIsAiming(true);
+            shooter.RigControl.SetAimWeight(true);
+
+            isReloading = false;
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
         }
 
         private void FireBullet()
         {
             Bullet bullet = new Bullet(
-                raycastOrigin.position,
-                raycastOrigin.forward * bulletSpeed,
-                Instantiate(tracerEffect, raycastOrigin.position, Quaternion.identity)
+                GunPoint.position,
+                (AimPoint.position - GunPoint.position).normalized * bulletSpeed,
+                Instantiate(tracerEffect)
             );
 
             bullets.AddLast(bullet);
         }
 
-        public void UpdateBullets(float deltaTime)
+        public void UpdateBullets(CharacterControl shooter, float deltaTime)
         {
             LinkedListNode<Bullet> currentNode = bullets.First;
 
@@ -89,38 +136,47 @@ namespace EverScord.Weapons
                 bullet.SetLifetime(bullet.Lifetime + deltaTime);
                 Vector3 nextPosition    = bullet.GetPosition();
 
-                if (bullet.Lifetime >= bulletMaxLifetime || !bullet.TracerEffect)
+                if (bullet.ShouldBeDestroyed(weaponRange))
                 {
+                    bullet.DestroyTracerEffect();
                     bullets.Remove(currentNode);
                     currentNode = nextNode;
                     continue;
                 }
 
-                RaycastSegment(currentPosition, nextPosition, bullet);
+                bulletCollisionParam.StartPoint     = currentPosition;
+                bulletCollisionParam.EndPoint       = nextPosition;
+                bulletCollisionParam.PlayerCam      = shooter.CameraControl.Cam;
+                bulletCollisionParam.ShootableLayer = ShootableLayer;
+                bulletCollisionParam.HitEffect      = hitEffect;
+                bulletCollisionParam.HitEffectCount = hitEffectCount;
+
+                bullet.CheckCollision(bulletCollisionParam);
                 currentNode = nextNode;
             }
         }
 
-        private void RaycastSegment(Vector3 startPoint, Vector3 endPoint, Bullet bullet)
+        private bool CanShoot(CharacterControl shooter)
         {
-            Vector3 direction = endPoint - startPoint;
-            float distance = direction.magnitude;
+            if (isCooldown)
+                return false;
 
-            ray.origin = startPoint;
-            ray.direction = direction;
+            if (!shooter.IsShooting)
+                return false;
 
-            if (Physics.Raycast(ray, out rayHit, distance))
+            return true;
+        }
+
+        public int CurrentAmmo
+        {
+            get { return currentAmmo; }
+            set
             {
-                hitEffect.transform.position = rayHit.point;
-                hitEffect.transform.forward  = rayHit.normal;
-                hitEffect.Emit(hitEffectCount);
+                currentAmmo = value;
 
-                bullet.SetTracerEffectPosition(rayHit.point);
-                bullet.SetLifetime(bulletMaxLifetime);
-                return;
+                if (onShotFired != null)
+                    onShotFired(currentAmmo);
             }
-
-            bullet.SetTracerEffectPosition(endPoint); 
         }
     }
 }

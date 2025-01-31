@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class DebugCam : MonoBehaviour
 {
-    [SerializeField] private Transform player;
     [SerializeField] private Camera debugCam;
+    private Transform player;
     private bool isEnabled = false;
 
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         debugCam.enabled = false;
     }
 
@@ -30,6 +31,6 @@ public class DebugCam : MonoBehaviour
         if (!isEnabled)
             return;
         
-        transform.position = new Vector3(player.position.x, transform.position.y, player.position.z);
+        transform.position = new Vector3(player.position.x, player.position.y + 4f, player.position.z);
     }
 }
