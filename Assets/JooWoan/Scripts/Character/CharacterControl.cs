@@ -7,11 +7,12 @@ using EverScord.GameCamera;
 
 namespace EverScord.Character
 {
-    public class CharacterControl : MonoBehaviour
+    public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback
     {
         [Header("Character")]
         [SerializeField] private float speed;
         [SerializeField] private float gravity;
+        [SerializeField] private float mass;
 
         [Header("Ground Check")]
         [SerializeField] private LayerMask groundLayer;
@@ -39,6 +40,7 @@ namespace EverScord.Character
         private Transform uiHub;
 
         public CharacterAnimation AnimationControl                      { get; private set; }
+        public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
@@ -47,7 +49,6 @@ namespace EverScord.Character
         private CharacterController controller;
         private PhotonView photonView;
         private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
-        private float fallSpeed;
 
         void Awake()
         {
@@ -65,13 +66,14 @@ namespace EverScord.Character
 
             PlayerTransform  = transform;
 
+            AnimationControl = new CharacterAnimation(anim, info, transitionDampTime);
+            PhysicsControl   = new CharacterPhysics(gravity, mass);
+
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * 0.1f;
 
             weapon.Init(PlayerUIControl.SetAmmoText);
-            InitRig();
-
-            AnimationControl = new CharacterAnimation(anim, info, transitionDampTime);
+            RigControl.Init(anim.transform, GetComponent<Animator>(), weapon);
 
             RigControl.SetAimWeight(false);
             CameraControl.Init(PlayerTransform, Camera.main);
@@ -88,7 +90,7 @@ namespace EverScord.Character
             SetInput();
             SetMovingDirection();
 
-            ApplyGravity();
+            PhysicsControl.ApplyGravity(this);
             Move();
 
             AnimationControl.AnimateMovement(this, moveDir);
@@ -100,23 +102,6 @@ namespace EverScord.Character
             weapon.TryReload(this);
             weapon.Shoot(this);
             weapon.UpdateBullets(this, Time.deltaTime);
-        }
-
-        private void InitRig()
-        {
-            RigControl.Init(anim.transform, GetComponent<Animator>(), weapon);
-
-            MultiAimConstraint[] constraints = { RigControl.Aim, RigControl.BodyAim, RigControl.HeadAim };
-
-            for (int i = 0; i < constraints.Length; i++)
-            {
-                var data = constraints[i].data.sourceObjects;
-                data.Clear();
-                data.Add(new WeightedTransform(weapon.AimPoint, 1));
-                constraints[i].data.sourceObjects = data;
-            }
-
-            RigControl.Builder.Build();
         }
 
         private void SetInput()
@@ -134,17 +119,6 @@ namespace EverScord.Character
 
             moveDir = PlayerTransform.InverseTransformDirection(moveInput);
         }
-        
-        private void ApplyGravity()
-        {
-            if (IsGrounded)
-            {
-                fallSpeed = -0.5f;
-                return;
-            }
-
-            fallSpeed += gravity * Time.deltaTime;
-        }
 
         private void Move()
         {
@@ -154,7 +128,7 @@ namespace EverScord.Character
             movement = new Vector3(moveInput.x, 0, moveInput.z);
 
             Vector3 velocity = movement * speed;
-            velocity.y = fallSpeed;
+            velocity.y = PhysicsControl.FallSpeed;
 
             controller.Move(velocity * Time.deltaTime);
         }
@@ -213,6 +187,11 @@ namespace EverScord.Character
         public void SetIsAiming(bool state)
         {
             IsAiming = state;
+        }
+
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        {
+            throw new System.NotImplementedException();
         }
 
         public bool IsGrounded

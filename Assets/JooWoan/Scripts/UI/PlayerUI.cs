@@ -41,6 +41,8 @@ namespace EverScord.UI
 
         public void SetReloadText()
         {
+            currentAmmoText.color = outOfAmmoTextColor;
+
             DOTween.Rewind(ConstStrings.TWEEN_AMMORELOAD);
             DOTween.Play(ConstStrings.TWEEN_AMMORELOAD);
         }
