@@ -32,7 +32,7 @@ namespace EverScord.Weapons
             TracerEffect = effect;
         }
 
-        private void SetTracerEffectPosition(Vector3 position)
+        public void SetTracerEffectPosition(Vector3 position)
         {
             TracerEffect.transform.position = position;
         }
@@ -77,11 +77,16 @@ namespace EverScord.Weapons
                     SetTracerEffectPosition(currentPoint);
                 }
 
-                IsDestroyed = true;
+                SetIsDestroyed(true);
                 return;
             }
 
             SetTracerEffectPosition(param.EndPoint);
+        }
+
+        public void SetIsDestroyed(bool state)
+        {
+            IsDestroyed = state;
         }
 
         #region Projectile Motion Equation

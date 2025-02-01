@@ -14811,6 +14811,7 @@ MonoBehaviour:
   weaponRange: 10
   bulletSpeed: 100
   hitEffectCount: 2
+  smokePrefab: {fileID: 9155463838991273943, guid: db97ba35f680c914480ecc075d752dbf, type: 3}
 --- !u!1 &814017028
 GameObject:
   m_ObjectHideFlags: 0
@@ -44075,6 +44076,7 @@ MonoBehaviour:
   weaponRange: 10
   bulletSpeed: 100
   hitEffectCount: 2
+  smokePrefab: {fileID: 9155463838991273943, guid: db97ba35f680c914480ecc075d752dbf, type: 3}
 --- !u!1 &1259768403
 GameObject:
   m_ObjectHideFlags: 0
@@ -60883,6 +60885,10 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3256595215809153122, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
+      propertyPath: smokePrefab
+      value: 
+      objectReference: {fileID: 9155463838991273943, guid: db97ba35f680c914480ecc075d752dbf, type: 3}
     - target: {fileID: 6057910004263505660, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.65

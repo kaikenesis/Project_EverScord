@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using EverScord.Weapons;
-using System.Collections;
 
 namespace EverScord.Character
 {

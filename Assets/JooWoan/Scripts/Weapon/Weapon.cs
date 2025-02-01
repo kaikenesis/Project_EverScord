@@ -3,6 +3,7 @@ using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
 using EverScord.Pool;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Weapons
 {
@@ -26,6 +27,8 @@ namespace EverScord.Weapons
         [SerializeField] private float weaponRange;
         [SerializeField] public float bulletSpeed;
         [SerializeField] private int hitEffectCount;
+
+        [SerializeField] private GameObject smokePrefab;
 
         private OnShotFired onShotFired;
         private LinkedList<Bullet> bullets = new();
@@ -132,13 +135,18 @@ namespace EverScord.Weapons
         private void FireBullet()
         {
             Bullet bullet = PoolManager.Get(tracerType);
+            Vector3 bulletDir = (AimPoint.position - GunPoint.position).normalized;
 
             bullet.Init(
                 GunPoint.position,
-                (AimPoint.position - GunPoint.position).normalized * bulletSpeed
+                bulletDir * bulletSpeed
             );
 
             bullets.AddLast(bullet);
+
+            GameObject smokeEffect = Instantiate(smokePrefab);
+            smokeEffect.transform.forward = bulletDir;
+            smokeEffect.GetComponent<SmokeTrail>().Init(bullet);
         }
 
         public void UpdateBullets(CharacterControl shooter, float deltaTime)
@@ -157,6 +165,7 @@ namespace EverScord.Weapons
                 if (bullet.ShouldBeDestroyed(weaponRange))
                 {
                     PoolManager.Return(bullet, tracerType);
+                    bullet.SetIsDestroyed(true);
                     bullets.Remove(currentNode);
                     currentNode = nextNode;
                     continue;
