@@ -21,5 +21,6 @@ namespace EverScord
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
+        public const string TWEEN_AMMORELOAD = "AmmoReload";
     }
 }

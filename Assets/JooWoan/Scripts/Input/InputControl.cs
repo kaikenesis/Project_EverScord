@@ -11,6 +11,7 @@ namespace EverScord.Character
             info.horizontalInput        = Input.GetAxisRaw(ConstStrings.INPUT_HORIZONTAL);
             info.verticalInput          = Input.GetAxisRaw(ConstStrings.INPUT_VERTICAL);
             info.holdLeftMouseButton    = Input.GetMouseButton(0);
+            info.pressedReloadButton    = Input.GetKeyDown(KeyCode.R);
             info.mousePosition          = Input.mousePosition;
 
             return info;
@@ -36,6 +37,7 @@ namespace EverScord.Character
         public float horizontalInput;
         public float verticalInput;
         public bool holdLeftMouseButton;
+        public bool pressedReloadButton;
     }
 }
 

@@ -97,6 +97,7 @@ namespace EverScord.Character
             RotateBody();
 
             weapon.CooldownTimer();
+            weapon.TryReload(this);
             weapon.Shoot(this);
             weapon.UpdateBullets(this, Time.deltaTime);
         }

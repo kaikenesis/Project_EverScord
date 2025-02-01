@@ -92,12 +92,28 @@ namespace EverScord.Weapons
             FireBullet();
         }
 
+        public void TryReload(CharacterControl shooter)
+        {
+            if (currentAmmo == MaxAmmo)
+                return;
+
+            if (isReloading)
+                return;
+
+            if (!shooter.PlayerInputInfo.pressedReloadButton)
+                return;
+
+            StartCoroutine(Reload(shooter));
+        }
+
         private IEnumerator Reload(CharacterControl shooter)
         {
             isReloading = true;
             CharacterAnimation animControl = shooter.AnimationControl;
 
             shooter.RigControl.SetAimWeight(false);
+            shooter.PlayerUIControl.SetReloadText();
+
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
             animControl.Play(animControl.AnimInfo.Reload);
 
