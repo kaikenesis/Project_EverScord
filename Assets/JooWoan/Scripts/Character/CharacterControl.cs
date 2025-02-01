@@ -24,8 +24,7 @@ namespace EverScord.Character
         [SerializeField] private AnimationInfo info;
         [SerializeField] private CharacterRigControl rigLayerPrefab;
         [SerializeField] private float transitionDampTime;
-        [SerializeField] private float rotateAngle;
-        [SerializeField] private float smoothRotation;
+        [SerializeField] private float bodyRotateSpeed;
         [field: SerializeField] public float ShootStanceDuration        { get; private set; }
         public CharacterRigControl RigControl                           { get; private set; }
 
@@ -168,20 +167,20 @@ namespace EverScord.Character
         {
             float angle = Vector3.Angle(lookDir, PlayerTransform.forward);
 
-            if (angle <= rotateAngle)
+            if (angle > 2f)
             {
-                AnimationControl.Rotate(false);
+                AnimationControl.Rotate(!IsMoving);
+                Quaternion lookRotation = Quaternion.LookRotation(lookDir);
+
+                PlayerTransform.rotation = Quaternion.RotateTowards(
+                    PlayerTransform.rotation,
+                    lookRotation,
+                    bodyRotateSpeed * Time.deltaTime
+                );
                 return;
             }
-            
-            AnimationControl.Rotate(!IsMoving);
-            Quaternion lookRotation = Quaternion.LookRotation(lookDir);
 
-            PlayerTransform.rotation = Quaternion.Lerp(
-                PlayerTransform.rotation,
-                lookRotation,
-                Time.deltaTime * smoothRotation
-            ).normalized;
+            AnimationControl.Rotate(false);
         }
 
         public void SetIsAiming(bool state)

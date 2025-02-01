@@ -60105,6 +60105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   gravity: -40
+  mass: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -60114,8 +60115,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 9025310f569e6544caa74da297a276cf, type: 2}
   rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
   transitionDampTime: 0.05
-  rotateAngle: 85
-  smoothRotation: 3
+  bodyRotateSpeed: 500
   <ShootStanceDuration>k__BackingField: 2
   playerWeapon: {fileID: 702200455}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
@@ -60922,6 +60922,10 @@ PrefabInstance:
     - target: {fileID: 6057910004263505660, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6167983354431360584, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
+      propertyPath: bodyRotateSpeed
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -65238,6 +65242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   gravity: -40
+  mass: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -65247,8 +65252,7 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 768790a94c3321e4c84ecbcf88b81f6b, type: 2}
   rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
   transitionDampTime: 0.05
-  rotateAngle: 85
-  smoothRotation: 3
+  bodyRotateSpeed: 500
   <ShootStanceDuration>k__BackingField: 2
   playerWeapon: {fileID: 1241305601}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
