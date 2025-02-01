@@ -17,6 +17,7 @@ public abstract class NRunState : MonoBehaviour, IState
 
     public void Enter()
     {
+        monsterController.SetNearestPlayer();
         isEnter = true;
         monsterController.Animator.CrossFade("Run", 0.25f);
     }

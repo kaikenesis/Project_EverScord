@@ -1,3 +1,4 @@
+using EverScord;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ public abstract class NController : MonoBehaviour
     protected float curCool1 = 0;
     protected float curCool2 = 0;
     protected RaycastHit hit;
+    [SerializeField] protected LayerMask playerLayer;
 
     public DecalProjector Projector1 { get; protected set; }
     public DecalProjector Projector2 { get; protected set; }
@@ -33,6 +35,25 @@ public abstract class NController : MonoBehaviour
 
     protected void Awake()
     {
+        playerLayer = LayerMask.GetMask("Player");
+        SetNearestPlayer();
+
+        Animator = GetComponentInChildren<Animator>();
+        Projector1 = gameObject.AddComponent<DecalProjector>();
+        Projector2 = gameObject.AddComponent<DecalProjector>();
+        BoxCollider1 = gameObject.AddComponent<BoxCollider>();
+        BoxCollider2 = gameObject.AddComponent<BoxCollider>();
+        ProjectorSetup();
+
+        Projector1.enabled = false;
+        Projector2.enabled = false;
+        BoxCollider1.enabled = false;
+        BoxCollider2.enabled = false;
+
+        foreach (AnimationClip clip in Animator.runtimeAnimatorController.animationClips)
+        {
+            clipDict[clip.name] = clip.length;
+        }
         Setup();
     }
 
@@ -78,6 +99,46 @@ public abstract class NController : MonoBehaviour
                                         monsterData.AttackRangeZ2);
     }
 
+    public void SetNearestPlayer()
+    {
+        float nearest = Mathf.Infinity;
+        GameObject nearPlayer = null;
+
+        foreach (var player in GameManager.Instance.playerPhotonViews)
+        {
+            float cur = (player.transform.position - transform.position).magnitude;
+            if (cur < nearest)
+            {
+                nearest = cur;
+                nearPlayer = player.gameObject;
+            }
+        }
+        player = nearPlayer;
+    }
+
+    //public List<GameObject> GetNearPlayers()
+    //{
+    //    float nearest = 0f;
+    //    List<GameObject> nearPlayer = null;
+        
+    //    foreach (var player in GameManager.Instance.playerPhotonViews)
+    //    {
+    //        float cur = (player.transform.position - transform.position).magnitude;
+    //        if (cur < nearest)
+    //        {
+    //            nearest = cur;
+    //        }
+    //    }
+    //    nearPlayer.Sort(delegate (GameObject a, GameObject b) 
+    //        {
+    //            return (a.transform.position - transform.position).magnitude.CompareTo((b.transform.position - transform.position).magnitude);
+    //        });
+    //    Debug.Log(nearPlayer[0].transform.position);
+    //    Debug.Log(nearPlayer[1].transform.position);
+    //    return nearPlayer;
+    //}
+
+
     public void LookPlayer()
     {
         Vector3 dir = player.transform.position - transform.position;
@@ -89,14 +150,12 @@ public abstract class NController : MonoBehaviour
     {
         Vector3 start = new(transform.position.x, transform.position.y + 0.3f, transform.position.z);        
 
-        if (Physics.Raycast(start, transform.forward, out hit, distance))
+        if (Physics.Raycast(start, transform.forward, out hit, distance, playerLayer))
         {
-            if (hit.transform.CompareTag("Player"))
-            {
-                return true;
-            }
+            return true;
         }
-
+        Debug.DrawRay(start, transform.forward * distance, Color.red);
+        Debug.Log("raycast fail");
         return false;
     }
 
@@ -131,6 +190,8 @@ public abstract class NController : MonoBehaviour
 
     public float CalcDistance()
     {
+        if (player == null)
+            Debug.Log("player null");
         Vector3 heading = player.transform.position - transform.position;
         float distance = heading.magnitude;
 
