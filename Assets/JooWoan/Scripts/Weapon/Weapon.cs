@@ -144,9 +144,9 @@ namespace EverScord.Weapons
 
             bullets.AddLast(bullet);
 
-            GameObject smokeEffect = Instantiate(smokePrefab);
-            smokeEffect.transform.forward = bulletDir;
-            smokeEffect.GetComponent<SmokeTrail>().Init(bullet);
+            SmokeTrail smokeTrail = PoolManager.GetSmoke();
+            smokeTrail.transform.forward = bulletDir;
+            smokeTrail.Init(bullet);
         }
 
         public void UpdateBullets(CharacterControl shooter, float deltaTime)

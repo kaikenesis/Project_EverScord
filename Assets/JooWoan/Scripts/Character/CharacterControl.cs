@@ -1,6 +1,5 @@
 using UnityEngine;
 using EverScord.Weapons;
-using UnityEngine.Animations.Rigging;
 using Photon.Pun;
 using EverScord.UI;
 using EverScord.GameCamera;

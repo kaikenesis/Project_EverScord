@@ -7,11 +7,12 @@ namespace EverScord.Pool
         public GameObject OriginalPrefab { get; private set; }
         public Transform Root { get; private set; }
 
-        public GameObjectPool(GameObject poolingPrefab, int count = 5) : base(0)
+        public GameObjectPool(GameObject poolingPrefab, Transform rootParent, int count = 5) : base(0)
         {
             OriginalPrefab = poolingPrefab;
             Root = new GameObject().transform;
             Root.name = $"{OriginalPrefab.name}_Root";
+            Root.parent = rootParent;
 
             for (int i = 0; i < count; i++)
                 poolingQueue.Enqueue(CreateObject());
@@ -20,7 +21,6 @@ namespace EverScord.Pool
         public override GameObject CreateObject()
         {
             GameObject newObject = Object.Instantiate(OriginalPrefab, Root);
-            newObject.name = OriginalPrefab.name;
             newObject.gameObject.SetActive(false);
             return newObject;
         }

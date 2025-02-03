@@ -8,10 +8,11 @@ namespace EverScord.Pool
         private TrailRenderer trailRenderer;
         public Transform Root { get; private set; }
 
-        public BulletPool(GameObject trailPrefab, int count = 5) : base(0)
+        public BulletPool(GameObject trailPrefab, Transform rootParent, int count = 5) : base(0)
         {
             Root = new GameObject().transform;
             Root.name = $"{trailPrefab.name}_Root";
+            Root.parent = rootParent;
 
             for (int i = 0; i < count; i++)
             {

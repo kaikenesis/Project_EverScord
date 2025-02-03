@@ -24,9 +24,11 @@ namespace EverScord.Pool
 
         [SerializeField] private List<PoolableInfo> poolableGameObjects;
         [SerializeField] private List<BulletTracerInfo> poolableBulletTracers;
+        [SerializeField] private GameObject smokePrefab;
         private IDictionary<PoolableType, GameObjectPool> gameObjectPoolDict;
         private IDictionary<TracerType, BulletPool> bulletPoolDict;
         private IDictionary<Type, object> poolDict = new Dictionary<Type, object>();
+        private SmokeTrailPool smokeTrailPool;
 
         private Transform poolRoot = null;
         public Transform PoolRoot
@@ -44,6 +46,7 @@ namespace EverScord.Pool
         {
             CreateGameObjectPool();
             CreateBulletPool();
+            smokeTrailPool = new SmokeTrailPool(smokePrefab, PoolRoot);
         }
 
         private void CreateGameObjectPool()
@@ -55,8 +58,7 @@ namespace EverScord.Pool
 
             foreach (PoolableInfo info in poolableGameObjects)
             {
-                GameObjectPool pool = new GameObjectPool(info.prefab);
-                pool.Root.parent = PoolRoot;
+                GameObjectPool pool = new GameObjectPool(info.prefab, PoolRoot);
                 gameObjectPoolDict[info.type] = pool;
             }
         }
@@ -70,8 +72,7 @@ namespace EverScord.Pool
 
             foreach (BulletTracerInfo info in poolableBulletTracers)
             {
-                BulletPool pool = new BulletPool(info.prefab);
-                pool.Root.parent = PoolRoot;
+                BulletPool pool = new BulletPool(info.prefab, PoolRoot);
                 bulletPoolDict[info.type] = pool;
             }
         }
@@ -100,6 +101,16 @@ namespace EverScord.Pool
         public static void Return(Bullet obj, TracerType type)
         {
             Instance.bulletPoolDict[type].ReturnObject(obj);
+        }
+
+        public static SmokeTrail GetSmoke()
+        {
+            return Instance.smokeTrailPool.GetObject();
+        }
+
+        public static void ReturnSmoke(SmokeTrail smokeTrail)
+        {
+            Instance.smokeTrailPool.ReturnObject(smokeTrail);
         }
 
         public static T Get<T>() where T : class, new()
