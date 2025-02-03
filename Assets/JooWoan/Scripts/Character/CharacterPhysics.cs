@@ -4,7 +4,6 @@ namespace EverScord.Character
 {
     public class CharacterPhysics
     {
-        private Vector3 impactForce;
         private float gravity, mass;
         public float FallSpeed { get; private set; }
 
@@ -28,11 +27,6 @@ namespace EverScord.Character
             }
 
             FallSpeed += gravity * Time.deltaTime;
-        }
-
-        public void AddImpact(Vector3 dir, float force)
-        {
-            //impactForce += dir.normalized * force
         }
     }
 }
