@@ -1,6 +1,4 @@
-using Photon.Chat;
 using Photon.Realtime;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,10 +7,11 @@ using UnityEngine.UI;
 public class UIInputController : MonoBehaviour
 {
     [SerializeField] private GameObject canvas;
-    [SerializeField] private GameObject partyOption;
     private GraphicRaycaster m_Raycaster;
     private PointerEventData m_PointerEventData;
     private EventSystem m_EventSystem;
+
+    public static Action<bool, Vector2> OnClickedPlayerUI = delegate { };
 
     private void Awake()
     {
@@ -33,20 +35,13 @@ public class UIInputController : MonoBehaviour
 
             m_Raycaster.Raycast(m_PointerEventData, results);
 
-            if (results.Count <= 0)
-            {
-                // 델리게이트 사용?
-                partyOption.SetActive(false);
-                return;
-            }
-
-            for (int i = 0;i< results.Count;i++)
+            for (int i = 0; i < results.Count; i++)
             {
                 if (results[i].gameObject.tag == "UIPlayer")
                     return;
             }
 
-            partyOption.SetActive(false);
+            OnClickedPlayerUI(false, m_PointerEventData.position);
         }
     }
 }

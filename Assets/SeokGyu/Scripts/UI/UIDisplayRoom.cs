@@ -1,10 +1,8 @@
 using System;
-using TMPro;
 using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 namespace EverScord
 {
@@ -14,7 +12,6 @@ namespace EverScord
         [SerializeField] private GameObject roomContainer;
         [SerializeField] private GameObject inviteButton;
         [SerializeField] private GameObject sendInvite;
-        [SerializeField] private GameObject partyOption;
         [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
         [SerializeField] private Button[] singleOnlyButtons;
@@ -88,8 +85,11 @@ namespace EverScord
             int i = 0;
             for (i = 0; i < players.Count; i++)
             {
+                bool bMaster = false;
                 uiRoomPlayers[i].gameObject.SetActive(true);
-                uiRoomPlayers[i].Initialize(players[i], partyOption);
+                if (PhotonNetwork.MasterClient.NickName == players[i])
+                    bMaster = true;
+                uiRoomPlayers[i].Initialize(players[i], bMaster);
             }
 
             for (; i < 3; i++)
