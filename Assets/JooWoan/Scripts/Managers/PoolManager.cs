@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using EverScord.Weapons;
+using System;
 
 namespace EverScord.Pool
 {
@@ -20,8 +22,14 @@ namespace EverScord.Pool
         }
         #endregion
 
-        [SerializeField] private List<PoolableInfo> poolableInfos;
-        private IDictionary<string, ObjectPool> poolDict = new Dictionary<string, ObjectPool>();
+        [SerializeField] private List<PoolableInfo> poolableGameObjects;
+        [SerializeField] private List<BulletTracerInfo> poolableBulletTracers;
+        [SerializeField] private GameObject smokePrefab;
+        private IDictionary<PoolableType, GameObjectPool> gameObjectPoolDict;
+        private IDictionary<TracerType, BulletPool> bulletPoolDict;
+        private IDictionary<Type, object> poolDict = new Dictionary<Type, object>();
+        private SmokeTrailPool smokeTrailPool;
+
         private Transform poolRoot = null;
         public Transform PoolRoot
         {
@@ -36,49 +44,109 @@ namespace EverScord.Pool
 
         public void Init()
         {
-            if (poolDict.Count > 0)
-                poolDict.Clear();
-
-            poolDict = new Dictionary<string, ObjectPool>();
-
-            foreach (PoolableInfo info in poolableInfos)
-                CreatePool(info);
+            CreateGameObjectPool();
+            CreateBulletPool();
+            smokeTrailPool = new SmokeTrailPool(smokePrefab, PoolRoot);
         }
 
-        private void CreatePool(PoolableInfo info)
+        private void CreateGameObjectPool()
         {
-            ObjectPool pool = new ObjectPool(info.poolablePrefab, info.initCount);
-            pool.Root.parent = PoolRoot;
-            poolDict[pool.OriginalPrefab.name] = pool;
-        }
+            if (gameObjectPoolDict != null && gameObjectPoolDict.Count > 0)
+                gameObjectPoolDict.Clear();
 
-        public static GameObject GetObject(string poolableType)
-        {
-            if (!Instance.poolDict.ContainsKey(poolableType))
+            gameObjectPoolDict = new Dictionary<PoolableType, GameObjectPool>();
+
+            foreach (PoolableInfo info in poolableGameObjects)
             {
-                Debug.LogWarning($"Poolable type : '{poolableType}' does not exist.");
-                return null;
+                GameObjectPool pool = new GameObjectPool(info.prefab, PoolRoot);
+                gameObjectPoolDict[info.type] = pool;
             }
-
-            return Instance.poolDict[poolableType].GetObject();
         }
 
-        public static void ReturnObject(GameObject obj)
+        private void CreateBulletPool()
         {
-            if (!Instance.poolDict.ContainsKey(obj.name))
+            if (bulletPoolDict != null && gameObjectPoolDict.Count > 0)
+                gameObjectPoolDict.Clear();
+            
+            bulletPoolDict = new Dictionary<TracerType, BulletPool>();
+
+            foreach (BulletTracerInfo info in poolableBulletTracers)
             {
-                Destroy(obj);
+                BulletPool pool = new BulletPool(info.prefab, PoolRoot);
+                bulletPoolDict[info.type] = pool;
+            }
+        }
+        
+        private void CreatePool<T>() where T : class, new()
+        {
+            ObjectPool<T> pool = new();
+            poolDict[typeof(T)] = pool;
+        }
+
+        public static GameObject Get(PoolableType type)
+        {
+            return Instance.gameObjectPoolDict[type].GetObject();
+        }
+
+        public static void Return(GameObject obj, PoolableType type)
+        {
+            Instance.gameObjectPoolDict[type].ReturnObject(obj);
+        }
+
+        public static Bullet Get(TracerType type)
+        {
+            return Instance.bulletPoolDict[type].GetObject();
+        }
+
+        public static void Return(Bullet obj, TracerType type)
+        {
+            Instance.bulletPoolDict[type].ReturnObject(obj);
+        }
+
+        public static SmokeTrail GetSmoke()
+        {
+            return Instance.smokeTrailPool.GetObject();
+        }
+
+        public static void ReturnSmoke(SmokeTrail smokeTrail)
+        {
+            Instance.smokeTrailPool.ReturnObject(smokeTrail);
+        }
+
+        public static T Get<T>() where T : class, new()
+        {
+            if (!Instance.poolDict.TryGetValue(typeof(T), out object pool))
+            {
+                Debug.LogWarning($"Failed to get pool type : {typeof(T)}");
+                return default;
+            }
+            
+            return ((ObjectPool<T>)pool).GetObject();
+        }
+
+        public static void Return<T>(T obj) where T : class, new()
+        {
+            if (!Instance.poolDict.TryGetValue(typeof(T), out object pool))
+            {
+                Debug.LogWarning($"Failed to get pool type : {typeof(T)}");
                 return;
             }
-
-            Instance.poolDict[obj.name].ReturnObject(obj);
+            
+            ((ObjectPool<T>)pool).ReturnObject(obj);
         }
     }
 
     [System.Serializable]
     public class PoolableInfo
     {
-        public GameObject poolablePrefab;
-        public int initCount;
+        public PoolableType type;
+        public GameObject prefab;
+    }
+
+    [System.Serializable]
+    public class BulletTracerInfo
+    {
+        public TracerType type;
+        public GameObject prefab;
     }
 }

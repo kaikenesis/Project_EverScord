@@ -38,5 +38,13 @@ namespace EverScord.UI
             currentAmmoText.text = $"{count}";
             currentAmmoText.color = count <= 1 ? outOfAmmoTextColor : initialAmmoTextColor;
         }
+
+        public void SetReloadText()
+        {
+            currentAmmoText.color = outOfAmmoTextColor;
+
+            DOTween.Rewind(ConstStrings.TWEEN_AMMORELOAD);
+            DOTween.Play(ConstStrings.TWEEN_AMMORELOAD);
+        }
     }
 }

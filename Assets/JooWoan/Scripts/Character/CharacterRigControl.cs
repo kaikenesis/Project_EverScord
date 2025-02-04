@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using EverScord.Weapons;
-using System.Collections;
 
 namespace EverScord.Character
 {
@@ -27,11 +26,25 @@ namespace EverScord.Character
 
             Aim.data.constrainedObject      = weapon.transform.parent;
 
-            if (!weapon.LeftTarget)
-                return;
+            if (weapon.LeftTarget)
+            {
+                LeftHandIK.data.target = weapon.LeftTarget;
+                LeftHandIK.data.hint = weapon.LeftHint;
+            }
 
-            LeftHandIK.data.target          = weapon.LeftTarget;
-            LeftHandIK.data.hint            = weapon.LeftHint;
+            MultiAimConstraint[] constraints = { Aim, BodyAim, HeadAim };
+
+            for (int i = 0; i < constraints.Length; i++)
+            {
+                var data = constraints[i].data.sourceObjects;
+
+                data.Clear();
+                data.Add(new WeightedTransform(weapon.AimPoint, 1));
+
+                constraints[i].data.sourceObjects = data;
+            }
+
+            Builder.Build();
         }
 
         public void SetAimWeight(bool forceRig)
