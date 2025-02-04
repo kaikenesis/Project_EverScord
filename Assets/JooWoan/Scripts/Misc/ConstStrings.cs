@@ -19,6 +19,7 @@ namespace EverScord
         public const string TAG_UIHUB = "UIHub";
         public const string TAG_CHARACTERCAM = "CharacterCamera";
         public const string TAG_POOLROOT = "PoolRoot";
+        public const string TAG_SKILLROOT = "SkillRoot";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";

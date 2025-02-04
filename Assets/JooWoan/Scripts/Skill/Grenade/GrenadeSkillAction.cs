@@ -3,27 +3,29 @@ using UnityEngine;
 
 namespace EverScord.Skill
 {
-    public class TrajectoryPredictor : MonoBehaviour
+    public class GrenadeSkillAction : MonoBehaviour, ISkillAction
     {
         [SerializeField] private LayerMask groundLayer;
-        [SerializeField] private Collider playerCollider;
         [SerializeField] private Rigidbody projectile;
-        [SerializeField] private Transform startPoint, hitMarker, fixedMarker;
+        [SerializeField] private Transform startPoint, hitMarker;
         [SerializeField] private float predictInterval, hitMarkerGroundOffset;
         [SerializeField] private int maxPoints;
+
+        private Transform stampedMarker;
         private LineRenderer trajectoryLine;
         private Camera cam;
         private const float RAY_OVERLAP = 1.2f;
         private float force;
-        private bool isFiring = false;
+
+        private bool hasActivated = false;
 
         void Start()
         {
             cam = Camera.main;
             trajectoryLine = GetComponent<LineRenderer>();
 
-            fixedMarker = Instantiate(hitMarker, PoolManager.Instance.transform);
-            fixedMarker.gameObject.SetActive(false);
+            stampedMarker = Instantiate(hitMarker, PoolManager.Instance.PoolRoot);
+            stampedMarker.gameObject.SetActive(false);
         }
 
         void Update()
@@ -31,6 +33,15 @@ namespace EverScord.Skill
             SetForce();
             Predict();
             Fire();
+        }
+
+        public void Activate(EJob ejob)
+        {
+            hasActivated = !hasActivated;
+            gameObject.SetActive(hasActivated);
+
+            if (!hasActivated)
+                return;
         }
 
         private void SetForce()
@@ -52,9 +63,7 @@ namespace EverScord.Skill
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
             thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
 
-            fixedMarker.gameObject.SetActive(true);
-            fixedMarker.position = hitMarker.position;
-            fixedMarker.rotation = hitMarker.rotation;
+            StampMarker();
         }
 
         private void Predict()
@@ -108,6 +117,13 @@ namespace EverScord.Skill
         private void HideHitMarker()
         {
             hitMarker.gameObject.SetActive(false);
+        }
+
+        private void StampMarker()
+        {
+            stampedMarker.gameObject.SetActive(true);
+            stampedMarker.position = hitMarker.position;
+            stampedMarker.rotation = hitMarker.rotation;
         }
     }
 }

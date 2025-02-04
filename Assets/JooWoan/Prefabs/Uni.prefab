@@ -11418,7 +11418,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6328921342606612492}
   - {fileID: 3047014786044555888}
   - {fileID: 2096287901784199796}
   - {fileID: 2426855824336989547}
@@ -11456,6 +11455,7 @@ MonoBehaviour:
   bodyRotateSpeed: 500
   <ShootStanceDuration>k__BackingField: 2
   playerWeapon: {fileID: 626886613564285689}
+  grenadeStartPoint: {fileID: 0}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
 --- !u!143 &6964368882992777272
 CharacterController:
@@ -22200,37 +22200,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7478191561422913186}
   m_LocalEulerAnglesHint: {x: -3.7799418, y: -0.056726247, z: -89.12918}
---- !u!1 &6029002489471578837
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6328921342606612492}
-  m_Layer: 0
-  m_Name: Start
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6328921342606612492
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6029002489471578837}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.27297714, y: 0, z: 0, w: 0.9620205}
-  m_LocalPosition: {x: 0, y: 2.086, z: 0.68}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1915862487035099301}
-  m_LocalEulerAnglesHint: {x: -31.683, y: 0, z: 0}
 --- !u!1 &6097260973468885864
 GameObject:
   m_ObjectHideFlags: 0
@@ -32926,6 +32895,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -5200293505007445901, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fc2a972296ec87a4eb33c09b4151d0ed, type: 2}
+    - target: {fileID: -131290053327227102, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fc2a972296ec87a4eb33c09b4151d0ed, type: 2}
     - target: {fileID: 919132149155446097, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_Name
       value: 1301004_Rig

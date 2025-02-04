@@ -32,6 +32,9 @@ namespace EverScord.Character
         private Weapon weapon;
         public Weapon PlayerWeapon => weapon;
 
+        [Header("Skill")]
+        [SerializeField] private GameObject grenadeStartPoint;
+
         [Header("UI")]
         [SerializeField] private PlayerUI uiPrefab;
         public PlayerUI PlayerUIControl                                 { get; private set; }
@@ -43,6 +46,7 @@ namespace EverScord.Character
         public Transform PlayerTransform                                { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
         public Vector3 AimPosition                                      { get; private set; }
+        public EJob CharacterEJob                                       { get; private set; }
 
         private CharacterController controller;
         private PhotonView photonView;
@@ -216,7 +220,7 @@ namespace EverScord.Character
             Gizmos.DrawSphere(
                 transform.TransformPoint(groundCheckOffset),
                 groundCheckRadius
-            ); 
+            );
         }
         #endregion
     }
