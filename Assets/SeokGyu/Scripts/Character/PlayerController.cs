@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IPunInstantiateMagicCallback
     {
         // 마우스가 있는 방향으로 캐릭터 회전
         // 좌클릭,우클릭 공격
@@ -95,9 +95,14 @@ namespace EverScord
             //transform.Translate(dir);
         }
 
+
         #endregion
 
         #region Public Methods
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        {
+            GameManager.Instance.playerPhotonViews.Add(info.photonView);
+        }
         #endregion
     }
 }

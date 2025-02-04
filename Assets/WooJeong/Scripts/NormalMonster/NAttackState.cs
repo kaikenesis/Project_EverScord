@@ -21,6 +21,7 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     public void Enter()
     {
+        Debug.Log("Enter Attack");
         isEnter = true;
         canAttack = false;
         monsterController.Animator.CrossFade("Wait", 0.25f);

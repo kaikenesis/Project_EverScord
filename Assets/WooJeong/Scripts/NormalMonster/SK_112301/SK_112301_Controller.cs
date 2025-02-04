@@ -20,30 +20,12 @@ public class SK_112301_Controller : NController
 
         var temp = monsterData as NMD_112301;
         chargeRange = temp.ChargeRange;
-        
-        player = GameObject.Find("Player");
-        Animator = GetComponentInChildren<Animator>();
-        Projector1 = gameObject.AddComponent<DecalProjector>();
-        Projector2 = gameObject.AddComponent<DecalProjector>();
-        BoxCollider1 = gameObject.AddComponent<BoxCollider>();
-        BoxCollider2 = gameObject.AddComponent<BoxCollider>();
 
-        ProjectorSetup();
         Projector2.size = new Vector3(monsterData.AttackRangeX2,
                               monsterData.AttackRangeY2,
                               chargeRange);
 
         Projector2.pivot = new Vector3(0, transform.position.y,
                                        chargeRange / 2);
-
-        Projector1.enabled = false;
-        Projector2.enabled = false;
-        BoxCollider1.enabled = false;
-        BoxCollider2.enabled = false;
-
-        foreach (AnimationClip clip in Animator.runtimeAnimatorController.animationClips)
-        {
-            clipDict[clip.name] = clip.length;
-        }
     }
 }
