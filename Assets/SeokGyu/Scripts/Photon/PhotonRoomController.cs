@@ -116,7 +116,7 @@ namespace EverScord
         {
             pv.RPC("SetLevel", RpcTarget.Others, GameManager.Instance.userData.curLevel);
             SetPlayerRole();
-            Debug.Log($"nickName : {GameManager.Instance.name}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
+            Debug.Log($"nickName : {GameManager.Instance.userName}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
         }
 
         private void HandleGameStart()
@@ -332,6 +332,14 @@ namespace EverScord
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Room Failed {returnCode} : {message}");
+            switch(GameManager.Instance.userData.curPhotonState)
+            {
+                case EPhotonState.NONE:
+                    {
+                        CreatePhotonRoom();
+                    }
+                    break;
+            }
         }
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {

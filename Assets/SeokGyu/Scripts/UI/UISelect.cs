@@ -10,9 +10,18 @@ namespace EverScord
         public static Action OnGameStart = delegate { };
 
 
-        public void OnClickedGameStart()
+        public void GameStart()
         {
             OnGameStart?.Invoke();
+        }
+
+        public void QuitGame()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
 
         public void SelectDealer()
