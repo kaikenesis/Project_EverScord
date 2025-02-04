@@ -20,6 +20,7 @@ namespace EverScord.Skill
         private Coroutine skillCoroutine;
         private const float RAY_OVERLAP = 1.2f;
         private float force;
+        private float estimatedTime = 0f;
         private bool hasActivated = false;
 
         public bool IsUsingSkill
@@ -98,7 +99,7 @@ namespace EverScord.Skill
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
             thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
 
-            StampMarker();
+            StartCoroutine(StampMarker());
         }
 
         private void Predict()
@@ -108,6 +109,7 @@ namespace EverScord.Skill
             Vector3 nextPosition;
 
             UpdateLine(maxPoints, 0, currentPosition);
+            estimatedTime = 0f;
 
             for (int i = 1; i < maxPoints; i++)
             {
@@ -115,6 +117,7 @@ namespace EverScord.Skill
                 nextPosition = currentPosition + currentVelocity * predictInterval;
 
                 float overlap = Vector3.Distance(currentPosition, nextPosition) * RAY_OVERLAP;
+                estimatedTime += predictInterval;
 
                 if (Physics.Raycast(currentPosition, currentVelocity.normalized, out RaycastHit hit, overlap, groundLayer))
                 {
@@ -159,11 +162,15 @@ namespace EverScord.Skill
             hitMarker.gameObject.SetActive(false);
         }
 
-        private void StampMarker()
+        private IEnumerator StampMarker()
         {
             stampedMarker.gameObject.SetActive(true);
             stampedMarker.position = hitMarker.position;
             stampedMarker.rotation = hitMarker.rotation;
+
+            yield return new WaitForSeconds(estimatedTime);
+
+            stampedMarker.gameObject.SetActive(false);
         }
     }
 }
