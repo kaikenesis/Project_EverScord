@@ -2,8 +2,8 @@ namespace EverScord
 {
     public enum ECharacter
     {
-        UNI,
         NED,
+        UNI,
         US,
         MAX
     }
@@ -34,7 +34,7 @@ namespace EverScord
 
     public class PlayerData
     {
-        public ECharacter character = ECharacter.UNI;
+        public ECharacter character = ECharacter.NED;
         public EJob job = EJob.DEALER;
         public ELevel curLevel = ELevel.NORMAL;
         public EPhotonState curPhotonState = EPhotonState.NONE;

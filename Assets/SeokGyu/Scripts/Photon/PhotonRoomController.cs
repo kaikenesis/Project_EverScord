@@ -36,6 +36,7 @@ namespace EverScord
             UISelect.OnChangeUserData += HandleChangeUserData;
             UISelect.OnGameStart += HandleGameStart;
             UIPartyOption.OnClickedExit += HandleClickedExit;
+            UIChangeName.OnChangeName += HandleChangeName;
 
             inviteRoomName = "";
             pv = GetComponent<PhotonView>();
@@ -51,6 +52,7 @@ namespace EverScord
             UISelect.OnChangeUserData -= HandleChangeUserData;
             UISelect.OnGameStart -= HandleGameStart;
             UIPartyOption.OnClickedExit -= HandleClickedExit;
+            UIChangeName.OnChangeName -= HandleChangeName;
         }
 
         #region Handle Methods
@@ -174,7 +176,15 @@ namespace EverScord
             if (PhotonNetwork.InRoom)
                 PhotonNetwork.LeaveRoom();
         }
-        #endregion
+
+        private void HandleChangeName(string name, int money)
+        {
+            PhotonNetwork.NickName = name;
+            GameManager.Instance.userName = name;
+
+            pv.RPC("UpdateRoom", RpcTarget.All);
+        }
+        #endregion // Handle Methods
 
         #region PunRPC Methods
         [PunRPC]
@@ -182,7 +192,13 @@ namespace EverScord
         {
             GameManager.Instance.userData.curLevel = newLevel;
         }
-        #endregion
+
+        [PunRPC]
+        private void UpdateRoom()
+        {
+            DisplayRoomPlayers();
+        }
+        #endregion // PunRPC Methods
 
         #region Private Methods
         private void CreatePhotonRoom()
@@ -296,7 +312,7 @@ namespace EverScord
 
             return true;
         }
-        #endregion
+        #endregion // Private Methods
 
         #region Photon Callbacks
         public override void OnCreatedRoom()

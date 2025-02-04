@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using EverScord.Character;
+using System;
 
 namespace EverScord.UI
 {
@@ -20,6 +21,18 @@ namespace EverScord.UI
         {
             SetupMainCam();
             SetCharacterTransform();
+
+            UIDisplayRoom.OnVisibleObject += HandleVisibleObject;
+        }
+
+        private void OnDestroy()
+        {
+            UIDisplayRoom.OnVisibleObject -= HandleVisibleObject;
+        }
+
+        private void HandleVisibleObject()
+        {
+            SetPlayerCam(false);
         }
 
         void Update()
@@ -90,6 +103,30 @@ namespace EverScord.UI
             }
 
             return null;
+        }
+
+        public void SetCharacterUni()
+        {
+            if (GameManager.Instance.userData.character == ECharacter.UNI) return;
+
+            GameManager.Instance.userData.character = ECharacter.UNI;
+            SwitchPlayer(CharacterType.UNI);
+        }
+
+        public void SetCharacterNed()
+        {
+            if (GameManager.Instance.userData.character == ECharacter.NED) return;
+
+            GameManager.Instance.userData.character = ECharacter.NED;
+            SwitchPlayer(CharacterType.NED);
+        }
+
+        public void SetCharacterUs()
+        {
+            if (GameManager.Instance.userData.character == ECharacter.US) return;
+
+            GameManager.Instance.userData.character = ECharacter.US;
+            SwitchPlayer(CharacterType.US);
         }
 
         public enum CharacterType
