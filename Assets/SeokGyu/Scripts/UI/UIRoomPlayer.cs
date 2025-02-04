@@ -1,4 +1,3 @@
-using Photon.Pun;
 using System;
 using TMPro;
 using UnityEngine;
@@ -10,45 +9,46 @@ namespace EverScord
     public class UIRoomPlayer : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private TMP_Text nameText;
-        [SerializeField] private Image partyMasterImg;
-        private GameObject partyOption;
-        private RectTransform rectPartyOption;
+        [SerializeField] private GameObject partyMasterImg;
 
-        public static Action<bool, string, string> OnDisplayPartyOption = delegate { };
+        public static Action<bool, string, Vector2> OnDisplayPartyOption = delegate { };
 
-        public void Initialize(string name, GameObject partyOption)
+        private void Awake()
         {
-            //플레이어 이름, 이미지1(캐릭터 초상화), 이미지2(포지션)
-            nameText.text = name;
-            this.partyOption = partyOption;
-            rectPartyOption = partyOption.GetComponent<RectTransform>();
-
-            //if (PhotonNetwork.IsMasterClient)
-            //    partyMasterImg.color = new Color(0, 0, 1, 0);
-            //else
-            //    partyMasterImg.color = new Color(0, 0, 1, 1);
+            UIInputController.OnClickedPlayerUI += HandleClickedPlayerUI;
         }
 
-        
+        private void OnDestroy()
+        {
+            UIInputController.OnClickedPlayerUI -= HandleClickedPlayerUI;
+        }
+
+        private void HandleClickedPlayerUI(bool bVisible, Vector2 mousePos)
+        {
+            OnDisplayPartyOption?.Invoke(bVisible, nameText.text, mousePos);
+        }
+
+        public void Initialize(string name, bool bMaster)
+        {
+            if(bMaster == true)
+            {
+                partyMasterImg.SetActive(true);
+            }
+            else
+            {
+                partyMasterImg.SetActive(false);
+            }
+
+            nameText.text = name;
+        }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            switch (eventData.button)
+            switch(eventData.button)
             {
                 case PointerEventData.InputButton.Right:
                     {
-                        if (PhotonNetwork.CurrentRoom.PlayerCount <= 1) break;
-
-                        if(Screen.width - eventData.position.x <= rectPartyOption.sizeDelta.x)
-                        {
-                            rectPartyOption.pivot = new Vector2(1.0f, 1.0f);
-                        }
-                        else
-                        {
-                            rectPartyOption.pivot = new Vector2(0.0f, 1.0f);
-                        }
-                        partyOption.transform.position = eventData.position;
-                        OnDisplayPartyOption?.Invoke(PhotonNetwork.IsMasterClient, nameText.text, PhotonNetwork.NickName);
+                        OnDisplayPartyOption(true, nameText.text, eventData.position);
                     }
                     break;
             }

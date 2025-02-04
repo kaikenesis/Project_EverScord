@@ -6,21 +6,21 @@ namespace EverScord
 {
     public class PhotonLogin : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField nickName;
+        [SerializeField] private TMP_InputField userNameInput;
+        private string userName = "";
 
         public static Action<string> OnConnectToPhoton = delegate { };
 
         public void LoginPhoton()
         {
-            string name = GameManager.Instance.userName;
-            if (string.IsNullOrEmpty(name)) return;
+            if (string.IsNullOrEmpty(userName)) return;
 
-            OnConnectToPhoton?.Invoke(name);
+            OnConnectToPhoton?.Invoke(userName);
         }
 
         public void SetUserName()
         {
-            GameManager.Instance.userName = nickName.text;
+            userName = userNameInput.text;
         }
     }
 }

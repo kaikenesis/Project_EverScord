@@ -5,6 +5,7 @@ namespace EverScord
     public class UIToggleButton : MonoBehaviour
     {
         [SerializeField] private GameObject[] toggleObject;
+        [SerializeField] bool bUseKeyInput = true;
 
         private void Awake()
         {

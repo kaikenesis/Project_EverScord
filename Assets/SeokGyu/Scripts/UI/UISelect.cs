@@ -4,21 +4,24 @@ using UnityEngine.EventSystems;
 
 namespace EverScord
 {
-    public class UISelect : MonoBehaviour, ISystemSelector, IJobSelector, ILevelSelector, IPointerClickHandler
+    public class UISelect : MonoBehaviour, ISystemSelector, IJobSelector, ILevelSelector
     {
-        [SerializeField] private GameObject partyOption;
-
         public static Action OnChangeUserData = delegate { };
         public static Action OnGameStart = delegate { };
 
-        private void Awake()
-        {
-            partyOption.SetActive(false);
-        }
 
-        public void OnClickedGameStart()
+        public void GameStart()
         {
             OnGameStart?.Invoke();
+        }
+
+        public void QuitGame()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
 
         public void SelectDealer()
@@ -59,11 +62,6 @@ namespace EverScord
 
             GameManager.Instance.userData.curLevel = ELevel.HARD;
             OnChangeUserData?.Invoke();
-        }
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            partyOption.SetActive(false);
         }
     }
 }

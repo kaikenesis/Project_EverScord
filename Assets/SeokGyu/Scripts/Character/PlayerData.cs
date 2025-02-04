@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using UnityEngine;
-
 namespace EverScord
 {
     public enum ECharacter
@@ -43,5 +38,6 @@ namespace EverScord
         public EJob job = EJob.DEALER;
         public ELevel curLevel = ELevel.NORMAL;
         public EPhotonState curPhotonState = EPhotonState.NONE;
+        public int money = 0;
     }
 }
