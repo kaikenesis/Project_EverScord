@@ -24,7 +24,7 @@ namespace EverScord.UI
 
         void Update()
         {
-            if (PlayerCursor == null)
+            if (PlayerCursor == null || !CursorRect.gameObject.activeSelf)
                 return;
 
             PlayerCursor.SetCursorPosition(this);
@@ -45,6 +45,11 @@ namespace EverScord.UI
 
             DOTween.Rewind(ConstStrings.TWEEN_AMMORELOAD);
             DOTween.Play(ConstStrings.TWEEN_AMMORELOAD);
+        }
+
+        public void SetAimCursor(bool state)
+        {
+            CursorRect.gameObject.SetActive(state);
         }
     }
 }

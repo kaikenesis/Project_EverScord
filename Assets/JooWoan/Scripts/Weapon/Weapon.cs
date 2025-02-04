@@ -34,9 +34,13 @@ namespace EverScord.Weapons
         private LinkedList<Bullet> bullets = new();
         private BulletCollisionParam bulletCollisionParam = new();
 
+        private const float ANIM_TRANSITION = 0.25f;
+
         private float elapsedTime;
         private int currentAmmo;
         private bool isReloading = false;
+
+        public bool IsReloading => isReloading;
         private bool isCooldown => elapsedTime < Cooldown;
 
         public void Init(OnShotFired setText)
@@ -63,6 +67,9 @@ namespace EverScord.Weapons
             if (isReloading)
                 return;
 
+            if (shooter.IsUsingSkill)
+                return;
+
             float cooldownOvertime = elapsedTime - Cooldown;
             CharacterAnimation animControl = shooter.AnimationControl;
 
@@ -70,7 +77,7 @@ namespace EverScord.Weapons
             {
                 shooter.SetIsAiming(false);
                 shooter.RigControl.SetAimWeight(false);
-                animControl.Play(animControl.AnimInfo.Shoot_End);
+                animControl.Play(animControl.AnimInfo.ShootEnd);
                 return;
             }
 
@@ -103,6 +110,9 @@ namespace EverScord.Weapons
             if (isReloading)
                 return;
 
+            if (shooter.IsUsingSkill)
+                return;
+
             if (!shooter.PlayerInputInfo.pressedReloadButton)
                 return;
 
@@ -117,19 +127,20 @@ namespace EverScord.Weapons
             shooter.RigControl.SetAimWeight(false);
             shooter.PlayerUIControl.SetReloadText();
 
-            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, true);
             animControl.Play(animControl.AnimInfo.Reload);
 
             yield return new WaitForSeconds(ReloadTime);
 
-            CurrentAmmo = MaxAmmo;
-            elapsedTime = 0f;
-
             shooter.SetIsAiming(true);
             shooter.RigControl.SetAimWeight(true);
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, false);
 
+            yield return new WaitForSeconds(animControl.AnimInfo.ShootStance.length * ANIM_TRANSITION);
+
+            CurrentAmmo = MaxAmmo;
+            elapsedTime = 0f;
             isReloading = false;
-            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
         }
 
         private void FireBullet()

@@ -3,6 +3,7 @@ using EverScord.Weapons;
 using Photon.Pun;
 using EverScord.UI;
 using EverScord.GameCamera;
+using EverScord.Skill;
 
 namespace EverScord.Character
 {
@@ -33,7 +34,8 @@ namespace EverScord.Character
         public Weapon PlayerWeapon => weapon;
 
         [Header("Skill")]
-        [SerializeField] private GameObject grenadeStartPoint;
+        [SerializeField] private SkillActionInfo firstSkillActionInfo;
+        [SerializeField] private SkillActionInfo secondSkillActionInfo;
 
         [Header("UI")]
         [SerializeField] private PlayerUI uiPrefab;
@@ -80,6 +82,9 @@ namespace EverScord.Character
             RigControl.SetAimWeight(false);
             CameraControl.Init(PlayerTransform, Camera.main);
             PlayerUIControl.Init(this);
+
+            firstSkillActionInfo.Skill?.Init(this, ref firstSkillActionInfo);
+            secondSkillActionInfo.Skill?.Init(this, ref firstSkillActionInfo);
         }
 
         void OnApplicationFocus(bool focus)
@@ -104,6 +109,8 @@ namespace EverScord.Character
             weapon.TryReload(this);
             weapon.Shoot(this);
             weapon.UpdateBullets(this, Time.deltaTime);
+
+            UseSkills();
         }
 
         private void SetInput()
@@ -186,6 +193,18 @@ namespace EverScord.Character
             AnimationControl.Rotate(false);
         }
 
+        private void UseSkills()
+        {
+            if (weapon.IsReloading)
+                return;
+
+            if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
+                firstSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+
+            else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
+                secondSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+        }
+
         public void SetIsAiming(bool state)
         {
             IsAiming = state;
@@ -205,6 +224,20 @@ namespace EverScord.Character
                     groundCheckRadius,
                     groundLayer
                 );
+            }
+        }
+
+        public bool IsUsingSkill
+        {
+            get
+            {
+                if (firstSkillActionInfo.SkillAction != null && firstSkillActionInfo.SkillAction.IsUsingSkill)
+                    return true;
+
+                if (secondSkillActionInfo.SkillAction != null && secondSkillActionInfo.SkillAction.IsUsingSkill)
+                    return true;
+
+                return false;
             }
         }
         

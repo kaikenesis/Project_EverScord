@@ -1,5 +1,5 @@
-using EverScord.Character;
 using UnityEngine;
+using EverScord.Character;
 
 namespace EverScord.Skill
 {
@@ -11,20 +11,26 @@ namespace EverScord.Skill
         [field: SerializeField] public GameObject SkillPrefab;
 
         protected static Transform skillRoot;
-        protected ISkillAction skillAction;
 
-        public CharacterSkill()
+        public virtual void Init(CharacterControl activator, ref SkillActionInfo skillActionInfo)
         {
             if (skillRoot == null)
                 skillRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
 
-            var prefab = Instantiate(SkillPrefab, skillRoot);
-            skillAction = prefab.GetComponent<ISkillAction>();
+            ISkillAction skillAction = Instantiate(SkillPrefab, skillRoot).GetComponent<ISkillAction>();
+            skillActionInfo.SetSkillAction(skillAction);
         }
+    }
 
-        public virtual void Activate(CharacterControl activator, EJob ejob)
+    [System.Serializable]
+    public class SkillActionInfo
+    {
+        [field: SerializeField] public CharacterSkill Skill { get; private set; }
+        public ISkillAction SkillAction { get; private set; }
+
+        public void SetSkillAction(ISkillAction skillAction)
         {
-            skillAction.Activate(ejob);
+            SkillAction = skillAction;
         }
     }
 }

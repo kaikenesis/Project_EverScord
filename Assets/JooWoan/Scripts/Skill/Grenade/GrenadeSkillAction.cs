@@ -1,52 +1,87 @@
-using EverScord.Pool;
+using System.Collections;
 using UnityEngine;
+using EverScord.Character;
 
 namespace EverScord.Skill
 {
     public class GrenadeSkillAction : MonoBehaviour, ISkillAction
     {
+        [SerializeField] private GameObject grenadeStartPoint;
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private Rigidbody projectile;
-        [SerializeField] private Transform startPoint, hitMarker;
+        [SerializeField] private Transform hitMarker;
         [SerializeField] private float predictInterval, hitMarkerGroundOffset;
         [SerializeField] private int maxPoints;
 
-        private Transform stampedMarker;
+        private CharacterControl activator;
+        private Transform startPoint, stampedMarker;
         private LineRenderer trajectoryLine;
         private Camera cam;
+        private Coroutine skillCoroutine;
         private const float RAY_OVERLAP = 1.2f;
         private float force;
-
         private bool hasActivated = false;
 
-        void Start()
+        public bool IsUsingSkill
         {
-            cam = Camera.main;
-            trajectoryLine = GetComponent<LineRenderer>();
-
-            stampedMarker = Instantiate(hitMarker, PoolManager.Instance.PoolRoot);
-            stampedMarker.gameObject.SetActive(false);
+            get { return skillCoroutine != null; }
         }
 
-        void Update()
+        public void Init(CharacterControl activator)
         {
-            SetForce();
-            Predict();
-            Fire();
+            if (this.activator != null)
+                return;
+
+            this.activator = activator;
+
+            cam = activator.CameraControl.Cam;
+            trajectoryLine = GetComponent<LineRenderer>();
+
+            stampedMarker = Instantiate(hitMarker, transform);
+            stampedMarker.gameObject.SetActive(false);
+            
+            startPoint = Instantiate(grenadeStartPoint, activator.transform).transform;
+
+            HideHitMarker();
+            SetLineVisibility(false);
         }
 
         public void Activate(EJob ejob)
         {
             hasActivated = !hasActivated;
-            gameObject.SetActive(hasActivated);
 
             if (!hasActivated)
+            {
+                StopCoroutine(skillCoroutine);
+                skillCoroutine = null;
+
+                HideHitMarker();
+                SetLineVisibility(false);
+                activator.PlayerUIControl.SetAimCursor(true);
                 return;
+            }
+
+            SetLineVisibility(true);
+            activator.PlayerUIControl.SetAimCursor(false);
+
+            skillCoroutine = StartCoroutine(ActivateSkill());
+        }
+
+        private IEnumerator ActivateSkill()
+        {
+            while (hasActivated)
+            {
+                SetForce(); 
+                Predict();
+                Fire();
+
+                yield return null;
+            }
         }
 
         private void SetForce()
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = cam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
                 return;
@@ -57,9 +92,9 @@ namespace EverScord.Skill
 
         private void Fire()
         {
-            if (!Input.GetMouseButtonDown(1))
+            if (!activator.PlayerInputInfo.pressedLeftMouseButton)
                 return;
-
+            
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
             thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
 
@@ -98,6 +133,11 @@ namespace EverScord.Skill
         {
             trajectoryLine.positionCount = positionCount;
             trajectoryLine.SetPosition(index, position);
+        }
+
+        private void SetLineVisibility(bool state)
+        {
+            trajectoryLine.enabled = state;
         }
 
         private Vector3 CalculateNewVelocity(Vector3 velocity, float drag, float predictInterval)
