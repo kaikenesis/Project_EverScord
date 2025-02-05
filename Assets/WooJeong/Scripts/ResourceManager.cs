@@ -8,44 +8,42 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
 {
-    private AsyncOperationHandle<GameObject> loadOpHandle;
-    private GameObject prefab;
-
-    private const byte SpawnEventCode = 1; // 이벤트 코드 상수화
+    private const byte SpawnEventCode = 1;
+    public int test = 0;
 
     public IEnumerator LoadAsset(string address, Vector3 position)
     {
-        if (!PhotonNetwork.IsMasterClient)
-            yield break;
-
-        yield return loadOpHandle = Addressables.LoadAssetAsync<GameObject>(address);
-        prefab = Instantiate(loadOpHandle.Result, position, Quaternion.identity);
-        PhotonView photonView = prefab.GetComponent<PhotonView>();
-
-        if (PhotonNetwork.AllocateViewID(photonView))
+        if (PhotonNetwork.IsMasterClient)
         {
-            object[] data = new object[]
-            {
-                prefab.transform.position, prefab.transform.rotation, photonView.ViewID, address
-            };
+            AsyncOperationHandle<GameObject> loadOpHandle = Addressables.InstantiateAsync(address, position, Quaternion.identity);
+            yield return loadOpHandle;
 
-            RaiseEventOptions raiseEventOptions = new()
+            if (loadOpHandle.Status == AsyncOperationStatus.Succeeded)
             {
-                Receivers = ReceiverGroup.Others, // 다른 클라이언트에게만 전송
-                CachingOption = EventCaching.AddToRoomCache // 새로 입장한 플레이어도 받을 수 있도록 설정
-            };
+                GameObject prefab = loadOpHandle.Result;
+                PhotonView photonView = prefab.GetComponent<PhotonView>();
 
-            SendOptions sendOptions = new()
-            {
-                Reliability = true
-            };
+                if (PhotonNetwork.AllocateViewID(photonView))
+                {
+                    object[] data = new object[]
+                    {
+                        prefab.transform.position, prefab.transform.rotation, photonView.ViewID, address
+                    };
 
-            PhotonNetwork.RaiseEvent(SpawnEventCode, data, raiseEventOptions, sendOptions);
-        }
-        else
-        {
-            Debug.LogError("Failed to allocate a ViewId.");
-            Destroy(prefab);
+                    RaiseEventOptions raiseEventOptions = new()
+                    {
+                        Receivers = ReceiverGroup.Others,  // 다른 클라이언트에게만 전달
+                        CachingOption = EventCaching.AddToRoomCache
+                    };
+
+                    SendOptions sendOptions = new()
+                    {
+                        Reliability = true
+                    };
+
+                    PhotonNetwork.RaiseEvent(SpawnEventCode, data, raiseEventOptions, sendOptions);
+                }
+            }
         }
     }
 
@@ -53,25 +51,36 @@ public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
     {
         if (photonEvent.Code == SpawnEventCode)
         {
-            object[] data = (object[])photonEvent.CustomData;
+            Debug.Log("[Client] OnEvent received!");
 
-            // Addressables에서 동일한 프리팹을 로드하여 생성
-            Addressables.LoadAssetAsync<GameObject>(data[3]).Completed += handle =>
+            object[] data = (object[])photonEvent.CustomData;
+            Vector3 position = (Vector3)data[0];
+            Quaternion rotation = (Quaternion)data[1];
+            int viewID = (int)data[2];
+            string address = (string)data[3];
+
+            Addressables.InstantiateAsync(address, position, rotation).Completed += handle =>
             {
-                GameObject gameObject = Instantiate(handle.Result, (Vector3)data[0], (Quaternion)data[1]);
-                PhotonView photonView = gameObject.GetComponent<PhotonView>();
-                photonView.ViewID = (int)data[2];
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    GameObject gameObject = handle.Result;
+                    PhotonView photonView = gameObject.GetComponent<PhotonView>();
+                    photonView.ViewID = viewID;
+                    PhotonNetwork.RegisterPhotonView(photonView);
+                }
             };
         }
     }
 
     private void OnEnable()
     {
+        Debug.Log("[ResourceManager] OnEnable: Registering callback target.");
         PhotonNetwork.AddCallbackTarget(this);
     }
 
     private void OnDisable()
     {
+        Debug.Log("[ResourceManager] OnDisable: Removing callback target.");
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 }

@@ -1,4 +1,5 @@
 using EverScord;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,8 @@ public abstract class NController : MonoBehaviour
     public BoxCollider BoxCollider2 { get; protected set; }
     public Animator Animator { get; protected set; }
 
+    private PhotonView photonView;
+
     protected IState currentState;
     protected IState runState;
     protected IState attackState1;
@@ -35,10 +38,12 @@ public abstract class NController : MonoBehaviour
 
     protected void Awake()
     {
+        photonView = GetComponent<PhotonView>();
+        Animator = GetComponentInChildren<Animator>();
+
         playerLayer = LayerMask.GetMask("Player");
         SetNearestPlayer();
 
-        Animator = GetComponentInChildren<Animator>();
         Projector1 = gameObject.AddComponent<DecalProjector>();
         Projector2 = gameObject.AddComponent<DecalProjector>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
@@ -59,7 +64,8 @@ public abstract class NController : MonoBehaviour
 
     protected void Start()
     {
-        WaitState();
+        if (PhotonNetwork.IsMasterClient)
+            WaitState();
     }
 
     protected abstract void Setup();
@@ -99,6 +105,19 @@ public abstract class NController : MonoBehaviour
                                         monsterData.AttackRangeZ2);
     }
 
+    public void PlayAnimation(string animationName)
+    {
+        Animator.CrossFade(animationName, 0.3f, -1, 0); // 로컬에서 애니메이션 실행
+        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName); // 다른 클라이언트에도 애니메이션 실행 요청
+    }
+
+    [PunRPC]
+    protected void SyncAnimation(string animationName, PhotonMessageInfo info)
+    {
+        Debug.Log($"Received animation RPC from {info.Sender}: {animationName}");
+        Animator.CrossFade(animationName, 0.3f, -1, 0); // 받은 클라이언트에서 동일한 애니메이션 실행
+    }
+
     public void SetNearestPlayer()
     {
         float nearest = Mathf.Infinity;
@@ -115,29 +134,6 @@ public abstract class NController : MonoBehaviour
         }
         player = nearPlayer;
     }
-
-    //public List<GameObject> GetNearPlayers()
-    //{
-    //    float nearest = 0f;
-    //    List<GameObject> nearPlayer = null;
-        
-    //    foreach (var player in GameManager.Instance.playerPhotonViews)
-    //    {
-    //        float cur = (player.transform.position - transform.position).magnitude;
-    //        if (cur < nearest)
-    //        {
-    //            nearest = cur;
-    //        }
-    //    }
-    //    nearPlayer.Sort(delegate (GameObject a, GameObject b) 
-    //        {
-    //            return (a.transform.position - transform.position).magnitude.CompareTo((b.transform.position - transform.position).magnitude);
-    //        });
-    //    Debug.Log(nearPlayer[0].transform.position);
-    //    Debug.Log(nearPlayer[1].transform.position);
-    //    return nearPlayer;
-    //}
-
 
     public void LookPlayer()
     {

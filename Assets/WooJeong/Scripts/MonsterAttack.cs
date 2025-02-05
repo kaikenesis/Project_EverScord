@@ -11,6 +11,12 @@ public class MonsterAttack : MonoBehaviour
     private Material decalMat;
     private float radius;
     private float projectTime;
+    private void Awake()
+    {
+        projector = gameObject.AddComponent<DecalProjector>();
+        capCollider = gameObject.AddComponent<CapsuleCollider>();
+
+    }
 
     public void Setup(float radius, float projectTime, Material decalMat)
     {
@@ -18,10 +24,7 @@ public class MonsterAttack : MonoBehaviour
         this.projectTime = projectTime;
         this.decalMat = decalMat;
         
-        projector = gameObject.AddComponent<DecalProjector>();
-        projector.renderingLayerMask = 2;
         projector.material = decalMat;
-        capCollider = gameObject.AddComponent<CapsuleCollider>();
         projector.size = new Vector3(radius * 2, radius * 2, radius * 2);
         capCollider.radius = radius;
 

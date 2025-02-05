@@ -5,15 +5,24 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    private float spawnTime = 0f;    
+    private float spawnTime = 0f;
+    private int spawnCount = 0;
+
+    private void Awake()
+    {
+        var test = ResourceManager.Instance.test;
+    }
 
     void Update()
     {
+        if(!PhotonNetwork.IsMasterClient)
+            return;
+
         spawnTime += Time.deltaTime;
-        if(spawnTime > 5f)
+        if(spawnTime > 5f && spawnCount <= 0)
         {
-            Debug.Log("spawn");
             StartCoroutine(ResourceManager.Instance.LoadAsset("SML2", transform.position));
+            spawnCount++;
             spawnTime = 0f;
         }
     }
