@@ -3,6 +3,7 @@ using EverScord.Weapons;
 using Photon.Pun;
 using EverScord.UI;
 using EverScord.GameCamera;
+using EverScord.Skill;
 
 namespace EverScord.Character
 {
@@ -32,6 +33,10 @@ namespace EverScord.Character
         private Weapon weapon;
         public Weapon PlayerWeapon => weapon;
 
+        [Header("Skill")]
+        [SerializeField] private SkillActionInfo firstSkillActionInfo;
+        [SerializeField] private SkillActionInfo secondSkillActionInfo;
+
         [Header("UI")]
         [SerializeField] private PlayerUI uiPrefab;
         public PlayerUI PlayerUIControl                                 { get; private set; }
@@ -43,6 +48,7 @@ namespace EverScord.Character
         public Transform PlayerTransform                                { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
         public Vector3 AimPosition                                      { get; private set; }
+        public EJob CharacterEJob                                       { get; private set; }
 
         private CharacterController controller;
         private PhotonView photonView;
@@ -76,6 +82,9 @@ namespace EverScord.Character
             RigControl.SetAimWeight(false);
             CameraControl.Init(PlayerTransform, Camera.main);
             PlayerUIControl.Init(this);
+
+            firstSkillActionInfo.Init(this);
+            secondSkillActionInfo.Init(this);
         }
 
         void OnApplicationFocus(bool focus)
@@ -96,10 +105,11 @@ namespace EverScord.Character
             TrackAim();
             RotateBody();
 
-            weapon.CooldownTimer();
             weapon.TryReload(this);
             weapon.Shoot(this);
             weapon.UpdateBullets(this, Time.deltaTime);
+
+            UseSkills();
         }
 
         private void SetInput()
@@ -182,6 +192,18 @@ namespace EverScord.Character
             AnimationControl.Rotate(false);
         }
 
+        private void UseSkills()
+        {
+            if (weapon.IsReloading)
+                return;
+
+            if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
+                firstSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+
+            else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
+                secondSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+        }
+
         public void SetIsAiming(bool state)
         {
             IsAiming = state;
@@ -203,6 +225,20 @@ namespace EverScord.Character
                 );
             }
         }
+
+        public bool IsUsingSkill
+        {
+            get
+            {
+                if (firstSkillActionInfo.SkillAction != null && firstSkillActionInfo.SkillAction.IsUsingSkill)
+                    return true;
+
+                if (secondSkillActionInfo.SkillAction != null && secondSkillActionInfo.SkillAction.IsUsingSkill)
+                    return true;
+
+                return false;
+            }
+        }
         
         public bool IsAiming { get; private set; }
         public bool IsShooting => PlayerInputInfo.holdLeftMouseButton;
@@ -216,7 +252,7 @@ namespace EverScord.Character
             Gizmos.DrawSphere(
                 transform.TransformPoint(groundCheckOffset),
                 groundCheckRadius
-            ); 
+            );
         }
         #endregion
     }

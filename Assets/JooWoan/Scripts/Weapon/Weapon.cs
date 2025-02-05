@@ -4,6 +4,7 @@ using EverScord.Character;
 using System.Collections.Generic;
 using EverScord.Pool;
 using ExitGames.Client.Photon.StructWrapping;
+using EverScord.Skill;
 
 namespace EverScord.Weapons
 {
@@ -33,11 +34,13 @@ namespace EverScord.Weapons
         private OnShotFired onShotFired;
         private LinkedList<Bullet> bullets = new();
         private BulletCollisionParam bulletCollisionParam = new();
+        private CooldownTimer cooldownTimer;
 
-        private float elapsedTime;
+        private const float ANIM_TRANSITION = 0.25f;
         private int currentAmmo;
+
         private bool isReloading = false;
-        private bool isCooldown => elapsedTime < Cooldown;
+        public bool IsReloading => isReloading;
 
         public void Init(OnShotFired setText)
         {
@@ -48,14 +51,17 @@ namespace EverScord.Weapons
             onShotFired += setText;
         }
 
-        public void CooldownTimer()
+        void OnEnable()
         {
-            elapsedTime += Time.deltaTime;
+            if (cooldownTimer == null)
+                cooldownTimer = new CooldownTimer(Cooldown);
+
+            StartCoroutine(cooldownTimer.RunTimer());
         }
 
-        public void ResetCooldownTimer()
+        void OnDisable()
         {
-            elapsedTime = Cooldown;
+            cooldownTimer.StopTimer();
         }
 
         public void Shoot(CharacterControl shooter)
@@ -63,14 +69,17 @@ namespace EverScord.Weapons
             if (isReloading)
                 return;
 
-            float cooldownOvertime = elapsedTime - Cooldown;
+            if (shooter.IsUsingSkill)
+                return;
+
+            float cooldownOvertime = cooldownTimer.GetElapsedTime() - Cooldown;
             CharacterAnimation animControl = shooter.AnimationControl;
 
             if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
             {
                 shooter.SetIsAiming(false);
                 shooter.RigControl.SetAimWeight(false);
-                animControl.Play(animControl.AnimInfo.Shoot_End);
+                animControl.Play(animControl.AnimInfo.ShootEnd);
                 return;
             }
 
@@ -84,8 +93,7 @@ namespace EverScord.Weapons
             }
 
             --CurrentAmmo;
-            elapsedTime = 0f;
-
+            cooldownTimer.ResetElapsedTime();
             shotEffect.Emit(1);
 
             shooter.SetIsAiming(true);
@@ -103,6 +111,9 @@ namespace EverScord.Weapons
             if (isReloading)
                 return;
 
+            if (shooter.IsUsingSkill)
+                return;
+
             if (!shooter.PlayerInputInfo.pressedReloadButton)
                 return;
 
@@ -117,19 +128,20 @@ namespace EverScord.Weapons
             shooter.RigControl.SetAimWeight(false);
             shooter.PlayerUIControl.SetReloadText();
 
-            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, true);
             animControl.Play(animControl.AnimInfo.Reload);
 
             yield return new WaitForSeconds(ReloadTime);
 
-            CurrentAmmo = MaxAmmo;
-            elapsedTime = 0f;
-
             shooter.SetIsAiming(true);
             shooter.RigControl.SetAimWeight(true);
+            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, false);
 
+            yield return new WaitForSeconds(animControl.AnimInfo.ShootStance.length * ANIM_TRANSITION);
+
+            CurrentAmmo = MaxAmmo;
+            cooldownTimer.ResetElapsedTime();
             isReloading = false;
-            animControl.SetBool(ConstStrings.PARAM_ISRELOADING, isReloading);
         }
 
         private void FireBullet()
@@ -185,7 +197,7 @@ namespace EverScord.Weapons
 
         private bool CanShoot(CharacterControl shooter)
         {
-            if (isCooldown)
+            if (cooldownTimer.IsCooldown)
                 return false;
 
             if (!shooter.IsShooting)
