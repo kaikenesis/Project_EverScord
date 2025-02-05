@@ -13,8 +13,10 @@ namespace EverScord.Weapons
     {
         [SerializeField] private ParticleSystem shotEffect, hitEffect;
         [SerializeField] private TracerType tracerType;
+        [SerializeField] private GameObject aimPointPrefab;
+        
+        public Transform AimPoint                                   { get; private set; }
         [field: SerializeField] public Transform GunPoint           { get; private set; }
-        [field: SerializeField] public Transform AimPoint           { get; private set; }
         [field: SerializeField] public Transform LeftTarget         { get; private set; }
         [field: SerializeField] public Transform LeftHint           { get; private set; }
         [field: SerializeField] public LayerMask ShootableLayer     { get; private set; }
@@ -27,8 +29,6 @@ namespace EverScord.Weapons
         [SerializeField] private float weaponRange;
         [SerializeField] public float bulletSpeed;
         [SerializeField] private int hitEffectCount;
-
-        [SerializeField] private GameObject smokePrefab;
 
         private OnShotFired onShotFired;
         private LinkedList<Bullet> bullets = new();
@@ -43,7 +43,7 @@ namespace EverScord.Weapons
 
         public void Init(OnShotFired setText)
         {
-            AimPoint = Instantiate(AimPoint).transform;
+            AimPoint = Instantiate(aimPointPrefab).transform;
             currentAmmo = MaxAmmo;
 
             onShotFired -= setText;

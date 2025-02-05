@@ -94,6 +94,9 @@ namespace EverScord.Character
 
         void Update()
         {
+            if (!photonView.IsMine)
+                return;
+            
             SetInput();
             SetMovingDirection();
 
@@ -130,9 +133,6 @@ namespace EverScord.Character
 
         private void Move()
         {
-            if (photonView.IsMine == false)
-                return;
-
             movement = new Vector3(moveInput.x, 0, moveInput.z);
 
             Vector3 velocity = movement * speed;
@@ -211,7 +211,7 @@ namespace EverScord.Character
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            throw new System.NotImplementedException();
+
         }
 
         public bool IsGrounded
