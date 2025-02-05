@@ -2526,6 +2526,7 @@ GameObject:
   - component: {fileID: 4841306836154259744}
   - component: {fileID: 7653266350815886467}
   - component: {fileID: 4499415461103685746}
+  - component: {fileID: -6443132038947976497}
   m_Layer: 0
   m_Name: SK_112301
   m_TagString: Untagged
@@ -2570,6 +2571,9 @@ MonoBehaviour:
   stunTime: 2
   isStun: 0
   isDead: 0
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!54 &7653266350815886467
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2618,6 +2622,28 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5, y: 5, z: 5}
   m_Center: {x: 0, y: 2.5, z: 0}
+--- !u!114 &-6443132038947976497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8161522195390990312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8169671729792977532
 GameObject:
   m_ObjectHideFlags: 0
