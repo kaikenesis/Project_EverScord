@@ -10,6 +10,7 @@ namespace EverScord.Skill
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private Rigidbody projectile;
         [SerializeField] private Transform hitMarker;
+        [SerializeField] private GameObject explosionEffect;
         [SerializeField] private float predictInterval, hitMarkerGroundOffset;
         [SerializeField] private int maxPoints;
 
@@ -199,6 +200,9 @@ namespace EverScord.Skill
             stampedMarker.rotation = hitMarker.rotation;
 
             yield return new WaitForSeconds(estimatedTime);
+
+            var effect = Instantiate(explosionEffect);
+            effect.transform.position = hitMarker.position;
 
             stampedMarker.gameObject.SetActive(false);
             stampCoroutine = null;
