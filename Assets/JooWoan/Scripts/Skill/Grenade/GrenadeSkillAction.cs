@@ -14,26 +14,35 @@ namespace EverScord.Skill
         [SerializeField] private int maxPoints;
 
         private CharacterControl activator;
+        private CharacterSkill skill;
+        private CooldownTimer cooldownTimer;
         private Transform startPoint, stampedMarker;
         private LineRenderer trajectoryLine;
         private Camera cam;
+
         private Coroutine skillCoroutine;
+        private Coroutine stampCoroutine;
+
         private const float RAY_OVERLAP = 1.2f;
         private float force;
         private float estimatedTime = 0f;
-        private bool hasActivated = false;
 
+        private bool hasActivated = false;
         public bool IsUsingSkill
         {
             get { return skillCoroutine != null; }
         }
 
-        public void Init(CharacterControl activator)
+        public void Init(CharacterControl activator, CharacterSkill skill)
         {
             if (this.activator != null)
                 return;
 
             this.activator = activator;
+            this.skill = skill;
+
+            cooldownTimer = new CooldownTimer(skill.Cooldown);
+            StartCoroutine(cooldownTimer.RunTimer());
 
             cam = activator.CameraControl.Cam;
             trajectoryLine = GetComponent<LineRenderer>();
@@ -49,16 +58,14 @@ namespace EverScord.Skill
 
         public void Activate(EJob ejob)
         {
+            if (cooldownTimer.IsCooldown)
+                return;
+
             hasActivated = !hasActivated;
 
             if (!hasActivated)
             {
-                StopCoroutine(skillCoroutine);
-                skillCoroutine = null;
-
-                HideHitMarker();
-                SetLineVisibility(false);
-                activator.PlayerUIControl.SetAimCursor(true);
+                ExitSkill();
                 return;
             }
 
@@ -72,12 +79,30 @@ namespace EverScord.Skill
         {
             while (hasActivated)
             {
-                SetForce(); 
+                SetForce();
                 Predict();
                 Fire();
 
+                if (cooldownTimer.IsCooldown)
+                {
+                    ExitSkill();
+                    yield break;
+                }
+
                 yield return null;
             }
+        }
+
+        private void ExitSkill()
+        {
+            hasActivated = false;
+
+            StopCoroutine(skillCoroutine);
+            skillCoroutine = null;
+
+            HideHitMarker();
+            SetLineVisibility(false);
+            activator.PlayerUIControl.SetAimCursor(true);
         }
 
         private void SetForce()
@@ -99,7 +124,12 @@ namespace EverScord.Skill
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
             thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
 
-            StartCoroutine(StampMarker());
+            if (stampCoroutine != null)
+                StopCoroutine(stampCoroutine);
+
+            stampCoroutine = StartCoroutine(StampMarker());
+
+            cooldownTimer.ResetElapsedTime();
         }
 
         private void Predict()
@@ -171,6 +201,7 @@ namespace EverScord.Skill
             yield return new WaitForSeconds(estimatedTime);
 
             stampedMarker.gameObject.SetActive(false);
+            stampCoroutine = null;
         }
     }
 }

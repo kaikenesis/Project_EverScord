@@ -83,8 +83,8 @@ namespace EverScord.Character
             CameraControl.Init(PlayerTransform, Camera.main);
             PlayerUIControl.Init(this);
 
-            firstSkillActionInfo.Skill?.Init(this, ref firstSkillActionInfo);
-            secondSkillActionInfo.Skill?.Init(this, ref firstSkillActionInfo);
+            firstSkillActionInfo.Init(this);
+            secondSkillActionInfo.Init(this);
         }
 
         void OnApplicationFocus(bool focus)
@@ -105,7 +105,6 @@ namespace EverScord.Character
             TrackAim();
             RotateBody();
 
-            weapon.CooldownTimer();
             weapon.TryReload(this);
             weapon.Shoot(this);
             weapon.UpdateBullets(this, Time.deltaTime);

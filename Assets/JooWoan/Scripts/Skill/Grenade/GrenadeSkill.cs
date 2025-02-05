@@ -7,11 +7,5 @@ namespace EverScord.Skill
     public class GrenadeSkill : CharacterSkill
     {
         [SerializeField] private float explosionRadius;
-
-        public override void Init(CharacterControl activator, ref SkillActionInfo skillActionInfo)
-        {
-            base.Init(activator, ref skillActionInfo);
-            ((GrenadeSkillAction)skillActionInfo.SkillAction).Init(activator);
-        }
     }
 }
