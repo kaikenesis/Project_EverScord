@@ -3,7 +3,6 @@ using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
 using EverScord.Pool;
-using ExitGames.Client.Photon.StructWrapping;
 using EverScord.Skill;
 
 namespace EverScord.Weapons

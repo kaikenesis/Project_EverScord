@@ -65,7 +65,7 @@ namespace EverScord.Skill
 
             if (!hasActivated)
             {
-                ExitSkill();
+                StartCoroutine(ExitSkill());
                 return;
             }
 
@@ -85,7 +85,7 @@ namespace EverScord.Skill
 
                 if (cooldownTimer.IsCooldown)
                 {
-                    ExitSkill();
+                    StartCoroutine(ExitSkill());
                     yield break;
                 }
 
@@ -93,16 +93,18 @@ namespace EverScord.Skill
             }
         }
 
-        private void ExitSkill()
+        private IEnumerator ExitSkill()
         {
             hasActivated = false;
-
-            StopCoroutine(skillCoroutine);
-            skillCoroutine = null;
 
             HideHitMarker();
             SetLineVisibility(false);
             activator.PlayerUIControl.SetAimCursor(true);
+
+            yield return new WaitForSeconds(0.2f);
+
+            StopCoroutine(skillCoroutine);
+            skillCoroutine = null;
         }
 
         private void SetForce()
