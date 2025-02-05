@@ -20,6 +20,7 @@ namespace EverScord
         private UIRoomPlayer[] uiRoomPlayers;
 
         public static Action OnLeaveRoom = delegate { };
+        public static Action OnVisibleObject = delegate { };
 
         private void Awake()
         {
@@ -141,6 +142,8 @@ namespace EverScord
             {
                 showObjects[i].SetActive(true);
             }
+
+            OnVisibleObject?.Invoke();
         }
 
         private void SetActiveMasterButton(bool bActive)

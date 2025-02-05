@@ -14,10 +14,10 @@ namespace EverScord
 
         public void Init()
         {
-            for (int i = 0; i < toggleObject.Length; i++)
-            {
-                toggleObject[i].SetActive(false);
-            }
+            //for (int i = 0; i < toggleObject.Length; i++)
+            //{
+            //    toggleObject[i].SetActive(false);
+            //}
         }
 
         public void ToggleObject()

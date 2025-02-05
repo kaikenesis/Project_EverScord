@@ -40,9 +40,8 @@ namespace EverScord
 
             GameManager.Instance.userName = nickName;
             GameManager.Instance.userData = new PlayerData();
-            PhotonNetwork.ConnectUsingSettings();
-
             OnLogin?.Invoke(nickName, GameManager.Instance.userData.money);
+            PhotonNetwork.ConnectUsingSettings();
         }
         #endregion
 
@@ -51,6 +50,7 @@ namespace EverScord
         {
             ConnectToPhoton(nickName);
         }
+
 
         #endregion
 
