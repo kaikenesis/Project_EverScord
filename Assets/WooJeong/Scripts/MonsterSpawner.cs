@@ -5,20 +5,16 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    public GameObject monsterPrefab;
-    DefaultPool pool;
-
-    private void Start()
-    {
-        pool = PhotonNetwork.PrefabPool as DefaultPool;
-        pool.ResourceCache.Add("monsterPrefab", monsterPrefab);
-    }
+    private float spawnTime = 0f;    
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        spawnTime += Time.deltaTime;
+        if(spawnTime > 5f)
         {
-            PhotonNetwork.Instantiate("monsterPrefab", transform.position, new Quaternion(0, 0, 0, 0));
+            Debug.Log("spawn");
+            StartCoroutine(ResourceManager.Instance.LoadAsset("SML2", transform.position));
+            spawnTime = 0f;
         }
     }
 }
