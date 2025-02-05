@@ -10,10 +10,19 @@ namespace EverScord
         private string userName = "";
 
         public static Action<string> OnConnectToPhoton = delegate { };
+        public static Action OnLoginError = delegate { };
+
+        private void Awake()
+        {
+        }
 
         public void LoginPhoton()
         {
-            if (string.IsNullOrEmpty(userName)) return;
+            if (string.IsNullOrEmpty(userName))
+            {
+                OnLoginError?.Invoke();
+                return;
+            }
 
             OnConnectToPhoton?.Invoke(userName);
         }
