@@ -1,17 +1,23 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
     public class UILogin : MonoBehaviour
     {
+        [SerializeField] private GameObject warninngText;
+        [SerializeField] private Outline warninngOutline;
+
         private void Awake()
         {
             PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonLogin.OnLoginError += HandleLoginError;
         }
 
         private void OnDestroy()
         {
             PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonLogin.OnLoginError -= HandleLoginError;
         }
 
         private void HandleLobbyJoined()
@@ -19,8 +25,16 @@ namespace EverScord
             HiddenUI();
         }
 
+        private void HandleLoginError()
+        {
+            warninngOutline.enabled = true;
+            warninngText.SetActive(true);
+        }
+
         private void HiddenUI()
         {
+            warninngOutline.enabled = false;
+            warninngText.SetActive(false);
             gameObject.SetActive(false);
         }
     }
