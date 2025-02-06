@@ -3,7 +3,6 @@ using UnityEngine;
 using EverScord.Character;
 using System.Collections.Generic;
 using EverScord.Pool;
-using ExitGames.Client.Photon.StructWrapping;
 using EverScord.Skill;
 
 namespace EverScord.Weapons
@@ -14,8 +13,10 @@ namespace EverScord.Weapons
     {
         [SerializeField] private ParticleSystem shotEffect, hitEffect;
         [SerializeField] private TracerType tracerType;
+        [SerializeField] private GameObject aimPointPrefab;
+        
+        public Transform AimPoint                                   { get; private set; }
         [field: SerializeField] public Transform GunPoint           { get; private set; }
-        [field: SerializeField] public Transform AimPoint           { get; private set; }
         [field: SerializeField] public Transform LeftTarget         { get; private set; }
         [field: SerializeField] public Transform LeftHint           { get; private set; }
         [field: SerializeField] public LayerMask ShootableLayer     { get; private set; }
@@ -29,8 +30,6 @@ namespace EverScord.Weapons
         [SerializeField] public float bulletSpeed;
         [SerializeField] private int hitEffectCount;
 
-        [SerializeField] private GameObject smokePrefab;
-
         private OnShotFired onShotFired;
         private LinkedList<Bullet> bullets = new();
         private BulletCollisionParam bulletCollisionParam = new();
@@ -42,13 +41,16 @@ namespace EverScord.Weapons
         private bool isReloading = false;
         public bool IsReloading => isReloading;
 
-        public void Init(OnShotFired setText)
+        public void Init(CharacterControl shooter)
         {
-            AimPoint = Instantiate(AimPoint).transform;
+            AimPoint = Instantiate(aimPointPrefab).transform;
             currentAmmo = MaxAmmo;
 
-            onShotFired -= setText;
-            onShotFired += setText;
+            if (shooter.PlayerUIControl == null)
+                return;
+
+            onShotFired -= shooter.PlayerUIControl.SetAmmoText;
+            onShotFired += shooter.PlayerUIControl.SetAmmoText;
         }
 
         void OnEnable()
@@ -75,7 +77,7 @@ namespace EverScord.Weapons
             float cooldownOvertime = cooldownTimer.GetElapsedTime() - Cooldown;
             CharacterAnimation animControl = shooter.AnimationControl;
 
-            if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
+            if (shooter.IsAiming && (cooldownOvertime > shooter.AnimationControl.ShootStanceDuration))
             {
                 shooter.SetIsAiming(false);
                 shooter.RigControl.SetAimWeight(false);

@@ -32451,8 +32451,8 @@ MonoBehaviour:
   shotEffect: {fileID: 8697624914000545340}
   hitEffect: {fileID: 745795172432048317}
   tracerType: 0
+  aimPointPrefab: {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
   <GunPoint>k__BackingField: {fileID: 5000854565782103814}
-  <AimPoint>k__BackingField: {fileID: 3787122344697598860, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
   <LeftTarget>k__BackingField: {fileID: 4707739217572464861}
   <LeftHint>k__BackingField: {fileID: 3411135597086244631}
   <ShootableLayer>k__BackingField:
@@ -32466,7 +32466,6 @@ MonoBehaviour:
   weaponRange: 10
   bulletSpeed: 100
   hitEffectCount: 2
-  smokePrefab: {fileID: 0}
 --- !u!4 &5722305271450859557 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: eec33753b8e6acb4e84995febf990ed9, type: 3}
