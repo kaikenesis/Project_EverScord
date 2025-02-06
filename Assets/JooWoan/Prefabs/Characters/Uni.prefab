@@ -11394,6 +11394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1915862487035099301}
   - component: {fileID: 8272337599470252866}
+  - component: {fileID: 459345874287568075}
   - component: {fileID: 6964368882992777272}
   - component: {fileID: 3476267616868440476}
   - component: {fileID: 7787370619873905059}
@@ -11443,23 +11444,36 @@ MonoBehaviour:
   speed: 10
   gravity: -40
   mass: 0
+  bodyRotateSpeed: 500
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
-  anim: {fileID: 4971527992289089803}
-  info: {fileID: 11400000, guid: 768790a94c3321e4c84ecbcf88b81f6b, type: 2}
-  rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
-  transitionDampTime: 0.05
-  bodyRotateSpeed: 500
-  <ShootStanceDuration>k__BackingField: 2
   playerWeapon: {fileID: 626886613564285689}
   firstSkillActionInfo:
     <Skill>k__BackingField: {fileID: 11400000, guid: 3dfb1606df65ad14294bfacda373ea41, type: 2}
   secondSkillActionInfo:
     <Skill>k__BackingField: {fileID: 0}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
+  cameraPrefab: {fileID: 6716463709426020098, guid: b7ba58d67a16a9642b900e15c37509a6, type: 3}
+  rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
+--- !u!114 &459345874287568075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2709675858173580103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 929fc3a91176f904aadd6d56e7fc18d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 4971527992289089803}
+  info: {fileID: 11400000, guid: 768790a94c3321e4c84ecbcf88b81f6b, type: 2}
+  transitionDampTime: 0.1
+  <ShootStanceDuration>k__BackingField: 0.3
 --- !u!143 &6964368882992777272
 CharacterController:
   m_ObjectHideFlags: 0
@@ -22424,24 +22438,24 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 1
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: Vertical
   - Type: 1
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: Horizontal
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: isMoving
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: isRotating
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: isReloading
   m_SynchronizeLayers:
-  - SynchronizeType: 0
+  - SynchronizeType: 1
     LayerIndex: 0
-  - SynchronizeType: 0
+  - SynchronizeType: 1
     LayerIndex: 1
 --- !u!1 &6769085125112470791
 GameObject:

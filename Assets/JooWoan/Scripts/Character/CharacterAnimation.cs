@@ -1,18 +1,22 @@
 using UnityEngine;
+using Photon.Pun;
 
 namespace EverScord.Character
 {
-    public class CharacterAnimation
+    public class CharacterAnimation : MonoBehaviour
     {
-        private Animator anim;
-        private float transitionDampTime;
-        public AnimationInfo AnimInfo { get; private set; }
+        [SerializeField] private Animator anim;
+        [SerializeField] private AnimationInfo info;
+        [SerializeField] private float transitionDampTime;
+        [field: SerializeField] public float ShootStanceDuration { get; private set; }
 
-        public CharacterAnimation(Animator anim, AnimationInfo info, float dampTime)
+        public Animator Anim => anim;
+        public AnimationInfo AnimInfo => info;
+        private PhotonView photonView;
+
+        public void Init(PhotonView photonView)
         {
-            this.anim           = anim;
-            AnimInfo            = info;
-            transitionDampTime  = dampTime;
+            this.photonView = photonView;
         }
 
         public void AnimateMovement(CharacterControl character, Vector3 moveDir)
@@ -33,14 +37,36 @@ namespace EverScord.Character
             anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
         }
 
+        [PunRPC]
+        public void SyncSetBool(string name, bool state)
+        {
+            anim.SetBool(name, state);
+        }
+
+        [PunRPC]
+        public void SyncPlay(string clipName)
+        {
+            anim.Play(clipName, -1, 0f);
+        }
+
         public void SetBool(string name, bool state)
         {
             anim.SetBool(name, state);
+
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            //photonView.RPC("SyncSetBool", RpcTarget.Others, name, state);
         }
 
         public void Play(AnimationClip clip)
         {
             anim.Play(clip.name, -1, 0f);
+
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            //photonView.RPC("SyncSetBool", RpcTarget.Others, clip.name);
         }
     }
 }

@@ -41,13 +41,16 @@ namespace EverScord.Weapons
         private bool isReloading = false;
         public bool IsReloading => isReloading;
 
-        public void Init(OnShotFired setText)
+        public void Init(CharacterControl shooter)
         {
             AimPoint = Instantiate(aimPointPrefab).transform;
             currentAmmo = MaxAmmo;
 
-            onShotFired -= setText;
-            onShotFired += setText;
+            if (shooter.PlayerUIControl == null)
+                return;
+
+            onShotFired -= shooter.PlayerUIControl.SetAmmoText;
+            onShotFired += shooter.PlayerUIControl.SetAmmoText;
         }
 
         void OnEnable()
@@ -74,7 +77,7 @@ namespace EverScord.Weapons
             float cooldownOvertime = cooldownTimer.GetElapsedTime() - Cooldown;
             CharacterAnimation animControl = shooter.AnimationControl;
 
-            if (shooter.IsAiming && (cooldownOvertime > shooter.ShootStanceDuration))
+            if (shooter.IsAiming && (cooldownOvertime > shooter.AnimationControl.ShootStanceDuration))
             {
                 shooter.SetIsAiming(false);
                 shooter.RigControl.SetAimWeight(false);

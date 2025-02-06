@@ -70,7 +70,7 @@ namespace EverScord.Skill
             }
 
             SetLineVisibility(true);
-            activator.PlayerUIControl.SetAimCursor(false);
+            activator.PlayerUIControl?.SetAimCursor(false);
 
             skillCoroutine = StartCoroutine(ActivateSkill());
         }
@@ -99,7 +99,7 @@ namespace EverScord.Skill
 
             HideHitMarker();
             SetLineVisibility(false);
-            activator.PlayerUIControl.SetAimCursor(true);
+            activator.PlayerUIControl?.SetAimCursor(true);
 
             yield return new WaitForSeconds(0.2f);
 
