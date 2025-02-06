@@ -21,6 +21,9 @@ namespace EverScord.Character
 
         public void AnimateMovement(CharacterControl character, Vector3 moveDir)
         {
+            if (!photonView.IsMine)
+                return;
+
             if (!character.IsMoving)
             {
                 anim.SetBool(ConstStrings.PARAM_ISMOVING, false);
@@ -34,6 +37,9 @@ namespace EverScord.Character
 
         public void Rotate(bool state)
         {
+            if (!photonView.IsMine)
+                return;
+
             anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
         }
 

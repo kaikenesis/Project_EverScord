@@ -56,10 +56,14 @@ namespace EverScord.Character
 
         void Awake()
         {
+            photonView       = GetComponent<PhotonView>();
+
+            if (!photonView.IsMine)
+                return;
+
             PlayerTransform  = transform;
             PhysicsControl   = new CharacterPhysics(gravity, mass);
 
-            photonView       = GetComponent<PhotonView>();
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
             weapon           = playerWeapon.GetComponent<Weapon>();
@@ -67,15 +71,8 @@ namespace EverScord.Character
             uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
             cameraHub        = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
             
-
             PlayerUIControl  = Instantiate(uiPrefab, uiHub);
             CameraControl    = Instantiate(cameraPrefab, cameraHub);
-
-            if (!photonView.IsMine)
-            {
-                PlayerUIControl.gameObject.SetActive(false);
-                CameraControl.gameObject.SetActive(false);
-            }
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * 0.1f;
@@ -83,12 +80,9 @@ namespace EverScord.Character
             AnimationControl.Init(photonView);
             weapon.Init(this);
 
-            if (photonView.IsMine)
-            {
-                RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
-                RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
-                RigControl.SetAimWeight(false);
-            }
+            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
+            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
+            RigControl.SetAimWeight(false);
 
             PlayerUIControl.Init(this);
             CameraControl.Init(PlayerTransform);
@@ -221,7 +215,6 @@ namespace EverScord.Character
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-
         }
 
         public bool IsGrounded
