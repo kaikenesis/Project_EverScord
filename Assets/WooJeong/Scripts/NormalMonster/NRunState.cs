@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class NRunState : MonoBehaviour, IState, IPunObservable
+public abstract class NRunState : MonoBehaviour, IState
 {
     protected NController monsterController;
     protected bool isEnter = false;
@@ -24,7 +24,7 @@ public abstract class NRunState : MonoBehaviour, IState, IPunObservable
     {
         monsterController.SetNearestPlayer();
         isEnter = true;
-        monsterController.Animator.CrossFade("Run", 0.25f);
+        monsterController.PlayAnimation("Run");
     }
 
     protected virtual void Update()
@@ -32,51 +32,29 @@ public abstract class NRunState : MonoBehaviour, IState, IPunObservable
         if (!isEnter)
             return;
 
-        if (PhotonNetwork.IsMasterClient)
+        if (monsterController.isStun)
         {
-            if (monsterController.isStun)
-            {
-                isEnter = false;
-                ExitToStun();
-                return;
-            }
-
-            if (monsterController.isDead)
-            {
-                isEnter = false;
-                ExitToDeath();
-                return;
-            }
-
-            if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
-            {
-                Exit();
-                return;
-            }
-
-            Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
-            monsterController.LookPlayer();
-            transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
+            isEnter = false;
+            ExitToStun();
+            return;
         }
-        else
+
+        if (monsterController.isDead)
         {
-            transform.position = Vector3.Lerp(transform.position, remotePos, 10 * Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, remoteRot, 10 * Time.deltaTime);
+            isEnter = false;
+            ExitToDeath();
+            return;
         }
-    }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
+        if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
         {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
+            Exit();
+            return;
         }
-        else
-        {
-            remotePos = (Vector3)stream.ReceiveNext();
-            remoteRot = (Quaternion)stream.ReceiveNext();
-        }
+
+        Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
+        monsterController.LookPlayer();
+        transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
     }
 
     protected virtual IEnumerator RandomAttack()

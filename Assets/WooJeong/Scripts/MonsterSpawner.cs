@@ -2,16 +2,13 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    private float spawnTime = 0f;
+    [SerializeField] private AssetReferenceGameObject monster;
+    [SerializeField] private float spawnTime = 0f;
     private int spawnCount = 0;
-
-    private void Awake()
-    {
-        var test = ResourceManager.Instance.test;
-    }
 
     void Update()
     {
@@ -21,7 +18,7 @@ public class MonsterSpawner : MonoBehaviour
         spawnTime += Time.deltaTime;
         if(spawnTime > 5f && spawnCount <= 0)
         {
-            StartCoroutine(ResourceManager.Instance.LoadAsset("SML2", transform.position));
+            StartCoroutine(ResourceManager.Instance.SpawnMonster(monster.AssetGUID, transform.position));
             spawnCount++;
             spawnTime = 0f;
         }

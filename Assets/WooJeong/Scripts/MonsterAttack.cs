@@ -15,7 +15,7 @@ public class MonsterAttack : MonoBehaviour
     {
         projector = gameObject.AddComponent<DecalProjector>();
         capCollider = gameObject.AddComponent<CapsuleCollider>();
-
+        projector.renderingLayerMask = 2;
     }
 
     public void Setup(float radius, float projectTime, Material decalMat)

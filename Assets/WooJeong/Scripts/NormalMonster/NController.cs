@@ -41,9 +41,6 @@ public abstract class NController : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
 
-        playerLayer = LayerMask.GetMask("Player");
-        SetNearestPlayer();
-
         Projector1 = gameObject.AddComponent<DecalProjector>();
         Projector2 = gameObject.AddComponent<DecalProjector>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
@@ -59,10 +56,17 @@ public abstract class NController : MonoBehaviour
         {
             clipDict[clip.name] = clip.length;
         }
+
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        playerLayer = LayerMask.GetMask("Player");
+        SetNearestPlayer();
+        
         Setup();
     }
 
-    protected void Start()
+    public void StartFSM()
     {
         if (PhotonNetwork.IsMasterClient)
             WaitState();
@@ -112,10 +116,51 @@ public abstract class NController : MonoBehaviour
     }
 
     [PunRPC]
-    protected void SyncAnimation(string animationName, PhotonMessageInfo info)
+    protected void SyncAnimation(string animationName)
     {
-        Debug.Log($"Received animation RPC from {info.Sender}: {animationName}");
         Animator.CrossFade(animationName, 0.3f, -1, 0); // 받은 클라이언트에서 동일한 애니메이션 실행
+    }
+
+    public virtual IEnumerator ProjectAttackRange(int attackNum)
+    {
+        DecalProjector projector;
+        if (attackNum == 1)
+            projector = Projector1;
+        else
+            projector = Projector2;
+
+        photonView.RPC("SyncProjectorEnable", RpcTarget.Others, attackNum);
+        projector.enabled = true;
+        yield return new WaitForSeconds(monsterData.ProjectionTime);
+        photonView.RPC("SyncProjectorDisable", RpcTarget.Others, attackNum);
+        projector.enabled = false;
+    }
+
+    public void ProjectorDisable(int projectorNum)
+    {
+        if (projectorNum == 1)
+            Projector1.enabled = false;
+        else
+            Projector2.enabled = false;
+        photonView.RPC("SyncProjectorDisable", RpcTarget.Others, projectorNum);
+    }
+
+    [PunRPC]
+    protected void SyncProjectorEnable(int projectorNum)
+    {
+        if (projectorNum == 1)
+            Projector1.enabled = true;
+        else
+            Projector2.enabled = true;
+    }
+    
+    [PunRPC]
+    protected void SyncProjectorDisable(int projectorNum)
+    {
+        if (projectorNum == 1)
+            Projector1.enabled = false;
+        else
+            Projector2.enabled = false;
     }
 
     public void SetNearestPlayer()
