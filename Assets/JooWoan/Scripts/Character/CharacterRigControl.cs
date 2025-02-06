@@ -24,7 +24,7 @@ namespace EverScord.Character
             LeftHandIK.data.mid             = anim.GetBoneTransform(HumanBodyBones.LeftLowerArm);
             LeftHandIK.data.tip             = anim.GetBoneTransform(HumanBodyBones.LeftHand);
 
-            Aim.data.constrainedObject      = weapon.transform.parent;
+            Aim.data.constrainedObject      = weapon.WeaponTransform.parent;
 
             if (weapon.LeftTarget)
             {

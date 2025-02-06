@@ -59,20 +59,20 @@ namespace EverScord.Character
         {
             anim.SetBool(name, state);
 
-            if (!PhotonNetwork.IsConnected)
+            if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            //photonView.RPC("SyncSetBool", RpcTarget.Others, name, state);
+            photonView.RPC("SyncSetBool", RpcTarget.Others, name, state);
         }
 
         public void Play(AnimationClip clip)
         {
             anim.Play(clip.name, -1, 0f);
 
-            if (!PhotonNetwork.IsConnected)
+            if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            //photonView.RPC("SyncSetBool", RpcTarget.Others, clip.name);
+            photonView.RPC("SyncPlay", RpcTarget.Others, clip.name);
         }
     }
 }

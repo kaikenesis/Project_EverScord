@@ -21,7 +21,7 @@ namespace EverScord.Character
         [SerializeField] private Vector3 groundCheckOffset;
 
         [Header("Weapon")]
-        [SerializeField] private GameObject playerWeapon;
+        [SerializeField] private Weapon weapon;
 
         [Header("Skill")]
         [SerializeField] private SkillActionInfo firstSkillActionInfo;
@@ -47,26 +47,22 @@ namespace EverScord.Character
         public EJob CharacterEJob                                       { get; private set; }
 
         public Weapon PlayerWeapon => weapon;
+        public PhotonView CharacterPhotonView => photonView;
 
         private PhotonView photonView;
         private CharacterController controller;
         private Transform uiHub, cameraHub;
-        private Weapon weapon;
         private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
 
         void Awake()
         {
             photonView       = GetComponent<PhotonView>();
 
-            if (!photonView.IsMine)
-                return;
-
             PlayerTransform  = transform;
             PhysicsControl   = new CharacterPhysics(gravity, mass);
 
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
-            weapon           = playerWeapon.GetComponent<Weapon>();
 
             uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
             cameraHub        = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
@@ -80,13 +76,21 @@ namespace EverScord.Character
             AnimationControl.Init(photonView);
             weapon.Init(this);
 
-            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
-            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
-            RigControl.SetAimWeight(false);
+            if (photonView.IsMine)
+            {
+                RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
+                RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
+                RigControl.SetAimWeight(false);
+            }
+            else
+            {
+                PlayerUIControl.gameObject.SetActive(false);
+                CameraControl.gameObject.SetActive(false);
+            }
 
             PlayerUIControl.Init(this);
             CameraControl.Init(PlayerTransform);
-
+            
             firstSkillActionInfo.Init(this);
             secondSkillActionInfo.Init(this);
         }
@@ -114,7 +118,6 @@ namespace EverScord.Character
 
             weapon.TryReload(this);
             weapon.Shoot(this);
-            weapon.UpdateBullets(this, Time.deltaTime);
 
             UseSkills();
         }
@@ -202,10 +205,33 @@ namespace EverScord.Character
                 return;
 
             if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
+            {
                 firstSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1);
+            }
 
             else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
+            {
                 secondSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2);
+            }
+        }
+
+        [PunRPC]
+        private void SyncUseSkill(int skillIndex)
+        {
+            switch (skillIndex)
+            {
+                case 1:
+                    firstSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                    break;
+
+                case 2:
+                    secondSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                    break;
+            }
         }
 
         public void SetIsAiming(bool state)

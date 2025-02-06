@@ -5,14 +5,16 @@ namespace EverScord.Weapons
     public class Bullet
     {
         private const float COLLISION_STEP = 0.5f;
+        public Weapon SourceWeapon          { get; private set; }
         public TrailRenderer TracerEffect   { get; private set; }
         public Vector3 InitialPosition      { get; private set; }
         public Vector3 InitialVelocity      { get; private set; }
         public float Lifetime               { get; private set; }
         public bool IsDestroyed             { get; private set; }
 
-        public void Init(Vector3 position, Vector3 velocity)
+        public void Init(Weapon sourceWeapon, Vector3 position, Vector3 velocity)
         {
+            SourceWeapon = sourceWeapon;
             InitialPosition = position;
             InitialVelocity = velocity;
 
@@ -20,6 +22,7 @@ namespace EverScord.Weapons
             IsDestroyed = false;
 
             TracerEffect.AddPosition(position);
+            SetTracerEffectPosition(position);
         }
 
         public void SetLifetime(float lifeTime)
