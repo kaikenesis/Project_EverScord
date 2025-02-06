@@ -63,6 +63,7 @@ namespace EverScord
             {
                 if (targetName == PhotonNetwork.NickName)
                 {
+                    exitButton.SetActive(true);
                     exileButton.SetActive(false);
                 }
                 else
