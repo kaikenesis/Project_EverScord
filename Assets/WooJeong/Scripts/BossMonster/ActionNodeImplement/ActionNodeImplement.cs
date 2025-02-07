@@ -1,8 +1,8 @@
+using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ActionNodeImplement : MonoBehaviour
+public abstract class ActionNodeImplement : MonoBehaviourPun
 {
     protected Coroutine action;
     protected bool isEnd = false;

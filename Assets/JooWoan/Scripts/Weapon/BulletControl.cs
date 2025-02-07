@@ -69,7 +69,11 @@ namespace EverScord.Weapons
                     continue;
                 }
 
-                bullet.CheckCollision(weapon, currentPosition, nextPosition);
+                if (type == BulletOwner.MINE)
+                    bullet.CheckCollision(weapon, currentPosition, nextPosition);
+                else
+                    bullet.SetTracerEffectPosition(nextPosition);
+
                 currentNode = nextNode;
             }
         }

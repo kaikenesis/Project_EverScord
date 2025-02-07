@@ -54,20 +54,9 @@ public abstract class NRunState : MonoBehaviour, IState
         Debug.Log(navMeshAgent.remainingDistance);
         if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
         {
-            //navMeshAgent.isStopped = true;
             Exit();
             return;
         }
-
-        //if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
-        //{
-        //    Exit();
-        //    return;
-        //}
-
-        //Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        //monsterController.LookPlayer();
-        //transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
     }
 
     protected virtual IEnumerator RandomAttack()
