@@ -6,9 +6,9 @@ using UnityEngine.Rendering.Universal;
 public abstract class NAttackState : MonoBehaviour, IState
 {
     protected NController monsterController;
-    protected bool canAttack = true;
+    protected bool isAttacking = false;
     protected bool isEnter = false;
-
+    protected float attackDamage;
     protected Coroutine attack;
     protected Coroutine project;
     protected Quaternion remoteRot;
@@ -23,8 +23,7 @@ public abstract class NAttackState : MonoBehaviour, IState
     public void Enter()
     {
         isEnter = true;
-        canAttack = false;
-        //monsterController.Animator.CrossFade("Wait", 0.25f);
+        isAttacking = false;
         monsterController.PlayAnimation("Wait");
     }
 
@@ -33,52 +32,32 @@ public abstract class NAttackState : MonoBehaviour, IState
         if (!isEnter)
             return;
 
-        if (PhotonNetwork.IsMasterClient)
+        if (monsterController.isStun)
         {
-            if (monsterController.isStun)
-            {
-                ExitToStun();
-                return;
-            }
-
-            if (monsterController.isDead)
-            {
-                ExitToDeath();
-                return;
-            }
-
-            if (canAttack)
-                return;
-
-            if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
-            {
-                canAttack = true;
-                ExitToRun();
-            }
-
-            monsterController.LookPlayer();
-            if (monsterController.IsLookPlayer(monsterController.monsterData.AttackRangeZ1))
-            {
-                canAttack = true;
-                attack = StartCoroutine(Attack());
-            }
-        }
-        else
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, remoteRot, 10 * Time.deltaTime);
+            ExitToStun();
+            return;
         }
 
-    }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
+        if (monsterController.isDead)
         {
-            stream.SendNext(transform.rotation);
+            ExitToDeath();
+            return;
         }
-        else
+
+        if (isAttacking)
+            return;
+
+        if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
         {
-            remoteRot = (Quaternion)stream.ReceiveNext();
+            isAttacking = false;
+            ExitToRun();
+        }
+
+        monsterController.LookPlayer();
+        if (monsterController.IsLookPlayer(monsterController.monsterData.AttackRangeZ1))
+        {
+            isAttacking = true;
+            attack = StartCoroutine(Attack());
         }
     }
 
@@ -158,6 +137,9 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("attack");
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("monster attack");
+        }
     }
 }
