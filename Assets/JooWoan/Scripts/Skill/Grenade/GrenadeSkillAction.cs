@@ -81,7 +81,9 @@ namespace EverScord.Skill
             {
                 SetForce();
                 Predict();
-                Fire();
+                
+                if (activator.PlayerInputInfo.pressedLeftMouseButton)
+                    Fire();
 
                 if (cooldownTimer.IsCooldown)
                 {
@@ -120,9 +122,6 @@ namespace EverScord.Skill
 
         private void Fire()
         {
-            if (!activator.PlayerInputInfo.pressedLeftMouseButton)
-                return;
-            
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
             thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
 

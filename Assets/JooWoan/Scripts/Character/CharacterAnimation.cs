@@ -21,6 +21,9 @@ namespace EverScord.Character
 
         public void AnimateMovement(CharacterControl character, Vector3 moveDir)
         {
+            if (!photonView.IsMine)
+                return;
+
             if (!character.IsMoving)
             {
                 anim.SetBool(ConstStrings.PARAM_ISMOVING, false);
@@ -34,6 +37,9 @@ namespace EverScord.Character
 
         public void Rotate(bool state)
         {
+            if (!photonView.IsMine)
+                return;
+
             anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
         }
 
@@ -53,20 +59,20 @@ namespace EverScord.Character
         {
             anim.SetBool(name, state);
 
-            if (!PhotonNetwork.IsConnected)
+            if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            //photonView.RPC("SyncSetBool", RpcTarget.Others, name, state);
+            photonView.RPC("SyncSetBool", RpcTarget.Others, name, state);
         }
 
         public void Play(AnimationClip clip)
         {
             anim.Play(clip.name, -1, 0f);
 
-            if (!PhotonNetwork.IsConnected)
+            if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            //photonView.RPC("SyncSetBool", RpcTarget.Others, clip.name);
+            photonView.RPC("SyncPlay", RpcTarget.Others, clip.name);
         }
     }
 }

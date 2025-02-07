@@ -1,7 +1,8 @@
 using System.Collections;
-using UnityEngine;
-using EverScord.Character;
 using System.Collections.Generic;
+using UnityEngine;
+using Photon.Pun;
+using EverScord.Character;
 using EverScord.Pool;
 using EverScord.Skill;
 
@@ -11,12 +12,13 @@ namespace EverScord.Weapons
 
     public class Weapon : MonoBehaviour
     {
-        [SerializeField] private ParticleSystem shotEffect, hitEffect;
-        [SerializeField] private TracerType tracerType;
         [SerializeField] private GameObject aimPointPrefab;
-        
-        public Transform AimPoint                                   { get; private set; }
+        [SerializeField] private ParticleSystem shotEffect;
+
+        [field: SerializeField] public ParticleSystem HitEffect     { get; private set; }  
+        [field: SerializeField] public TracerType WeaponTracerType  { get; private set; }
         [field: SerializeField] public Transform GunPoint           { get; private set; }
+        [field: SerializeField] public Transform WeaponTransform    { get; private set; }
         [field: SerializeField] public Transform LeftTarget         { get; private set; }
         [field: SerializeField] public Transform LeftHint           { get; private set; }
         [field: SerializeField] public LayerMask ShootableLayer     { get; private set; }
@@ -24,16 +26,17 @@ namespace EverScord.Weapons
         [field: SerializeField] public float MinAimDistance         { get; private set; }
         [field: SerializeField] public float Cooldown               { get; private set; }
         [field: SerializeField] public float ReloadTime             { get; private set; }
+        [field: SerializeField] public float WeaponRange            { get; private set; }
         [field: SerializeField] public int MaxAmmo                  { get; private set; }
+        [field: SerializeField] public int HitEffectCount           { get; private set; }
+        public Transform AimPoint                                   { get; private set; }
+        public Camera ShooterCam                                    { get; private set; }
 
-        [SerializeField] private float weaponRange;
         [SerializeField] public float bulletSpeed;
-        [SerializeField] private int hitEffectCount;
 
         private OnShotFired onShotFired;
-        private LinkedList<Bullet> bullets = new();
-        private BulletCollisionParam bulletCollisionParam = new();
         private CooldownTimer cooldownTimer;
+        private PhotonView photonView;
 
         private const float ANIM_TRANSITION = 0.25f;
         private int currentAmmo;
@@ -43,6 +46,9 @@ namespace EverScord.Weapons
 
         public void Init(CharacterControl shooter)
         {
+            photonView = shooter.CharacterPhotonView;
+            ShooterCam = shooter.CameraControl.Cam;
+
             AimPoint = Instantiate(aimPointPrefab).transform;
             currentAmmo = MaxAmmo;
 
@@ -96,7 +102,6 @@ namespace EverScord.Weapons
 
             --CurrentAmmo;
             cooldownTimer.ResetElapsedTime();
-            shotEffect.Emit(1);
 
             shooter.SetIsAiming(true);
             shooter.RigControl.SetAimWeight(true);
@@ -148,53 +153,22 @@ namespace EverScord.Weapons
 
         private void FireBullet()
         {
-            Bullet bullet = PoolManager.Get(tracerType);
+            shotEffect.Emit(1);
+
+            Bullet bullet = PoolManager.Get(WeaponTracerType);
             Vector3 bulletDir = (AimPoint.position - GunPoint.position).normalized;
 
             bullet.Init(
+                this,
                 GunPoint.position,
                 bulletDir * bulletSpeed
             );
 
-            bullets.AddLast(bullet);
+            PoolManager.Instance.BulletsControl.AddBullet(bullet);
 
             SmokeTrail smokeTrail = PoolManager.GetSmoke();
             smokeTrail.transform.forward = bulletDir;
             smokeTrail.Init(bullet);
-        }
-
-        public void UpdateBullets(CharacterControl shooter, float deltaTime)
-        {
-            LinkedListNode<Bullet> currentNode = bullets.First;
-
-            while (currentNode != null)
-            {
-                LinkedListNode<Bullet> nextNode = currentNode.Next;
-                Bullet bullet = currentNode.Value;
-
-                Vector3 currentPosition = bullet.GetPosition();
-                bullet.SetLifetime(bullet.Lifetime + deltaTime);
-                Vector3 nextPosition    = bullet.GetPosition();
-
-                if (bullet.ShouldBeDestroyed(weaponRange))
-                {
-                    PoolManager.Return(bullet, tracerType);
-                    bullet.SetIsDestroyed(true);
-                    bullets.Remove(currentNode);
-                    currentNode = nextNode;
-                    continue;
-                }
-
-                bulletCollisionParam.StartPoint     = currentPosition;
-                bulletCollisionParam.EndPoint       = nextPosition;
-                bulletCollisionParam.PlayerCam      = shooter.CameraControl.Cam;
-                bulletCollisionParam.ShootableLayer = ShootableLayer;
-                bulletCollisionParam.HitEffect      = hitEffect;
-                bulletCollisionParam.HitEffectCount = hitEffectCount;
-
-                bullet.CheckCollision(bulletCollisionParam);
-                currentNode = nextNode;
-            }
         }
 
         private bool CanShoot(CharacterControl shooter)
