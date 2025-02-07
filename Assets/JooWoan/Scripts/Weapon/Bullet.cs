@@ -51,31 +51,31 @@ namespace EverScord.Weapons
             return Vector3.Distance(GetPosition(), InitialPosition) > weaponRange;
         }
 
-        public void CheckCollision(BulletCollisionParam param)
+        public void CheckCollision(Vector3 startPoint, Vector3 endPoint)
         {
             RaycastHit hit = new RaycastHit();
-            Vector3 direction = param.EndPoint - param.StartPoint;
+            Vector3 direction = endPoint - startPoint;
             float totalDistance = direction.magnitude;
 
             direction.Normalize();
 
             for (float distance = 0f; distance <= totalDistance; distance += COLLISION_STEP)
             {
-                Vector3 currentPoint = param.StartPoint + direction * distance;
-                Vector3 currentScreenPoint = param.PlayerCam.WorldToScreenPoint(currentPoint);
+                Vector3 currentPoint = startPoint + direction * distance;
+                Vector3 currentScreenPoint = SourceWeapon.ShooterCam.WorldToScreenPoint(currentPoint);
                 
                 bool isWithinScreen = Screen.safeArea.Contains(currentScreenPoint);
 
                 if (isWithinScreen)
                 {
-                    Ray ray = param.PlayerCam.ScreenPointToRay(currentScreenPoint);
+                    Ray ray = SourceWeapon.ShooterCam.ScreenPointToRay(currentScreenPoint);
 
-                    if (!Physics.Raycast(ray, out hit, 50f, param.ShootableLayer))
+                    if (!Physics.Raycast(ray, out hit, 50f, SourceWeapon.ShootableLayer))
                         continue;
 
-                    param.HitEffect.transform.position = hit.point;
-                    param.HitEffect.transform.forward = -direction;
-                    param.HitEffect.Emit(param.HitEffectCount);
+                    SourceWeapon.HitEffect.transform.position = hit.point;
+                    SourceWeapon.HitEffect.transform.forward  = -direction;
+                    SourceWeapon.HitEffect.Emit(SourceWeapon.HitEffectCount);
 
                     SetTracerEffectPosition(currentPoint);
                 }
@@ -84,7 +84,7 @@ namespace EverScord.Weapons
                 return;
             }
 
-            SetTracerEffectPosition(param.EndPoint);
+            SetTracerEffectPosition(endPoint);
         }
 
         public void SetIsDestroyed(bool state)
@@ -107,15 +107,5 @@ namespace EverScord.Weapons
             // Exclude bullet drop
             return InitialPosition + InitialVelocity * Lifetime;
         }
-    }
-
-    public class BulletCollisionParam
-    {
-        public Vector3 StartPoint;
-        public Vector3 EndPoint;
-        public LayerMask ShootableLayer;
-        public Camera PlayerCam;
-        public ParticleSystem HitEffect;
-        public int HitEffectCount;
     }
 }

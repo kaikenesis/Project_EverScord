@@ -8,7 +8,6 @@ namespace EverScord.Weapons
     {
         private LinkedList<Bullet> bullets = new();
         public LinkedList<Bullet> BulletList => bullets;
-        private BulletCollisionParam bulletCollisionParam = new();
 
         void Update()
         {
@@ -45,14 +44,7 @@ namespace EverScord.Weapons
                     continue;
                 }
 
-                bulletCollisionParam.StartPoint     = currentPosition;
-                bulletCollisionParam.EndPoint       = nextPosition;
-                bulletCollisionParam.PlayerCam      = bullet.SourceWeapon.ShooterCam;
-                bulletCollisionParam.ShootableLayer = bullet.SourceWeapon.ShootableLayer;
-                bulletCollisionParam.HitEffect      = bullet.SourceWeapon.HitEffect;
-                bulletCollisionParam.HitEffectCount = bullet.SourceWeapon.HitEffectCount;
-
-                bullet.CheckCollision(bulletCollisionParam);
+                bullet.CheckCollision(currentPosition, nextPosition);
                 currentNode = nextNode;
             }
         }

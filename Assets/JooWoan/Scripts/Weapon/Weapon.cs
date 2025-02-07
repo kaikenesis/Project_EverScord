@@ -108,8 +108,6 @@ namespace EverScord.Weapons
             animControl.Play(animControl.AnimInfo.Shoot);
 
             FireBullet();
-            if (PhotonNetwork.IsConnected)
-                photonView.RPC("FireBullet", RpcTarget.Others);
         }
 
         public void TryReload(CharacterControl shooter)
@@ -153,9 +151,10 @@ namespace EverScord.Weapons
             isReloading = false;
         }
 
-        [PunRPC]
         private void FireBullet()
         {
+            shotEffect.Emit(1);
+
             Bullet bullet = PoolManager.Get(WeaponTracerType);
             Vector3 bulletDir = (AimPoint.position - GunPoint.position).normalized;
 
@@ -166,8 +165,6 @@ namespace EverScord.Weapons
             );
 
             PoolManager.Instance.BulletsControl.AddBullet(bullet);
-
-            shotEffect.Emit(1);
 
             SmokeTrail smokeTrail = PoolManager.GetSmoke();
             smokeTrail.transform.forward = bulletDir;
