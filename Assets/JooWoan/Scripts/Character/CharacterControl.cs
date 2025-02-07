@@ -172,11 +172,16 @@ namespace EverScord.Character
 
             lookPosition.y = weapon.GunPoint.position.y;
 
-            weapon.AimPoint.position = Vector3.Lerp(
+            Vector3 aimPosition = Vector3.Lerp(
                 weapon.AimPoint.position,
                 lookPosition,
                 Time.deltaTime * weapon.AimSensitivity
             );
+
+            weapon.AimPoint.position = aimPosition;
+
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("SyncTrackAim", RpcTarget.Others, aimPosition, photonView.ViewID);
         }
 
         private void RotateBody()
@@ -221,23 +226,6 @@ namespace EverScord.Character
             }
         }
 
-        [PunRPC]
-        private void SyncUseSkill(int skillIndex, int ejob)
-        {
-            EJob ejobType = (EJob)ejob;
-
-            switch (skillIndex)
-            {
-                case 1:
-                    firstSkillActionInfo.SkillAction.Activate(ejobType);
-                    break;
-
-                case 2:
-                    secondSkillActionInfo.SkillAction.Activate(ejobType);
-                    break;
-            }
-        }
-
         public void SetIsAiming(bool state)
         {
             IsAiming = state;
@@ -277,6 +265,37 @@ namespace EverScord.Character
         public bool IsAiming { get; private set; }
         public bool IsShooting => PlayerInputInfo.holdLeftMouseButton;
         public bool IsMoving => moveInput.magnitude > 0;
+
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        [PunRPC]
+        private void SyncTrackAim(Vector3 aimPosition, int viewID)
+        {
+            if (photonView.ViewID != viewID)
+                return;
+
+            weapon.AimPoint.position = aimPosition;
+        }
+
+        [PunRPC]
+        private void SyncUseSkill(int skillIndex, int ejob)
+        {
+            EJob ejobType = (EJob)ejob;
+
+            switch (skillIndex)
+            {
+                case 1:
+                    firstSkillActionInfo.SkillAction.Activate(ejobType);
+                    break;
+
+                case 2:
+                    secondSkillActionInfo.SkillAction.Activate(ejobType);
+                    break;
+            }
+        }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
         #region GIZMO
         private void OnDrawGizmosSelected()

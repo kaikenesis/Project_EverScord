@@ -67,12 +67,17 @@ namespace EverScord.Character
 
         public void Play(AnimationClip clip)
         {
-            anim.Play(clip.name, -1, 0f);
+            Play(clip.name);
+        }
+
+        public void Play(string clipName)
+        {
+            anim.Play(clipName, -1, 0f);
 
             if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            photonView.RPC("SyncPlay", RpcTarget.Others, clip.name);
+            photonView.RPC("SyncPlay", RpcTarget.Others, clipName);
         }
     }
 }
