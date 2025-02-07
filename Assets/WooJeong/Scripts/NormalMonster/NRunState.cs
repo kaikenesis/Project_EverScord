@@ -3,6 +3,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class NRunState : MonoBehaviour, IState
 {
@@ -11,6 +12,7 @@ public abstract class NRunState : MonoBehaviour, IState
     protected PhotonView photonView;
     protected Vector3 remotePos;
     protected Quaternion remoteRot;
+    protected NavMeshAgent navMeshAgent;
 
     protected abstract void Setup();
 
@@ -18,6 +20,7 @@ public abstract class NRunState : MonoBehaviour, IState
     {
         Setup();
         photonView = GetComponent<PhotonView>();
+        navMeshAgent = GetComponent<NavMeshAgent>();      
     }
 
     public void Enter()
@@ -51,10 +54,13 @@ public abstract class NRunState : MonoBehaviour, IState
             Exit();
             return;
         }
-
-        Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        monsterController.LookPlayer();
-        transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
+        
+        navMeshAgent.enabled = true;
+        navMeshAgent.destination = monsterController.player.transform.position;
+        Debug.Log(navMeshAgent.destination);
+        //Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
+        //monsterController.LookPlayer();
+        //transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
     }
 
     protected virtual IEnumerator RandomAttack()
@@ -92,6 +98,7 @@ public abstract class NRunState : MonoBehaviour, IState
 
     public void Exit()
     {
+        navMeshAgent.enabled = false;
         StartCoroutine(RandomAttack());
     }
 

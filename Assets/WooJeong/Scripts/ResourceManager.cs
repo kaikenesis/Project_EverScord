@@ -32,7 +32,7 @@ public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
                 {
                     if (!viewIDCount.ContainsKey(photonView.ViewID))
                     {
-                        viewIDCount[photonView.ViewID] = 1;
+                        viewIDCount[photonView.ViewID] = 0;
                         prefabDict[photonView.ViewID] = prefab;
                     }
                     
@@ -50,6 +50,9 @@ public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
                     SendOptions sendOptions = new() { Reliability = true };
 
                     PhotonNetwork.RaiseEvent(SpawnMonsterEventCode, data, raiseEventOptions, sendOptions);
+                    PhotonNetwork.RaiseEvent(SpawnCompleteEventCode, photonView.ViewID,
+                        new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
+                        new SendOptions { Reliability = true });
                 }
             }
         }

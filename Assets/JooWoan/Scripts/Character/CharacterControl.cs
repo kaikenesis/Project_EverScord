@@ -221,7 +221,7 @@ namespace EverScord.Character
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-
+            GameManager.Instance.playerPhotonViews.Add(info.photonView);
         }
 
         public bool IsGrounded
