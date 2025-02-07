@@ -5,6 +5,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.Pool;
 using EverScord.Skill;
+using Photon.Pun.Demo.Asteroids;
 
 namespace EverScord.Weapons
 {
@@ -89,6 +90,17 @@ namespace EverScord.Weapons
                 shooter.SetIsAiming(false);
                 shooter.RigControl.SetAimWeight(false);
                 animControl.Play(animControl.AnimInfo.ShootEnd);
+
+                if (PhotonNetwork.IsConnected)
+                {
+                    photonView.RPC(
+                        "SyncRig",
+                        RpcTarget.Others,
+                        shooter.CharacterPhotonView.ViewID,
+                        false, false, animControl.AnimInfo.ShootEnd.name
+                    );
+                }
+
                 return;
             }
 
@@ -107,6 +119,16 @@ namespace EverScord.Weapons
             shooter.SetIsAiming(true);
             shooter.RigControl.SetAimWeight(true);
             animControl.Play(animControl.AnimInfo.Shoot);
+
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC(
+                    "SyncRig",
+                    RpcTarget.Others,
+                    shooter.CharacterPhotonView.ViewID,
+                    true, true, animControl.AnimInfo.Shoot.name
+                );
+            }
 
             FireBullet();
         }
@@ -181,20 +203,6 @@ namespace EverScord.Weapons
             );
         }
 
-        [PunRPC]
-        private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletDir, int tracerType, int viewId)
-        {
-            shotEffect.Emit(1);
-
-            Bullet bullet = PoolManager.Get((TracerType)tracerType);
-            bullet.Init(gunpointPos, bulletDir, viewId);
-
-            SmokeTrail smokeTrail = PoolManager.GetSmoke();
-            smokeTrail.transform.forward = bulletDir;
-            smokeTrail.Init(bullet);
-
-            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
-        }
 
         private bool CanShoot(CharacterControl shooter)
         {
@@ -218,5 +226,37 @@ namespace EverScord.Weapons
                     onShotFired(currentAmmo);
             }
         }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        [PunRPC]
+        private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletDir, int tracerType, int viewId)
+        {
+            shotEffect.Emit(1);
+
+            Bullet bullet = PoolManager.Get((TracerType)tracerType);
+            bullet.Init(gunpointPos, bulletDir, viewId);
+
+            SmokeTrail smokeTrail = PoolManager.GetSmoke();
+            smokeTrail.transform.forward = bulletDir;
+            smokeTrail.Init(bullet);
+
+            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
+        }
+
+        [PunRPC]
+        private void SyncRig(int viewID, bool isAiming, bool setAimWeight, string clipName)
+        {
+            if (photonView.ViewID != viewID)
+                return;
+
+            CharacterControl shooter = GameManager.Instance.PlayerDict[viewID];
+
+            shooter.SetIsAiming(isAiming);
+            shooter.RigControl.SetAimWeight(setAimWeight);
+            shooter.AnimationControl.Play(clipName);
+        }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
     }
 }
