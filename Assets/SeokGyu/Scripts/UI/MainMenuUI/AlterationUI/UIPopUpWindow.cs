@@ -28,7 +28,9 @@ public class UIPopUpWindow : MonoBehaviour
 
     private void HandleClickedLockedSlot()
     {
-        
+        gameObject.SetActive(true);
+        // mainMsg, subMsg, 요구 money, 현재 money 필요
+        SetMessage("인자를 개방하기 위해서 재화가 ???만큼 필요합니다. 개방하시겠습니까?", "보유 재화 : ???");
     }
 
     public void SetMessage(string mainMessage, string subMessage)
