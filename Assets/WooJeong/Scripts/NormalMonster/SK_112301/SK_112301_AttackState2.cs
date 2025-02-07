@@ -38,40 +38,6 @@ public class SK_112301_AttackState2 : NAttackState
         Exit();
     }
 
-    protected override void Update()
-    {
-        if (!isEnter)
-            return;
-
-        if (monsterController.isStun)
-        {
-            ExitToStun();
-            return;
-        }
-
-        if (monsterController.isDead)
-        {
-            ExitToDeath();
-            return;
-        }
-
-        if (canAttack)
-            return;
-
-        if (monsterController.CalcDistance() > chargeRange)
-        {
-            canAttack = true;
-            ExitToRun();
-        }
-
-        monsterController.LookPlayer();
-        if (monsterController.IsLookPlayer(chargeRange))
-        {
-            canAttack = true;
-            attack = StartCoroutine(Attack());
-        }
-    }
-
     private IEnumerator Charge(float duration)
     {
         Vector3 endPoint = startVector + moveVector * (chargeRange - monsterController.monsterData.AttackRangeZ2);

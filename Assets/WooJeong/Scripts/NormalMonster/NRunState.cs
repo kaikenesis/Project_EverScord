@@ -20,7 +20,8 @@ public abstract class NRunState : MonoBehaviour, IState
     {
         Setup();
         photonView = GetComponent<PhotonView>();
-        navMeshAgent = GetComponent<NavMeshAgent>();      
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.stoppingDistance = monsterController.monsterData.StopDistance;
     }
 
     public void Enter()
@@ -49,15 +50,21 @@ public abstract class NRunState : MonoBehaviour, IState
             return;
         }
 
-        if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
+        navMeshAgent.destination = monsterController.player.transform.position;
+        Debug.Log(navMeshAgent.remainingDistance);
+        if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
         {
+            //navMeshAgent.isStopped = true;
             Exit();
             return;
         }
-        
-        navMeshAgent.enabled = true;
-        navMeshAgent.destination = monsterController.player.transform.position;
-        Debug.Log(navMeshAgent.destination);
+
+        //if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
+        //{
+        //    Exit();
+        //    return;
+        //}
+
         //Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
         //monsterController.LookPlayer();
         //transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
@@ -98,7 +105,6 @@ public abstract class NRunState : MonoBehaviour, IState
 
     public void Exit()
     {
-        navMeshAgent.enabled = false;
         StartCoroutine(RandomAttack());
     }
 

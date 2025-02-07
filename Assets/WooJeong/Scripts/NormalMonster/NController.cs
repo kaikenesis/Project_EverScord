@@ -49,6 +49,8 @@ public abstract class NController : MonoBehaviour
 
         Projector1.enabled = false;
         Projector2.enabled = false;
+        BoxCollider1.isTrigger = true;
+        BoxCollider2.isTrigger = true;
         BoxCollider1.enabled = false;
         BoxCollider2.enabled = false;
 
