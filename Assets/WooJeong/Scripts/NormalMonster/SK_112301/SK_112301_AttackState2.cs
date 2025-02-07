@@ -24,8 +24,8 @@ public class SK_112301_AttackState2 : NAttackState
     {
         startVector = transform.position;
         moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        yield return project = StartCoroutine(ProjectAttackRange(2));
-        monsterController.Animator.CrossFade("Attack2", 0.25f);
+        yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
+        monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
         
         yield return new WaitForSeconds(time / 4);
