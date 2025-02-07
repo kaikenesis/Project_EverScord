@@ -5,16 +5,14 @@ namespace EverScord.Weapons
     public class Bullet
     {
         private const float COLLISION_STEP = 0.5f;
-        public Weapon SourceWeapon          { get; private set; }
         public TrailRenderer TracerEffect   { get; private set; }
         public Vector3 InitialPosition      { get; private set; }
         public Vector3 InitialVelocity      { get; private set; }
         public float Lifetime               { get; private set; }
         public bool IsDestroyed             { get; private set; }
 
-        public void Init(Weapon sourceWeapon, Vector3 position, Vector3 velocity)
+        public void Init(Vector3 position, Vector3 velocity)
         {
-            SourceWeapon = sourceWeapon;
             InitialPosition = position;
             InitialVelocity = velocity;
 
@@ -51,7 +49,7 @@ namespace EverScord.Weapons
             return Vector3.Distance(GetPosition(), InitialPosition) > weaponRange;
         }
 
-        public void CheckCollision(Vector3 startPoint, Vector3 endPoint)
+        public void CheckCollision(Weapon sourceWeapon, Vector3 startPoint, Vector3 endPoint)
         {
             RaycastHit hit = new RaycastHit();
             Vector3 direction = endPoint - startPoint;
@@ -62,20 +60,20 @@ namespace EverScord.Weapons
             for (float distance = 0f; distance <= totalDistance; distance += COLLISION_STEP)
             {
                 Vector3 currentPoint = startPoint + direction * distance;
-                Vector3 currentScreenPoint = SourceWeapon.ShooterCam.WorldToScreenPoint(currentPoint);
+                Vector3 currentScreenPoint = sourceWeapon.ShooterCam.WorldToScreenPoint(currentPoint);
                 
                 bool isWithinScreen = Screen.safeArea.Contains(currentScreenPoint);
 
                 if (isWithinScreen)
                 {
-                    Ray ray = SourceWeapon.ShooterCam.ScreenPointToRay(currentScreenPoint);
+                    Ray ray = sourceWeapon.ShooterCam.ScreenPointToRay(currentScreenPoint);
 
-                    if (!Physics.Raycast(ray, out hit, 50f, SourceWeapon.ShootableLayer))
+                    if (!Physics.Raycast(ray, out hit, 50f, sourceWeapon.ShootableLayer))
                         continue;
 
-                    SourceWeapon.HitEffect.transform.position = hit.point;
-                    SourceWeapon.HitEffect.transform.forward  = -direction;
-                    SourceWeapon.HitEffect.Emit(SourceWeapon.HitEffectCount);
+                    sourceWeapon.HitEffect.transform.position = hit.point;
+                    sourceWeapon.HitEffect.transform.forward  = -direction;
+                    sourceWeapon.HitEffect.Emit(sourceWeapon.HitEffectCount);
 
                     SetTracerEffectPosition(currentPoint);
                 }

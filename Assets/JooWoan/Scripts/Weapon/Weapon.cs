@@ -34,9 +34,10 @@ namespace EverScord.Weapons
 
         [SerializeField] public float bulletSpeed;
 
+        private PhotonView photonView;
         private OnShotFired onShotFired;
         private CooldownTimer cooldownTimer;
-        private PhotonView photonView;
+        private LinkedList<Bullet> bullets = new();
 
         private const float ANIM_TRANSITION = 0.25f;
         private int currentAmmo;
@@ -159,16 +160,45 @@ namespace EverScord.Weapons
             Vector3 bulletDir = (AimPoint.position - GunPoint.position).normalized;
 
             bullet.Init(
-                this,
                 GunPoint.position,
                 bulletDir * bulletSpeed
             );
-
-            PoolManager.Instance.BulletsControl.AddBullet(bullet);
+            
+            bullets.AddLast(bullet);
 
             SmokeTrail smokeTrail = PoolManager.GetSmoke();
             smokeTrail.transform.forward = bulletDir;
             smokeTrail.Init(bullet);
+        }
+
+        public void UpdateBullets(float deltaTime)
+        {
+            if (bullets.Count == 0)
+                return;
+
+            LinkedListNode<Bullet> currentNode = bullets.First;
+
+            while (currentNode != null)
+            {
+                LinkedListNode<Bullet> nextNode = currentNode.Next;
+                Bullet bullet = currentNode.Value;
+
+                Vector3 currentPosition = bullet.GetPosition();
+                bullet.SetLifetime(bullet.Lifetime + deltaTime);
+                Vector3 nextPosition    = bullet.GetPosition();
+
+                if (bullet.ShouldBeDestroyed(WeaponRange))
+                {
+                    PoolManager.Return(bullet, WeaponTracerType);
+                    bullet.SetIsDestroyed(true);
+                    bullets.Remove(currentNode);
+                    currentNode = nextNode;
+                    continue;
+                }
+
+                bullet.CheckCollision(this, currentPosition, nextPosition);
+                currentNode = nextNode;
+            }
         }
 
         private bool CanShoot(CharacterControl shooter)

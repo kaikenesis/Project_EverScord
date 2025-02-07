@@ -29,7 +29,6 @@ namespace EverScord.Pool
         private IDictionary<TracerType, BulletPool> bulletPoolDict;
         private IDictionary<Type, object> poolDict = new Dictionary<Type, object>();
         private SmokeTrailPool smokeTrailPool;
-        public BulletControl BulletsControl { get; private set; }
 
         private Transform poolRoot = null;
         public Transform PoolRoot
@@ -48,9 +47,6 @@ namespace EverScord.Pool
             CreateGameObjectPool();
             CreateBulletPool();
             smokeTrailPool = new SmokeTrailPool(smokePrefab, PoolRoot);
-
-            if (BulletsControl == null)
-                BulletsControl = gameObject.AddComponent<BulletControl>();
         }
 
         private void CreateGameObjectPool()
