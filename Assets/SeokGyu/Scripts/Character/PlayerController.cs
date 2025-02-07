@@ -101,7 +101,7 @@ namespace EverScord
         #region Public Methods
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            GameManager.Instance.playerPhotonViews.Add(info.photonView);
+            GameManager.Instance.AddPlayerPhotonView(info.photonView);
         }
         #endregion
     }

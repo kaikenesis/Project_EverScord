@@ -76,13 +76,11 @@ namespace EverScord.Character
             AnimationControl.Init(photonView);
             weapon.Init(this);
 
-            if (photonView.IsMine)
-            {
-                RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
-                RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
-                RigControl.SetAimWeight(false);
-            }
-            else
+            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
+            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
+            RigControl.SetAimWeight(false);
+
+            if (!photonView.IsMine)
             {
                 PlayerUIControl.gameObject.SetActive(false);
                 CameraControl.gameObject.SetActive(false);
@@ -93,6 +91,8 @@ namespace EverScord.Character
             
             firstSkillActionInfo.Init(this);
             secondSkillActionInfo.Init(this);
+
+            GameManager.Instance.AddPlayerControl(this);
         }
 
         void OnApplicationFocus(bool focus)
@@ -118,7 +118,6 @@ namespace EverScord.Character
 
             weapon.TryReload(this);
             weapon.Shoot(this);
-            weapon.UpdateBullets(Time.deltaTime);
 
             UseSkills();
         }
@@ -207,30 +206,34 @@ namespace EverScord.Character
 
             if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
             {
-                firstSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                firstSkillActionInfo.SkillAction.Activate(CharacterEJob);
+
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1);
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1, (int)CharacterEJob);
             }
 
             else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
             {
-                secondSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                secondSkillActionInfo.SkillAction.Activate(CharacterEJob);
+
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2);
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2, (int)CharacterEJob);
             }
         }
 
         [PunRPC]
-        private void SyncUseSkill(int skillIndex)
+        private void SyncUseSkill(int skillIndex, int ejob)
         {
+            EJob ejobType = (EJob)ejob;
+
             switch (skillIndex)
             {
                 case 1:
-                    firstSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                    firstSkillActionInfo.SkillAction.Activate(ejobType);
                     break;
 
                 case 2:
-                    secondSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+                    secondSkillActionInfo.SkillAction.Activate(ejobType);
                     break;
             }
         }
@@ -242,6 +245,7 @@ namespace EverScord.Character
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
+            GameManager.Instance.AddPlayerPhotonView(info.photonView);
         }
 
         public bool IsGrounded

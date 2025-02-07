@@ -10,11 +10,13 @@ namespace EverScord.Weapons
         public Vector3 InitialVelocity      { get; private set; }
         public float Lifetime               { get; private set; }
         public bool IsDestroyed             { get; private set; }
+        public int ViewID                   {  get; private set; }
 
-        public void Init(Vector3 position, Vector3 velocity)
+        public void Init(Vector3 position, Vector3 velocity, int viewID)
         {
             InitialPosition = position;
             InitialVelocity = velocity;
+            ViewID = viewID;
 
             Lifetime = 0f;
             IsDestroyed = false;
