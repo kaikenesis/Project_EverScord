@@ -157,48 +157,43 @@ namespace EverScord.Weapons
             shotEffect.Emit(1);
 
             Bullet bullet = PoolManager.Get(WeaponTracerType);
-            Vector3 bulletDir = (AimPoint.position - GunPoint.position).normalized;
 
-            bullet.Init(
-                GunPoint.position,
-                bulletDir * bulletSpeed
-            );
-            
-            bullets.AddLast(bullet);
+            Vector3 gunpointPos = GunPoint.position;
+            Vector3 bulletDir = (AimPoint.position - GunPoint.position).normalized * bulletSpeed;
+
+            bullet.Init(gunpointPos, bulletDir, photonView.ViewID);
 
             SmokeTrail smokeTrail = PoolManager.GetSmoke();
             smokeTrail.transform.forward = bulletDir;
             smokeTrail.Init(bullet);
-        }
 
-        public void UpdateBullets(float deltaTime)
-        {
-            if (bullets.Count == 0)
+            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
+
+            if (!PhotonNetwork.IsConnected)
                 return;
 
-            LinkedListNode<Bullet> currentNode = bullets.First;
+            photonView.RPC(
+                "SyncFireBullet",
+                RpcTarget.Others,
+                gunpointPos, bulletDir,
+                (int)WeaponTracerType,
+                bullet.ViewID
+            );
+        }
 
-            while (currentNode != null)
-            {
-                LinkedListNode<Bullet> nextNode = currentNode.Next;
-                Bullet bullet = currentNode.Value;
+        [PunRPC]
+        private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletDir, int tracerType, int viewId)
+        {
+            shotEffect.Emit(1);
 
-                Vector3 currentPosition = bullet.GetPosition();
-                bullet.SetLifetime(bullet.Lifetime + deltaTime);
-                Vector3 nextPosition    = bullet.GetPosition();
+            Bullet bullet = PoolManager.Get((TracerType)tracerType);
+            bullet.Init(gunpointPos, bulletDir, viewId);
 
-                if (bullet.ShouldBeDestroyed(WeaponRange))
-                {
-                    PoolManager.Return(bullet, WeaponTracerType);
-                    bullet.SetIsDestroyed(true);
-                    bullets.Remove(currentNode);
-                    currentNode = nextNode;
-                    continue;
-                }
+            SmokeTrail smokeTrail = PoolManager.GetSmoke();
+            smokeTrail.transform.forward = bulletDir;
+            smokeTrail.Init(bullet);
 
-                bullet.CheckCollision(this, currentPosition, nextPosition);
-                currentNode = nextNode;
-            }
+            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
         }
 
         private bool CanShoot(CharacterControl shooter)
