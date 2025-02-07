@@ -236,13 +236,14 @@ GameObject:
   - component: {fileID: 181884118372759096}
   - component: {fileID: 309902187695289105}
   - component: {fileID: 7489860208011279261}
+  - component: {fileID: 1306358792545590963}
   m_Layer: 5
-  m_Name: Button
+  m_Name: OptionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6991713451843098637
 RectTransform:
   m_ObjectHideFlags: 0
@@ -258,10 +259,10 @@ RectTransform:
   - {fileID: 5497035048715942599}
   m_Father: {fileID: 2860041801846476200}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 60}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 186.5, y: -35}
+  m_SizeDelta: {x: 363, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &181884118372759096
 CanvasRenderer:
@@ -344,7 +345,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 309902187695289105}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1306358792545590963}
+        m_TargetAssemblyTypeName: UIFactorOption, Assembly-CSharp
+        m_MethodName: OnClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1306358792545590963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2410521740694706685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de044225fc6f7c74e9b9da198d03624b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 5348345290380389366}
 --- !u!1 &2430144867074144758
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,6 +918,7 @@ GameObject:
   - component: {fileID: 8207051826255615599}
   - component: {fileID: 5280998273745728893}
   - component: {fileID: 7917136753222774420}
+  - component: {fileID: 7735610527182106534}
   m_Layer: 5
   m_Name: FactorOptionPanel
   m_TagString: Untagged
@@ -984,6 +1011,25 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &7735610527182106534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6179568988881516652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b6db43c8d2247248b803df18c612268, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  option: {fileID: 1306358792545590963}
+  containor: {fileID: 2860041801846476200}
+  optionLists:
+  - type: 0
+    dataList: {fileID: 11400000, guid: cd13e581f8ce3674598bb8a75c5f40fb, type: 2}
+  - type: 1
+    dataList: {fileID: 11400000, guid: 390ea0e15434f4548a271be88fe997e3, type: 2}
 --- !u!1 &7219164634956891078
 GameObject:
   m_ObjectHideFlags: 0

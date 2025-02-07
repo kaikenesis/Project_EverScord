@@ -194,7 +194,7 @@ namespace EverScord
             UIToggleButton uiToggle = gameObject.gameObject.GetComponent<UIToggleButton>();
             if (uiToggle != null)
             {
-                uiToggle.Init();
+                //uiToggle.Init();
             }
         }
 

@@ -1,16 +1,9 @@
+using System;
 using TMPro;
 using UnityEngine;
 
 public class UIPopUpWindow : MonoBehaviour
 {
-    enum Type
-    {
-        UNLOCK_FACTOR,
-        ROLL_FACTOR,
-        DECLINE_FACTOR,
-        MAX
-    }
-
     [SerializeField] private TMP_Text mainMessage;
     [SerializeField] private TMP_Text subMessage;
 
@@ -21,10 +14,21 @@ public class UIPopUpWindow : MonoBehaviour
     열려있는 인자에 랜덤옵션 돌릴때는 기존 옵션 -> 새로운 옵션 이를 적용할 것인지 Text표시
     확인 누를시 새로운 옵션을 적용하고 인자 이미지 변경
     */
-
-    public void Initialize()
+    private void Awake()
     {
+        UIFactor.OnClickedLockedSlot += HandleClickedLockedSlot;
 
+        gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        UIFactor.OnClickedLockedSlot -= HandleClickedLockedSlot;
+    }
+
+    private void HandleClickedLockedSlot()
+    {
+        
     }
 
     public void SetMessage(string mainMessage, string subMessage)

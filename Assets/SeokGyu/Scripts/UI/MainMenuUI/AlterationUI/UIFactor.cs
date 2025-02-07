@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UIFactor : MonoBehaviour
@@ -8,6 +9,9 @@ public class UIFactor : MonoBehaviour
     [SerializeField] private GameObject optionPanel;
     [SerializeField] private int slotCount;
     [SerializeField] private int confirmedCount;
+
+    public static Action<int> OnDisplayOptionList = delegate { };
+    public static Action OnClickedLockedSlot = delegate { };
 
     private void Awake()
     {
@@ -32,12 +36,14 @@ public class UIFactor : MonoBehaviour
     {
         if(factorSlot.slotNum < confirmedCount)
         {
+            OnDisplayOptionList?.Invoke((int)factorType);
             optionPanel.SetActive(true);
         }
         else
         {
             if(factorSlot.bLock == true)
             {
+                OnClickedLockedSlot?.Invoke();
                 Debug.Log("Lock");
             }
             else
