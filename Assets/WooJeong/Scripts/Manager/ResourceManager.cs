@@ -3,18 +3,23 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UIElements;
 
 public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
 {
     private const byte SpawnMonsterEventCode = 1;
     private const byte SpawnCompleteEventCode = 2;
-    private const byte DestroyEventCode = 3;
+    private const byte DestroyMonsterEventCode = 3;
+    private const byte InstantiateEventCode = 4;
     
     private Dictionary<int, int> viewIDCount = new();
     private Dictionary<int, GameObject> prefabDict = new();
+    private List<GameObject> prefabList = new();
 
     public IEnumerator SpawnMonster(string address, Vector3 position)
     {
@@ -58,7 +63,24 @@ public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
         }
     }
 
-    public void DestroyPrefab(GameObject gameObject)
+    public async Task<GameObject> InstantiatePrefab(string address, Vector3 position)
+    {
+        AsyncOperationHandle<GameObject> loadOpHandle = Addressables.InstantiateAsync(address, position, Quaternion.identity);
+
+        await loadOpHandle.Task; // 비동기 작업이 끝날 때까지 기다림
+
+        if (loadOpHandle.Status == AsyncOperationStatus.Succeeded)
+        {
+            return loadOpHandle.Result;
+        }
+        else
+        {
+            Debug.LogError($"Failed to load Addressable prefab: {address}");
+            return null;
+        }
+    }
+
+    public void DestroyMonster(GameObject gameObject)
     {
         if (PhotonNetwork.IsMasterClient)
         {
@@ -75,9 +97,13 @@ public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
 
             SendOptions sendOptions = new() { Reliability = true };
 
-            PhotonNetwork.RaiseEvent(DestroyEventCode, viewID, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent(DestroyMonsterEventCode, viewID, raiseEventOptions, sendOptions);
         }
+    }
 
+    public void DestroyPrefab(GameObject gameObject)
+    {
+        Destroy(gameObject);
     }
 
     public void OnEvent(EventData photonEvent)
@@ -126,7 +152,7 @@ public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
                     break;
                 }
 
-            case DestroyEventCode:
+            case DestroyMonsterEventCode:
                 {
                     int viewID = (int)photonEvent.CustomData;
                     GameObject gameObject = prefabDict[viewID];
@@ -134,16 +160,15 @@ public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
                     Destroy(gameObject);
                     break;
                 }
+
+            case InstantiateEventCode:
+                {
+                    object[] data = (object[])photonEvent.CustomData;
+                    string address = (string)data[0];
+                    Vector3 position = (Vector3)data[1];
+                    var loadOpHandle = Addressables.InstantiateAsync(address, position, Quaternion.identity);
+                    break;
+                }
         }
-    }
-
-    private void OnEnable()
-    {
-        PhotonNetwork.AddCallbackTarget(this);
-    }
-
-    private void OnDisable()
-    {
-        PhotonNetwork.RemoveCallbackTarget(this);
     }
 }

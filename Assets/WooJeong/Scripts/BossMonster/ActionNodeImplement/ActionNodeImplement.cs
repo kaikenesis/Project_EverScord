@@ -6,9 +6,19 @@ public abstract class ActionNodeImplement : MonoBehaviour
 {
     protected Coroutine action;
     protected bool isEnd = false;
+    protected BossData bossData;
+    protected Animator animator;
 
     public virtual void Setup(BossData bossData)
     {
+        this.bossData = bossData;
+        return;
+    }
+
+    public virtual void Setup(BossData bossData, Animator animator)
+    {
+        this.bossData = bossData;
+        this.animator = animator;
         return;
     }
     

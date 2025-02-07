@@ -9,6 +9,7 @@ public class BossData : ScriptableObject
     public int Phase { get; protected set; }
     [field: SerializeField] public float MaxHP { get; protected set; }
     [field: SerializeField] public float Speed { get; protected set; }
+    [field: SerializeField] public float StopDistance { get; protected set; }
     [field: SerializeField] public float AttackRange { get; protected set; }
 
     public void ResetParams()
@@ -30,5 +31,14 @@ public class BossData : ScriptableObject
         Debug.Log("2페이즈 진입");
         Phase++;
         HP = 50;
+    }
+
+    public bool IsUnderHP90()
+    {
+        if (HP >= MaxHP/100 * 90)
+        {
+            return false;
+        }
+        return true;
     }
 }
