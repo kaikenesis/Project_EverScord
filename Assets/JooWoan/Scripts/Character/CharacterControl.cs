@@ -118,6 +118,7 @@ namespace EverScord.Character
 
             weapon.TryReload(this);
             weapon.Shoot(this);
+            weapon.UpdateBullets(Time.deltaTime);
 
             UseSkills();
         }
