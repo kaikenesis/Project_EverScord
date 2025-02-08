@@ -22,10 +22,8 @@ namespace EverScord.Pool
         }
         #endregion
 
-        [SerializeField] private List<PoolableInfo> poolableGameObjects;
         [SerializeField] private List<BulletTracerInfo> poolableBulletTracers;
         [SerializeField] private GameObject smokePrefab;
-        private IDictionary<PoolableType, GameObjectPool> gameObjectPoolDict;
         private IDictionary<TracerType, BulletPool> bulletPoolDict;
         private IDictionary<Type, object> poolDict = new Dictionary<Type, object>();
         private SmokeTrailPool smokeTrailPool;
@@ -44,29 +42,14 @@ namespace EverScord.Pool
 
         public void Init()
         {
-            CreateGameObjectPool();
             CreateBulletPool();
             smokeTrailPool = new SmokeTrailPool(smokePrefab, PoolRoot);
         }
 
-        private void CreateGameObjectPool()
-        {
-            if (gameObjectPoolDict != null && gameObjectPoolDict.Count > 0)
-                gameObjectPoolDict.Clear();
-
-            gameObjectPoolDict = new Dictionary<PoolableType, GameObjectPool>();
-
-            foreach (PoolableInfo info in poolableGameObjects)
-            {
-                GameObjectPool pool = new GameObjectPool(info.prefab, PoolRoot);
-                gameObjectPoolDict[info.type] = pool;
-            }
-        }
-
         private void CreateBulletPool()
         {
-            if (bulletPoolDict != null && gameObjectPoolDict.Count > 0)
-                gameObjectPoolDict.Clear();
+            if (bulletPoolDict != null && bulletPoolDict.Count > 0)
+                bulletPoolDict.Clear();
             
             bulletPoolDict = new Dictionary<TracerType, BulletPool>();
 
@@ -81,16 +64,6 @@ namespace EverScord.Pool
         {
             ObjectPool<T> pool = new();
             poolDict[typeof(T)] = pool;
-        }
-
-        public static GameObject Get(PoolableType type)
-        {
-            return Instance.gameObjectPoolDict[type].GetObject();
-        }
-
-        public static void Return(GameObject obj, PoolableType type)
-        {
-            Instance.gameObjectPoolDict[type].ReturnObject(obj);
         }
 
         public static Bullet Get(TracerType type)
@@ -134,13 +107,6 @@ namespace EverScord.Pool
             
             ((ObjectPool<T>)pool).ReturnObject(obj);
         }
-    }
-
-    [System.Serializable]
-    public class PoolableInfo
-    {
-        public PoolableType type;
-        public GameObject prefab;
     }
 
     [System.Serializable]

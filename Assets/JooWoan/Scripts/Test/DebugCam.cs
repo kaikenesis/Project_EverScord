@@ -17,9 +17,6 @@ public class DebugCam : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F1))
             ToggleCam();
 
-        else if (Input.GetKeyDown(KeyCode.F2))
-            Cursor.visible = !Cursor.visible;
-
         FollowPlayer();
     }
 
