@@ -92,6 +92,10 @@ namespace EverScord.Character
             firstSkillActionInfo.Init(this);
             secondSkillActionInfo.Init(this);
 
+        }
+
+        void Start()
+        {
             GameManager.Instance.AddPlayerControl(this);
         }
 
