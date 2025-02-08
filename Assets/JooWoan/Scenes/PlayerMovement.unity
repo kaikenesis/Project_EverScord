@@ -267,7 +267,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   userName: 
-  BulletsControl: {fileID: 0}
+  assetReferenceList:
+  - m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: db97ba35f680c914480ecc075d752dbf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
 --- !u!4 &508692335
 Transform:
   m_ObjectHideFlags: 0
@@ -557,6 +565,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1057912357
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1057912358}
+  - component: {fileID: 1057912359}
+  m_Layer: 0
+  m_Name: BulletControl
+  m_TagString: BulletControl
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1057912358
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057912357}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.6144257, y: 22.206558, z: 20.472652}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1057912359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057912357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091631b8b58918e4eb883e7d8f56a701, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tracerList:
+  - {fileID: 11400000, guid: eec83c359a4a188449cd4428af21f105, type: 2}
+  - {fileID: 11400000, guid: 4b1c63b07a62d8148b45455264f662b3, type: 2}
+  - {fileID: 11400000, guid: d27f6f0aba4279142980a570113aa782, type: 2}
 --- !u!1 &1149905262
 GameObject:
   m_ObjectHideFlags: 0
@@ -671,59 +727,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugCam: {fileID: 2056050389}
---- !u!1 &1259768403
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1259768405}
-  - component: {fileID: 1259768404}
-  m_Layer: 0
-  m_Name: _PoolManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1259768404
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259768403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b856b0e1f2aaf14eb095031b7239f49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  poolableGameObjects: []
-  poolableBulletTracers:
-  - type: 0
-    prefab: {fileID: 5646419254799589958, guid: 8586dc5aeaebe804385f9e529eb9a69c, type: 3}
-  - type: 1
-    prefab: {fileID: 5646419254799589958, guid: 853d585829bc37242b16c03149928072, type: 3}
-  - type: 2
-    prefab: {fileID: 5646419254799589958, guid: c90458e623d0db24fa2a99fe2fa08eb1, type: 3}
-  smokePrefab: {fileID: 9155463838991273943, guid: db97ba35f680c914480ecc075d752dbf, type: 3}
---- !u!4 &1259768405
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259768403}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1542203790
 GameObject:
   m_ObjectHideFlags: 0
@@ -1463,5 +1466,5 @@ SceneRoots:
   - {fileID: 1863283773}
   - {fileID: 852118488}
   - {fileID: 1744302138}
-  - {fileID: 1259768405}
+  - {fileID: 1057912358}
   - {fileID: 508692335}

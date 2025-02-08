@@ -11488,9 +11488,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimPointPrefab: {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
+  <BulletAssetReference>k__BackingField:
+    m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <SmokeAssetReference>k__BackingField:
+    m_AssetGUID: db97ba35f680c914480ecc075d752dbf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   shotEffect: {fileID: 7695449651395621190}
   <HitEffect>k__BackingField: {fileID: 963270746925781477}
-  <WeaponTracerType>k__BackingField: 1
   <GunPoint>k__BackingField: {fileID: 4223248075113669678}
   <WeaponTransform>k__BackingField: {fileID: 286249748246181955}
   <LeftTarget>k__BackingField: {fileID: 0}
@@ -11505,6 +11514,7 @@ MonoBehaviour:
   <WeaponRange>k__BackingField: 10
   <MaxAmmo>k__BackingField: 30
   <HitEffectCount>k__BackingField: 2
+  bulletInfo: {fileID: 11400000, guid: 4b1c63b07a62d8148b45455264f662b3, type: 2}
   bulletSpeed: 100
 --- !u!143 &6964368882992777272
 CharacterController:

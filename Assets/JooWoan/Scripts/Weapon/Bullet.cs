@@ -1,21 +1,28 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace EverScord.Weapons
 {
-    public class Bullet
+    public class Bullet : MonoBehaviour
     {
         private const float COLLISION_STEP = 0.5f;
-        public TrailRenderer TracerEffect   { get; private set; }
-        public Vector3 InitialPosition      { get; private set; }
-        public Vector3 InitialVelocity      { get; private set; }
-        public float Lifetime               { get; private set; }
-        public bool IsDestroyed             { get; private set; }
-        public int ViewID                   {  get; private set; }
+        [field: SerializeField] public TrailRenderer TracerEffect   { get; private set; }
+        public BulletInfo BulletInfo                                { get; private set; }
+        public Vector3 InitialPosition                              { get; private set; }
+        public Vector3 InitialVelocity                              { get; private set; }
+        public float Lifetime                                       { get; private set; }
+        public bool IsDestroyed                                     { get; private set; }
+        public int ViewID                                           { get; private set; }
 
-        public void Init(Vector3 position, Vector3 velocity, int viewID)
+        public void Init(Vector3 position, Vector3 velocity, BulletInfo bulletInfo, int viewID)
         {
             InitialPosition = position;
             InitialVelocity = velocity;
+
+            BulletInfo = bulletInfo;
+            TracerEffect.material = bulletInfo.TracerMaterial;
+            TracerEffect.colorGradient = bulletInfo.TracerGradient;
+
             ViewID = viewID;
 
             Lifetime = 0f;

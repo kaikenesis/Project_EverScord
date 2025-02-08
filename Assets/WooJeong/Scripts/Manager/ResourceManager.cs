@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EverScord;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -11,6 +12,7 @@ public class ResourceManager : Singleton<ResourceManager>//, IOnEventCallback
 
     // 프리팹의 원본을 보관할 Dictionary
     private Dictionary<string, GameObject> prefabDictionary = new Dictionary<string, GameObject>();
+    public Transform PoolRoot { get; private set; }
 
     // 풀 크기 설정
     private const int DEFAULT_POOL_SIZE = 10;
@@ -35,13 +37,13 @@ public class ResourceManager : Singleton<ResourceManager>//, IOnEventCallback
 
             // 풀 생성
             Queue<GameObject> objectPool = new Queue<GameObject>();
+            poolDictionary[addressableKey] = objectPool;
+
             for (int i = 0; i < poolSize; i++)
             {
                 GameObject obj = CreateNewObject(addressableKey);
                 ReturnToPool(obj, addressableKey);
             }
-
-            poolDictionary[addressableKey] = objectPool;
         }
         else
         {
@@ -95,8 +97,12 @@ public class ResourceManager : Singleton<ResourceManager>//, IOnEventCallback
             return null;
         }
 
+        if (!PoolRoot)
+            PoolRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_POOLROOT).transform;
+
         GameObject obj = Instantiate(prefabDictionary[addressableKey]);
         obj.name = $"{addressableKey}_pooled";
+        obj.transform.SetParent(PoolRoot);
         return obj;
     }
 

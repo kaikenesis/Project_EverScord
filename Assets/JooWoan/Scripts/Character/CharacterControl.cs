@@ -43,7 +43,6 @@ namespace EverScord.Character
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
-        public EJob CharacterEJob                                       { get; private set; }
 
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
@@ -96,11 +95,6 @@ namespace EverScord.Character
         void Start()
         {
             GameManager.Instance.AddPlayerControl(this);
-        }
-
-        void OnApplicationFocus(bool focus)
-        {
-            // Cursor.visible = !focus;
         }
 
         void Update()
@@ -212,20 +206,25 @@ namespace EverScord.Character
             if (weapon.IsReloading)
                 return;
 
+            EJob ejob = EJob.DEALER;
+            
+            if (GameManager.Instance.userData != null)
+                ejob = GameManager.Instance.userData.job;
+
             if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
             {
-                firstSkillActionInfo.SkillAction.Activate(CharacterEJob);
+                firstSkillActionInfo.SkillAction.Activate(ejob);
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1, (int)CharacterEJob);
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1, (int)ejob);
             }
 
             else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
             {
-                secondSkillActionInfo.SkillAction.Activate(CharacterEJob);
+                secondSkillActionInfo.SkillAction.Activate(ejob);
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2, (int)CharacterEJob);
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2, (int)ejob);
             }
         }
 

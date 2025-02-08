@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
@@ -62,9 +61,11 @@ namespace EverScord.Weapons
 
                 if (bullet.ShouldBeDestroyed(weapon.WeaponRange))
                 {
-                    PoolManager.Return(bullet, weapon.WeaponTracerType);
                     bullet.SetIsDestroyed(true);
                     bullets.Remove(currentNode);
+
+                    ResourceManager.instance.ReturnToPool(bullet.gameObject, weapon.BulletAssetReference.AssetGUID);
+
                     currentNode = nextNode;
                     continue;
                 }

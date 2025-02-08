@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Character;
 using EverScord.Weapons;
+using UnityEngine.AddressableAssets;
 
 namespace EverScord
 {
@@ -12,11 +13,14 @@ namespace EverScord
 
         public string userName;
         public PlayerData userData;
+
+        [SerializeField] private List<AssetReferenceGameObject> assetReferenceList;
+
         public List<PhotonView> playerPhotonViews { get; private set; }
+        public BulletControl BulletsControl { get; private set; }
 
         private IDictionary<int, CharacterControl> playerDict = new Dictionary<int, CharacterControl>();
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
-        public BulletControl BulletsControl { get; private set; }
 
         public static GameManager Instance
         {
@@ -44,10 +48,13 @@ namespace EverScord
             }
         }
 
-        private void Init()
+        private async void Init()
         {
             playerPhotonViews = new();
-            BulletsControl = gameObject.AddComponent<BulletControl>();
+            BulletsControl = GameObject.FindGameObjectWithTag(ConstStrings.TAG_BULLETCONTROL).GetComponent<BulletControl>();
+
+            foreach (AssetReference reference in assetReferenceList)
+                await ResourceManager.Instance.CreatePool(reference.AssetGUID);
         }
 
         public void SetUserName(EJob curJob, ELevel curLevel)
