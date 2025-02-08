@@ -1,14 +1,24 @@
+using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ActionNodeImplement : MonoBehaviour
+public abstract class ActionNodeImplement : MonoBehaviourPun
 {
     protected Coroutine action;
     protected bool isEnd = false;
+    protected BossData bossData;
+    protected Animator animator;
 
     public virtual void Setup(BossData bossData)
     {
+        this.bossData = bossData;
+        return;
+    }
+
+    public virtual void Setup(BossData bossData, Animator animator)
+    {
+        this.bossData = bossData;
+        this.animator = animator;
         return;
     }
     

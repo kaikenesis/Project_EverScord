@@ -40,7 +40,6 @@ public class SK_121201_AttackState1 : NAttackState
         }
         
         GameObject attackObj = new GameObject();
-        //ResourceManager.Instance.LoadAsset("MonsterAttack", monsterController.player.transform.position);
         //GameObject attackObj = PhotonNetwork.Instantiate("MonsterAttack", monsterController.player.transform.position, Quaternion.identity);
 
         attackObj.name = "att1";
