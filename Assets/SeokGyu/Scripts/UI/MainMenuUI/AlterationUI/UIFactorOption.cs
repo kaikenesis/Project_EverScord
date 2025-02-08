@@ -2,23 +2,26 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class UIFactorOption : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private TMP_Text nameText;
-    private float value;
-
-    public static Action OnSelectOption = delegate { };
-
-    public void Initialize(string name, float value)
+    public class UIFactorOption : MonoBehaviour
     {
-        nameText.text = name;
-        this.value = value;
-    }
+        [SerializeField] private TMP_Text nameText;
+        private float value;
 
-    public void OnClicked()
-    {
-        // 선택한 옵션 최대수치 적용
-        Debug.Log($"MaxValue : {value}");
-        OnSelectOption?.Invoke();
+        public static Action OnSelectOption = delegate { };
+
+        public void Initialize(string name, float value)
+        {
+            nameText.text = name;
+            this.value = value;
+        }
+
+        public void OnClicked()
+        {
+            // 선택한 옵션 최대수치 적용
+            Debug.Log($"MaxValue : {value}");
+            OnSelectOption?.Invoke();
+        }
     }
 }

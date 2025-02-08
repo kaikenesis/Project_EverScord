@@ -1,54 +1,86 @@
 using System;
 using UnityEngine;
 
-public class UIFactor : MonoBehaviour
+namespace EverScord
 {
-    [SerializeField] private UIFactorSlot.EType factorType;
-    [SerializeField] private GameObject factor;
-    [SerializeField] private Transform containor;
-    [SerializeField] private GameObject optionPanel;
-    [SerializeField] private int slotCount;
-    [SerializeField] private int confirmedCount;
-
-    public static Action<int> OnDisplayOptionList = delegate { };
-    public static Action OnClickedLockedSlot = delegate { };
-
-    private void Awake()
+    public class UIFactor : MonoBehaviour
     {
-        Init();
-    }
-    
-    private void Init()
-    {
-        for (int i = 0; i < slotCount; i++)
+        [SerializeField] private FactorPanel[] panels;
+        [SerializeField] private Transform containor;
+        [SerializeField] private GameObject factorPanel;
+        [SerializeField] private GameObject optionPanel;
+        private int selectType;
+        private int selectIndex;
+
+        public static Action<int,int> OnRequestUnlock = delegate { };
+        public static Action<int,int> OnApplyOption = delegate { };
+
+        private void Awake()
         {
-            bool bConfirmed = false;
-            if (i < confirmedCount)
-                bConfirmed = true;
+            UIPopUpWindow.OnAcceptUnlock += HandleAcceptUnlock;
+            UIFactorSlot.OnClickedSlot += HandleClickedSlot;
+            UIFactorOption.OnSelectOption += HandleSelectOption;
 
-            GameObject obj = Instantiate(factor, containor);
-            obj.GetComponent<UIFactorSlot>().Initialize(factorType, bConfirmed, i);
-            obj.SetActive(true);
+            Init();
         }
-    }
 
-    public void OnClickedSlot(UIFactorSlot factorSlot)
-    {
-        if(factorSlot.slotNum < confirmedCount)
+        private void OnDestroy()
         {
-            OnDisplayOptionList?.Invoke((int)factorType);
-            optionPanel.SetActive(true);
+            UIPopUpWindow.OnAcceptUnlock -= HandleAcceptUnlock;
+            UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
+            UIFactorOption.OnSelectOption -= HandleSelectOption;
         }
-        else
+
+        #region Handle Methods
+        private void HandleAcceptUnlock()
         {
-            if(factorSlot.bLock == true)
+            OnRequestUnlock?.Invoke(selectType, selectIndex);
+        }
+
+        private void HandleClickedSlot(bool bConfirmed, bool bLock, int type, int slotNum)
+        {
+            selectType = type;
+            selectIndex = slotNum;
+        }
+
+        private void HandleSelectOption()
+        {
+            OnApplyOption?.Invoke(selectType, selectIndex);
+        }
+        #endregion // Handle Methods
+
+        private void Init()
+        {
+            for (int i = 0; i < panels.Length; i++)
             {
-                OnClickedLockedSlot?.Invoke();
-                Debug.Log("Lock");
+                UIFactorPanel panel = Instantiate(factorPanel, containor).GetComponent<UIFactorPanel>();
+                panel.Initialize(panels[i].Type, panels[i].SlotCount, panels[i].ConfirmedCount);
             }
-            else
+        }
+
+        [System.Serializable]
+        public class FactorPanel
+        {
+            [SerializeField] private UIFactorSlot.EType type;
+            [SerializeField] private int slotCount;
+            [SerializeField] private int confirmedCount;
+
+            public UIFactorSlot.EType Type
             {
-                Debug.Log("UnLock");
+                get { return type; }
+                private set { type = value; }
+            }
+
+            public int SlotCount
+            {
+                get { return slotCount; }
+                private set {  slotCount = value; }
+            }
+
+            public int ConfirmedCount
+            {
+                get { return confirmedCount; }
+                private set { confirmedCount = value; }
             }
         }
     }
