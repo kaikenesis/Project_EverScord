@@ -26,7 +26,6 @@ public class BossPattern01_Imp : ActionNodeImplement
 
     private void Fire()
     {
-        GameObject attackObj = ResourceManager.Instance.InstantiatePrefab("BossProjectile", transform.position).Result;
-        BossProjectile projectile = attackObj.GetComponent<BossProjectile>();
+
     }
 }

@@ -1,174 +1,123 @@
-using ExitGames.Client.Photon;
-using Photon.Pun;
-using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.UIElements;
 
-public class ResourceManager : Singleton<ResourceManager>, IOnEventCallback
+public class ResourceManager : Singleton<ResourceManager>//, IOnEventCallback
 {
-    private const byte SpawnMonsterEventCode = 1;
-    private const byte SpawnCompleteEventCode = 2;
-    private const byte DestroyMonsterEventCode = 3;
-    private const byte InstantiateEventCode = 4;
-    
-    private Dictionary<int, int> viewIDCount = new();
-    private Dictionary<int, GameObject> prefabDict = new();
-    private List<GameObject> prefabList = new();
+    // 풀링된 오브젝트들을 담을 Dictionary
+    private Dictionary<string, Queue<GameObject>> poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
-    public IEnumerator SpawnMonster(string address, Vector3 position)
+    // 프리팹의 원본을 보관할 Dictionary
+    private Dictionary<string, GameObject> prefabDictionary = new Dictionary<string, GameObject>();
+
+    // 풀 크기 설정
+    private const int DEFAULT_POOL_SIZE = 10;
+
+    // 어드레서블 에셋을 로드하고 풀 생성
+    public async Task CreatePool(string addressableKey, int poolSize = DEFAULT_POOL_SIZE)
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (poolDictionary.ContainsKey(addressableKey))
         {
-            var loadOpHandle = Addressables.InstantiateAsync(address, position, Quaternion.identity);
-            yield return loadOpHandle;
-
-            if (loadOpHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                GameObject prefab = loadOpHandle.Result;
-                PhotonView photonView = prefab.GetComponent<PhotonView>();
-                
-                if (PhotonNetwork.AllocateViewID(photonView))
-                {
-                    if (!viewIDCount.ContainsKey(photonView.ViewID))
-                    {
-                        viewIDCount[photonView.ViewID] = 0;
-                        prefabDict[photonView.ViewID] = prefab;
-                    }
-                    
-                    object[] data = new object[]
-                    {
-                        prefab.transform.position, prefab.transform.rotation, photonView.ViewID, address
-                    };
-
-                    RaiseEventOptions raiseEventOptions = new()
-                    {
-                        Receivers = ReceiverGroup.Others,
-                        CachingOption = EventCaching.AddToRoomCache
-                    };
-
-                    SendOptions sendOptions = new() { Reliability = true };
-
-                    PhotonNetwork.RaiseEvent(SpawnMonsterEventCode, data, raiseEventOptions, sendOptions);
-                    PhotonNetwork.RaiseEvent(SpawnCompleteEventCode, photonView.ViewID,
-                        new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
-                        new SendOptions { Reliability = true });
-                }
-            }
+            Debug.LogWarning($"Pool for {addressableKey} already exists!");
+            return;
         }
-    }
 
-    public async Task<GameObject> InstantiatePrefab(string address, Vector3 position)
-    {
-        AsyncOperationHandle<GameObject> loadOpHandle = Addressables.InstantiateAsync(address, position, Quaternion.identity);
+        // 어드레서블에서 프리팹 로드
+        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(addressableKey);
+        await handle.Task;
 
-        await loadOpHandle.Task; // 비동기 작업이 끝날 때까지 기다림
-
-        if (loadOpHandle.Status == AsyncOperationStatus.Succeeded)
+        if (handle.Status == AsyncOperationStatus.Succeeded)
         {
-            return loadOpHandle.Result;
+            GameObject prefab = handle.Result;
+            prefabDictionary[addressableKey] = prefab;
+
+            // 풀 생성
+            Queue<GameObject> objectPool = new Queue<GameObject>();
+            for (int i = 0; i < poolSize; i++)
+            {
+                GameObject obj = CreateNewObject(addressableKey);
+                ReturnToPool(obj, addressableKey);
+            }
+
+            poolDictionary[addressableKey] = objectPool;
         }
         else
         {
-            Debug.LogError($"Failed to load Addressable prefab: {address}");
+            Debug.LogError($"Failed to load addressable asset: {addressableKey}");
+        }
+    }
+
+    // 풀에서 오브젝트 가져오기
+    public GameObject GetFromPool(string addressableKey, Vector3 position, Quaternion rotation)
+    {
+        Debug.Log("GetFromPool");
+        if (!poolDictionary.ContainsKey(addressableKey))
+        {
+            Debug.LogWarning($"Pool for {addressableKey} doesn't exist!");
             return null;
         }
-    }
 
-    public void DestroyMonster(GameObject gameObject)
-    {
-        if (PhotonNetwork.IsMasterClient)
+        Queue<GameObject> objectPool = poolDictionary[addressableKey];
+
+        // 풀이 비어있으면 새로 생성
+        if (objectPool.Count == 0)
         {
-            int viewID = gameObject.GetPhotonView().ViewID;
-            prefabDict.Remove(viewID);
-            viewIDCount.Remove(viewID);
-            Destroy(gameObject);
-
-            RaiseEventOptions raiseEventOptions = new()
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new() { Reliability = true };
-
-            PhotonNetwork.RaiseEvent(DestroyMonsterEventCode, viewID, raiseEventOptions, sendOptions);
+            GameObject newObj = CreateNewObject(addressableKey);
+            objectPool.Enqueue(newObj);
         }
+
+        GameObject obj = objectPool.Dequeue();
+        obj.transform.SetPositionAndRotation(position, rotation);
+        obj.SetActive(true);
+
+        return obj;
     }
 
-    public void DestroyPrefab(GameObject gameObject)
+    // 오브젝트를 풀로 반환
+    public void ReturnToPool(GameObject obj, string addressableKey)
     {
-        Destroy(gameObject);
-    }
-
-    public void OnEvent(EventData photonEvent)
-    {
-        switch (photonEvent.Code)
+        if (!poolDictionary.ContainsKey(addressableKey))
         {
-            case SpawnMonsterEventCode:
-                {
-                    object[] data = (object[])photonEvent.CustomData;
-                    Vector3 position = (Vector3)data[0];
-                    Quaternion rotation = (Quaternion)data[1];
-                    int viewID = (int)data[2];
-                    string address = (string)data[3];
-
-                    var loadOpHandle = Addressables.InstantiateAsync(address, position, rotation);
-
-                    loadOpHandle.Completed += handle =>
-                    {
-                        GameObject gameObject = handle.Result;
-                        PhotonView photonView = gameObject.GetComponent<PhotonView>();
-                        photonView.ViewID = viewID;
-                        PhotonNetwork.RegisterPhotonView(photonView);
-                        prefabDict[viewID] = gameObject;
-
-                        PhotonNetwork.RaiseEvent(SpawnCompleteEventCode, viewID,
-                            new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
-                            new SendOptions { Reliability = true });
-                    };
-                    break;
-                }
-
-            case SpawnCompleteEventCode:
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        int viewID = (int)photonEvent.CustomData;
-                        viewIDCount[viewID]++;
-
-                        if (viewIDCount[viewID] == PhotonNetwork.PlayerList.Length)
-                        {
-                            Debug.Log("[MasterClient] 모든 플레이어가 스폰 완료! FSM 시작");
-                            NController nController = prefabDict[viewID].GetComponent<NController>();
-                            nController.StartFSM();
-                        }
-                    }
-                    break;
-                }
-
-            case DestroyMonsterEventCode:
-                {
-                    int viewID = (int)photonEvent.CustomData;
-                    GameObject gameObject = prefabDict[viewID];
-                    prefabDict.Remove(viewID);
-                    Destroy(gameObject);
-                    break;
-                }
-
-            case InstantiateEventCode:
-                {
-                    object[] data = (object[])photonEvent.CustomData;
-                    string address = (string)data[0];
-                    Vector3 position = (Vector3)data[1];
-                    var loadOpHandle = Addressables.InstantiateAsync(address, position, Quaternion.identity);
-                    break;
-                }
+            poolDictionary[addressableKey] = new Queue<GameObject>();
         }
+
+        obj.SetActive(false);
+        poolDictionary[addressableKey].Enqueue(obj);
     }
+
+    private GameObject CreateNewObject(string addressableKey)
+    {
+        if (!prefabDictionary.ContainsKey(addressableKey))
+        {
+            Debug.LogError($"Prefab for {addressableKey} not found!");
+            return null;
+        }
+
+        GameObject obj = Instantiate(prefabDictionary[addressableKey]);
+        obj.name = $"{addressableKey}_pooled";
+        return obj;
+    }
+
+    public void Destroy(string addressableKey)
+    {
+        foreach (var prefab in poolDictionary[addressableKey])
+        {
+            Destroy(prefab);
+        }
+        poolDictionary.Remove(addressableKey);
+        prefabDictionary.Remove(addressableKey);
+
+        Addressables.Release(addressableKey);
+    }
+
+    //private void OnDestroy()
+    //{
+    //    // 어드레서블 에셋 해제
+    //    foreach (var prefab in prefabDictionary.Values)
+    //    {
+    //        Addressables.Release(prefab);
+    //    }
+    //}
 }
