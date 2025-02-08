@@ -43,7 +43,6 @@ namespace EverScord.Character
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
         public InputInfo PlayerInputInfo                                { get; private set; }
-        public Vector3 AimPosition                                      { get; private set; }
         public EJob CharacterEJob                                       { get; private set; }
 
         public Weapon PlayerWeapon => weapon;
@@ -159,11 +158,18 @@ namespace EverScord.Character
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
                 return;
 
-            AimPosition = hit.point;
+            Vector3 cam2GunPointDir = weapon.GunPoint.position - ray.origin;
+
+            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, groundLayer))
+                return;
+
+            Vector3 gunPoint2MouseDir = (hit.point - cam2GunPointRayHit.point).normalized;
+            weapon.SetGunPointDirection(gunPoint2MouseDir);
+
             lookPosition = hit.point;
             lookPosition.y = PlayerTransform.position.y;
-
             lookDir = lookPosition - PlayerTransform.position;
+
             float distance = lookDir.magnitude;
 
             lookDir.Normalize();
@@ -174,14 +180,7 @@ namespace EverScord.Character
             if (distance < weapon.MinAimDistance)
                 lookPosition = PlayerTransform.position + lookDir * weapon.MinAimDistance;
 
-            lookPosition.y = weapon.GunPoint.position.y;
-
-            Vector3 aimPosition = Vector3.Lerp(
-                weapon.AimPoint.position,
-                lookPosition,
-                Time.deltaTime * weapon.AimSensitivity
-            );
-
+            Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weapon.WeaponRange;
             weapon.AimPoint.position = aimPosition;
 
             if (PhotonNetwork.IsConnected)

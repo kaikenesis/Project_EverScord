@@ -174,6 +174,11 @@ namespace EverScord.Weapons
             isReloading = false;
         }
 
+        public void SetGunPointDirection(Vector3 facingDir)
+        {
+            GunPoint.forward = facingDir;
+        }
+
         private void FireBullet()
         {
             shotEffect.Emit(1);
@@ -181,12 +186,12 @@ namespace EverScord.Weapons
             Bullet bullet = PoolManager.Get(WeaponTracerType);
 
             Vector3 gunpointPos = GunPoint.position;
-            Vector3 bulletDir = (AimPoint.position - GunPoint.position).normalized * bulletSpeed;
+            Vector3 bulletVector = GunPoint.forward * bulletSpeed;
 
-            bullet.Init(gunpointPos, bulletDir, photonView.ViewID);
+            bullet.Init(gunpointPos, bulletVector, photonView.ViewID);
 
             SmokeTrail smokeTrail = PoolManager.GetSmoke();
-            smokeTrail.transform.forward = bulletDir;
+            smokeTrail.transform.forward = bulletVector;
             smokeTrail.Init(bullet);
 
             GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
@@ -197,7 +202,7 @@ namespace EverScord.Weapons
             photonView.RPC(
                 "SyncFireBullet",
                 RpcTarget.Others,
-                gunpointPos, bulletDir,
+                gunpointPos, bulletVector,
                 (int)WeaponTracerType,
                 bullet.ViewID
             );
@@ -230,15 +235,15 @@ namespace EverScord.Weapons
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
         [PunRPC]
-        private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletDir, int tracerType, int viewId)
+        private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletVector, int tracerType, int viewId)
         {
             shotEffect.Emit(1);
 
             Bullet bullet = PoolManager.Get((TracerType)tracerType);
-            bullet.Init(gunpointPos, bulletDir, viewId);
+            bullet.Init(gunpointPos, bulletVector, viewId);
 
             SmokeTrail smokeTrail = PoolManager.GetSmoke();
-            smokeTrail.transform.forward = bulletDir;
+            smokeTrail.transform.forward = bulletVector;
             smokeTrail.Init(bullet);
 
             GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
