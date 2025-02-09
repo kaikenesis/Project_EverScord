@@ -13,7 +13,6 @@ namespace EverScord
         public string userName;
         public PlayerData userData;
 
-
         public List<PhotonView> playerPhotonViews { get; private set; }
         public BulletControl BulletsControl { get; private set; }
 

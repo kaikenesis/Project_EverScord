@@ -171,9 +171,6 @@ namespace EverScord.Character
 
             Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weapon.WeaponRange;
             weapon.AimPoint.position = aimPosition;
-
-            if (PhotonNetwork.IsConnected)
-                photonView.RPC("SyncTrackAim", RpcTarget.Others, aimPosition, photonView.ViewID);
         }
 
         private void RotateBody()
@@ -265,15 +262,6 @@ namespace EverScord.Character
 
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
-
-        [PunRPC]
-        private void SyncTrackAim(Vector3 aimPosition, int viewID)
-        {
-            if (photonView.ViewID != viewID)
-                return;
-
-            weapon.AimPoint.position = aimPosition;
-        }
 
         [PunRPC]
         private void SyncUseSkill(int skillIndex, int ejob)

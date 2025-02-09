@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Weapons
 {
@@ -46,7 +47,8 @@ namespace EverScord.Weapons
             photonView = shooter.CharacterPhotonView;
             ShooterCam = shooter.CameraControl.Cam;
 
-            AimPoint = Instantiate(aimPointPrefab).transform;
+            LinkAimPoint();
+
             currentAmmo = MaxAmmo;
 
             if (shooter.PlayerUIControl == null)
@@ -67,6 +69,22 @@ namespace EverScord.Weapons
         void OnDisable()
         {
             cooldownTimer.StopTimer();
+        }
+
+        private void LinkAimPoint()
+        {
+            GameObject[] aimpoints = GameObject.FindGameObjectsWithTag(ConstStrings.TAG_AIMPOINT);
+
+            for (int i = 0; i < aimpoints.Length; i++)
+            {
+                AimPointInfo info = aimpoints[i].GetComponent<AimPointInfo>();
+
+                if (info.ActorNumber != photonView.Owner.ActorNumber)
+                    continue;
+                
+                AimPoint = aimpoints[i].transform;
+                break;
+            }
         }
 
         public void Shoot(CharacterControl shooter)
@@ -261,7 +279,7 @@ namespace EverScord.Weapons
             shooter.RigControl.SetAimWeight(setAimWeight);
             shooter.AnimationControl.Play(clipName);
         }
-
+        
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
     }
 }

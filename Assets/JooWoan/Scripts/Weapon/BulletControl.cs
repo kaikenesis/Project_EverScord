@@ -86,22 +86,15 @@ namespace EverScord.Weapons
                 {
                     bullet.SetIsDestroyed(true);
                     bullets.Remove(currentNode);
-                    BulletHitEffect(bullet);
 
                     ResourceManager.instance.ReturnToPool(bullet.gameObject, weapon.BulletAssetReference.AssetGUID);
 
                     currentNode = nextNode;
 
-                    if (PhotonNetwork.IsConnected)
+                    if (type == BulletOwner.MINE && PhotonNetwork.IsConnected)
                     {
-                        photonView.RPC(
-                            "SyncDestroyBullet",
-                            RpcTarget.Others,
-                            bullet.BulletID,
-                            bullet.BulletHitPosition != null,
-                            bullet.BulletHitPosition ?? Vector3.zero,
-                            bullet.BulletHitDirection
-                        );
+                        photonView.RPC("SyncDestroyBullet", RpcTarget.Others, bullet.BulletID);
+                        photonView.RPC("SyncBulletTracer",  RpcTarget.Others, bullet.BulletID, bullet.TracerEffect.transform.position);
                     }
 
                     continue;
@@ -121,25 +114,36 @@ namespace EverScord.Weapons
             return ++nextBulletID;
         }
 
-        private void BulletHitEffect(Bullet bullet)
-        {
-            if (bullet.BulletHitPosition == null)
-                return;
-            
-            hitEffect.transform.position = (Vector3)bullet.BulletHitPosition;
-            hitEffect.transform.forward  = bullet.BulletHitDirection;
+        public void BulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
+        {            
+            hitEffect.transform.position = hitPosition;
+            hitEffect.transform.forward  = hitDirection;
             hitEffect.Emit(hitEffectCount);
+
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("SyncBulletHitEffect", RpcTarget.Others, hitPosition, hitDirection);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
         [PunRPC]
-        private void SyncDestroyBullet(int bulletID, bool isHit, Vector3 hitPosition, Vector3 hitDirection)
+        private void SyncDestroyBullet(int bulletID)
         {
             bulletDict[bulletID].SetIsDestroyed(true);
+        }
 
-            if (isHit)
-                bulletDict[bulletID].SetBulletHitInfo(hitPosition, hitDirection);
+        [PunRPC]
+        private void SyncBulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
+        {
+            hitEffect.transform.position = hitPosition;
+            hitEffect.transform.forward  = hitDirection;
+            hitEffect.Emit(hitEffectCount);
+        }
+
+        [PunRPC]
+        private void SyncBulletTracer(int bulletID, Vector3 position)
+        {
+            bulletDict[bulletID].SetTracerEffectPosition(position);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

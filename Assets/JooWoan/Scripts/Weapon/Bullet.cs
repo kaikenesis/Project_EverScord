@@ -1,4 +1,5 @@
 using UnityEngine;
+using Photon.Pun;
 
 namespace EverScord.Weapons
 {
@@ -7,8 +8,6 @@ namespace EverScord.Weapons
         private const float COLLISION_STEP = 0.5f;
         [field: SerializeField] public TrailRenderer TracerEffect   { get; private set; }
         public BulletInfo BulletInfo                                { get; private set; }
-        public Vector3? BulletHitPosition                           { get; private set; }
-        public Vector3 BulletHitDirection                           { get; private set; }
         public Vector3 InitialPosition                              { get; private set; }
         public Vector3 InitialVelocity                              { get; private set; }
         public float Lifetime                                       { get; private set; }
@@ -34,8 +33,6 @@ namespace EverScord.Weapons
             Lifetime = 0f;
             IsDestroyed = false;
 
-            BulletHitPosition = null;
-
             TracerEffect.AddPosition(position);
             SetTracerEffectPosition(position);
         }
@@ -44,12 +41,6 @@ namespace EverScord.Weapons
         {
             this.bulletID = bulletID;
         }
-
-        public void SetBulletHitInfo(Vector3 hitPosition, Vector3 hitDirection)
-        {
-            BulletHitPosition  = hitPosition;
-            BulletHitDirection = hitDirection;
-        }        
 
         public void SetLifetime(float lifeTime)
         {
@@ -99,9 +90,7 @@ namespace EverScord.Weapons
                     if (!Physics.Raycast(ray, out hit, 50f, sourceWeapon.ShootableLayer))
                         continue;
 
-                    BulletHitPosition = hit.point;
-                    BulletHitDirection = -direction;
-
+                    GameManager.Instance.BulletsControl.BulletHitEffect(hit.point, -direction);
                     SetTracerEffectPosition(currentPoint);
                 }
 
