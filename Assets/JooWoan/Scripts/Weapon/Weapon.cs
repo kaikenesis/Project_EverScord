@@ -15,19 +15,16 @@ namespace EverScord.Weapons
         [field: SerializeField] public AssetReferenceGameObject BulletAssetReference    { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject SmokeAssetReference     { get; private set; }
         [SerializeField] private ParticleSystem shotEffect;
-        [field: SerializeField] public ParticleSystem HitEffect                         { get; private set; }  
         [field: SerializeField] public Transform GunPoint                               { get; private set; }
         [field: SerializeField] public Transform WeaponTransform                        { get; private set; }
         [field: SerializeField] public Transform LeftTarget                             { get; private set; }
         [field: SerializeField] public Transform LeftHint                               { get; private set; }
         [field: SerializeField] public LayerMask ShootableLayer                         { get; private set; }
         [field: SerializeField] public float AimSensitivity                             { get; private set; }
-        [field: SerializeField] public float MinAimDistance                             { get; private set; }
         [field: SerializeField] public float Cooldown                                   { get; private set; }
         [field: SerializeField] public float ReloadTime                                 { get; private set; }
         [field: SerializeField] public float WeaponRange                                { get; private set; }
         [field: SerializeField] public int MaxAmmo                                      { get; private set; }
-        [field: SerializeField] public int HitEffectCount                               { get; private set; }
         public Transform AimPoint                                                       { get; private set; }
         public Camera ShooterCam                                                        { get; private set; }
 
@@ -203,10 +200,10 @@ namespace EverScord.Weapons
                 "SyncFireBullet",
                 RpcTarget.Others,
                 gunpointPos, bulletVector,
-                bullet.ViewID
+                bullet.ViewID,
+                bullet.BulletID
             );
         }
-
 
         private bool CanShoot(CharacterControl shooter)
         {
@@ -234,7 +231,7 @@ namespace EverScord.Weapons
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
         [PunRPC]
-        private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletVector, int viewId)
+        private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletVector, int viewID, int bulletID)
         {
             shotEffect.Emit(1);
 
@@ -242,7 +239,8 @@ namespace EverScord.Weapons
             GameObject pooledSmoke  = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID,  transform.position, Quaternion.identity);
 
             Bullet bullet = pooledBullet.GetComponent<Bullet>();
-            bullet.Init(gunpointPos, bulletVector, bulletInfo, viewId);
+            bullet.Init(gunpointPos, bulletVector, bulletInfo, viewID);
+            bullet.SetBulletID(bulletID);
 
             SmokeTrail smokeTrail = pooledSmoke.GetComponent<SmokeTrail>();
             smokeTrail.transform.forward = bulletVector;

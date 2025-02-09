@@ -50,7 +50,7 @@ namespace EverScord.Character
         private PhotonView photonView;
         private CharacterController controller;
         private Transform uiHub, cameraHub;
-        private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
+        private Vector3 movement, lookDir, moveInput, moveDir;
 
         void Awake()
         {
@@ -160,19 +160,14 @@ namespace EverScord.Character
             Vector3 gunPoint2MouseDir = (hit.point - cam2GunPointRayHit.point).normalized;
             weapon.SetGunPointDirection(gunPoint2MouseDir);
 
-            lookPosition = hit.point;
-            lookPosition.y = PlayerTransform.position.y;
-            lookDir = lookPosition - PlayerTransform.position;
+            Vector3 lookPosition = new Vector3(
+                hit.point.x,
+                PlayerTransform.position.y,
+                hit.point.z
+            );
 
-            float distance = lookDir.magnitude;
-
+            lookDir = (lookPosition - PlayerTransform.position).normalized;
             lookDir.Normalize();
-
-            if (distance < 0.5f)
-                return;
-
-            if (distance < weapon.MinAimDistance)
-                lookPosition = PlayerTransform.position + lookDir * weapon.MinAimDistance;
 
             Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weapon.WeaponRange;
             weapon.AimPoint.position = aimPosition;

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace EverScord.Weapons
 {
@@ -8,11 +7,15 @@ namespace EverScord.Weapons
         private const float COLLISION_STEP = 0.5f;
         [field: SerializeField] public TrailRenderer TracerEffect   { get; private set; }
         public BulletInfo BulletInfo                                { get; private set; }
+        public Vector3? BulletHitPosition                           { get; private set; }
+        public Vector3 BulletHitDirection                           { get; private set; }
         public Vector3 InitialPosition                              { get; private set; }
         public Vector3 InitialVelocity                              { get; private set; }
         public float Lifetime                                       { get; private set; }
         public bool IsDestroyed                                     { get; private set; }
         public int ViewID                                           { get; private set; }
+        private int bulletID = -1;
+        public int BulletID => bulletID;
 
         public void Init(Vector3 position, Vector3 velocity, BulletInfo bulletInfo, int viewID)
         {
@@ -25,12 +28,28 @@ namespace EverScord.Weapons
 
             ViewID = viewID;
 
+            if (bulletID == -1)
+                bulletID = BulletControl.GetNextBulletID();
+
             Lifetime = 0f;
             IsDestroyed = false;
+
+            BulletHitPosition = null;
 
             TracerEffect.AddPosition(position);
             SetTracerEffectPosition(position);
         }
+
+        public void SetBulletID(int bulletID)
+        {
+            this.bulletID = bulletID;
+        }
+
+        public void SetBulletHitInfo(Vector3 hitPosition, Vector3 hitDirection)
+        {
+            BulletHitPosition  = hitPosition;
+            BulletHitDirection = hitDirection;
+        }        
 
         public void SetLifetime(float lifeTime)
         {
@@ -80,9 +99,8 @@ namespace EverScord.Weapons
                     if (!Physics.Raycast(ray, out hit, 50f, sourceWeapon.ShootableLayer))
                         continue;
 
-                    sourceWeapon.HitEffect.transform.position = hit.point;
-                    sourceWeapon.HitEffect.transform.forward  = -direction;
-                    sourceWeapon.HitEffect.Emit(sourceWeapon.HitEffectCount);
+                    BulletHitPosition = hit.point;
+                    BulletHitDirection = -direction;
 
                     SetTracerEffectPosition(currentPoint);
                 }
