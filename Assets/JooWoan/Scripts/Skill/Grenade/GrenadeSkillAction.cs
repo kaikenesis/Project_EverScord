@@ -20,7 +20,7 @@ namespace EverScord.Skill
         private CooldownTimer cooldownTimer;
         private Transform startPoint, stampedMarker;
         private LineRenderer trajectoryLine;
-        private Camera cam;
+        private PhotonView photonView;
 
         private Coroutine skillCoroutine;
         private Coroutine stampCoroutine;
@@ -44,10 +44,11 @@ namespace EverScord.Skill
             this.skill = skill;
             this.skillIndex = skillIndex;
 
+            photonView = activator.CharacterPhotonView;
+
             cooldownTimer = new CooldownTimer(skill.Cooldown);
             StartCoroutine(cooldownTimer.RunTimer());
 
-            cam = activator.CameraControl.Cam;
             trajectoryLine = GetComponent<LineRenderer>();
 
             stampedMarker = Instantiate(hitMarker, transform);
@@ -116,15 +117,11 @@ namespace EverScord.Skill
 
         private void SetForce()
         {
-            // Ray ray = cam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
-
-            // if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-            //     return;
-
-            // Vector3 startPos = new Vector3(startPoint.position.x, hit.point.y, startPoint.position.z);
-            // force = Vector3.Distance(hit.point, startPos);
-
-            force = 10f;
+            if (!startPoint)
+                return;
+            
+            Vector3 startPos = new Vector3(startPoint.position.x, activator.MouseRayHitPos.y, startPoint.position.z);
+            force = Vector3.Distance(activator.MouseRayHitPos, startPos);
         }
 
         private void Fire()

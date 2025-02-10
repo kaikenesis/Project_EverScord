@@ -42,6 +42,7 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
+        public Vector3 MouseRayHitPos                                   { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -53,9 +54,6 @@ namespace EverScord.Character
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
-
-        private Vector3 remoteMousePosition;
-        private const float LERP_REMOTE_MOUSEPOS = 10f;
 
         void Awake()
         {
@@ -104,10 +102,7 @@ namespace EverScord.Character
         void Update()
         {
             if (!photonView.IsMine)
-            {
-                LerpRemoteInfo();
                 return;
-            }
             
             SetInput();
             SetMovingDirection();
@@ -128,11 +123,6 @@ namespace EverScord.Character
 
         private void LerpRemoteInfo()
         {
-            playerInputInfo.mousePosition = Vector3.Lerp(
-                playerInputInfo.mousePosition,
-                remoteMousePosition,
-                Time.deltaTime * LERP_REMOTE_MOUSEPOS
-            );
         }
 
         private void SetInput()
@@ -170,6 +160,8 @@ namespace EverScord.Character
 
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
                 return;
+
+            MouseRayHitPos = hit.point;
 
             Vector3 lookPosition = new Vector3(
                 hit.point.x,
@@ -284,11 +276,11 @@ namespace EverScord.Character
         {
             if (stream.IsWriting)
             {
-                stream.SendNext(playerInputInfo.mousePosition);
+                stream.SendNext(MouseRayHitPos);
             }
             else
             {
-                remoteMousePosition = (Vector3)stream.ReceiveNext();
+                MouseRayHitPos = (Vector3)stream.ReceiveNext();
             }
         }
 
