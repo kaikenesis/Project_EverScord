@@ -93,8 +93,8 @@ namespace EverScord.Weapons
 
                     if (type == BulletOwner.MINE && PhotonNetwork.IsConnected)
                     {
-                        photonView.RPC("SyncDestroyBullet", RpcTarget.Others, bullet.BulletID);
-                        photonView.RPC("SyncBulletTracer",  RpcTarget.Others, bullet.BulletID, bullet.TracerEffect.transform.position);
+                        photonView.RPC(nameof(SyncDestroyBullet), RpcTarget.Others, bullet.BulletID);
+                        photonView.RPC(nameof(SyncBulletTracer),  RpcTarget.Others, bullet.BulletID, bullet.TracerEffect.transform.position);
                     }
 
                     continue;
@@ -121,7 +121,7 @@ namespace EverScord.Weapons
             hitEffect.Emit(hitEffectCount);
 
             if (PhotonNetwork.IsConnected)
-                photonView.RPC("SyncBulletHitEffect", RpcTarget.Others, hitPosition, hitDirection);
+                photonView.RPC(nameof(SyncBulletHitEffect), RpcTarget.Others, hitPosition, hitDirection);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

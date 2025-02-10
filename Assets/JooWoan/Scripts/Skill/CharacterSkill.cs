@@ -1,5 +1,6 @@
 using UnityEngine;
 using EverScord.Character;
+using Photon.Pun;
 
 namespace EverScord.Skill
 {
@@ -19,7 +20,7 @@ namespace EverScord.Skill
 
         private static Transform skillRoot;
 
-        public void Init(CharacterControl activator)
+        public void Init(CharacterControl activator, int skillIndex)
         {
             if (skillRoot == null)
                 skillRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
@@ -33,7 +34,7 @@ namespace EverScord.Skill
             ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, skillRoot).GetComponent<ISkillAction>();
 
             SkillAction = skillAction;
-            SkillAction.Init(activator, Skill);
+            SkillAction.Init(activator, Skill, skillIndex);
         }
     }
 }

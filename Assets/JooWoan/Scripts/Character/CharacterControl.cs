@@ -4,10 +4,11 @@ using Photon.Pun;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
+using System.Collections.Generic;
 
 namespace EverScord.Character
 {
-    public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback
+    public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         [Header("Character")]
         [SerializeField] private float speed;
@@ -24,8 +25,7 @@ namespace EverScord.Character
         [SerializeField] private Weapon weapon;
 
         [Header("Skill")]
-        [SerializeField] private SkillActionInfo firstSkillActionInfo;
-        [SerializeField] private SkillActionInfo secondSkillActionInfo;
+        [SerializeField] private List<SkillActionInfo> skillList;
 
         [Header("UI")]
         [SerializeField] private PlayerUI uiPrefab;
@@ -42,7 +42,9 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
-        public InputInfo PlayerInputInfo                                { get; private set; }
+
+        private InputInfo playerInputInfo = new InputInfo();
+        public InputInfo PlayerInputInfo => playerInputInfo;
 
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
@@ -51,6 +53,9 @@ namespace EverScord.Character
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
+
+        private Vector3 remoteMousePosition;
+        private const float LERP_REMOTE_MOUSEPOS = 10f;
 
         void Awake()
         {
@@ -87,9 +92,8 @@ namespace EverScord.Character
             PlayerUIControl.Init(this);
             CameraControl.Init(PlayerTransform);
             
-            firstSkillActionInfo.Init(this);
-            secondSkillActionInfo.Init(this);
-
+            for (int i = 0; i < skillList.Count; i++)
+                skillList[i].Init(this, i);
         }
 
         void Start()
@@ -100,7 +104,10 @@ namespace EverScord.Character
         void Update()
         {
             if (!photonView.IsMine)
+            {
+                LerpRemoteInfo();
                 return;
+            }
             
             SetInput();
             SetMovingDirection();
@@ -119,12 +126,24 @@ namespace EverScord.Character
             UseSkills();
         }
 
+        private void LerpRemoteInfo()
+        {
+            playerInputInfo.mousePosition = Vector3.Lerp(
+                playerInputInfo.mousePosition,
+                remoteMousePosition,
+                Time.deltaTime * LERP_REMOTE_MOUSEPOS
+            );
+        }
+
         private void SetInput()
         {
-            PlayerInputInfo = InputControl.ReceiveInput();
-            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, CameraControl.Cam);
+            playerInputInfo = InputControl.ReceiveInput();
+            playerInputInfo = InputControl.GetCameraRelativeInput(playerInputInfo, CameraControl.Cam);
 
-            moveInput = PlayerInputInfo.cameraRelativeInput;
+            moveInput = playerInputInfo.cameraRelativeInput;
+
+            if (PhotonNetwork.IsConnected && playerInputInfo.pressedLeftMouseButton)
+                photonView.RPC(nameof(SyncLeftMouseButton), RpcTarget.Others);
         }
 
         private void SetMovingDirection()
@@ -147,18 +166,10 @@ namespace EverScord.Character
 
         private void TrackAim()
         {
-            Ray ray = CameraControl.Cam.ScreenPointToRay(PlayerInputInfo.mousePosition);
+            Ray ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
                 return;
-
-            Vector3 cam2GunPointDir = weapon.GunPoint.position - ray.origin;
-
-            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, groundLayer))
-                return;
-
-            Vector3 gunPoint2MouseDir = (hit.point - cam2GunPointRayHit.point).normalized;
-            weapon.SetGunPointDirection(gunPoint2MouseDir);
 
             Vector3 lookPosition = new Vector3(
                 hit.point.x,
@@ -167,7 +178,14 @@ namespace EverScord.Character
             );
 
             lookDir = (lookPosition - PlayerTransform.position).normalized;
-            lookDir.Normalize();
+
+            Vector3 cam2GunPointDir = weapon.GunPoint.position - ray.origin;
+
+            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, groundLayer))
+                return;
+
+            Vector3 gunPoint2MouseDir = hit.point - cam2GunPointRayHit.point;
+            weapon.SetGunPointDirection(gunPoint2MouseDir);
 
             Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weapon.WeaponRange;
             weapon.AimPoint.position = aimPosition;
@@ -203,20 +221,19 @@ namespace EverScord.Character
             if (GameManager.Instance.userData != null)
                 ejob = GameManager.Instance.userData.job;
 
-            if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
+            for (int i = 0; i < skillList.Count; i++)
             {
-                firstSkillActionInfo.SkillAction.Activate(ejob);
+                SkillActionInfo info = skillList[i];
+
+                if (!playerInputInfo.PressedSkill(i))
+                    continue;
+                
+                info.SkillAction.Activate(ejob);
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1, (int)ejob);
-            }
-
-            else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
-            {
-                secondSkillActionInfo.SkillAction.Activate(ejob);
-
-                if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2, (int)ejob);
+                    photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i, (int)ejob);
+                
+                break;
             }
         }
 
@@ -246,38 +263,52 @@ namespace EverScord.Character
         {
             get
             {
-                if (firstSkillActionInfo.SkillAction != null && firstSkillActionInfo.SkillAction.IsUsingSkill)
-                    return true;
-
-                if (secondSkillActionInfo.SkillAction != null && secondSkillActionInfo.SkillAction.IsUsingSkill)
-                    return true;
+                foreach (var info in skillList)
+                {
+                    if (info.SkillAction.IsUsingSkill)
+                        return true;
+                }
 
                 return false;
             }
         }
         
         public bool IsAiming { get; private set; }
-        public bool IsShooting => PlayerInputInfo.holdLeftMouseButton;
+        public bool IsShooting => playerInputInfo.holdLeftMouseButton;
         public bool IsMoving => moveInput.magnitude > 0;
 
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(playerInputInfo.mousePosition);
+            }
+            else
+            {
+                remoteMousePosition = (Vector3)stream.ReceiveNext();
+            }
+        }
+
         [PunRPC]
-        private void SyncUseSkill(int skillIndex, int ejob)
+        private void SyncUseSkill(int index, int ejob)
         {
             EJob ejobType = (EJob)ejob;
+            skillList[index].SkillAction.Activate(ejobType);
+        }
 
-            switch (skillIndex)
-            {
-                case 1:
-                    firstSkillActionInfo.SkillAction.Activate(ejobType);
-                    break;
+        [PunRPC]
+        private void SyncLeftMouseButton()
+        {
+            playerInputInfo.pressedLeftMouseButton = true;
+            Invoke(nameof(ResetMouseClick), 0.05f);
+        }
 
-                case 2:
-                    secondSkillActionInfo.SkillAction.Activate(ejobType);
-                    break;
-            }
+        private void ResetMouseClick()
+        {
+            playerInputInfo.pressedLeftMouseButton = false;
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

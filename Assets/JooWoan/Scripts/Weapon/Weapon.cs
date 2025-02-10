@@ -5,6 +5,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
 using ExitGames.Client.Photon.StructWrapping;
+using Unity.Mathematics;
 
 namespace EverScord.Weapons
 {
@@ -83,8 +84,10 @@ namespace EverScord.Weapons
                     continue;
                 
                 AimPoint = aimpoints[i].transform;
-                break;
+                return;
             }
+
+            AimPoint = Instantiate(aimPointPrefab).transform;
         }
 
         public void Shoot(CharacterControl shooter)
@@ -107,7 +110,7 @@ namespace EverScord.Weapons
                 if (PhotonNetwork.IsConnected)
                 {
                     photonView.RPC(
-                        "SyncRig",
+                        nameof(SyncRig),
                         RpcTarget.Others,
                         shooter.CharacterPhotonView.ViewID,
                         false, false, animControl.AnimInfo.ShootEnd.name
@@ -136,7 +139,7 @@ namespace EverScord.Weapons
             if (PhotonNetwork.IsConnected)
             {
                 photonView.RPC(
-                    "SyncRig",
+                    nameof(SyncRig),
                     RpcTarget.Others,
                     shooter.CharacterPhotonView.ViewID,
                     true, true, animControl.AnimInfo.Shoot.name
@@ -215,7 +218,7 @@ namespace EverScord.Weapons
                 return;
 
             photonView.RPC(
-                "SyncFireBullet",
+                nameof(SyncFireBullet),
                 RpcTarget.Others,
                 gunpointPos, bulletVector,
                 bullet.ViewID,

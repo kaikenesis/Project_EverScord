@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 using EverScord.Character;
 
 namespace EverScord.Skill
@@ -15,6 +16,7 @@ namespace EverScord.Skill
 
         private CharacterControl activator;
         private CharacterSkill skill;
+        private int skillIndex;
         private CooldownTimer cooldownTimer;
         private Transform startPoint, stampedMarker;
         private LineRenderer trajectoryLine;
@@ -33,13 +35,14 @@ namespace EverScord.Skill
             get { return skillCoroutine != null; }
         }
 
-        public void Init(CharacterControl activator, CharacterSkill skill)
+        public void Init(CharacterControl activator, CharacterSkill skill, int skillIndex)
         {
             if (this.activator != null)
                 return;
 
             this.activator = activator;
             this.skill = skill;
+            this.skillIndex = skillIndex;
 
             cooldownTimer = new CooldownTimer(skill.Cooldown);
             StartCoroutine(cooldownTimer.RunTimer());
@@ -105,19 +108,23 @@ namespace EverScord.Skill
 
             yield return new WaitForSeconds(0.2f);
 
-            StopCoroutine(skillCoroutine);
+            if (skillCoroutine != null)
+                StopCoroutine(skillCoroutine);
+            
             skillCoroutine = null;
         }
 
         private void SetForce()
         {
-            Ray ray = cam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
+            // Ray ray = cam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-                return;
+            // if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+            //     return;
 
-            Vector3 startPos = new Vector3(startPoint.position.x, hit.point.y, startPoint.position.z);
-            force = Vector3.Distance(hit.point, startPos);
+            // Vector3 startPos = new Vector3(startPoint.position.x, hit.point.y, startPoint.position.z);
+            // force = Vector3.Distance(hit.point, startPos);
+
+            force = 10f;
         }
 
         private void Fire()

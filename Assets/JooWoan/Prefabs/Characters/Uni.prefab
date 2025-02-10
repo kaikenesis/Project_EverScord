@@ -6543,10 +6543,8 @@ MonoBehaviour:
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
   weapon: {fileID: 9078234697602045160}
-  firstSkillActionInfo:
-    <Skill>k__BackingField: {fileID: 11400000, guid: 3dfb1606df65ad14294bfacda373ea41, type: 2}
-  secondSkillActionInfo:
-    <Skill>k__BackingField: {fileID: 0}
+  skillList:
+  - <Skill>k__BackingField: {fileID: 11400000, guid: 3dfb1606df65ad14294bfacda373ea41, type: 2}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
   cameraPrefab: {fileID: 6716463709426020098, guid: b7ba58d67a16a9642b900e15c37509a6, type: 3}
   rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
@@ -6598,7 +6596,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   <AimSensitivity>k__BackingField: 1
-  <Cooldown>k__BackingField: 0.04
+  <Cooldown>k__BackingField: 0.15
   <ReloadTime>k__BackingField: 3
   <WeaponRange>k__BackingField: 10
   <MaxAmmo>k__BackingField: 30
@@ -6670,6 +6668,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: 8272337599470252866}
   - {fileID: 751370906049573107}
   - {fileID: 1082497503637100628}
   sceneViewId: 0

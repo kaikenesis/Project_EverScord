@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8282756974420237230}
   - component: {fileID: 6811611492207559552}
   - component: {fileID: 7894255298483554602}
+  - component: {fileID: 5445278757824947147}
   m_Layer: 0
   m_Name: GrenadeSkill
   m_TagString: Untagged
@@ -52,7 +53,6 @@ MonoBehaviour:
     m_Bits: 64
   projectile: {fileID: 2947036328020528552, guid: 05899301fe3f4184e9886fc5b9fdc913, type: 3}
   hitMarker: {fileID: 4818220306416748770}
-  explosionEffect: {fileID: 1000012903210382, guid: aefa065272400f44bbc1a5471cfe2334, type: 3}
   predictInterval: 0.025
   hitMarkerGroundOffset: 0.025
   maxPoints: 200
@@ -160,6 +160,28 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &5445278757824947147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322690896785909928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &47126765957914827
 PrefabInstance:
   m_ObjectHideFlags: 0
