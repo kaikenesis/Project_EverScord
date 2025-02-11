@@ -15,7 +15,7 @@ public class BossPattern01_Imp : ActionNodeImplement
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < 7; i++)
         {
-            photonView.RPC("SyncBossProjectile", RpcTarget.All, projectileSpeed);
+            photonView.RPC("SyncBossProjectile", RpcTarget.All, transform.position, projectileSpeed);
             yield return new WaitForSeconds(0.14f);
         }
         yield return new WaitForSeconds(0.5f);
@@ -24,6 +24,4 @@ public class BossPattern01_Imp : ActionNodeImplement
         action = null;
         Debug.Log("Attack1 end");
     }
-
-
 }

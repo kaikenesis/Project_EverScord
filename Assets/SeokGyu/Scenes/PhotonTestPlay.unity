@@ -20410,24 +20410,6 @@ Transform:
   - {fileID: 973766776}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6663029962341469631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8462792372374566150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe7552dea012f884381e6c39bb2c6e9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monster:
-    m_AssetGUID: a3fff866104fba6439e95a645a7f1e38
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 1
-  spawnTimer: 3
 --- !u!4 &8116776620684682048
 Transform:
   m_ObjectHideFlags: 0
@@ -20452,8 +20434,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8116776620684682048}
-  - component: {fileID: 6663029962341469631}
   - component: {fileID: 8462792372374566151}
+  - component: {fileID: 8462792372374566152}
   m_Layer: 0
   m_Name: MonsterSpawner
   m_TagString: Untagged
@@ -20483,6 +20465,19 @@ MonoBehaviour:
   sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &8462792372374566152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8462792372374566150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c671a54fb4f71974b8c2381051c39646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnTimer: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

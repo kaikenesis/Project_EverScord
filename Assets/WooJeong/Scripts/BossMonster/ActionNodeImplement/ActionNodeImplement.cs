@@ -62,9 +62,9 @@ public abstract class ActionNodeImplement : MonoBehaviour
     }
 
     [PunRPC]
-    protected void SyncBossProjectile(float projectileSpeed)
+    protected void SyncBossProjectile(Vector3 position, float projectileSpeed)
     {
-        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", transform.position, Quaternion.identity);
+        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", position, Quaternion.identity);
         BossProjectile bp = go.GetComponent<BossProjectile>();
         bp.Setup(transform.forward, projectileSpeed);
     }

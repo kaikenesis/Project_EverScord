@@ -2,13 +2,15 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class MonsterSpawner : MonoBehaviour
+public class BossSpawner : MonoBehaviour
 {
-    [SerializeField] private AssetReferenceGameObject monster;
     [SerializeField] private float spawnTimer = 0f;
+
+    private string assetName = "Boss";
     private float curTime = 0;
     private int spawnCount = 0;
     private int allocateCompleteCount = 1;
@@ -25,34 +27,28 @@ public class MonsterSpawner : MonoBehaviour
     private async void Awake()
     {
         photonView = GetComponent<PhotonView>();
-        await ResourceManager.Instance.CreatePool(monster.AssetGUID);
+        await ResourceManager.Instance.CreatePool(assetName, 1);
         StartCoroutine(Spawn());
-    }
-
-    private void OnDisable()
-    {
-        //ResourceManager.Instance.Destroy(monster.AssetGUID);
     }
 
     private IEnumerator Spawn()
     {
-        if(!PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient)
             yield break;
         Debug.Log("[MasterCient] 몬스터 스폰 함수 실행");
-        while(true)
+        while (true)
         {
             curTime += Time.deltaTime;
             if (curTime > spawnTimer && spawnCount <= 0)
             {
                 Debug.Log("스폰");
-                mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
+                mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
 
                 PhotonView view = mo.GetComponent<PhotonView>();
 
                 if (PhotonNetwork.AllocateViewID(view))
                 {
                     data = view.ViewID;
-                    //PhotonNetwork.RaiseEvent(spawnEvent, data, raiseEventOptions, sendOptions);
                     photonView.RPC("SyncSpawn", RpcTarget.Others, data);
                 }
 
@@ -70,28 +66,10 @@ public class MonsterSpawner : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
             return;
 
-        mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
+        mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
         PhotonView view = mo.GetPhotonView();
         view.ViewID = viewID;
         Debug.Log("[client] 몬스터 viewID = " + view.ViewID);
         //PhotonNetwork.RegisterPhotonView(view);
-        photonView.RPC("SpawnComplete", RpcTarget.MasterClient);
-    }
-
-    [PunRPC]
-    private void SpawnComplete()
-    {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
-
-        allocateCompleteCount++;
-
-        if (allocateCompleteCount == PhotonNetwork.PlayerList.Length)
-        {
-            Debug.Log("[MasterClient] 모든 플레이어가 스폰 완료! FSM 시작");
-            allocateCompleteCount = 1;
-            NController nController = mo.GetComponent<NController>();
-            nController.StartFSM();
-        }
     }
 }
