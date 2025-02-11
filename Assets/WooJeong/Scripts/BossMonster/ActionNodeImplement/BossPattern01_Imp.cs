@@ -15,7 +15,7 @@ public class BossPattern01_Imp : ActionNodeImplement
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < 7; i++)
         {
-            photonView.RPC("SyncBossProjectile", RpcTarget.All);
+            photonView.RPC("SyncBossProjectile", RpcTarget.All, projectileSpeed);
             yield return new WaitForSeconds(0.14f);
         }
         yield return new WaitForSeconds(0.5f);
@@ -25,11 +25,5 @@ public class BossPattern01_Imp : ActionNodeImplement
         Debug.Log("Attack1 end");
     }
 
-    [PunRPC]
-    private void SyncBossProjectile()
-    {
-        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", transform.position, Quaternion.identity);
-        BossProjectile bp = go.GetComponent<BossProjectile>();
-        bp.Setup(transform.forward, projectileSpeed);
-    }
+
 }

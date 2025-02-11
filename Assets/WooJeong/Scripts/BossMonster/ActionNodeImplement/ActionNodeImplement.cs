@@ -61,4 +61,11 @@ public abstract class ActionNodeImplement : MonoBehaviour
         animator.CrossFade(animationName, 0.3f, -1, 0);
     }
 
+    [PunRPC]
+    protected void SyncBossProjectile(float projectileSpeed)
+    {
+        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", transform.position, Quaternion.identity);
+        BossProjectile bp = go.GetComponent<BossProjectile>();
+        bp.Setup(transform.forward, projectileSpeed);
+    }
 }

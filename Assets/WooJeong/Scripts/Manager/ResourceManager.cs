@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class ResourceManager : Singleton<ResourceManager>//, IOnEventCallback
+public class ResourceManager : Singleton<ResourceManager>
 {
     // 풀링된 오브젝트들을 담을 Dictionary
     private Dictionary<string, Queue<GameObject>> poolDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -54,7 +54,6 @@ public class ResourceManager : Singleton<ResourceManager>//, IOnEventCallback
     // 풀에서 오브젝트 가져오기
     public GameObject GetFromPool(string addressableKey, Vector3 position, Quaternion rotation)
     {
-        Debug.Log("GetFromPool");
         if (!poolDictionary.ContainsKey(addressableKey))
         {
             Debug.LogWarning($"Pool for {addressableKey} doesn't exist!");
