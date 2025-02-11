@@ -12364,7 +12364,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8826587499911066446}
-  - component: {fileID: 5298275110613004416}
+  - component: {fileID: 7959040537996085910}
+  - component: {fileID: 4246564966177677742}
+  - component: {fileID: 6018587541618258978}
   - component: {fileID: 5378323293766774483}
   - component: {fileID: 4021865183960554201}
   - component: {fileID: 3434740906322693752}
@@ -12393,7 +12395,7 @@ Transform:
   - {fileID: 7884615789237823760}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5298275110613004416
+--- !u!114 &7959040537996085910
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12415,13 +12417,66 @@ MonoBehaviour:
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
   weapon: {fileID: 0}
-  firstSkillActionInfo:
-    <Skill>k__BackingField: {fileID: 11400000, guid: 3dfb1606df65ad14294bfacda373ea41, type: 2}
-  secondSkillActionInfo:
-    <Skill>k__BackingField: {fileID: 0}
+  skillList:
+  - <Skill>k__BackingField: {fileID: 11400000, guid: 3dfb1606df65ad14294bfacda373ea41, type: 2}
+  - <Skill>k__BackingField: {fileID: 11400000, guid: e51215101053b274a9a1c32374d063c2, type: 2}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
-  cameraPrefab: {fileID: 0}
+  cameraPrefab: {fileID: 6716463709426020098, guid: b7ba58d67a16a9642b900e15c37509a6, type: 3}
   rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
+--- !u!114 &4246564966177677742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636842966431899009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 929fc3a91176f904aadd6d56e7fc18d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 6484539116172052493}
+  info: {fileID: 11400000, guid: 9025310f569e6544caa74da297a276cf, type: 2}
+  transitionDampTime: 0.1
+  <ShootStanceDuration>k__BackingField: 1
+--- !u!114 &6018587541618258978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636842966431899009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d3b267cb4e50854098e08fe884b09c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aimPointPrefab: {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
+  <BulletAssetReference>k__BackingField:
+    m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <SmokeAssetReference>k__BackingField:
+    m_AssetGUID: db97ba35f680c914480ecc075d752dbf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  shotEffect: {fileID: 676337203743035591}
+  <GunPoint>k__BackingField: {fileID: 1042724076523369338}
+  <WeaponTransform>k__BackingField: {fileID: 8301554884234320215}
+  <LeftTarget>k__BackingField: {fileID: 0}
+  <LeftHint>k__BackingField: {fileID: 0}
+  <ShootableLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 256
+  <AimSensitivity>k__BackingField: 1
+  <Cooldown>k__BackingField: 0.15
+  <ReloadTime>k__BackingField: 3
+  <WeaponRange>k__BackingField: 10
+  <MaxAmmo>k__BackingField: 30
+  bulletInfo: {fileID: 11400000, guid: d27f6f0aba4279142980a570113aa782, type: 2}
+  bulletSpeed: 100
 --- !u!143 &5378323293766774483
 CharacterController:
   m_ObjectHideFlags: 0
@@ -12488,6 +12543,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: 7959040537996085910}
   - {fileID: 3744047516412751828}
   - {fileID: 5742792733520972171}
   sceneViewId: 0
@@ -12594,56 +12650,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f8bab622ae781e444804c35536dd0ff6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1042724076523369338}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f8bab622ae781e444804c35536dd0ff6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8997329286823002017}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8bab622ae781e444804c35536dd0ff6, type: 3}
 --- !u!4 &8301554884234320215 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f8bab622ae781e444804c35536dd0ff6, type: 3}
   m_PrefabInstance: {fileID: 8412641994765991612}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8682619589441504237 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f8bab622ae781e444804c35536dd0ff6, type: 3}
-  m_PrefabInstance: {fileID: 8412641994765991612}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8997329286823002017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8682619589441504237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d3b267cb4e50854098e08fe884b09c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aimPointPrefab: {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
-  <BulletAssetReference>k__BackingField:
-    m_AssetGUID: 
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  <SmokeAssetReference>k__BackingField:
-    m_AssetGUID: 
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  shotEffect: {fileID: 676337203743035591}
-  <GunPoint>k__BackingField: {fileID: 1042724076523369338}
-  <WeaponTransform>k__BackingField: {fileID: 0}
-  <LeftTarget>k__BackingField: {fileID: 0}
-  <LeftHint>k__BackingField: {fileID: 0}
-  <ShootableLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 256
-  <AimSensitivity>k__BackingField: 20
-  <Cooldown>k__BackingField: 0.15
-  <ReloadTime>k__BackingField: 3
-  <WeaponRange>k__BackingField: 0
-  <MaxAmmo>k__BackingField: 30
-  bulletInfo: {fileID: 0}
-  bulletSpeed: 100

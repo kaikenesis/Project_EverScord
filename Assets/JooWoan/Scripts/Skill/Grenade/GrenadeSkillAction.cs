@@ -9,25 +9,29 @@ namespace EverScord.Skill
     {
         [SerializeField] private GameObject grenadeStartPoint;
         [SerializeField] private LayerMask groundLayer;
-        [SerializeField] private Rigidbody projectile;
+        [SerializeField] private Rigidbody poisonBomb, healBomb;
         [SerializeField] private Transform hitMarker;
         [SerializeField] private float predictInterval, hitMarkerGroundOffset;
         [SerializeField] private int maxPoints;
 
         private CharacterControl activator;
-        private CharacterSkill skill;
-        private int skillIndex;
+        private GrenadeSkill skill;
         private CooldownTimer cooldownTimer;
         private Transform startPoint, stampedMarker;
         private LineRenderer trajectoryLine;
         private PhotonView photonView;
+        private Rigidbody projectile;
 
         private Coroutine skillCoroutine;
         private Coroutine stampCoroutine;
 
+        private Quaternion initialRotation;
+        private EJob ejob;
+
         private const float RAY_OVERLAP = 1.2f;
         private float force;
         private float estimatedTime = 0f;
+        private int skillIndex;
 
         private bool hasActivated = false;
         public bool IsUsingSkill
@@ -35,19 +39,24 @@ namespace EverScord.Skill
             get { return skillCoroutine != null; }
         }
 
-        public void Init(CharacterControl activator, CharacterSkill skill, int skillIndex)
+        public void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
             if (this.activator != null)
                 return;
 
             this.activator = activator;
-            this.skill = skill;
+            this.skill = (GrenadeSkill)skill;
             this.skillIndex = skillIndex;
-
-            photonView = activator.CharacterPhotonView;
+            this.ejob = ejob;
 
             cooldownTimer = new CooldownTimer(skill.Cooldown);
-            StartCoroutine(cooldownTimer.RunTimer());
+            photonView = activator.CharacterPhotonView;
+
+            if (ejob == EJob.DEALER)
+                projectile = poisonBomb;
+
+            else if (ejob == EJob.HEALER)
+                projectile = healBomb;
 
             trajectoryLine = GetComponent<LineRenderer>();
 
@@ -55,12 +64,15 @@ namespace EverScord.Skill
             stampedMarker.gameObject.SetActive(false);
             
             startPoint = Instantiate(grenadeStartPoint, activator.transform).transform;
+            initialRotation = startPoint.localRotation;
 
             HideHitMarker();
             SetLineVisibility(false);
+
+            StartCoroutine(cooldownTimer.RunTimer());
         }
 
-        public void Activate(EJob ejob)
+        public void Activate()
         {
             if (cooldownTimer.IsCooldown)
                 return;
@@ -81,6 +93,8 @@ namespace EverScord.Skill
 
         private IEnumerator ActivateSkill()
         {
+            startPoint.localRotation = initialRotation;
+
             while (hasActivated)
             {
                 SetForce();
@@ -126,6 +140,11 @@ namespace EverScord.Skill
 
         private void Fire()
         {
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(activator.SyncGrenadeSkill), RpcTarget.Others, activator.MouseRayHitPos, startPoint.forward, skillIndex);
+
+            SetForce();
+
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
             thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
 
@@ -207,6 +226,11 @@ namespace EverScord.Skill
 
             stampedMarker.gameObject.SetActive(false);
             stampCoroutine = null;
+        }
+
+        public void SyncGrenadeSkill(Vector3 throwDir)
+        {
+            startPoint.forward = throwDir;
         }
     }
 }

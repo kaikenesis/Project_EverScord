@@ -1,6 +1,5 @@
 using UnityEngine;
 using EverScord.Character;
-using Photon.Pun;
 
 namespace EverScord.Skill
 {
@@ -31,10 +30,15 @@ namespace EverScord.Skill
                 return;
             }
 
+            EJob ejob = EJob.DEALER;
+
+            if (GameManager.Instance.userData != null)
+                ejob = GameManager.Instance.userData.job;
+
             ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, skillRoot).GetComponent<ISkillAction>();
 
             SkillAction = skillAction;
-            SkillAction.Init(activator, Skill, skillIndex);
+            SkillAction.Init(activator, Skill, ejob, skillIndex);
         }
     }
 }

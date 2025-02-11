@@ -43,17 +43,20 @@ namespace EverScord.Character
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
+        private Vector3 remoteMouseRayHitPos;
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
 
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
+        public float CharacterSpeed => speed;
 
         private PhotonView photonView;
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
+        private const float LERP_REMOTE_MOUSERAYHIT = 10f;
 
         void Awake()
         {
@@ -102,7 +105,10 @@ namespace EverScord.Character
         void Update()
         {
             if (!photonView.IsMine)
+            {
+                LerpRemoteInfo();
                 return;
+            }
             
             SetInput();
             SetMovingDirection();
@@ -123,6 +129,11 @@ namespace EverScord.Character
 
         private void LerpRemoteInfo()
         {
+            MouseRayHitPos = Vector3.Lerp(
+                MouseRayHitPos,
+                remoteMouseRayHitPos,
+                Time.deltaTime * LERP_REMOTE_MOUSERAYHIT
+            );
         }
 
         private void SetInput()
@@ -208,11 +219,6 @@ namespace EverScord.Character
             if (weapon.IsReloading)
                 return;
 
-            EJob ejob = EJob.DEALER;
-            
-            if (GameManager.Instance.userData != null)
-                ejob = GameManager.Instance.userData.job;
-
             for (int i = 0; i < skillList.Count; i++)
             {
                 SkillActionInfo info = skillList[i];
@@ -220,13 +226,18 @@ namespace EverScord.Character
                 if (!playerInputInfo.PressedSkill(i))
                     continue;
                 
-                info.SkillAction.Activate(ejob);
+                info.SkillAction.Activate();
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i, (int)ejob);
+                    photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i);
                 
                 break;
             }
+        }
+
+        public void SetSpeed(float speed)
+        {
+            this.speed = speed;
         }
 
         public void SetIsAiming(bool state)
@@ -280,15 +291,14 @@ namespace EverScord.Character
             }
             else
             {
-                MouseRayHitPos = (Vector3)stream.ReceiveNext();
+                remoteMouseRayHitPos = (Vector3)stream.ReceiveNext();
             }
         }
 
         [PunRPC]
-        private void SyncUseSkill(int index, int ejob)
+        private void SyncUseSkill(int index)
         {
-            EJob ejobType = (EJob)ejob;
-            skillList[index].SkillAction.Activate(ejobType);
+            skillList[index].SkillAction.Activate();
         }
 
         [PunRPC]
@@ -301,6 +311,14 @@ namespace EverScord.Character
         private void ResetMouseClick()
         {
             playerInputInfo.pressedLeftMouseButton = false;
+        }
+
+        [PunRPC]
+        public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
+        {
+            MouseRayHitPos = mouseRayHitPos;
+            GrenadeSkillAction skillAction = ((GrenadeSkillAction)skillList[index].SkillAction);
+            skillAction.SyncGrenadeSkill(throwDir);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
