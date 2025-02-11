@@ -1,10 +1,11 @@
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
 public class BossPattern01_Imp : ActionNodeImplement
 {
-    private float projectileSize = 1;
-    private float projectileSpeed = 1;
+    //private float projectileSize = 1;
+    private float projectileSpeed = 5;
 
     protected override IEnumerator Action()
     {
@@ -14,7 +15,7 @@ public class BossPattern01_Imp : ActionNodeImplement
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < 7; i++)
         {
-            Fire();
+            photonView.RPC("SyncBossProjectile", RpcTarget.All);
             yield return new WaitForSeconds(0.14f);
         }
         yield return new WaitForSeconds(0.5f);
@@ -24,8 +25,11 @@ public class BossPattern01_Imp : ActionNodeImplement
         Debug.Log("Attack1 end");
     }
 
-    private void Fire()
+    [PunRPC]
+    private void SyncBossProjectile()
     {
-
+        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", transform.position, Quaternion.identity);
+        BossProjectile bp = go.GetComponent<BossProjectile>();
+        bp.Setup(transform.forward, projectileSpeed);
     }
 }

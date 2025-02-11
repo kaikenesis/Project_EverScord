@@ -10,7 +10,7 @@ public class BossMove : BActionNode
         actionNodeImplement = gameObject.AddComponent<BossMove_Imp>();
         BossData bossData = GetValue<BossData>("BossData");
         Animator animator = GetValue<Animator>("Animator");
-        actionNodeImplement.Setup(bossData, animator);
+        actionNodeImplement.Setup(bossData);
         base.Setup(gameObject);
     }
 }
