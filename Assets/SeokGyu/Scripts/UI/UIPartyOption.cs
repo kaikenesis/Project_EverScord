@@ -32,6 +32,7 @@ namespace EverScord
 
         private void HandleDisplayPartyOption(bool bVisible, string targetName, Vector2 mousePos)
         {
+            if (PhotonNetwork.InRoom == false) return;
             if (PhotonNetwork.CurrentRoom.PlayerCount <= 1) return;
 
             gameObject.SetActive(bVisible);

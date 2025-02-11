@@ -15,19 +15,23 @@ namespace EverScord
 
         [SerializeField] private Image backImg;
         [SerializeField] private Image lockImg;
+        [SerializeField] private Image optionImg;
         private EType curType;
-        private bool bLock = true;
-        private bool bConfirmed;
         private int slotNum;
 
-        public static Action<bool, bool, int, int> OnClickedSlot = delegate { };
+        public bool bLock { get; private set; }
+        public bool bConfirmed { get; private set; }
+
+        public static Action<int, int> OnClickedSlot = delegate { };
         public static Action<int> OnDisplayOptionList = delegate { };
 
         private void Awake()
         {
             UIFactor.OnRequestUnlock += HandleRequestUnlock;
             UIFactor.OnApplyOption += HandleApplyOption;
-            
+
+            bLock = true;
+            optionImg.enabled = false;
         }
 
         private void OnDestroy()
@@ -46,11 +50,12 @@ namespace EverScord
             }
         }
 
-        private void HandleApplyOption(int type, int slotNum)
+        private void HandleApplyOption(int type, int slotNum, Color optionImgColor)
         {
             if (bLock == false && curType == (EType)type && this.slotNum == slotNum)
             {
-                bConfirmed = false;
+                optionImg.enabled = true;
+                optionImg.color = optionImgColor;
                 Debug.Log("옵션 설정, 해당 옵션 이미지 Visible");
             }
         }
@@ -80,6 +85,7 @@ namespace EverScord
 
         public void OnClicked()
         {
+            OnClickedSlot?.Invoke((int)curType, slotNum);
             if (bConfirmed)
             {
                 OnDisplayOptionList?.Invoke((int)curType);
@@ -88,7 +94,6 @@ namespace EverScord
             {
                 if (bLock == true)
                 {
-                    OnClickedSlot?.Invoke(bConfirmed, bLock, (int)curType, slotNum);
                     Debug.Log("Lock");
                 }
                 else

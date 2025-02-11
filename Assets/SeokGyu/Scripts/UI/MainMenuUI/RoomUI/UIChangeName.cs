@@ -12,7 +12,7 @@ namespace EverScord
         [SerializeField] private Outline warningOutline;
         private string userName;
 
-        public static Action<string, int> OnChangeName = delegate { };
+        public static Action<string> OnChangeName = delegate { };
 
         public void ChangeName()
         {
@@ -23,7 +23,7 @@ namespace EverScord
                 return;
             }
 
-            OnChangeName?.Invoke(userName, GameManager.Instance.userData.money);
+            OnChangeName?.Invoke(userName);
 
             userName = "";
             userNameInput.text = "";

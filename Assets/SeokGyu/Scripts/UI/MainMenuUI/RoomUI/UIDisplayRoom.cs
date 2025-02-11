@@ -33,6 +33,13 @@ namespace EverScord
             Init();
         }
 
+        private void Start()
+        {
+            OnHideObjects();
+
+            gameObject.SetActive(false);
+        }
+
         private void OnDestroy()
         {
             PhotonRoomController.OnJoinRoom -= HandleJoinRoom;
@@ -44,10 +51,6 @@ namespace EverScord
 
         private void Init()
         {
-            gameObject.SetActive(false);
-
-            OnHideObjects();
-
             uiRoomPlayers = new UIRoomPlayer[3];
             for (int i = 0; i < 3; i++)
             {

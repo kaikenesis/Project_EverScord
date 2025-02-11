@@ -9,7 +9,6 @@ namespace EverScord
         public static Action OnChangeUserData = delegate { };
         public static Action OnGameStart = delegate { };
 
-
         public void GameStart()
         {
             OnGameStart?.Invoke();

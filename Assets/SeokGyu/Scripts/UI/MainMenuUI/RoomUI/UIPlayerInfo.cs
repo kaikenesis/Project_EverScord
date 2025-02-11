@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -13,29 +14,43 @@ namespace EverScord
             // 보유 재화에 변화가 생길때도 UpdateInfo호출
             PhotonConnector.OnLogin += HandleLogin;
             UIChangeName.OnChangeName += HandleChangeName;
+            PlayerData.OnUpdateMoney += HandleUpdateMoney;
+
+            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
             PhotonConnector.OnLogin -= HandleLogin;
             UIChangeName.OnChangeName -= HandleChangeName;
+            PlayerData.OnUpdateMoney -= HandleUpdateMoney;
         }
 
         #region Handle Methods
         private void HandleLogin(string name, int money)
         {
-            UpdateInfo(name, money);
+            UpdateName(name);
+            UpdateMoney(money);
         }
         
-        private void HandleChangeName(string name, int money)
+        private void HandleChangeName(string name)
         {
-            UpdateInfo(name, money);
+            UpdateName(name);
+        }
+
+        private void HandleUpdateMoney(int money)
+        {
+            UpdateMoney(money);
         }
         #endregion // Handle Methods
 
-        private void UpdateInfo(string name, int money)
+        private void UpdateName(string newName)
         {
-            nickName.text = $"닉네임 : {name}";
+            nickName.text = $"닉네임 : {newName}";
+        }
+
+        private void UpdateMoney(int money)
+        {
             this.money.text = $"재화 : {money}";
         }
     }

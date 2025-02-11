@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static EverScord.UIFactorOptionList;
 
 namespace EverScord
 {
@@ -9,6 +11,8 @@ namespace EverScord
         [SerializeField] private Transform containor;
         [SerializeField] private OptionList[] optionLists;
         private List<UIFactorOption> options = new List<UIFactorOption>();
+
+        public static Action<Color> OnRequestApplyOption = delegate { };
 
         private void Awake()
         {
@@ -33,14 +37,19 @@ namespace EverScord
             {
                 if ((int)optionLists[i].Type == typeNum)
                 {
-                    Initialize(optionLists[i].DataList.OptionDatas.Length, optionLists[i].DataList);
+                    FactorDatas datas = optionLists[i].DataList;
+                    Initialize(datas.OptionDatas.Length, datas, typeNum);
                     break;
                 }
             }
         }
 
-        private void HandleSelectOption()
+        private void HandleSelectOption(int typeNum, int optionNum)
         {
+            FactorDatas factorDatas = optionLists[typeNum].DataList;
+            Color optionImgColor = factorDatas.OptionDatas[optionNum].ImgColor;
+            OnRequestApplyOption?.Invoke(optionImgColor);
+
             gameObject.SetActive(false);
         }
 
@@ -63,14 +72,15 @@ namespace EverScord
             gameObject.SetActive(false);
         }
 
-        private void Initialize(int count, FactorDatas datas)
+        private void Initialize(int count, FactorDatas datas, int typeNum)
         {
             for (int i = 0; i < options.Count; i++)
             {
                 if (i < count)
                 {
                     options[i].gameObject.SetActive(true);
-                    options[i].Initialize(datas.OptionDatas[i].Name, datas.OptionDatas[i].Values[datas.OptionDatas[i].Values.Length - 1]);
+                    FactorDatas.OptionData optionData = datas.OptionDatas[i];
+                    options[i].Initialize(optionData.Name, optionData.Values[optionData.Values.Length - 1], i, typeNum);
                 }
                 else
                     options[i].gameObject.SetActive(false);

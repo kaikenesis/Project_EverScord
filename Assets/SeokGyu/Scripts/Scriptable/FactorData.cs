@@ -19,6 +19,7 @@ namespace EverScord
         {
             [SerializeField] private string _name;
             [SerializeField] private float[] values;
+            [SerializeField] private Color imgColor;
 
             public string Name
             {
@@ -30,6 +31,12 @@ namespace EverScord
             {
                 get { return values; }
                 private set { values = value; }
+            }
+
+            public Color ImgColor
+            {
+                get { return imgColor; }
+                private set { imgColor = value; }
             }
         }
     }

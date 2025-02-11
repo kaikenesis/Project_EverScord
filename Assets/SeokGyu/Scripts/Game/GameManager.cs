@@ -1,5 +1,4 @@
 using Photon.Pun;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +8,6 @@ namespace EverScord
     {
         private static GameManager instance;
 
-        public string userName;
         public PlayerData userData;
 
         public List<PhotonView> playerPhotonViews;
@@ -39,10 +37,9 @@ namespace EverScord
             }
         }
 
-        public void SetUserName(EJob curJob, ELevel curLevel)
+        public void UpdateUserName(string newName)
         {
-            PlayerPrefs.SetString("USERNAME", userName + "|" + curJob.ToString() + "|" + curLevel.ToString());
-            PhotonNetwork.NickName = PlayerPrefs.GetString("USERNAME");
+            PhotonNetwork.NickName = newName;
         }
     }
 }

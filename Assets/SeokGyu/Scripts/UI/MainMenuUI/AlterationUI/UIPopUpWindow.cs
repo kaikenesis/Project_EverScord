@@ -18,6 +18,8 @@ namespace EverScord
         {
             NONE,
             UNLOCK_FACTOR,
+            CHANGE_OPTION,
+            APPLY_OPTION,
             MAX
         }
 
@@ -33,32 +35,32 @@ namespace EverScord
         
         private void Awake()
         {
-            UIFactorSlot.OnClickedSlot += HandleClickedSlot;
+            UIFactorPanel.OnPopUpWindow += HandlePopUpWindow;
 
             gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
-            UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
+            UIFactorPanel.OnPopUpWindow -= HandlePopUpWindow;
         }
 
-        private void HandleClickedSlot(bool bConfirmed, bool bLock, int type, int slotNum)
+        private void HandlePopUpWindow(bool bConfirmed, bool bLock)
         {
             if (bConfirmed == true) return;
 
             if(bLock == true)
             {
-                UnlockFactorWindow();
+                DisplayUnlockFactor();
             }
             else
             {
-
+                DisplayChangeOption();
             }
             
         }
 
-        private void UnlockFactorWindow()
+        private void DisplayUnlockFactor()
         {
             // mainMsg, subMsg, acceptText, cancelText, 요구 money, 현재 money 데이터로 분리 필요
             gameObject.SetActive(true);
@@ -80,6 +82,61 @@ namespace EverScord
                 SetMessage($"필요한 재화 : {pay}\n 개방하시겠습니까?", $"보유 재화 : {money}");
                 bCanAccept = true;
             }
+
+            acceptText.text = "개방";
+            refuseText.text = "취소";
+        }
+
+        private void DisplayChangeOption()
+        {
+            gameObject.SetActive(true);
+            curWindowType = EType.CHANGE_OPTION;
+            int pay = 0;
+            int money;
+            if (GameManager.Instance.userData != null)
+                money = GameManager.Instance.userData.money;
+            else
+                money = -1;
+
+            if (money < pay)
+            {
+                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
+                bCanAccept = false;
+            }
+            else
+            {
+                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : {money}");
+                bCanAccept = true;
+            }
+
+            acceptText.text = "개조";
+            refuseText.text = "취소";
+        }
+
+        private void DisplayApplyOption()
+        {
+            gameObject.SetActive(true);
+            curWindowType = EType.CHANGE_OPTION;
+            int pay = 0;
+            int money;
+            if (GameManager.Instance.userData != null)
+                money = GameManager.Instance.userData.money;
+            else
+                money = -1;
+
+            if (money < pay)
+            {
+                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
+                bCanAccept = false;
+            }
+            else
+            {
+                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : {money}");
+                bCanAccept = true;
+            }
+
+            acceptText.text = "개조";
+            refuseText.text = "취소";
         }
 
         private void SetMessage(string mainMessage, string subMessage)
@@ -100,6 +157,17 @@ namespace EverScord
                             curWindowType = EType.NONE;
                             gameObject.SetActive(false);
                         }
+                    }
+                    break;
+                case EType.CHANGE_OPTION:
+                    {
+                        // OptionList에서 랜덤옵션과, 랜덤수치를 설정
+                        // 해당 값을 시스템창에 표시할수 있도록
+                    }
+                    break;
+                case EType.APPLY_OPTION:
+                    {
+                        // 적용한 옵션 UI Image 적용 ( 임시로 색상 변경 )
                     }
                     break;
             }

@@ -13,13 +13,13 @@ namespace EverScord
         private int selectIndex;
 
         public static Action<int,int> OnRequestUnlock = delegate { };
-        public static Action<int,int> OnApplyOption = delegate { };
+        public static Action<int,int,Color> OnApplyOption = delegate { };
 
         private void Awake()
         {
             UIPopUpWindow.OnAcceptUnlock += HandleAcceptUnlock;
             UIFactorSlot.OnClickedSlot += HandleClickedSlot;
-            UIFactorOption.OnSelectOption += HandleSelectOption;
+            UIFactorOptionList.OnRequestApplyOption += HandleRequestApplyOption;
 
             Init();
         }
@@ -28,7 +28,7 @@ namespace EverScord
         {
             UIPopUpWindow.OnAcceptUnlock -= HandleAcceptUnlock;
             UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
-            UIFactorOption.OnSelectOption -= HandleSelectOption;
+            UIFactorOptionList.OnRequestApplyOption -= HandleRequestApplyOption;
         }
 
         #region Handle Methods
@@ -37,15 +37,15 @@ namespace EverScord
             OnRequestUnlock?.Invoke(selectType, selectIndex);
         }
 
-        private void HandleClickedSlot(bool bConfirmed, bool bLock, int type, int slotNum)
+        private void HandleClickedSlot(int type, int slotNum)
         {
             selectType = type;
             selectIndex = slotNum;
         }
 
-        private void HandleSelectOption()
+        private void HandleRequestApplyOption(Color optionImgColor)
         {
-            OnApplyOption?.Invoke(selectType, selectIndex);
+            OnApplyOption?.Invoke(selectType, selectIndex, optionImgColor);
         }
         #endregion // Handle Methods
 
