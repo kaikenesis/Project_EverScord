@@ -25,7 +25,7 @@ namespace EverScord.Skill
         private Coroutine skillCoroutine;
         private Coroutine stampCoroutine;
 
-        private Quaternion initialRotation;
+        private Vector3 throwDir;
         private EJob ejob;
 
         private const float RAY_OVERLAP = 1.2f;
@@ -64,7 +64,6 @@ namespace EverScord.Skill
             stampedMarker.gameObject.SetActive(false);
             
             startPoint = Instantiate(grenadeStartPoint, activator.transform).transform;
-            initialRotation = startPoint.localRotation;
 
             HideHitMarker();
             SetLineVisibility(false);
@@ -86,15 +85,13 @@ namespace EverScord.Skill
             }
 
             SetLineVisibility(true);
-            activator.PlayerUIControl?.SetAimCursor(false);
+            activator.PlayerUIControl?.SetAimCursor(activator, false);
 
             skillCoroutine = StartCoroutine(ActivateSkill());
         }
 
         private IEnumerator ActivateSkill()
         {
-            startPoint.localRotation = initialRotation;
-
             while (hasActivated)
             {
                 SetForce();
@@ -119,7 +116,7 @@ namespace EverScord.Skill
 
             HideHitMarker();
             SetLineVisibility(false);
-            activator.PlayerUIControl?.SetAimCursor(true);
+            activator.PlayerUIControl?.SetAimCursor(activator, true);
 
             yield return new WaitForSeconds(0.2f);
 
@@ -140,19 +137,21 @@ namespace EverScord.Skill
 
         private void Fire()
         {
-            if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(activator.SyncGrenadeSkill), RpcTarget.Others, activator.MouseRayHitPos, startPoint.forward, skillIndex);
+            if (PhotonNetwork.IsConnected && photonView.IsMine)
+            {
+                throwDir = startPoint.forward;
+                photonView.RPC(nameof(activator.SyncGrenadeSkill), RpcTarget.Others, activator.MouseRayHitPos, throwDir, skillIndex);
+            }
 
             SetForce();
 
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
-            thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
+            thrownObject.AddForce(throwDir * force, ForceMode.Impulse);
 
             if (stampCoroutine != null)
                 StopCoroutine(stampCoroutine);
 
             stampCoroutine = StartCoroutine(StampMarker());
-
             cooldownTimer.ResetElapsedTime();
         }
 
@@ -236,7 +235,7 @@ namespace EverScord.Skill
 
         public void SyncGrenadeSkill(Vector3 throwDir)
         {
-            startPoint.forward = throwDir;
+            this.throwDir = throwDir;
         }
     }
 }

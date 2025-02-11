@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using Photon.Pun;
 using EverScord.Character;
 
 namespace EverScord.UI
@@ -16,13 +16,9 @@ namespace EverScord.UI
 
         void Awake()
         {
+            CanvasRect = transform.parent.GetComponent<RectTransform>();
             Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
             Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
-        }
-
-        public void Init(CharacterControl player)
-        {
-            CanvasRect = transform.parent.GetComponent<RectTransform>();
         }
 
         public void SetAmmoText(int count)
@@ -42,8 +38,11 @@ namespace EverScord.UI
             DOTween.Play(ConstStrings.TWEEN_AMMORELOAD);
         }
 
-        public void SetAimCursor(bool state)
+        public void SetAimCursor(CharacterControl character, bool state)
         {
+            if (PhotonNetwork.IsConnected && !character.CharacterPhotonView.IsMine)
+                return;
+            
             Cursor.visible = state;
         }
     }

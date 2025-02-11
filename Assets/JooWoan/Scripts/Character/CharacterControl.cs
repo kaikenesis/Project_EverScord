@@ -49,6 +49,7 @@ namespace EverScord.Character
 
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
+        public CharacterController Controller => controller;
         public float CharacterSpeed => speed;
 
         private PhotonView photonView;
@@ -88,7 +89,6 @@ namespace EverScord.Character
                 CameraControl.gameObject.SetActive(false);
             }
 
-            PlayerUIControl.Init(this);
             CameraControl.Init(PlayerTransform);
             
             for (int i = 0; i < skillList.Count; i++)
@@ -104,11 +104,15 @@ namespace EverScord.Character
         {
             if (!photonView.IsMine)
                 return;
-            
+
+            if (Input.GetKeyDown(KeyCode.Space))
+                PhysicsControl.AddImpact(transform.forward, 25f);
+
             SetInput();
             SetMovingDirection();
 
             PhysicsControl.ApplyGravity(this);
+            PhysicsControl.ApplyImpact(this);
             Move();
 
             AnimationControl.AnimateMovement(this, moveDir);
@@ -128,9 +132,6 @@ namespace EverScord.Character
             playerInputInfo = InputControl.GetCameraRelativeInput(playerInputInfo, CameraControl.Cam);
 
             moveInput = playerInputInfo.cameraRelativeInput;
-
-            if (PhotonNetwork.IsConnected && playerInputInfo.pressedLeftMouseButton)
-                photonView.RPC(nameof(SyncLeftMouseButton), RpcTarget.Others);
         }
 
         private void SetMovingDirection()
@@ -273,6 +274,11 @@ namespace EverScord.Character
         {
         }
 
+        private void ResetMouseClick()
+        {
+            playerInputInfo.pressedLeftMouseButton = false;
+        }
+
         [PunRPC]
         private void SyncUseSkill(int index)
         {
@@ -280,23 +286,15 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncLeftMouseButton()
-        {
-            playerInputInfo.pressedLeftMouseButton = true;
-            Invoke(nameof(ResetMouseClick), 0.05f);
-        }
-
-        private void ResetMouseClick()
-        {
-            playerInputInfo.pressedLeftMouseButton = false;
-        }
-
-        [PunRPC]
         public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
         {
             MouseRayHitPos = mouseRayHitPos;
+
             GrenadeSkillAction skillAction = (GrenadeSkillAction)skillList[index].SkillAction;
             skillAction.SyncGrenadeSkill(throwDir);
+
+            playerInputInfo.pressedLeftMouseButton = true;
+            Invoke(nameof(ResetMouseClick), 0.05f);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
