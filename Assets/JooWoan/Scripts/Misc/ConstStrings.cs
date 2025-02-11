@@ -16,12 +16,10 @@ namespace EverScord
         public const string INPUT_MOUSE_X = "Mouse X";
 
         // Tags
-        public const string TAG_UIROOT = "UIRoot";
-        public const string TAG_CAMERAROOT = "CameraRoot";
+        public const string TAG_UIHUB = "UIHub";
+        public const string TAG_CHARACTERCAM = "CharacterCamera";
         public const string TAG_POOLROOT = "PoolRoot";
         public const string TAG_SKILLROOT = "SkillRoot";
-        public const string TAG_BULLETCONTROL = "BulletControl";
-        public const string TAG_AIMPOINT = "AimPoint";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";

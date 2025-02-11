@@ -1,28 +1,33 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using EverScord.Character;
+using EverScord.Weapons;
 
 namespace EverScord.UI
 {
     public class PlayerUI : MonoBehaviour
     {
-        public RectTransform CanvasRect { get; private set; }
+        [field: SerializeField] public RectTransform CursorRect { get; private set; }
+        public CustomCursor PlayerCursor                        { get; private set; }
+        public RectTransform CanvasRect                         { get; private set; }
 
         [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText;
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
-        [SerializeField] private Texture2D cursorIcon;
-
-        void Awake()
-        {
-            Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
-            Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
-        }
 
         public void Init(CharacterControl player)
         {
             CanvasRect = transform.parent.GetComponent<RectTransform>();
+            PlayerCursor = new CustomCursor(player);
+        }
+
+        void Update()
+        {
+            if (PlayerCursor == null || !CursorRect.gameObject.activeSelf)
+                return;
+
+            PlayerCursor.SetCursorPosition(this);
         }
 
         public void SetAmmoText(int count)
@@ -44,7 +49,7 @@ namespace EverScord.UI
 
         public void SetAimCursor(bool state)
         {
-            Cursor.visible = state;
+            CursorRect.gameObject.SetActive(state);
         }
     }
 }

@@ -16,7 +16,7 @@ public abstract class NStunState : MonoBehaviour, IState
 
     public void Enter()
     {
-        monsterController.PlayAnimation("Wait");
+        monsterController.Animator.CrossFade("Wait", 0.3f);
         StartCoroutine(Stun());
     }
 

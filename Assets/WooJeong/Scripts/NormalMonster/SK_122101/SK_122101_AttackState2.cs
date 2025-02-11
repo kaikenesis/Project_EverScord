@@ -11,8 +11,9 @@ public class SK_122101_AttackState2 : NAttackState
     
     protected override IEnumerator Attack()
     {
-        yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
-        monsterController.PlayAnimation("Attack2");
+        yield return project = StartCoroutine(ProjectAttackRange(2));
+
+        monsterController.Animator.CrossFade("Attack2", 0.3f);
         float time = monsterController.clipDict["Attack2"];
         monsterController.BoxCollider2.enabled = true;
         yield return new WaitForSeconds(time);

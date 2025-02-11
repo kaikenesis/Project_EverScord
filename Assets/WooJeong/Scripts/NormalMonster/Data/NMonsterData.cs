@@ -17,7 +17,6 @@ public class NMonsterData : ScriptableObject
     [field: SerializeField] public float AttackRangeX2 { get; protected set; }
     [field: SerializeField] public float AttackRangeY2 { get; protected set; }
     [field: SerializeField] public float AttackRangeZ2 { get; protected set; }
-    [field: SerializeField] public float StopDistance { get; protected set; }
 
     [HideInInspector] public float SmoothAngleSpeed = 20;
 }
