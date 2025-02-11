@@ -10,17 +10,9 @@ public class PhotonPlayerController : MonoBehaviour
 {
     [SerializeField] private float refreshCooldown;
     [SerializeField] private float refreshCountdown;
-    [SerializeField] private List<FriendInfo> playerList;
+    [SerializeField] private List<FriendInfo> playerList = new List<FriendInfo>();
 
     public static Action<List<FriendInfo>> OnDisplayPlayers = delegate { };
-    private void Awake()
-    {
-        playerList = new List<FriendInfo>();
-    }
-
-    private void OnDestroy()
-    {
-    }
 
     private void Update()
     {
