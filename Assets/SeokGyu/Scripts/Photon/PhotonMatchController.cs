@@ -211,12 +211,6 @@ namespace EverScord
 
             CreatePhotonMatchRoom();
         }
-        private System.Collections.IEnumerator LoadInGameScene()
-        {
-            yield return new WaitForSeconds(3.0f);
-
-            PhotonNetwork.LoadLevel("PhotonTestPlay");
-        }
         #endregion // Coroutine Methods
 
         #region PunRPC Methods
@@ -228,6 +222,10 @@ namespace EverScord
             
             switch(GameManager.Instance.userData.curPhotonState)
             {
+                case EPhotonState.MATCH:
+                    //OnUpdateUI?.Invoke(false);
+                    //OnStartTimer?.Invoke();
+                    break;
                 case EPhotonState.FOLLOW:
                     OnUpdateUI?.Invoke(false);
                     OnStartTimer?.Invoke();
@@ -250,10 +248,6 @@ namespace EverScord
         private void MatchComplete()
         {
             OnMatchComplete?.Invoke();
-            if (PhotonNetwork.IsMasterClient)
-            {
-                StartCoroutine(LoadInGameScene());
-            }
         }
         #endregion // PunRPC Methods
 

@@ -1,5 +1,3 @@
-using System;
-
 namespace EverScord
 {
     public enum ECharacter
@@ -40,14 +38,6 @@ namespace EverScord
         public EJob job = EJob.DEALER;
         public ELevel curLevel = ELevel.NORMAL;
         public EPhotonState curPhotonState = EPhotonState.NONE;
-        public int money = 100;
-
-        public static Action<int> OnUpdateMoney = delegate { };
-
-        public void UpdateMoney(int value)
-        {
-            money += value;
-            OnUpdateMoney?.Invoke(money);
-        }
+        public int money = 0;
     }
 }
