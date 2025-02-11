@@ -5,27 +5,29 @@ namespace EverScord.Pool
 {
     public class BulletPool : ObjectPool<Bullet>
     {
-        private TrailRenderer trailRenderer;
+        private GameObject tracerPrefab;
         public Transform Root { get; private set; }
 
-        public BulletPool(GameObject trailPrefab, Transform rootParent, int count = 5) : base(0)
+        public BulletPool(GameObject tracerPrefab, Transform rootParent, int count = 5) : base(0)
         {
             Root = new GameObject().transform;
-            Root.name = $"{trailPrefab.name}_Root";
+            Root.name = $"{tracerPrefab.name}_Root";
             Root.parent = rootParent;
 
+            this.tracerPrefab = tracerPrefab;
+
             for (int i = 0; i < count; i++)
-            {
-                trailRenderer = Object.Instantiate(trailPrefab, Root).GetComponent<TrailRenderer>();
                 poolingQueue.Enqueue(CreateObject());
-            }
         }
 
         public override Bullet CreateObject()
         {
             Bullet bullet = new Bullet();
+            TrailRenderer trailRenderer = Object.Instantiate(tracerPrefab, Root).GetComponent<TrailRenderer>();
+
             bullet.SetTracerEffect(trailRenderer);
             bullet.TracerEffect.gameObject.SetActive(false);
+            
             return bullet;
         }
 

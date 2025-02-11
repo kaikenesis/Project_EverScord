@@ -1,9 +1,7 @@
-using System.Collections;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using EverScord.Character;
-using EverScord.Weapons;
 
 namespace EverScord.UI
 {

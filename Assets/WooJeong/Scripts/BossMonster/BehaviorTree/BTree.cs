@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public abstract class BTree : MonoBehaviour
@@ -13,6 +12,9 @@ public abstract class BTree : MonoBehaviour
 
     private void Update()
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         if (root != null)
             root.Evaluate();
     }

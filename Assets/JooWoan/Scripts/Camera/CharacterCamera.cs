@@ -4,17 +4,16 @@ namespace EverScord.GameCamera
 {
     public class CharacterCamera : MonoBehaviour
     {
+        [field: SerializeField] public Camera Cam { get; private set; }
         [SerializeField] private float smoothTime;
-        public Camera Cam { get; private set; }
 
         private Transform target;
         private Vector3 velocity = Vector3.zero;
         private Vector3 nextPos;
         private float initialHeight;
 
-        public void Init(Transform target, Camera cam)
+        public void Init(Transform target)
         {
-            Cam = cam;
             this.target = target;
             initialHeight = transform.position.y;
         }

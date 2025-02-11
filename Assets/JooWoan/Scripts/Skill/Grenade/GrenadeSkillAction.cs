@@ -10,7 +10,6 @@ namespace EverScord.Skill
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private Rigidbody projectile;
         [SerializeField] private Transform hitMarker;
-        [SerializeField] private GameObject explosionEffect;
         [SerializeField] private float predictInterval, hitMarkerGroundOffset;
         [SerializeField] private int maxPoints;
 
@@ -66,12 +65,12 @@ namespace EverScord.Skill
 
             if (!hasActivated)
             {
-                ExitSkill();
+                StartCoroutine(ExitSkill());
                 return;
             }
 
             SetLineVisibility(true);
-            activator.PlayerUIControl.SetAimCursor(false);
+            activator.PlayerUIControl?.SetAimCursor(false);
 
             skillCoroutine = StartCoroutine(ActivateSkill());
         }
@@ -82,11 +81,13 @@ namespace EverScord.Skill
             {
                 SetForce();
                 Predict();
-                Fire();
+                
+                if (activator.PlayerInputInfo.pressedLeftMouseButton)
+                    Fire();
 
                 if (cooldownTimer.IsCooldown)
                 {
-                    ExitSkill();
+                    StartCoroutine(ExitSkill());
                     yield break;
                 }
 
@@ -94,16 +95,18 @@ namespace EverScord.Skill
             }
         }
 
-        private void ExitSkill()
+        private IEnumerator ExitSkill()
         {
             hasActivated = false;
 
-            StopCoroutine(skillCoroutine);
-            skillCoroutine = null;
-
             HideHitMarker();
             SetLineVisibility(false);
-            activator.PlayerUIControl.SetAimCursor(true);
+            activator.PlayerUIControl?.SetAimCursor(true);
+
+            yield return new WaitForSeconds(0.2f);
+
+            StopCoroutine(skillCoroutine);
+            skillCoroutine = null;
         }
 
         private void SetForce()
@@ -119,9 +122,6 @@ namespace EverScord.Skill
 
         private void Fire()
         {
-            if (!activator.PlayerInputInfo.pressedLeftMouseButton)
-                return;
-            
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
             thrownObject.AddForce(startPoint.forward * force, ForceMode.Impulse);
 
@@ -200,9 +200,6 @@ namespace EverScord.Skill
             stampedMarker.rotation = hitMarker.rotation;
 
             yield return new WaitForSeconds(estimatedTime);
-
-            var effect = Instantiate(explosionEffect);
-            effect.transform.position = hitMarker.position;
 
             stampedMarker.gameObject.SetActive(false);
             stampCoroutine = null;

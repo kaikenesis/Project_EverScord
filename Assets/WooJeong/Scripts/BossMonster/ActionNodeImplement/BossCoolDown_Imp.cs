@@ -4,12 +4,25 @@ using UnityEngine;
 
 public class BossCoolDown_Imp : ActionNodeImplement
 {
-    float coolDown = 10;
+    private bool isUnder90 = false;
+    private float coolDown1 = 5;
+    private float coolDown2 = 10;
 
     protected override IEnumerator Action()
     {
         Debug.Log("CoolDown start");
-        yield return new WaitForSeconds(coolDown);
+        if(isUnder90 == false && bossData.IsUnderHP90() == true)
+        {
+            isUnder90 = true;
+        }
+        if(!isUnder90)
+        {
+            yield return new WaitForSeconds(coolDown1);
+            isEnd = true;
+            action = null;
+            yield break;
+        }
+        yield return new WaitForSeconds(coolDown2);
         isEnd = true;
         action = null;
         Debug.Log("CoolDown end");

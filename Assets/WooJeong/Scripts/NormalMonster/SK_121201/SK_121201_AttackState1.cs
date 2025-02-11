@@ -1,4 +1,5 @@
 using EverScord;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,9 +12,9 @@ public class SK_121201_AttackState1 : NAttackState
     }
     protected override IEnumerator Attack()
     {
-        Debug.Log("Att1");
         Fire();
-        monsterController.Animator.CrossFade("Attack1", 0.3f, -1, 0);
+        //monsterController.Animator.CrossFade("Attack1", 0.3f, -1, 0);
+        monsterController.PlayAnimation("Attack1");
 
         float time = monsterController.clipDict["Attack1"]
                     + monsterController.clipDict["Attack1_Loop"]
@@ -39,6 +40,8 @@ public class SK_121201_AttackState1 : NAttackState
         }
         
         GameObject attackObj = new GameObject();
+        //GameObject attackObj = PhotonNetwork.Instantiate("MonsterAttack", monsterController.player.transform.position, Quaternion.identity);
+
         attackObj.name = "att1";
         attackObj.transform.position = monsterController.player.transform.position;
         MonsterAttack ma = attackObj.AddComponent<MonsterAttack>();

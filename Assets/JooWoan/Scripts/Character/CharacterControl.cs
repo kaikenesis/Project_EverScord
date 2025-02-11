@@ -13,25 +13,15 @@ namespace EverScord.Character
         [SerializeField] private float speed;
         [SerializeField] private float gravity;
         [SerializeField] private float mass;
+        [SerializeField] private float bodyRotateSpeed;
 
         [Header("Ground Check")]
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private float groundCheckRadius;
         [SerializeField] private Vector3 groundCheckOffset;
 
-        [Header("Animation")]
-        [SerializeField] private Animator anim;
-        [SerializeField] private AnimationInfo info;
-        [SerializeField] private CharacterRigControl rigLayerPrefab;
-        [SerializeField] private float transitionDampTime;
-        [SerializeField] private float bodyRotateSpeed;
-        [field: SerializeField] public float ShootStanceDuration        { get; private set; }
-        public CharacterRigControl RigControl                           { get; private set; }
-
         [Header("Weapon")]
-        [SerializeField] private GameObject playerWeapon;
-        private Weapon weapon;
-        public Weapon PlayerWeapon => weapon;
+        [SerializeField] private Weapon weapon;
 
         [Header("Skill")]
         [SerializeField] private SkillActionInfo firstSkillActionInfo;
@@ -39,9 +29,15 @@ namespace EverScord.Character
 
         [Header("UI")]
         [SerializeField] private PlayerUI uiPrefab;
-        public PlayerUI PlayerUIControl                                 { get; private set; }
-        private Transform uiHub;
 
+        [Header("Camera")]
+        [SerializeField] private CharacterCamera cameraPrefab;
+
+        [Header("Rig")]
+        [SerializeField] private CharacterRigControl rigLayerPrefab;
+
+        public PlayerUI PlayerUIControl                                 { get; private set; }
+        public CharacterRigControl RigControl                           { get; private set; }
         public CharacterAnimation AnimationControl                      { get; private set; }
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
@@ -50,41 +46,53 @@ namespace EverScord.Character
         public Vector3 AimPosition                                      { get; private set; }
         public EJob CharacterEJob                                       { get; private set; }
 
-        private CharacterController controller;
+        public Weapon PlayerWeapon => weapon;
+        public PhotonView CharacterPhotonView => photonView;
+
         private PhotonView photonView;
+        private CharacterController controller;
+        private Transform uiHub, cameraHub;
         private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
 
         void Awake()
         {
             photonView       = GetComponent<PhotonView>();
-            controller       = GetComponent<CharacterController>();
-            weapon           = playerWeapon.GetComponent<Weapon>();
-
-            uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIHUB).transform;
-
-            CameraControl    = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CHARACTERCAM)
-                               .GetComponent<CharacterCamera>();
-
-            PlayerUIControl  = Instantiate(uiPrefab, uiHub);
-            RigControl       = Instantiate(rigLayerPrefab, anim.transform);
 
             PlayerTransform  = transform;
-
-            AnimationControl = new CharacterAnimation(anim, info, transitionDampTime);
             PhysicsControl   = new CharacterPhysics(gravity, mass);
+
+            controller       = GetComponent<CharacterController>();
+            AnimationControl = GetComponent<CharacterAnimation>();
+
+            uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
+            cameraHub        = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
+            
+            PlayerUIControl  = Instantiate(uiPrefab, uiHub);
+            CameraControl    = Instantiate(cameraPrefab, cameraHub);
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * 0.1f;
 
-            weapon.Init(PlayerUIControl.SetAmmoText);
-            RigControl.Init(anim.transform, GetComponent<Animator>(), weapon);
+            AnimationControl.Init(photonView);
+            weapon.Init(this);
 
+            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
+            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
             RigControl.SetAimWeight(false);
-            CameraControl.Init(PlayerTransform, Camera.main);
-            PlayerUIControl.Init(this);
 
+            if (!photonView.IsMine)
+            {
+                PlayerUIControl.gameObject.SetActive(false);
+                CameraControl.gameObject.SetActive(false);
+            }
+
+            PlayerUIControl.Init(this);
+            CameraControl.Init(PlayerTransform);
+            
             firstSkillActionInfo.Init(this);
             secondSkillActionInfo.Init(this);
+
+            GameManager.Instance.AddPlayerControl(this);
         }
 
         void OnApplicationFocus(bool focus)
@@ -94,6 +102,9 @@ namespace EverScord.Character
 
         void Update()
         {
+            if (!photonView.IsMine)
+                return;
+            
             SetInput();
             SetMovingDirection();
 
@@ -107,7 +118,6 @@ namespace EverScord.Character
 
             weapon.TryReload(this);
             weapon.Shoot(this);
-            weapon.UpdateBullets(this, Time.deltaTime);
 
             UseSkills();
         }
@@ -130,9 +140,6 @@ namespace EverScord.Character
 
         private void Move()
         {
-            if (photonView.IsMine == false)
-                return;
-
             movement = new Vector3(moveInput.x, 0, moveInput.z);
 
             Vector3 velocity = movement * speed;
@@ -165,11 +172,16 @@ namespace EverScord.Character
 
             lookPosition.y = weapon.GunPoint.position.y;
 
-            weapon.AimPoint.position = Vector3.Lerp(
+            Vector3 aimPosition = Vector3.Lerp(
                 weapon.AimPoint.position,
                 lookPosition,
                 Time.deltaTime * weapon.AimSensitivity
             );
+
+            weapon.AimPoint.position = aimPosition;
+
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC("SyncTrackAim", RpcTarget.Others, aimPosition, photonView.ViewID);
         }
 
         private void RotateBody()
@@ -198,10 +210,20 @@ namespace EverScord.Character
                 return;
 
             if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
-                firstSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+            {
+                firstSkillActionInfo.SkillAction.Activate(CharacterEJob);
+
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1, (int)CharacterEJob);
+            }
 
             else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
-                secondSkillActionInfo.SkillAction.Activate(EJob.DEALER);
+            {
+                secondSkillActionInfo.SkillAction.Activate(CharacterEJob);
+
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2, (int)CharacterEJob);
+            }
         }
 
         public void SetIsAiming(bool state)
@@ -211,7 +233,7 @@ namespace EverScord.Character
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            throw new System.NotImplementedException();
+            GameManager.Instance.AddPlayerPhotonView(info.photonView);
         }
 
         public bool IsGrounded
@@ -243,6 +265,37 @@ namespace EverScord.Character
         public bool IsAiming { get; private set; }
         public bool IsShooting => PlayerInputInfo.holdLeftMouseButton;
         public bool IsMoving => moveInput.magnitude > 0;
+
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        [PunRPC]
+        private void SyncTrackAim(Vector3 aimPosition, int viewID)
+        {
+            if (photonView.ViewID != viewID)
+                return;
+
+            weapon.AimPoint.position = aimPosition;
+        }
+
+        [PunRPC]
+        private void SyncUseSkill(int skillIndex, int ejob)
+        {
+            EJob ejobType = (EJob)ejob;
+
+            switch (skillIndex)
+            {
+                case 1:
+                    firstSkillActionInfo.SkillAction.Activate(ejobType);
+                    break;
+
+                case 2:
+                    secondSkillActionInfo.SkillAction.Activate(ejobType);
+                    break;
+            }
+        }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
         #region GIZMO
         private void OnDrawGizmosSelected()

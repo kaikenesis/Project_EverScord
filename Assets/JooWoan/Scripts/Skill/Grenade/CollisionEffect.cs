@@ -9,10 +9,13 @@ namespace EverScord.Effects
 
         void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.layer != collisionLayer)
+            if ((1 << collision.gameObject.layer) != collisionLayer)
                 return;
 
-            Instantiate(effect);
+            var spawnedEffect = Instantiate(effect);
+            spawnedEffect.transform.position = transform.position;
+
+            Destroy(gameObject);
         }
     }
 }
