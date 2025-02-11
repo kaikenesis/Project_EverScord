@@ -118,7 +118,7 @@ namespace EverScord
         {
             pv.RPC("SetLevel", RpcTarget.Others, GameManager.Instance.userData.curLevel);
             SetPlayerRole();
-            Debug.Log($"nickName : {GameManager.Instance.userName}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
+            Debug.Log($"nickName : {PhotonNetwork.NickName}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
         }
 
         private void HandleGameStart()
@@ -177,10 +177,9 @@ namespace EverScord
                 PhotonNetwork.LeaveRoom();
         }
 
-        private void HandleChangeName(string name, int money)
+        private void HandleChangeName(string name)
         {
             PhotonNetwork.NickName = name;
-            GameManager.Instance.userName = name;
 
             pv.RPC("UpdateRoom", RpcTarget.All);
         }

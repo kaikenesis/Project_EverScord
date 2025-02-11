@@ -10,7 +10,6 @@ namespace EverScord
     {
         private static GameManager instance;
 
-        public string userName;
         public PlayerData userData;
 
         public List<PhotonView> playerPhotonViews { get; private set; }
@@ -50,10 +49,9 @@ namespace EverScord
             playerPhotonViews = new();
         }
 
-        public void SetUserName(EJob curJob, ELevel curLevel)
+        public void UpdateUserName(string newName)
         {
-            PlayerPrefs.SetString("USERNAME", userName + "|" + curJob.ToString() + "|" + curLevel.ToString());
-            PhotonNetwork.NickName = PlayerPrefs.GetString("USERNAME");
+            PhotonNetwork.NickName = newName;
         }
 
         public void AddPlayerPhotonView(PhotonView view)
