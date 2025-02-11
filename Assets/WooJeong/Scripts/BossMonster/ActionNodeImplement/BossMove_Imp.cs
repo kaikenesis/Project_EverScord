@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class BossMove_Imp : ActionNodeImplement
 {
-    private GameObject player;
     private NavMeshAgent navMeshAgent;
 
     private void Awake()
@@ -13,9 +12,9 @@ public class BossMove_Imp : ActionNodeImplement
         navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
     }
 
-    public override void Setup(BossData bossData, Animator animator)
+    public override void Setup(BossData bossData)
     {
-        base.Setup(bossData, animator);
+        base.Setup(bossData);
         navMeshAgent.speed = bossData.Speed;
         navMeshAgent.stoppingDistance = bossData.StopDistance;
     }
@@ -43,22 +42,10 @@ public class BossMove_Imp : ActionNodeImplement
     protected override IEnumerator Action()
     {
         Debug.Log("move start");
+        PlayAnimation("Walk");
         navMeshAgent.enabled = true;
         while (true)
         {
-            /*
-            Vector3 vec = (player.transform.position - transform.position);
-            if (vec.magnitude < distance)
-            {
-                Debug.Log("move end");
-                isEnd = true;
-                action = null;
-                yield break;
-            }
-            Vector3 moveVector = vec.normalized;
-            transform.Translate(speed * Time.deltaTime * moveVector, Space.World);
-            yield return new WaitForSeconds(Time.deltaTime);
-            */
             navMeshAgent.destination = player.transform.position;
             if (CalcDistance() < navMeshAgent.stoppingDistance)
             {
