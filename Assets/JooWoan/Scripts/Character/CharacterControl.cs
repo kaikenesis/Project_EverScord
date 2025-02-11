@@ -43,7 +43,6 @@ namespace EverScord.Character
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
-        private Vector3 remoteMouseRayHitPos;
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -56,7 +55,6 @@ namespace EverScord.Character
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
-        private const float LERP_REMOTE_MOUSERAYHIT = 10f;
 
         void Awake()
         {
@@ -105,10 +103,7 @@ namespace EverScord.Character
         void Update()
         {
             if (!photonView.IsMine)
-            {
-                LerpRemoteInfo();
                 return;
-            }
             
             SetInput();
             SetMovingDirection();
@@ -125,15 +120,6 @@ namespace EverScord.Character
             weapon.Shoot(this);
 
             UseSkills();
-        }
-
-        private void LerpRemoteInfo()
-        {
-            MouseRayHitPos = Vector3.Lerp(
-                MouseRayHitPos,
-                remoteMouseRayHitPos,
-                Time.deltaTime * LERP_REMOTE_MOUSERAYHIT
-            );
         }
 
         private void SetInput()
@@ -285,14 +271,6 @@ namespace EverScord.Character
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            if (stream.IsWriting)
-            {
-                stream.SendNext(MouseRayHitPos);
-            }
-            else
-            {
-                remoteMouseRayHitPos = (Vector3)stream.ReceiveNext();
-            }
         }
 
         [PunRPC]
@@ -317,7 +295,7 @@ namespace EverScord.Character
         public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
         {
             MouseRayHitPos = mouseRayHitPos;
-            GrenadeSkillAction skillAction = ((GrenadeSkillAction)skillList[index].SkillAction);
+            GrenadeSkillAction skillAction = (GrenadeSkillAction)skillList[index].SkillAction;
             skillAction.SyncGrenadeSkill(throwDir);
         }
 

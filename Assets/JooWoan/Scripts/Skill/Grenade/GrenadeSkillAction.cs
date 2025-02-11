@@ -158,6 +158,9 @@ namespace EverScord.Skill
 
         private void Predict()
         {
+            if (!photonView.IsMine)
+                return;
+
             Vector3 currentVelocity = startPoint.forward * (force / projectile.mass);
             Vector3 currentPosition = startPoint.position;
             Vector3 nextPosition;
@@ -218,6 +221,9 @@ namespace EverScord.Skill
 
         private IEnumerator StampMarker()
         {
+            if (!photonView.IsMine)
+                yield break;
+
             stampedMarker.gameObject.SetActive(true);
             stampedMarker.position = hitMarker.position;
             stampedMarker.rotation = hitMarker.rotation;

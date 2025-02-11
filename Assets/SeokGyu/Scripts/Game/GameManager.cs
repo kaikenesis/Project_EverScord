@@ -62,18 +62,11 @@ namespace EverScord
             playerPhotonViews.Add(view);
         }
 
-        public void AddPlayerControl(CharacterControl player)
+        public void InitControl(object control)
         {
-            playerDict[player.CharacterPhotonView.ViewID] = player;
-        }
-
-        public void SetBulletControl(BulletControl bulletControl)
-        {
-            BulletsControl = bulletControl;
-        }
-
-        public void InitControl<T>(T control)
-        {
+            if (control == null)
+                return;
+            
             switch (control)
             {
                 case BulletControl bulletControl:
@@ -86,9 +79,6 @@ namespace EverScord
 
                 case CharacterControl character:
                     playerDict[character.CharacterPhotonView.ViewID] = character;
-                    break;
-
-                default:
                     break;
             }
         }
