@@ -126,18 +126,16 @@ namespace EverScord
             switch(GameManager.Instance.userData.curLevel)
             {
                 case ELevel.STORY:
-                    OnMatchSoloPlay?.Invoke();
+                    {
+                        OnMatchSoloPlay?.Invoke();
+                    }
                     break;
                 case ELevel.NORMAL:
-                    if(PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
                     {
-                        OnMatchMultiPlay?.Invoke();
-                    }
-                    else
-                    {
-                        if(IsCanStart())
+                        if (IsCanStart())
                         {
                             Debug.Log("You Can Start Game");
+                            OnMatchMultiPlay?.Invoke();
                         }
                         else
                         {
@@ -146,15 +144,11 @@ namespace EverScord
                     }
                     break;
                 case ELevel.HARD:
-                    if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
-                    {
-                        OnMatchMultiPlay?.Invoke();
-                    }
-                    else
                     {
                         if (IsCanStart())
                         {
                             Debug.Log("You Can Start Game");
+                            OnMatchMultiPlay?.Invoke();
                         }
                         else
                         {
