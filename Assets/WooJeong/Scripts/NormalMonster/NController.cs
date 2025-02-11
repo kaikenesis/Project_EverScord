@@ -1,4 +1,5 @@
 using EverScord;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,8 @@ public abstract class NController : MonoBehaviour
     public BoxCollider BoxCollider2 { get; protected set; }
     public Animator Animator { get; protected set; }
 
+    private PhotonView photonView;
+
     protected IState currentState;
     protected IState runState;
     protected IState attackState1;
@@ -35,10 +38,9 @@ public abstract class NController : MonoBehaviour
 
     protected void Awake()
     {
-        playerLayer = LayerMask.GetMask("Player");
-        SetNearestPlayer();
-
+        photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
+
         Projector1 = gameObject.AddComponent<DecalProjector>();
         Projector2 = gameObject.AddComponent<DecalProjector>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
@@ -47,6 +49,8 @@ public abstract class NController : MonoBehaviour
 
         Projector1.enabled = false;
         Projector2.enabled = false;
+        BoxCollider1.isTrigger = true;
+        BoxCollider2.isTrigger = true;
         BoxCollider1.enabled = false;
         BoxCollider2.enabled = false;
 
@@ -54,12 +58,20 @@ public abstract class NController : MonoBehaviour
         {
             clipDict[clip.name] = clip.length;
         }
+
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        playerLayer = LayerMask.GetMask("Player");
+        SetNearestPlayer();
+        
         Setup();
     }
 
-    protected void Start()
+    public void StartFSM()
     {
-        WaitState();
+        if (PhotonNetwork.IsMasterClient)
+            WaitState();
     }
 
     protected abstract void Setup();
@@ -99,6 +111,60 @@ public abstract class NController : MonoBehaviour
                                         monsterData.AttackRangeZ2);
     }
 
+    public void PlayAnimation(string animationName)
+    {
+        Animator.CrossFade(animationName, 0.3f, -1, 0); // 로컬에서 애니메이션 실행
+        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName); // 다른 클라이언트에도 애니메이션 실행 요청
+    }
+
+    [PunRPC]
+    protected void SyncAnimation(string animationName)
+    {
+        Animator.CrossFade(animationName, 0.3f, -1, 0); // 받은 클라이언트에서 동일한 애니메이션 실행
+    }
+
+    public virtual IEnumerator ProjectAttackRange(int attackNum)
+    {
+        DecalProjector projector;
+        if (attackNum == 1)
+            projector = Projector1;
+        else
+            projector = Projector2;
+
+        photonView.RPC("SyncProjectorEnable", RpcTarget.Others, attackNum);
+        projector.enabled = true;
+        yield return new WaitForSeconds(monsterData.ProjectionTime);
+        photonView.RPC("SyncProjectorDisable", RpcTarget.Others, attackNum);
+        projector.enabled = false;
+    }
+
+    public void ProjectorDisable(int projectorNum)
+    {
+        if (projectorNum == 1)
+            Projector1.enabled = false;
+        else
+            Projector2.enabled = false;
+        photonView.RPC("SyncProjectorDisable", RpcTarget.Others, projectorNum);
+    }
+
+    [PunRPC]
+    protected void SyncProjectorEnable(int projectorNum)
+    {
+        if (projectorNum == 1)
+            Projector1.enabled = true;
+        else
+            Projector2.enabled = true;
+    }
+    
+    [PunRPC]
+    protected void SyncProjectorDisable(int projectorNum)
+    {
+        if (projectorNum == 1)
+            Projector1.enabled = false;
+        else
+            Projector2.enabled = false;
+    }
+
     public void SetNearestPlayer()
     {
         float nearest = Mathf.Infinity;
@@ -115,29 +181,6 @@ public abstract class NController : MonoBehaviour
         }
         player = nearPlayer;
     }
-
-    //public List<GameObject> GetNearPlayers()
-    //{
-    //    float nearest = 0f;
-    //    List<GameObject> nearPlayer = null;
-        
-    //    foreach (var player in GameManager.Instance.playerPhotonViews)
-    //    {
-    //        float cur = (player.transform.position - transform.position).magnitude;
-    //        if (cur < nearest)
-    //        {
-    //            nearest = cur;
-    //        }
-    //    }
-    //    nearPlayer.Sort(delegate (GameObject a, GameObject b) 
-    //        {
-    //            return (a.transform.position - transform.position).magnitude.CompareTo((b.transform.position - transform.position).magnitude);
-    //        });
-    //    Debug.Log(nearPlayer[0].transform.position);
-    //    Debug.Log(nearPlayer[1].transform.position);
-    //    return nearPlayer;
-    //}
-
 
     public void LookPlayer()
     {

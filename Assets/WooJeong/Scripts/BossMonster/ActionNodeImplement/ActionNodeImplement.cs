@@ -1,14 +1,25 @@
+using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class ActionNodeImplement : MonoBehaviour
 {
     protected Coroutine action;
     protected bool isEnd = false;
+    protected BossData bossData;
+    protected Animator animator;
+    protected PhotonView photonView;
+    protected GameObject player;
+
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+        animator = GetComponent<Animator>();
+    }
 
     public virtual void Setup(BossData bossData)
     {
+        this.bossData = bossData;
         return;
     }
     
@@ -27,5 +38,27 @@ public abstract class ActionNodeImplement : MonoBehaviour
     }
 
     protected abstract IEnumerator Action();
+
+    protected void PlayAnimation(string animationName)
+    {
+        if (animator == null)
+        {
+            photonView = GetComponent<PhotonView>();
+            animator = GetComponent<Animator>();
+        }
+        animator.CrossFade(animationName, 0.3f, -1, 0);
+        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName); 
+    }
+
+    [PunRPC]
+    protected void SyncAnimation(string animationName)
+    {
+        if (animator == null)
+        {
+            photonView = GetComponent<PhotonView>();
+            animator = GetComponent<Animator>();
+        }
+        animator.CrossFade(animationName, 0.3f, -1, 0);
+    }
 
 }

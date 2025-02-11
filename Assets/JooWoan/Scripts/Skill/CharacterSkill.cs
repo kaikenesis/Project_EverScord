@@ -19,7 +19,7 @@ namespace EverScord.Skill
 
         private static Transform skillRoot;
 
-        public void Init(CharacterControl activator)
+        public void Init(CharacterControl activator, int skillIndex)
         {
             if (skillRoot == null)
                 skillRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
@@ -30,10 +30,15 @@ namespace EverScord.Skill
                 return;
             }
 
+            EJob ejob = EJob.DEALER;
+
+            if (GameManager.Instance.userData != null)
+                ejob = GameManager.Instance.userData.job;
+
             ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, skillRoot).GetComponent<ISkillAction>();
 
             SkillAction = skillAction;
-            SkillAction.Init(activator, Skill);
+            SkillAction.Init(activator, Skill, ejob, skillIndex);
         }
     }
 }

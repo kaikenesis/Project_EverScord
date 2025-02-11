@@ -12,11 +12,11 @@ public class SK_121201_AttackState2 : NAttackState
     }
     protected override IEnumerator Attack()
     {
-        Debug.Log("Att2");
         float time = monsterController.clipDict["Attack2"];
-        monsterController.Animator.CrossFade("Attack2", 0.3f, -1, 0);
-        
-        for(int i = 0; i < 3; i++)
+        //monsterController.Animator.CrossFade("Attack2", 0.3f, -1, 0);
+        monsterController.PlayAnimation("Attack2");
+
+        for (int i = 0; i < 3; i++)
         {
             Fire();
             yield return new WaitForSeconds(2f);

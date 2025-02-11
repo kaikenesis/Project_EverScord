@@ -17,8 +17,7 @@ public abstract class NWaitState : MonoBehaviour, IState
     public void Enter()
     {
         isEnter = true;
-        monsterController.Animator.CrossFade("Wait", 0.3f);
-        
+        monsterController.PlayAnimation("Wait");
         Exit();
     }
 
@@ -48,7 +47,7 @@ public abstract class NWaitState : MonoBehaviour, IState
     {
         while (true)
         {
-            if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
+            if (monsterController.CalcDistance() > monsterController.monsterData.StopDistance)
             {
                 ExitToRun();
                 yield break;

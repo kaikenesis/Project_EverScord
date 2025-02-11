@@ -15,7 +15,7 @@ public abstract class NDeathState : MonoBehaviour, IState
 
     public void Enter()
     {
-        monsterController.Animator.CrossFade("Dying", 0.3f);
+        monsterController.PlayAnimation("Dying");
         StartCoroutine(Death());
     }
 

@@ -1,25 +1,34 @@
 
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class NRunState : MonoBehaviour, IState
 {
     protected NController monsterController;
     protected bool isEnter = false;
+    protected PhotonView photonView;
+    protected Vector3 remotePos;
+    protected Quaternion remoteRot;
+    protected NavMeshAgent navMeshAgent;
 
     protected abstract void Setup();
 
     void Awake()
     {
         Setup();
+        photonView = GetComponent<PhotonView>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.stoppingDistance = monsterController.monsterData.StopDistance;
     }
 
     public void Enter()
     {
         monsterController.SetNearestPlayer();
         isEnter = true;
-        monsterController.Animator.CrossFade("Run", 0.25f);
+        monsterController.PlayAnimation("Run");
     }
 
     protected virtual void Update()
@@ -41,15 +50,13 @@ public abstract class NRunState : MonoBehaviour, IState
             return;
         }
 
-        if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
+        navMeshAgent.destination = monsterController.player.transform.position;
+        Debug.Log(navMeshAgent.remainingDistance);
+        if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
         {
             Exit();
             return;
         }
-
-        Vector3 moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        monsterController.LookPlayer();
-        transform.Translate(monsterController.monsterData.MoveSpeed * Time.deltaTime * moveVector, Space.World);
     }
 
     protected virtual IEnumerator RandomAttack()

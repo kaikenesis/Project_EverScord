@@ -1,6 +1,8 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+using EverScord.Character;
+using EverScord.Weapons;
 
 namespace EverScord
 {
@@ -10,7 +12,11 @@ namespace EverScord
 
         public PlayerData userData;
 
-        public List<PhotonView> playerPhotonViews;
+        public List<PhotonView> playerPhotonViews { get; private set; }
+        public BulletControl BulletsControl { get; private set; }
+
+        private IDictionary<int, CharacterControl> playerDict = new Dictionary<int, CharacterControl>();
+        public IDictionary<int, CharacterControl> PlayerDict => playerDict;
 
         public static GameManager Instance
         {
@@ -30,6 +36,7 @@ namespace EverScord
             {
                 instance = this;
                 DontDestroyOnLoad(gameObject);
+                Init();
             }
             else
             {
@@ -37,9 +44,29 @@ namespace EverScord
             }
         }
 
+        private void Init()
+        {
+            playerPhotonViews = new();
+        }
+
         public void UpdateUserName(string newName)
         {
             PhotonNetwork.NickName = newName;
+        }
+
+        public void AddPlayerPhotonView(PhotonView view)
+        {
+            playerPhotonViews.Add(view);
+        }
+
+        public void AddPlayerControl(CharacterControl player)
+        {
+            playerDict[player.CharacterPhotonView.ViewID] = player;
+        }
+
+        public void SetBulletControl(BulletControl bulletControl)
+        {
+            BulletsControl = bulletControl;
         }
     }
 }
