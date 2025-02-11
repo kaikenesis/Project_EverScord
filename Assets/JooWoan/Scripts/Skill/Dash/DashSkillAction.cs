@@ -44,11 +44,32 @@ namespace EverScord.Skill
             cooldownTimer.ResetElapsedTime();
 
             float originalSpeed = activator.CharacterSpeed;
-            activator.SetSpeed(originalSpeed * 1.5f);
+            float moveSpeed     = originalSpeed * 1.5f;
+            float animatorSpeed = 1.5f;
 
-            yield return new WaitForSeconds(skill.Duration);
+            float decreasePercentage = 0.8f;
+            float decreaseStartTime  = skill.Duration * decreasePercentage;
+            float decreaseDuration   = (1 - decreasePercentage) * skill.Duration;
+
+            activator.SetSpeed(moveSpeed);
+            activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
+
+            for (float i = 0f; i < skill.Duration; i += Time.deltaTime)
+            {
+                if (i >= decreaseStartTime)
+                {
+                    moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, decreaseDuration);
+                    animatorSpeed = Mathf.Lerp(animatorSpeed, 1f, decreaseDuration);
+
+                    activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
+                    activator.SetSpeed(moveSpeed);
+                }
+                yield return null;
+            }
 
             activator.SetSpeed(originalSpeed);
+            activator.AnimationControl.SetAnimatorSpeed();
+
             skillCoroutine = null;
         }
     }
