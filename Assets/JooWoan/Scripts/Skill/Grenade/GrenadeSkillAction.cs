@@ -39,6 +39,8 @@ namespace EverScord.Skill
             get { return skillCoroutine != null; }
         }
 
+        public bool CanAttackWhileSkill => false;
+
         public void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
             if (this.activator != null)
@@ -137,10 +139,12 @@ namespace EverScord.Skill
 
         private void Fire()
         {
-            if (PhotonNetwork.IsConnected && photonView.IsMine)
+            if (photonView.IsMine)
             {
                 throwDir = startPoint.forward;
-                photonView.RPC(nameof(activator.SyncGrenadeSkill), RpcTarget.Others, activator.MouseRayHitPos, throwDir, skillIndex);
+                
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC(nameof(activator.SyncGrenadeSkill), RpcTarget.Others, activator.MouseRayHitPos, throwDir, skillIndex);
             }
 
             SetForce();

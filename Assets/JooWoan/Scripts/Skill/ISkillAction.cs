@@ -7,5 +7,6 @@ namespace EverScord.Skill
         void Activate();
         void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex);
         bool IsUsingSkill { get; }
+        bool CanAttackWhileSkill { get; }
     }
 }

@@ -43,6 +43,7 @@ namespace EverScord.Character
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
+        public Vector3 MoveVelocity                                     { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -50,6 +51,7 @@ namespace EverScord.Character
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
         public CharacterController Controller => controller;
+        public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
         private PhotonView photonView;
@@ -105,9 +107,6 @@ namespace EverScord.Character
             if (!photonView.IsMine)
                 return;
 
-            if (Input.GetKeyDown(KeyCode.Space))
-                PhysicsControl.AddImpact(transform.forward, 25f);
-
             SetInput();
             SetMovingDirection();
 
@@ -136,6 +135,12 @@ namespace EverScord.Character
 
         private void SetMovingDirection()
         {
+            if (PhysicsControl.IsImpactAdded)
+            {
+                moveDir = Quaternion.Inverse(transform.rotation) * PhysicsControl.ImpactVelocity.normalized;
+                return;
+            }
+
             if (moveInput.magnitude > 1f)
                 moveInput.Normalize();
 
@@ -149,6 +154,9 @@ namespace EverScord.Character
             Vector3 velocity = movement * speed;
             velocity.y = PhysicsControl.FallSpeed;
 
+            if (PhysicsControl.IsImpactAdded)
+                velocity = PhysicsControl.ImpactVelocity.normalized * speed;
+            
             controller.Move(velocity * Time.deltaTime);
         }
 
@@ -262,11 +270,10 @@ namespace EverScord.Character
                 return false;
             }
         }
-        
+
         public bool IsAiming { get; private set; }
         public bool IsShooting => playerInputInfo.holdLeftMouseButton;
-        public bool IsMoving => moveInput.magnitude > 0;
-
+        public bool IsMoving => moveInput.magnitude > 0 || PhysicsControl.IsImpactAdded;
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 

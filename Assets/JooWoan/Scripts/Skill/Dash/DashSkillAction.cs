@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using DG.Tweening;
 using EverScord.Character;
 using UnityEngine;
 
@@ -12,21 +10,35 @@ namespace EverScord.Skill
         private DashSkill skill;
         private CooldownTimer cooldownTimer;
         private EJob ejob;
+        private MeshTrail meshTrail;
+        private Coroutine skillCoroutine, trailCoroutine;
+        private const float SPEED_DROP_POINT = 0.7f;
         private int skillIndex;
 
-        private Coroutine skillCoroutine;
+        public DashSkill Skill => skill;
+
         public bool IsUsingSkill
         {
-            get { return skillCoroutine != null; }
+            get
+            {
+                if (skillCoroutine != null)
+                    return true;
+                
+                return trailCoroutine != null;
+            }
         }
+
+        public bool CanAttackWhileSkill => true;
 
         public void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
-            this.activator = activator;
-            this.skill = (DashSkill)skill;
+            this.activator  = activator;
+            this.skill      = (DashSkill)skill;
             this.skillIndex = skillIndex;
-            this.ejob = ejob;
+            this.ejob       = ejob;
 
+            meshTrail = new MeshTrail(activator.transform, this);
+        
             cooldownTimer = new CooldownTimer(skill.Cooldown);
             StartCoroutine(cooldownTimer.RunTimer());
         }
@@ -37,22 +49,26 @@ namespace EverScord.Skill
                 return;
 
             skillCoroutine = StartCoroutine(ActivateSkill());
+            trailCoroutine = StartCoroutine(meshTrail.ActivateTrail(skill.Duration));
         }
 
         private IEnumerator ActivateSkill()
         {
             cooldownTimer.ResetElapsedTime();
 
+            float animatorSpeed = skill.SpeedMultiplier;
             float originalSpeed = activator.CharacterSpeed;
-            float moveSpeed     = originalSpeed * 1.5f;
-            float animatorSpeed = 1.5f;
+            float moveSpeed     = originalSpeed * skill.SpeedMultiplier;
 
-            float decreasePercentage = 0.8f;
-            float decreaseStartTime  = skill.Duration * decreasePercentage;
-            float decreaseDuration   = (1 - decreasePercentage) * skill.Duration;
+            float decreaseStartTime = skill.Duration * SPEED_DROP_POINT;
+            float decreaseDuration  = (1 - SPEED_DROP_POINT) * skill.Duration;
 
             activator.SetSpeed(moveSpeed);
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
+            activator.PhysicsControl.AddImpact(activator.LookDir, skill.DashForce);
+
+            GameObject effect = Instantiate(skill.EffectPrefab, activator.transform);
+            effect.transform.position = activator.transform.position;
 
             for (float i = 0f; i < skill.Duration; i += Time.deltaTime)
             {
@@ -70,6 +86,11 @@ namespace EverScord.Skill
             activator.SetSpeed(originalSpeed);
             activator.AnimationControl.SetAnimatorSpeed();
 
+            // effect will be automatically destroyed due to particle system settings
+            effect.GetComponent<ParticleSystem>().Stop();
+
+            StopCoroutine(trailCoroutine);
+            trailCoroutine = null;
             skillCoroutine = null;
         }
     }
