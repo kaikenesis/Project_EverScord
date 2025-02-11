@@ -99,7 +99,7 @@ namespace EverScord.Character
 
         void Start()
         {
-            GameManager.Instance.AddPlayerControl(this);
+            GameManager.Instance.InitControl(this);
         }
 
         void Update()

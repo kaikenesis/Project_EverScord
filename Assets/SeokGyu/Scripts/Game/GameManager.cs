@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Character;
 using EverScord.Weapons;
+using EverScord.Monster;
+using Photon.Realtime;
 
 namespace EverScord
 {
@@ -12,8 +14,9 @@ namespace EverScord
 
         public PlayerData userData;
 
-        public List<PhotonView> playerPhotonViews { get; private set; }
-        public BulletControl BulletsControl { get; private set; }
+        public List<PhotonView> playerPhotonViews   { get; private set; }
+        public BulletControl BulletsControl         { get; private set; }
+        public EnemyHitControl EnemyHitsControl     { get; private set; }
 
         private IDictionary<int, CharacterControl> playerDict = new Dictionary<int, CharacterControl>();
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
@@ -67,6 +70,27 @@ namespace EverScord
         public void SetBulletControl(BulletControl bulletControl)
         {
             BulletsControl = bulletControl;
+        }
+
+        public void InitControl<T>(T control)
+        {
+            switch (control)
+            {
+                case BulletControl bulletControl:
+                    BulletsControl = bulletControl;
+                    break;
+
+                case EnemyHitControl enemyHitControl:
+                    EnemyHitsControl = enemyHitControl;
+                    break;
+
+                case CharacterControl character:
+                    playerDict[character.CharacterPhotonView.ViewID] = character;
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }
