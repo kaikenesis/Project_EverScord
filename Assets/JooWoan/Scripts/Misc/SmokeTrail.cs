@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Weapons;
-using EverScord.Pool;
 
 namespace EverScord
 {
@@ -38,7 +37,9 @@ namespace EverScord
         private IEnumerator DestroySmokeTrail()
         {
             yield return new WaitForSeconds(smokeFadeTime);
-            PoolManager.ReturnSmoke(this);
+            
+            Weapon weapon = GameManager.Instance.PlayerDict[bullet.ViewID].PlayerWeapon;
+            ResourceManager.instance.ReturnToPool(gameObject, weapon.SmokeAssetReference.AssetGUID);
         }
     }
 }

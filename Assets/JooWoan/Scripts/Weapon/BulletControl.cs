@@ -1,17 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
-using EverScord.Pool;
+using Photon.Pun;
+using UnityEngine.AddressableAssets;
 
 namespace EverScord.Weapons
 {
     public class BulletControl : MonoBehaviour
     {
+        [SerializeField] private ParticleSystem hitEffect;
+        [SerializeField] private int hitEffectCount;
+        [SerializeField] private List<AssetReferenceGameObject> assetReferenceList;
+
+        private PhotonView photonView;
         private LinkedList<Bullet> myBullets, otherBullets;
+        private IDictionary<int, Bullet> bulletDict;
+        private static int nextBulletID = -1;
 
         void Awake()
         {
             myBullets = new();
             otherBullets = new();
+            bulletDict = new Dictionary<int, Bullet>();
+            photonView = GetComponent<PhotonView>();
+
+            GameManager.Instance.SetBulletControl(this);
+
+            InitPools();
+        }
+
+        private async void InitPools()
+        {
+            foreach (AssetReference reference in assetReferenceList)
+                await ResourceManager.Instance.CreatePool(reference.AssetGUID);
         }
 
         void Update()
@@ -22,6 +42,8 @@ namespace EverScord.Weapons
 
         public void AddBullet(Bullet bullet, BulletOwner type)
         {
+            bulletDict[bullet.BulletID] = bullet;
+            
             switch (type)
             {
                 case BulletOwner.MINE:
@@ -62,10 +84,19 @@ namespace EverScord.Weapons
 
                 if (bullet.ShouldBeDestroyed(weapon.WeaponRange))
                 {
-                    PoolManager.Return(bullet, weapon.WeaponTracerType);
                     bullet.SetIsDestroyed(true);
                     bullets.Remove(currentNode);
+
+                    ResourceManager.instance.ReturnToPool(bullet.gameObject, weapon.BulletAssetReference.AssetGUID);
+
                     currentNode = nextNode;
+
+                    if (type == BulletOwner.MINE && PhotonNetwork.IsConnected)
+                    {
+                        photonView.RPC(nameof(SyncDestroyBullet), RpcTarget.Others, bullet.BulletID);
+                        photonView.RPC(nameof(SyncBulletTracer),  RpcTarget.Others, bullet.BulletID, bullet.TracerEffect.transform.position);
+                    }
+
                     continue;
                 }
 
@@ -77,6 +108,45 @@ namespace EverScord.Weapons
                 currentNode = nextNode;
             }
         }
+
+        public static int GetNextBulletID()
+        {
+            return ++nextBulletID;
+        }
+
+        public void BulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
+        {            
+            hitEffect.transform.position = hitPosition;
+            hitEffect.transform.forward  = hitDirection;
+            hitEffect.Emit(hitEffectCount);
+
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncBulletHitEffect), RpcTarget.Others, hitPosition, hitDirection);
+        }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        [PunRPC]
+        private void SyncDestroyBullet(int bulletID)
+        {
+            bulletDict[bulletID].SetIsDestroyed(true);
+        }
+
+        [PunRPC]
+        private void SyncBulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
+        {
+            hitEffect.transform.position = hitPosition;
+            hitEffect.transform.forward  = hitDirection;
+            hitEffect.Emit(hitEffectCount);
+        }
+
+        [PunRPC]
+        private void SyncBulletTracer(int bulletID, Vector3 position)
+        {
+            bulletDict[bulletID].SetTracerEffectPosition(position);
+        }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
     }
 
     public enum BulletOwner

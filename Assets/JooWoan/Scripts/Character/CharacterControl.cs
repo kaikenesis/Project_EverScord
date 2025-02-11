@@ -4,10 +4,11 @@ using Photon.Pun;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
+using System.Collections.Generic;
 
 namespace EverScord.Character
 {
-    public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback
+    public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         [Header("Character")]
         [SerializeField] private float speed;
@@ -24,8 +25,7 @@ namespace EverScord.Character
         [SerializeField] private Weapon weapon;
 
         [Header("Skill")]
-        [SerializeField] private SkillActionInfo firstSkillActionInfo;
-        [SerializeField] private SkillActionInfo secondSkillActionInfo;
+        [SerializeField] private List<SkillActionInfo> skillList;
 
         [Header("UI")]
         [SerializeField] private PlayerUI uiPrefab;
@@ -42,17 +42,21 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
-        public InputInfo PlayerInputInfo                                { get; private set; }
-        public Vector3 AimPosition                                      { get; private set; }
-        public EJob CharacterEJob                                       { get; private set; }
+        public Vector3 MouseRayHitPos                                   { get; private set; }
+        private Vector3 remoteMouseRayHitPos;
+
+        private InputInfo playerInputInfo = new InputInfo();
+        public InputInfo PlayerInputInfo => playerInputInfo;
 
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
+        public float CharacterSpeed => speed;
 
         private PhotonView photonView;
         private CharacterController controller;
         private Transform uiHub, cameraHub;
-        private Vector3 movement, lookPosition, lookDir, moveInput, moveDir;
+        private Vector3 movement, lookDir, moveInput, moveDir;
+        private const float LERP_REMOTE_MOUSERAYHIT = 10f;
 
         void Awake()
         {
@@ -89,21 +93,22 @@ namespace EverScord.Character
             PlayerUIControl.Init(this);
             CameraControl.Init(PlayerTransform);
             
-            firstSkillActionInfo.Init(this);
-            secondSkillActionInfo.Init(this);
-
-            GameManager.Instance.AddPlayerControl(this);
+            for (int i = 0; i < skillList.Count; i++)
+                skillList[i].Init(this, i);
         }
 
-        void OnApplicationFocus(bool focus)
+        void Start()
         {
-            // Cursor.visible = !focus;
+            GameManager.Instance.AddPlayerControl(this);
         }
 
         void Update()
         {
             if (!photonView.IsMine)
+            {
+                LerpRemoteInfo();
                 return;
+            }
             
             SetInput();
             SetMovingDirection();
@@ -122,12 +127,24 @@ namespace EverScord.Character
             UseSkills();
         }
 
+        private void LerpRemoteInfo()
+        {
+            MouseRayHitPos = Vector3.Lerp(
+                MouseRayHitPos,
+                remoteMouseRayHitPos,
+                Time.deltaTime * LERP_REMOTE_MOUSERAYHIT
+            );
+        }
+
         private void SetInput()
         {
-            PlayerInputInfo = InputControl.ReceiveInput();
-            PlayerInputInfo = InputControl.GetCameraRelativeInput(PlayerInputInfo, CameraControl.Cam);
+            playerInputInfo = InputControl.ReceiveInput();
+            playerInputInfo = InputControl.GetCameraRelativeInput(playerInputInfo, CameraControl.Cam);
 
-            moveInput = PlayerInputInfo.cameraRelativeInput;
+            moveInput = playerInputInfo.cameraRelativeInput;
+
+            if (PhotonNetwork.IsConnected && playerInputInfo.pressedLeftMouseButton)
+                photonView.RPC(nameof(SyncLeftMouseButton), RpcTarget.Others);
         }
 
         private void SetMovingDirection()
@@ -150,38 +167,31 @@ namespace EverScord.Character
 
         private void TrackAim()
         {
-            Ray ray = CameraControl.Cam.ScreenPointToRay(PlayerInputInfo.mousePosition);
+            Ray ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
                 return;
 
-            AimPosition = hit.point;
-            lookPosition = hit.point;
-            lookPosition.y = PlayerTransform.position.y;
+            MouseRayHitPos = hit.point;
 
-            lookDir = lookPosition - PlayerTransform.position;
-            float distance = lookDir.magnitude;
-
-            lookDir.Normalize();
-
-            if (distance < 0.5f)
-                return;
-
-            if (distance < weapon.MinAimDistance)
-                lookPosition = PlayerTransform.position + lookDir * weapon.MinAimDistance;
-
-            lookPosition.y = weapon.GunPoint.position.y;
-
-            Vector3 aimPosition = Vector3.Lerp(
-                weapon.AimPoint.position,
-                lookPosition,
-                Time.deltaTime * weapon.AimSensitivity
+            Vector3 lookPosition = new Vector3(
+                hit.point.x,
+                PlayerTransform.position.y,
+                hit.point.z
             );
 
-            weapon.AimPoint.position = aimPosition;
+            lookDir = (lookPosition - PlayerTransform.position).normalized;
 
-            if (PhotonNetwork.IsConnected)
-                photonView.RPC("SyncTrackAim", RpcTarget.Others, aimPosition, photonView.ViewID);
+            Vector3 cam2GunPointDir = weapon.GunPoint.position - ray.origin;
+
+            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, groundLayer))
+                return;
+
+            Vector3 gunPoint2MouseDir = hit.point - cam2GunPointRayHit.point;
+            weapon.SetGunPointDirection(gunPoint2MouseDir);
+
+            Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weapon.WeaponRange;
+            weapon.AimPoint.position = aimPosition;
         }
 
         private void RotateBody()
@@ -209,21 +219,25 @@ namespace EverScord.Character
             if (weapon.IsReloading)
                 return;
 
-            if (firstSkillActionInfo.Skill && PlayerInputInfo.pressedFirstSkill)
+            for (int i = 0; i < skillList.Count; i++)
             {
-                firstSkillActionInfo.SkillAction.Activate(CharacterEJob);
+                SkillActionInfo info = skillList[i];
+
+                if (!playerInputInfo.PressedSkill(i))
+                    continue;
+                
+                info.SkillAction.Activate();
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 1, (int)CharacterEJob);
+                    photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i);
+                
+                break;
             }
+        }
 
-            else if (secondSkillActionInfo.Skill && PlayerInputInfo.pressedSecondSkill)
-            {
-                secondSkillActionInfo.SkillAction.Activate(CharacterEJob);
-
-                if (PhotonNetwork.IsConnected)
-                    photonView.RPC("SyncUseSkill", RpcTarget.Others, 2, (int)CharacterEJob);
-            }
+        public void SetSpeed(float speed)
+        {
+            this.speed = speed;
         }
 
         public void SetIsAiming(bool state)
@@ -252,47 +266,59 @@ namespace EverScord.Character
         {
             get
             {
-                if (firstSkillActionInfo.SkillAction != null && firstSkillActionInfo.SkillAction.IsUsingSkill)
-                    return true;
-
-                if (secondSkillActionInfo.SkillAction != null && secondSkillActionInfo.SkillAction.IsUsingSkill)
-                    return true;
+                foreach (var info in skillList)
+                {
+                    if (info.SkillAction.IsUsingSkill)
+                        return true;
+                }
 
                 return false;
             }
         }
         
         public bool IsAiming { get; private set; }
-        public bool IsShooting => PlayerInputInfo.holdLeftMouseButton;
+        public bool IsShooting => playerInputInfo.holdLeftMouseButton;
         public bool IsMoving => moveInput.magnitude > 0;
 
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
-        [PunRPC]
-        private void SyncTrackAim(Vector3 aimPosition, int viewID)
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            if (photonView.ViewID != viewID)
-                return;
-
-            weapon.AimPoint.position = aimPosition;
+            if (stream.IsWriting)
+            {
+                stream.SendNext(MouseRayHitPos);
+            }
+            else
+            {
+                remoteMouseRayHitPos = (Vector3)stream.ReceiveNext();
+            }
         }
 
         [PunRPC]
-        private void SyncUseSkill(int skillIndex, int ejob)
+        private void SyncUseSkill(int index)
         {
-            EJob ejobType = (EJob)ejob;
+            skillList[index].SkillAction.Activate();
+        }
 
-            switch (skillIndex)
-            {
-                case 1:
-                    firstSkillActionInfo.SkillAction.Activate(ejobType);
-                    break;
+        [PunRPC]
+        private void SyncLeftMouseButton()
+        {
+            playerInputInfo.pressedLeftMouseButton = true;
+            Invoke(nameof(ResetMouseClick), 0.05f);
+        }
 
-                case 2:
-                    secondSkillActionInfo.SkillAction.Activate(ejobType);
-                    break;
-            }
+        private void ResetMouseClick()
+        {
+            playerInputInfo.pressedLeftMouseButton = false;
+        }
+
+        [PunRPC]
+        public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
+        {
+            MouseRayHitPos = mouseRayHitPos;
+            GrenadeSkillAction skillAction = ((GrenadeSkillAction)skillList[index].SkillAction);
+            skillAction.SyncGrenadeSkill(throwDir);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

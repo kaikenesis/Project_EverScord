@@ -46,6 +46,16 @@ namespace EverScord.Character
         public bool pressedReloadButton;
         public bool pressedFirstSkill;
         public bool pressedSecondSkill;
+
+        public bool PressedSkill(int index)
+        {
+            switch (index)
+            {
+                case 0: return pressedFirstSkill;
+                case 1: return pressedSecondSkill;
+                default: return false;
+            }
+        }
     }
 }
 

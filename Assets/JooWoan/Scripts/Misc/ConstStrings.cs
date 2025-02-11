@@ -20,6 +20,8 @@ namespace EverScord
         public const string TAG_CAMERAROOT = "CameraRoot";
         public const string TAG_POOLROOT = "PoolRoot";
         public const string TAG_SKILLROOT = "SkillRoot";
+        public const string TAG_BULLETCONTROL = "BulletControl";
+        public const string TAG_AIMPOINT = "AimPoint";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
