@@ -12,14 +12,17 @@ namespace EverScord
         private int selectType;
         private int selectIndex;
 
-        public static Action<int,int> OnRequestUnlock = delegate { };
-        public static Action<int,int,Color> OnApplyOption = delegate { };
+        public static Action<int, int> OnRequestUnlock = delegate { };
+        public static Action<int, int> OnRequestReroll = delegate { };
+        public static Action<int, int, Color, string, float> OnApplyOption = delegate { };
 
         private void Awake()
         {
             UIPopUpWindow.OnAcceptUnlock += HandleAcceptUnlock;
+            UIPopUpWindow.OnAcceptReroll += HandleAcceptReroll;
             UIFactorSlot.OnClickedSlot += HandleClickedSlot;
             UIFactorOptionList.OnRequestApplyOption += HandleRequestApplyOption;
+            UIFactorSlot.OnRequestApplyOption += HandleRequestApplyOption;
 
             Init();
         }
@@ -27,14 +30,21 @@ namespace EverScord
         private void OnDestroy()
         {
             UIPopUpWindow.OnAcceptUnlock -= HandleAcceptUnlock;
+            UIPopUpWindow.OnAcceptReroll -= HandleAcceptReroll;
             UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
             UIFactorOptionList.OnRequestApplyOption -= HandleRequestApplyOption;
+            UIFactorSlot.OnRequestApplyOption -= HandleRequestApplyOption;
         }
 
         #region Handle Methods
         private void HandleAcceptUnlock()
         {
             OnRequestUnlock?.Invoke(selectType, selectIndex);
+        }
+
+        private void HandleAcceptReroll()
+        {
+            OnRequestReroll?.Invoke(selectType, selectIndex);
         }
 
         private void HandleClickedSlot(int type, int slotNum)
@@ -45,7 +55,7 @@ namespace EverScord
 
         private void HandleRequestApplyOption(Color optionImgColor, string name, float value)
         {
-            OnApplyOption?.Invoke(selectType, selectIndex, optionImgColor);
+            OnApplyOption?.Invoke(selectType, selectIndex, optionImgColor, name, value);
         }
         #endregion // Handle Methods
 
@@ -54,18 +64,25 @@ namespace EverScord
             for (int i = 0; i < panels.Length; i++)
             {
                 UIFactorPanel panel = Instantiate(factorPanel, containor).GetComponent<UIFactorPanel>();
-                panel.Initialize(panels[i].Type, panels[i].SlotCount, panels[i].ConfirmedCount);
+                panel.Initialize((int)panels[i].Type, panels[i].SlotCount, panels[i].ConfirmedCount);
             }
         }
 
         [System.Serializable]
         public class FactorPanel
         {
-            [SerializeField] private UIFactorSlot.EType type;
+            public enum EType
+            {
+                ALPHA,
+                BETA,
+                MAX
+            }
+
+            [SerializeField] private EType type;
             [SerializeField] private int slotCount;
             [SerializeField] private int confirmedCount;
 
-            public UIFactorSlot.EType Type
+            public EType Type
             {
                 get { return type; }
                 private set { type = value; }

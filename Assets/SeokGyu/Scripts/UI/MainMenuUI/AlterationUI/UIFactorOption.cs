@@ -24,7 +24,7 @@ namespace EverScord
         public void OnClicked()
         {
             // 선택한 옵션 최대수치 적용
-            Debug.Log($"MaxValue : {value}");
+            //Debug.Log($"MaxValue : {value}");
             OnSelectOption?.Invoke(typeNum, optionNum, value);
         }
     }

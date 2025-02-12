@@ -32,6 +32,7 @@ namespace EverScord
         private bool bCanAccept = false;
 
         public static Action OnAcceptUnlock = delegate { };
+        public static Action OnAcceptReroll = delegate { };
         
         private void Awake()
         {
@@ -157,8 +158,12 @@ namespace EverScord
                     break;
                 case EType.REROLL_FACTOR:
                     {
-                        // OptionList에서 랜덤옵션과, 랜덤수치를 설정
-                        // 해당 값을 시스템창에 표시할수 있도록
+                        if (bCanAccept == true)
+                        {
+                            OnAcceptReroll?.Invoke();
+                            curWindowType = EType.NONE;
+                            gameObject.SetActive(false);
+                        }
                     }
                     break;
                 case EType.APPLY_OPTION:
