@@ -90,8 +90,9 @@ namespace EverScord.Weapons
                         continue;
 
                     GameManager.Instance.BulletsControl.BulletHitEffect(hit.point, -direction);
+                    int enemyLayerNum = LayerMask.NameToLayer("Enemy");
 
-                    if (hit.transform.gameObject.layer == GameManager.EnemyLayer.value)
+                    if (hit.transform.gameObject.layer == enemyLayerNum)
                     {
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(sourceWeapon.Damage, monster);

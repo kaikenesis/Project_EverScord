@@ -115,7 +115,7 @@ namespace EverScord.Weapons
         }
 
         public void BulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
-        {            
+        {
             hitEffect.transform.position = hitPosition;
             hitEffect.transform.forward  = hitDirection;
             hitEffect.Emit(hitEffectCount);
