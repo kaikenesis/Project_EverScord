@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class BossRPC : MonoBehaviour
+public class BossRPC : MonoBehaviour, IEnemy
 {
+    [SerializeField] private BossData bossData;
     private PhotonView photonView;
     private Animator animator;
     private DecalProjector projectorCharge;
@@ -92,5 +93,16 @@ public class BossRPC : MonoBehaviour
     protected void SyncQuaterProjectorDisable(Vector3 position)
     {
         projectorQuater.enabled = false;
+    }
+
+    public void DecreaseHP(float hp)
+    {
+        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
+    }
+
+    [PunRPC]
+    protected void SyncBossMonsterHP(float hp)
+    {
+        bossData.ReduceHp(hp);
     }
 }
