@@ -6215,7 +6215,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.32272512, b: 0.06132078, a: 1}
+      maxColor: {r: 0.57254905, g: 0.57254905, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -12409,13 +12409,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   gravity: -40
-  mass: 0
+  mass: 1
   bodyRotateSpeed: 500
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
-  weapon: {fileID: 0}
+  weapon: {fileID: 6018587541618258978}
   skillList:
-  - <Skill>k__BackingField: {fileID: 11400000, guid: 3dfb1606df65ad14294bfacda373ea41, type: 2}
+  - <Skill>k__BackingField: {fileID: 11400000, guid: 988057b5bc33fdd49a6481c6e580ef44, type: 2}
   - <Skill>k__BackingField: {fileID: 11400000, guid: e51215101053b274a9a1c32374d063c2, type: 2}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
   cameraPrefab: {fileID: 6716463709426020098, guid: b7ba58d67a16a9642b900e15c37509a6, type: 3}
@@ -12467,6 +12467,7 @@ MonoBehaviour:
   <ShootableLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 1280
+  <Damage>k__BackingField: 5
   <AimSensitivity>k__BackingField: 1
   <Cooldown>k__BackingField: 0.15
   <ReloadTime>k__BackingField: 3

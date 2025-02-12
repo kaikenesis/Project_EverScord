@@ -8,15 +8,16 @@ namespace EverScord.Character
         {
             InputInfo info = new InputInfo();
 
-            info.horizontalInput        = Input.GetAxisRaw(ConstStrings.INPUT_HORIZONTAL);
-            info.verticalInput          = Input.GetAxisRaw(ConstStrings.INPUT_VERTICAL);
-            info.mouseAxisX             = Input.GetAxis(ConstStrings.INPUT_MOUSE_X);
-            info.holdLeftMouseButton    = Input.GetMouseButton(0);
-            info.pressedLeftMouseButton = Input.GetMouseButtonDown(0);
-            info.pressedReloadButton    = Input.GetKeyDown(KeyCode.E);
-            info.pressedFirstSkill      = Input.GetKeyDown(KeyCode.Q);
-            info.pressedSecondSkill     = Input.GetKeyDown(KeyCode.R);
-            info.mousePosition          = Input.mousePosition;
+            info.horizontalInput         = Input.GetAxisRaw(ConstStrings.INPUT_HORIZONTAL);
+            info.verticalInput           = Input.GetAxisRaw(ConstStrings.INPUT_VERTICAL);
+            info.mouseAxisX              = Input.GetAxis(ConstStrings.INPUT_MOUSE_X);
+            info.holdLeftMouseButton     = Input.GetMouseButton(0);
+            info.pressedLeftMouseButton  = Input.GetMouseButtonDown(0);
+            info.releasedLeftMouseButton = Input.GetMouseButtonUp(0);
+            info.pressedReloadButton     = Input.GetKeyDown(KeyCode.E);
+            info.pressedFirstSkill       = Input.GetKeyDown(KeyCode.Q);
+            info.pressedSecondSkill      = Input.GetKeyDown(KeyCode.R);
+            info.mousePosition           = Input.mousePosition;
 
             return info;
         }
@@ -43,6 +44,7 @@ namespace EverScord.Character
         public float verticalInput;
         public bool holdLeftMouseButton;
         public bool pressedLeftMouseButton;
+        public bool releasedLeftMouseButton;
         public bool pressedReloadButton;
         public bool pressedFirstSkill;
         public bool pressedSecondSkill;

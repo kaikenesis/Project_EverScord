@@ -9,6 +9,18 @@ namespace EverScord.Skill
         [field: SerializeField] public float BaseDamage;
         [field: SerializeField] public float Cooldown;
         [field: SerializeField] public GameObject SkillPrefab;
+
+        private static Transform skillRoot;
+        public static Transform SkillRoot
+        {
+            get
+            {
+                if (skillRoot)
+                    return skillRoot;
+                
+                return GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
+            }
+        }
     }
 
     [System.Serializable]
@@ -17,13 +29,8 @@ namespace EverScord.Skill
         [field: SerializeField] public CharacterSkill Skill { get; private set; }
         public ISkillAction SkillAction { get; private set; }
 
-        private static Transform skillRoot;
-
         public void Init(CharacterControl activator, int skillIndex)
         {
-            if (skillRoot == null)
-                skillRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
-
             if (Skill == null)
             {
                 Debug.LogWarning($"Skill Scriptable Object is not initialized : from {activator.gameObject.name}");
@@ -35,7 +42,7 @@ namespace EverScord.Skill
             if (GameManager.Instance.userData != null)
                 ejob = GameManager.Instance.userData.job;
 
-            ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, skillRoot).GetComponent<ISkillAction>();
+            ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, CharacterSkill.SkillRoot).GetComponent<ISkillAction>();
 
             SkillAction = skillAction;
             SkillAction.Init(activator, Skill, ejob, skillIndex);

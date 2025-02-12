@@ -163,7 +163,7 @@ namespace EverScord.Weapons
             GunPoint.forward = facingDir;
         }
 
-        private void FireBullet()
+        public void FireBullet()
         {
             shotEffect.Emit(1);
 
@@ -188,7 +188,7 @@ namespace EverScord.Weapons
             photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);
         }
 
-        private void SetShootingStance(CharacterControl shooter, bool state)
+        public void SetShootingStance(CharacterControl shooter, bool state)
         {
             shooter.SetIsAiming(state);
             shooter.RigControl.SetAimWeight(state);
