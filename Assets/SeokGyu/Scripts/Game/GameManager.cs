@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Character;
 using EverScord.Weapons;
+using EverScord.Monster;
+using Photon.Realtime;
 
 namespace EverScord
 {
@@ -12,11 +14,15 @@ namespace EverScord
 
         public PlayerData userData;
 
-        public List<PhotonView> playerPhotonViews { get; private set; }
-        public BulletControl BulletsControl { get; private set; }
+        public List<PhotonView> playerPhotonViews   { get; private set; }
+        public BulletControl BulletsControl         { get; private set; }
+        public EnemyHitControl EnemyHitsControl     { get; private set; }
 
-        private IDictionary<int, CharacterControl> playerDict = new Dictionary<int, CharacterControl>();
+        public static LayerMask GroundLayer => instance.groundLayer;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
+
+        [SerializeField] private LayerMask groundLayer;
+        private IDictionary<int, CharacterControl> playerDict;
 
         public static GameManager Instance
         {
@@ -46,6 +52,7 @@ namespace EverScord
 
         private void Init()
         {
+            playerDict = new Dictionary<int, CharacterControl>();
             playerPhotonViews = new();
         }
 
@@ -59,14 +66,25 @@ namespace EverScord
             playerPhotonViews.Add(view);
         }
 
-        public void AddPlayerControl(CharacterControl player)
+        public void InitControl(object control)
         {
-            playerDict[player.CharacterPhotonView.ViewID] = player;
-        }
+            if (control == null)
+                return;
+            
+            switch (control)
+            {
+                case BulletControl bulletControl:
+                    BulletsControl = bulletControl;
+                    break;
 
-        public void SetBulletControl(BulletControl bulletControl)
-        {
-            BulletsControl = bulletControl;
+                case EnemyHitControl enemyHitControl:
+                    EnemyHitsControl = enemyHitControl;
+                    break;
+
+                case CharacterControl character:
+                    playerDict[character.CharacterPhotonView.ViewID] = character;
+                    break;
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace EverScord.Weapons
             bulletDict = new Dictionary<int, Bullet>();
             photonView = GetComponent<PhotonView>();
 
-            GameManager.Instance.SetBulletControl(this);
+            GameManager.Instance.InitControl(this);
 
             InitPools();
         }

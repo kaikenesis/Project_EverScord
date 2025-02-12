@@ -763,7 +763,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82fbce94390716f408092d9188ef760d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPhotonViews: []
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &397471283
 MonoBehaviour:
   m_ObjectHideFlags: 0

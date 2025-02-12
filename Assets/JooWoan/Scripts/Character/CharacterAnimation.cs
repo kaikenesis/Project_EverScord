@@ -43,18 +43,6 @@ namespace EverScord.Character
             anim.SetBool(ConstStrings.PARAM_ISROTATING, state);
         }
 
-        [PunRPC]
-        public void SyncSetBool(string name, bool state)
-        {
-            anim.SetBool(name, state);
-        }
-
-        [PunRPC]
-        public void SyncPlay(string clipName)
-        {
-            anim.Play(clipName, -1, 0f);
-        }
-
         public void SetBool(string name, bool state)
         {
             anim.SetBool(name, state);
@@ -62,7 +50,7 @@ namespace EverScord.Character
             if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            photonView.RPC("SyncSetBool", RpcTarget.Others, name, state);
+            photonView.RPC(nameof(SyncSetBool), RpcTarget.Others, name, state);
         }
 
         public void Play(AnimationClip clip)
@@ -77,7 +65,28 @@ namespace EverScord.Character
             if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            photonView.RPC("SyncPlay", RpcTarget.Others, clipName);
+            photonView.RPC(nameof(SyncPlay), RpcTarget.Others, clipName);
         }
+
+        public void SetAnimatorSpeed(float speed = 1f)
+        {
+            anim.speed = speed;
+        }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        [PunRPC]
+        public void SyncSetBool(string name, bool state)
+        {
+            anim.SetBool(name, state);
+        }
+
+        [PunRPC]
+        public void SyncPlay(string clipName)
+        {
+            anim.Play(clipName, -1, 0f);
+        }
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
     }
 }

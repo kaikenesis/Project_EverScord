@@ -17,7 +17,6 @@ namespace EverScord.Character
         [SerializeField] private float bodyRotateSpeed;
 
         [Header("Ground Check")]
-        [SerializeField] private LayerMask groundLayer;
         [SerializeField] private float groundCheckRadius;
         [SerializeField] private Vector3 groundCheckOffset;
 
@@ -42,21 +41,23 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
+        public ISkillAction CurrentSkillInfo                            { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
-        private Vector3 remoteMouseRayHitPos;
+        public Vector3 MoveVelocity                                     { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
 
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
+        public CharacterController Controller => controller;
+        public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
         private PhotonView photonView;
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
-        private const float LERP_REMOTE_MOUSERAYHIT = 10f;
 
         void Awake()
         {
@@ -90,7 +91,6 @@ namespace EverScord.Character
                 CameraControl.gameObject.SetActive(false);
             }
 
-            PlayerUIControl.Init(this);
             CameraControl.Init(PlayerTransform);
             
             for (int i = 0; i < skillList.Count; i++)
@@ -99,21 +99,19 @@ namespace EverScord.Character
 
         void Start()
         {
-            GameManager.Instance.AddPlayerControl(this);
+            GameManager.Instance.InitControl(this);
         }
 
         void Update()
         {
             if (!photonView.IsMine)
-            {
-                LerpRemoteInfo();
                 return;
-            }
-            
+
             SetInput();
             SetMovingDirection();
 
             PhysicsControl.ApplyGravity(this);
+            PhysicsControl.ApplyImpact(this);
             Move();
 
             AnimationControl.AnimateMovement(this, moveDir);
@@ -127,28 +125,22 @@ namespace EverScord.Character
             UseSkills();
         }
 
-        private void LerpRemoteInfo()
-        {
-            MouseRayHitPos = Vector3.Lerp(
-                MouseRayHitPos,
-                remoteMouseRayHitPos,
-                Time.deltaTime * LERP_REMOTE_MOUSERAYHIT
-            );
-        }
-
         private void SetInput()
         {
             playerInputInfo = InputControl.ReceiveInput();
             playerInputInfo = InputControl.GetCameraRelativeInput(playerInputInfo, CameraControl.Cam);
 
             moveInput = playerInputInfo.cameraRelativeInput;
-
-            if (PhotonNetwork.IsConnected && playerInputInfo.pressedLeftMouseButton)
-                photonView.RPC(nameof(SyncLeftMouseButton), RpcTarget.Others);
         }
 
         private void SetMovingDirection()
         {
+            if (PhysicsControl.IsImpactAdded)
+            {
+                moveDir = Quaternion.Inverse(transform.rotation) * PhysicsControl.ImpactVelocity.normalized;
+                return;
+            }
+
             if (moveInput.magnitude > 1f)
                 moveInput.Normalize();
 
@@ -162,6 +154,9 @@ namespace EverScord.Character
             Vector3 velocity = movement * speed;
             velocity.y = PhysicsControl.FallSpeed;
 
+            if (PhysicsControl.IsImpactAdded)
+                velocity = PhysicsControl.ImpactVelocity.normalized * speed;
+            
             controller.Move(velocity * Time.deltaTime);
         }
 
@@ -169,7 +164,7 @@ namespace EverScord.Character
         {
             Ray ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
+            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GameManager.GroundLayer))
                 return;
 
             MouseRayHitPos = hit.point;
@@ -184,7 +179,7 @@ namespace EverScord.Character
 
             Vector3 cam2GunPointDir = weapon.GunPoint.position - ray.origin;
 
-            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, groundLayer))
+            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, GameManager.GroundLayer))
                 return;
 
             Vector3 gunPoint2MouseDir = hit.point - cam2GunPointRayHit.point;
@@ -216,17 +211,18 @@ namespace EverScord.Character
 
         private void UseSkills()
         {
-            if (weapon.IsReloading)
-                return;
-
             for (int i = 0; i < skillList.Count; i++)
             {
                 SkillActionInfo info = skillList[i];
 
                 if (!playerInputInfo.PressedSkill(i))
                     continue;
-                
+
+                if (weapon.IsReloading && !skillList[i].SkillAction.CanAttackWhileSkill)
+                    continue;
+
                 info.SkillAction.Activate();
+                CurrentSkillInfo = skillList[i].SkillAction;
 
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i);
@@ -257,7 +253,7 @@ namespace EverScord.Character
                 return Physics.CheckSphere(
                     PlayerTransform.TransformPoint(groundCheckOffset),
                     groundCheckRadius,
-                    groundLayer
+                    GameManager.GroundLayer
                 );
             }
         }
@@ -275,37 +271,15 @@ namespace EverScord.Character
                 return false;
             }
         }
-        
+
         public bool IsAiming { get; private set; }
         public bool IsShooting => playerInputInfo.holdLeftMouseButton;
-        public bool IsMoving => moveInput.magnitude > 0;
-
+        public bool IsMoving => moveInput.magnitude > 0 || PhysicsControl.IsImpactAdded;
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            if (stream.IsWriting)
-            {
-                stream.SendNext(MouseRayHitPos);
-            }
-            else
-            {
-                remoteMouseRayHitPos = (Vector3)stream.ReceiveNext();
-            }
-        }
-
-        [PunRPC]
-        private void SyncUseSkill(int index)
-        {
-            skillList[index].SkillAction.Activate();
-        }
-
-        [PunRPC]
-        private void SyncLeftMouseButton()
-        {
-            playerInputInfo.pressedLeftMouseButton = true;
-            Invoke(nameof(ResetMouseClick), 0.05f);
         }
 
         private void ResetMouseClick()
@@ -314,11 +288,22 @@ namespace EverScord.Character
         }
 
         [PunRPC]
+        private void SyncUseSkill(int index)
+        {
+            CurrentSkillInfo = skillList[index].SkillAction;
+            skillList[index].SkillAction.Activate();
+        }
+
+        [PunRPC]
         public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
         {
             MouseRayHitPos = mouseRayHitPos;
-            GrenadeSkillAction skillAction = ((GrenadeSkillAction)skillList[index].SkillAction);
+
+            GrenadeSkillAction skillAction = (GrenadeSkillAction)skillList[index].SkillAction;
             skillAction.SyncGrenadeSkill(throwDir);
+
+            playerInputInfo.pressedLeftMouseButton = true;
+            Invoke(nameof(ResetMouseClick), 0.05f);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

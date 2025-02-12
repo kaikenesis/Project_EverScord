@@ -16,6 +16,7 @@ namespace EverScord.Weapons
         [SerializeField] private GameObject aimPointPrefab;
         [field: SerializeField] public AssetReferenceGameObject BulletAssetReference    { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject SmokeAssetReference     { get; private set; }
+
         [SerializeField] private ParticleSystem shotEffect;
         [field: SerializeField] public Transform GunPoint                               { get; private set; }
         [field: SerializeField] public Transform WeaponTransform                        { get; private set; }
@@ -36,6 +37,7 @@ namespace EverScord.Weapons
         private PhotonView photonView;
         private OnShotFired onShotFired;
         private CooldownTimer cooldownTimer;
+        private CharacterAnimation animControl;
 
         private const float ANIM_TRANSITION = 0.25f;
         private int currentAmmo;
@@ -45,12 +47,12 @@ namespace EverScord.Weapons
 
         public void Init(CharacterControl shooter)
         {
-            photonView = shooter.CharacterPhotonView;
-            ShooterCam = shooter.CameraControl.Cam;
+            photonView  = shooter.CharacterPhotonView;
+            ShooterCam  = shooter.CameraControl.Cam;
+            animControl = shooter.AnimationControl;
+            currentAmmo = MaxAmmo;
 
             LinkAimPoint();
-
-            currentAmmo = MaxAmmo;
 
             if (shooter.PlayerUIControl == null)
                 return;
@@ -92,31 +94,9 @@ namespace EverScord.Weapons
 
         public void Shoot(CharacterControl shooter)
         {
-            if (isReloading)
-                return;
-
-            if (shooter.IsUsingSkill)
-                return;
-
-            float cooldownOvertime = cooldownTimer.GetElapsedTime() - Cooldown;
-            CharacterAnimation animControl = shooter.AnimationControl;
-
-            if (shooter.IsAiming && (cooldownOvertime > shooter.AnimationControl.ShootStanceDuration))
+            if (CanCeaseFire(shooter))
             {
-                shooter.SetIsAiming(false);
-                shooter.RigControl.SetAimWeight(false);
-                animControl.Play(animControl.AnimInfo.ShootEnd);
-
-                if (PhotonNetwork.IsConnected)
-                {
-                    photonView.RPC(
-                        nameof(SyncRig),
-                        RpcTarget.Others,
-                        shooter.CharacterPhotonView.ViewID,
-                        false, false, animControl.AnimInfo.ShootEnd.name
-                    );
-                }
-
+                SetShootingStance(shooter, false);
                 return;
             }
 
@@ -132,35 +112,22 @@ namespace EverScord.Weapons
             --CurrentAmmo;
             cooldownTimer.ResetElapsedTime();
 
-            shooter.SetIsAiming(true);
-            shooter.RigControl.SetAimWeight(true);
-            animControl.Play(animControl.AnimInfo.Shoot);
-
-            if (PhotonNetwork.IsConnected)
-            {
-                photonView.RPC(
-                    nameof(SyncRig),
-                    RpcTarget.Others,
-                    shooter.CharacterPhotonView.ViewID,
-                    true, true, animControl.AnimInfo.Shoot.name
-                );
-            }
-
+            SetShootingStance(shooter, true);
             FireBullet();
         }
 
         public void TryReload(CharacterControl shooter)
         {
+            if (!shooter.PlayerInputInfo.pressedReloadButton)
+                return;
+
             if (currentAmmo == MaxAmmo)
                 return;
 
             if (isReloading)
                 return;
 
-            if (shooter.IsUsingSkill)
-                return;
-
-            if (!shooter.PlayerInputInfo.pressedReloadButton)
+            if (shooter.IsUsingSkill && !shooter.CurrentSkillInfo.CanAttackWhileSkill)
                 return;
 
             StartCoroutine(Reload(shooter));
@@ -217,21 +184,51 @@ namespace EverScord.Weapons
             if (!PhotonNetwork.IsConnected)
                 return;
 
-            photonView.RPC(
-                nameof(SyncFireBullet),
-                RpcTarget.Others,
-                gunpointPos, bulletVector,
-                bullet.ViewID,
-                bullet.BulletID
-            );
+            photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);
+        }
+
+        private void SetShootingStance(CharacterControl shooter, bool state)
+        {
+            shooter.SetIsAiming(state);
+            shooter.RigControl.SetAimWeight(state);
+
+            AnimationClip clip = state ? animControl.AnimInfo.Shoot : animControl.AnimInfo.ShootEnd;
+            animControl.Play(clip);
+
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            photonView.RPC(nameof(SyncRig), RpcTarget.Others, shooter.CharacterPhotonView.ViewID, state, state, clip.name);
         }
 
         private bool CanShoot(CharacterControl shooter)
         {
+            if (!shooter.IsShooting)
+                return false;
+
             if (cooldownTimer.IsCooldown)
                 return false;
 
-            if (!shooter.IsShooting)
+            if (isReloading)
+                return false;
+
+            if (shooter.IsUsingSkill && !shooter.CurrentSkillInfo.CanAttackWhileSkill)
+                return false;
+
+            return true;
+        }
+
+        private bool CanCeaseFire(CharacterControl shooter)
+        {
+            if (isReloading)
+                return false;
+
+            if (!shooter.IsAiming)
+                return false;
+
+            float cooldownOvertime = cooldownTimer.GetElapsedTime() - Cooldown;
+
+            if (cooldownOvertime <= shooter.AnimationControl.ShootStanceDuration)
                 return false;
 
             return true;
@@ -249,7 +246,7 @@ namespace EverScord.Weapons
             }
         }
 
-        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////////////////////////////////////////////////
 
         [PunRPC]
         private void SyncFireBullet(Vector3 gunpointPos, Vector3 bulletVector, int viewID, int bulletID)
@@ -282,7 +279,7 @@ namespace EverScord.Weapons
             shooter.RigControl.SetAimWeight(setAimWeight);
             shooter.AnimationControl.Play(clipName);
         }
-        
-        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////////////////////////////////////////////////
     }
 }
