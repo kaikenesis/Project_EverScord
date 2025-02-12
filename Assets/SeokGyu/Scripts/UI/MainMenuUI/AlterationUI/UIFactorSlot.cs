@@ -21,6 +21,8 @@ namespace EverScord
 
         public bool bLock { get; private set; }
         public bool bConfirmed { get; private set; }
+        public string curOptionName { get; private set; }
+        public float curOptionValue { get; private set; }
 
         public static Action<int, int> OnClickedSlot = delegate { };
         public static Action<int> OnDisplayOptionList = delegate { };

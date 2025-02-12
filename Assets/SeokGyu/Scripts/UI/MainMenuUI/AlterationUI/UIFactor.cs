@@ -43,7 +43,7 @@ namespace EverScord
             selectIndex = slotNum;
         }
 
-        private void HandleRequestApplyOption(Color optionImgColor)
+        private void HandleRequestApplyOption(Color optionImgColor, string name, float value)
         {
             OnApplyOption?.Invoke(selectType, selectIndex, optionImgColor);
         }

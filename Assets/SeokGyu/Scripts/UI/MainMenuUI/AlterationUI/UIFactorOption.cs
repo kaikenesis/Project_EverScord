@@ -11,7 +11,7 @@ namespace EverScord
         private int optionNum;
         private int typeNum;
 
-        public static Action<int,int> OnSelectOption = delegate { };
+        public static Action<int,int,float> OnSelectOption = delegate { };
 
         public void Initialize(string name, float value, int optionNum, int typeNum)
         {
@@ -25,7 +25,7 @@ namespace EverScord
         {
             // 선택한 옵션 최대수치 적용
             Debug.Log($"MaxValue : {value}");
-            OnSelectOption?.Invoke(typeNum, optionNum);
+            OnSelectOption?.Invoke(typeNum, optionNum, value);
         }
     }
 }
