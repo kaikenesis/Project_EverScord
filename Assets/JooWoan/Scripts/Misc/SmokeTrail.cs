@@ -1,10 +1,11 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Weapons;
+using EverScord.Pool;
 
 namespace EverScord
 {
-    public class SmokeTrail : MonoBehaviour
+    public class SmokeTrail : MonoBehaviour, IPoolable
     {
         [SerializeField] private ParticleSystem effect;
         [SerializeField] private float smokeFadeTime;
@@ -39,7 +40,12 @@ namespace EverScord
             yield return new WaitForSeconds(smokeFadeTime);
             
             Weapon weapon = GameManager.Instance.PlayerDict[bullet.ViewID].PlayerWeapon;
-            ResourceManager.instance.ReturnToPool(gameObject, weapon.SmokeAssetReference.AssetGUID);
+            ResourceManager.Instance.ReturnToPool(this, weapon.SmokeAssetReference.AssetGUID);
+        }
+
+        public void SetGameObject(bool state)
+        {
+            gameObject.SetActive(state);
         }
     }
 }

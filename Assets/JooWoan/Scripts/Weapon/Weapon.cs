@@ -4,8 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
-using ExitGames.Client.Photon.StructWrapping;
-using Unity.Mathematics;
+using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
@@ -170,13 +169,13 @@ namespace EverScord.Weapons
             Vector3 gunpointPos = GunPoint.position;
             Vector3 bulletVector = GunPoint.forward * bulletSpeed;
 
-            GameObject pooledBullet = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID, transform.position, Quaternion.identity);
-            GameObject pooledSmoke  = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID,  transform.position, Quaternion.identity);
+            IPoolable pooledBullet = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID);
+            IPoolable pooledSmoke  = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID);
 
-            Bullet bullet = pooledBullet.GetComponent<Bullet>();
+            Bullet bullet = pooledBullet as Bullet;
             bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
 
-            SmokeTrail smokeTrail = pooledSmoke.GetComponent<SmokeTrail>();
+            SmokeTrail smokeTrail = pooledSmoke as SmokeTrail;
             smokeTrail.transform.forward = bulletVector;
             smokeTrail.Init(bullet);
 

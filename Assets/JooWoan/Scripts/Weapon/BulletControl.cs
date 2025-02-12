@@ -87,7 +87,7 @@ namespace EverScord.Weapons
                     bullet.SetIsDestroyed(true);
                     bullets.Remove(currentNode);
 
-                    ResourceManager.instance.ReturnToPool(bullet.gameObject, weapon.BulletAssetReference.AssetGUID);
+                    ResourceManager.Instance.ReturnToPool(bullet, weapon.BulletAssetReference.AssetGUID);
 
                     currentNode = nextNode;
 
