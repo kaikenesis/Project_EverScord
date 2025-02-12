@@ -15,8 +15,7 @@ public class BossPattern04_Imp : ActionNodeImplement
         boxCollider = GetComponent<BoxCollider>();
         projector = GetComponent<DecalProjector>();
         projector.enabled = false;
-        projector.size = new Vector3(1, 1, 10);
-        projector.pivot = new Vector3(0, 0f, 5f);
+
         boxCollider.enabled = false;
         boxCollider.size = new Vector3(1, 1, 1);
     }
