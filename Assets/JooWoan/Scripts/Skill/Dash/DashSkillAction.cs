@@ -6,17 +6,18 @@ namespace EverScord.Skill
 {
     public class DashSkillAction : MonoBehaviour, ISkillAction
     {
+        private const float SPEED_DROP_POINT = 0.7f;
+
         private CharacterControl activator;
         private DashSkill skill;
         private CooldownTimer cooldownTimer;
-        private EJob ejob;
         private MeshTrail meshTrail;
         private Coroutine skillCoroutine, trailCoroutine;
-        private const float SPEED_DROP_POINT = 0.7f;
+        private EJob ejob;
         private int skillIndex;
 
         public DashSkill Skill => skill;
-
+        public bool CanAttackWhileSkill => true;
         public bool IsUsingSkill
         {
             get
@@ -27,8 +28,6 @@ namespace EverScord.Skill
                 return trailCoroutine != null;
             }
         }
-
-        public bool CanAttackWhileSkill => true;
 
         public void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {

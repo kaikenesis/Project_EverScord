@@ -17,7 +17,6 @@ namespace EverScord.Character
         [SerializeField] private float bodyRotateSpeed;
 
         [Header("Ground Check")]
-        [SerializeField] private LayerMask groundLayer;
         [SerializeField] private float groundCheckRadius;
         [SerializeField] private Vector3 groundCheckOffset;
 
@@ -42,6 +41,7 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
+        public ISkillAction CurrentSkillInfo                            { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
 
@@ -164,7 +164,7 @@ namespace EverScord.Character
         {
             Ray ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
+            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GameManager.GroundLayer))
                 return;
 
             MouseRayHitPos = hit.point;
@@ -179,7 +179,7 @@ namespace EverScord.Character
 
             Vector3 cam2GunPointDir = weapon.GunPoint.position - ray.origin;
 
-            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, groundLayer))
+            if (!Physics.Raycast(ray.origin, cam2GunPointDir, out RaycastHit cam2GunPointRayHit, Mathf.Infinity, GameManager.GroundLayer))
                 return;
 
             Vector3 gunPoint2MouseDir = hit.point - cam2GunPointRayHit.point;
@@ -211,17 +211,18 @@ namespace EverScord.Character
 
         private void UseSkills()
         {
-            if (weapon.IsReloading)
-                return;
-
             for (int i = 0; i < skillList.Count; i++)
             {
                 SkillActionInfo info = skillList[i];
 
                 if (!playerInputInfo.PressedSkill(i))
                     continue;
-                
+
+                if (weapon.IsReloading && !skillList[i].SkillAction.CanAttackWhileSkill)
+                    continue;
+
                 info.SkillAction.Activate();
+                CurrentSkillInfo = skillList[i].SkillAction;
 
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i);
@@ -252,7 +253,7 @@ namespace EverScord.Character
                 return Physics.CheckSphere(
                     PlayerTransform.TransformPoint(groundCheckOffset),
                     groundCheckRadius,
-                    groundLayer
+                    GameManager.GroundLayer
                 );
             }
         }
@@ -289,6 +290,7 @@ namespace EverScord.Character
         [PunRPC]
         private void SyncUseSkill(int index)
         {
+            CurrentSkillInfo = skillList[index].SkillAction;
             skillList[index].SkillAction.Activate();
         }
 

@@ -7,17 +7,12 @@ namespace EverScord.Skill
 {
     public class GrenadeSkillAction : MonoBehaviour, ISkillAction
     {
-        [SerializeField] private GameObject grenadeStartPoint;
-        [SerializeField] private LayerMask groundLayer;
-        [SerializeField] private Rigidbody poisonBomb, healBomb;
-        [SerializeField] private Transform hitMarker;
-        [SerializeField] private float predictInterval, hitMarkerGroundOffset;
-        [SerializeField] private int maxPoints;
+        private const float RAY_OVERLAP = 1.2f;
 
         private CharacterControl activator;
         private GrenadeSkill skill;
         private CooldownTimer cooldownTimer;
-        private Transform startPoint, stampedMarker;
+        private Transform startPoint, stampedMarker, hitMarker;
         private LineRenderer trajectoryLine;
         private PhotonView photonView;
         private Rigidbody projectile;
@@ -28,7 +23,6 @@ namespace EverScord.Skill
         private Vector3 throwDir;
         private EJob ejob;
 
-        private const float RAY_OVERLAP = 1.2f;
         private float force;
         private float estimatedTime = 0f;
         private int skillIndex;
@@ -55,18 +49,18 @@ namespace EverScord.Skill
             photonView = activator.CharacterPhotonView;
 
             if (ejob == EJob.DEALER)
-                projectile = poisonBomb;
+                projectile = this.skill.PoisonBomb;
 
             else if (ejob == EJob.HEALER)
-                projectile = healBomb;
+                projectile = this.skill.HealBomb;
 
-            trajectoryLine = GetComponent<LineRenderer>();
+            trajectoryLine  = GetComponent<LineRenderer>();
 
-            stampedMarker = Instantiate(hitMarker, transform);
+            startPoint      = Instantiate(this.skill.GrenadeStartPoint, activator.transform).transform;
+            hitMarker       = Instantiate(this.skill.HitMarker, transform).transform;
+            stampedMarker   = Instantiate(this.skill.HitMarker, transform).transform;
+
             stampedMarker.gameObject.SetActive(false);
-            
-            startPoint = Instantiate(grenadeStartPoint, activator.transform).transform;
-
             HideHitMarker();
             SetLineVisibility(false);
 
@@ -168,6 +162,9 @@ namespace EverScord.Skill
             Vector3 currentPosition = startPoint.position;
             Vector3 nextPosition;
 
+            int maxPoints = skill.MaxPoints;
+            float predictInterval = skill.PredictInterval;
+
             UpdateLine(maxPoints, 0, currentPosition);
             estimatedTime = 0f;
 
@@ -179,7 +176,7 @@ namespace EverScord.Skill
                 float overlap = Vector3.Distance(currentPosition, nextPosition) * RAY_OVERLAP;
                 estimatedTime += predictInterval;
 
-                if (Physics.Raycast(currentPosition, currentVelocity.normalized, out RaycastHit hit, overlap, groundLayer))
+                if (Physics.Raycast(currentPosition, currentVelocity.normalized, out RaycastHit hit, overlap, GameManager.GroundLayer))
                 {
                     UpdateLine(i, i - 1, hit.point);
                     ShowHitMarker(hit);
@@ -213,7 +210,7 @@ namespace EverScord.Skill
         private void ShowHitMarker(RaycastHit hit)
         {
             hitMarker.gameObject.SetActive(true);
-            hitMarker.position = hit.point + hit.normal * hitMarkerGroundOffset;
+            hitMarker.position = hit.point + hit.normal * skill.HitMarkerGroundOffset;
             hitMarker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
         }
 

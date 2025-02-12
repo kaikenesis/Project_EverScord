@@ -18,8 +18,11 @@ namespace EverScord
         public BulletControl BulletsControl         { get; private set; }
         public EnemyHitControl EnemyHitsControl     { get; private set; }
 
-        private IDictionary<int, CharacterControl> playerDict = new Dictionary<int, CharacterControl>();
+        public static LayerMask GroundLayer => instance.groundLayer;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
+
+        [SerializeField] private LayerMask groundLayer;
+        private IDictionary<int, CharacterControl> playerDict;
 
         public static GameManager Instance
         {
@@ -49,6 +52,7 @@ namespace EverScord
 
         private void Init()
         {
+            playerDict = new Dictionary<int, CharacterControl>();
             playerPhotonViews = new();
         }
 
