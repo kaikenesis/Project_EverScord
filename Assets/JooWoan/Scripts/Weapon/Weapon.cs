@@ -166,20 +166,23 @@ namespace EverScord.Weapons
         {
             shotEffect.Emit(1);
 
-            Vector3 gunpointPos = GunPoint.position;
-            Vector3 bulletVector = GunPoint.forward * bulletSpeed;
+            Vector3 gunpointPos     = GunPoint.position;
+            Vector3 bulletVector    = GunPoint.forward * bulletSpeed;
 
-            IPoolable pooledBullet = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID);
-            IPoolable pooledSmoke  = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID);
+            Bullet bullet           = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
+            SmokeTrail smokeTrail   = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
 
-            Bullet bullet = pooledBullet as Bullet;
-            bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
+            if (smokeTrail)
+            {
+                smokeTrail.transform.forward = bulletVector;
+                smokeTrail.Init(bullet);
+            }
 
-            SmokeTrail smokeTrail = pooledSmoke as SmokeTrail;
-            smokeTrail.transform.forward = bulletVector;
-            smokeTrail.Init(bullet);
-
-            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
+            if (bullet)
+            {
+                bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
+                GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
+            }
 
             if (!PhotonNetwork.IsConnected)
                 return;
@@ -253,18 +256,21 @@ namespace EverScord.Weapons
         {
             shotEffect.Emit(1);
 
-            GameObject pooledBullet = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID, transform.position, Quaternion.identity);
-            GameObject pooledSmoke  = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID,  transform.position, Quaternion.identity);
+            Bullet bullet           = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
+            SmokeTrail smokeTrail   = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
 
-            Bullet bullet = pooledBullet.GetComponent<Bullet>();
-            bullet.Init(gunpointPos, bulletVector, bulletInfo, viewID);
-            bullet.SetBulletID(bulletID);
+            if (smokeTrail)
+            {
+                smokeTrail.transform.forward = bulletVector;
+                smokeTrail.Init(bullet);
+            }
 
-            SmokeTrail smokeTrail = pooledSmoke.GetComponent<SmokeTrail>();
-            smokeTrail.transform.forward = bulletVector;
-            smokeTrail.Init(bullet);
-
-            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
+            if (bullet)
+            {
+                bullet.Init(gunpointPos, bulletVector, bulletInfo, viewID);
+                bullet.SetBulletID(bulletID);
+                GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
+            }
         }
 
         [PunRPC]
