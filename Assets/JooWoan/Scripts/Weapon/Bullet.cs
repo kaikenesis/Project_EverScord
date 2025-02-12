@@ -93,7 +93,7 @@ namespace EverScord.Weapons
 
                     if (hit.transform.gameObject.layer == GameManager.EnemyLayer.value)
                     {
-                        NController monster = hit.transform.GetComponent<NController>();
+                        IEnemy monster = hit.transform.GetComponent<IEnemy>();
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(sourceWeapon.Damage, monster);
                     }
 
