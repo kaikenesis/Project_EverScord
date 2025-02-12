@@ -7,6 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 public class BossRPC : MonoBehaviour, IEnemy
 {
+    public float hp;
     [SerializeField] private BossData bossData;
     private PhotonView photonView;
     private Animator animator;
@@ -97,6 +98,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float hp)
     {
+        Debug.Log("Boss Hit");
         photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
     }
 
@@ -104,5 +106,6 @@ public class BossRPC : MonoBehaviour, IEnemy
     protected void SyncBossMonsterHP(float hp)
     {
         bossData.ReduceHp(hp);
+        hp = bossData.HP;
     }
 }
