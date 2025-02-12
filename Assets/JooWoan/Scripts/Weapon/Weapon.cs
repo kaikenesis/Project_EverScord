@@ -23,6 +23,7 @@ namespace EverScord.Weapons
         [field: SerializeField] public Transform LeftTarget                             { get; private set; }
         [field: SerializeField] public Transform LeftHint                               { get; private set; }
         [field: SerializeField] public LayerMask ShootableLayer                         { get; private set; }
+        [field: SerializeField] public float Damage                                     { get; private set; }
         [field: SerializeField] public float AimSensitivity                             { get; private set; }
         [field: SerializeField] public float Cooldown                                   { get; private set; }
         [field: SerializeField] public float ReloadTime                                 { get; private set; }

@@ -19,7 +19,9 @@ namespace EverScord
         public EnemyHitControl EnemyHitsControl     { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
+        public static LayerMask EnemyLayer => instance.enemyLayer;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
+
         [SerializeField] private CostDatas costDatas;
         public CostDatas CostDatas
         {
@@ -27,7 +29,7 @@ namespace EverScord
             private set { costDatas = value; }
         }
 
-        [SerializeField] private LayerMask groundLayer;
+        [SerializeField] private LayerMask groundLayer, enemyLayer;
         private IDictionary<int, CharacterControl> playerDict;
 
         public static GameManager Instance

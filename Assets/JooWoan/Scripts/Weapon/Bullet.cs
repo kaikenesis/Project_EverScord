@@ -1,5 +1,4 @@
 using UnityEngine;
-using Photon.Pun;
 
 namespace EverScord.Weapons
 {
@@ -91,6 +90,13 @@ namespace EverScord.Weapons
                         continue;
 
                     GameManager.Instance.BulletsControl.BulletHitEffect(hit.point, -direction);
+
+                    if (hit.transform.gameObject.layer == GameManager.EnemyLayer.value)
+                    {
+                        NController monster = hit.transform.GetComponent<NController>();
+                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(sourceWeapon.Damage, monster);
+                    }
+
                     SetTracerEffectPosition(currentPoint);
                 }
 
