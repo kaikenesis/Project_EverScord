@@ -18,7 +18,7 @@ namespace EverScord
         {
             NONE,
             UNLOCK_FACTOR,
-            CHANGE_OPTION,
+            REROLL_FACTOR,
             APPLY_OPTION,
             MAX
         }
@@ -35,51 +35,48 @@ namespace EverScord
         
         private void Awake()
         {
-            UIFactorPanel.OnPopUpWindow += HandlePopUpWindow;
+            UIFactorPanel.OnUnlockFactor += HandleUnlockFactor;
+            UIFactorPanel.OnRerollFactor += HandleRerollFactor;
 
             gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
-            UIFactorPanel.OnPopUpWindow -= HandlePopUpWindow;
+            UIFactorPanel.OnUnlockFactor -= HandleUnlockFactor;
+            UIFactorPanel.OnRerollFactor -= HandleRerollFactor;
         }
 
-        private void HandlePopUpWindow(bool bConfirmed, bool bLock)
+        private void HandleUnlockFactor(int cost)
         {
-            if (bConfirmed == true) return;
-
-            if(bLock == true)
-            {
-                DisplayUnlockFactor();
-            }
-            else
-            {
-                DisplayChangeOption();
-            }
+            DisplayUnlockFactor(cost);
             
         }
 
-        private void DisplayUnlockFactor()
+        private void HandleRerollFactor(int cost)
+        {
+            DisplayRerollFactor(cost);
+        }
+
+        private void DisplayUnlockFactor(int cost)
         {
             // mainMsg, subMsg, acceptText, cancelText, 요구 money, 현재 money 데이터로 분리 필요
             gameObject.SetActive(true);
             curWindowType = EType.UNLOCK_FACTOR;
-            int pay = 0;
             int money;
             if (GameManager.Instance.userData != null)
                 money = GameManager.Instance.userData.money;
             else
                 money = -1;
 
-            if (money < pay)
+            if (money < cost)
             {
-                SetMessage($"필요한 재화 : {pay}\n 개방하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
+                SetMessage($"필요한 재화 : {cost}\n 개방하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
                 bCanAccept = false;
             }
             else
             {
-                SetMessage($"필요한 재화 : {pay}\n 개방하시겠습니까?", $"보유 재화 : {money}");
+                SetMessage($"필요한 재화 : {cost}\n 개방하시겠습니까?", $"보유 재화 : {money}");
                 bCanAccept = true;
             }
 
@@ -87,25 +84,24 @@ namespace EverScord
             refuseText.text = "취소";
         }
 
-        private void DisplayChangeOption()
+        private void DisplayRerollFactor(int cost)
         {
             gameObject.SetActive(true);
-            curWindowType = EType.CHANGE_OPTION;
-            int pay = 0;
+            curWindowType = EType.REROLL_FACTOR;
             int money;
             if (GameManager.Instance.userData != null)
                 money = GameManager.Instance.userData.money;
             else
                 money = -1;
 
-            if (money < pay)
+            if (money < cost)
             {
-                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
+                SetMessage($"필요한 재화 : {cost}\n 개조하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
                 bCanAccept = false;
             }
             else
             {
-                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : {money}");
+                SetMessage($"필요한 재화 : {cost}\n 개조하시겠습니까?", $"보유 재화 : {money}");
                 bCanAccept = true;
             }
 
@@ -116,7 +112,7 @@ namespace EverScord
         private void DisplayApplyOption()
         {
             gameObject.SetActive(true);
-            curWindowType = EType.CHANGE_OPTION;
+            curWindowType = EType.APPLY_OPTION;
             int pay = 0;
             int money;
             if (GameManager.Instance.userData != null)
@@ -151,15 +147,15 @@ namespace EverScord
             {
                 case EType.UNLOCK_FACTOR:
                     {
-                        OnAcceptUnlock?.Invoke();
                         if (bCanAccept == true)
                         {
+                            OnAcceptUnlock?.Invoke();
                             curWindowType = EType.NONE;
                             gameObject.SetActive(false);
                         }
                     }
                     break;
-                case EType.CHANGE_OPTION:
+                case EType.REROLL_FACTOR:
                     {
                         // OptionList에서 랜덤옵션과, 랜덤수치를 설정
                         // 해당 값을 시스템창에 표시할수 있도록

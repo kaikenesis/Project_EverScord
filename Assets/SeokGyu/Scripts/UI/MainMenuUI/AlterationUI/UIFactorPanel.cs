@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.Procedural;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -14,7 +15,8 @@ namespace EverScord
         private UIFactorSlot.EType panelType;
         private List<UIFactorSlot> slots = new List<UIFactorSlot>();
 
-        public static Action<bool, bool> OnPopUpWindow = delegate { };
+        public static Action<int> OnUnlockFactor = delegate { };
+        public static Action<int> OnRerollFactor = delegate { };
 
         private void Awake()
         {
@@ -28,11 +30,17 @@ namespace EverScord
 
         private void HandleClickedSlot(int type, int slotNum)
         {
-            if ((int)panelType != type || slots[slotNum].bConfirmed == true) return;
+            if ((int)panelType != type || slots[slotNum].bConfirmed == true || slots[slotNum - 1].bLock == true) return;
 
-            if (slots[slotNum - 1].bLock == false)
+            if (slots[slotNum].bLock == true)
             {
-                OnPopUpWindow?.Invoke(slots[slotNum].bConfirmed, slots[slotNum].bLock);
+                int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Unlock;
+                OnUnlockFactor?.Invoke(cost);
+            }
+            else
+            {
+                int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
+                OnRerollFactor?.Invoke(cost);
             }
         }
 

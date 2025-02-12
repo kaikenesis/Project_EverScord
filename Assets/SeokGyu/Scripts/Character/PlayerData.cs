@@ -44,7 +44,13 @@ namespace EverScord
 
         public static Action<int> OnUpdateMoney = delegate { };
 
-        public void UpdateMoney(int value)
+        public void DecreaseMoney(int value)
+        {
+            money -= value;
+            OnUpdateMoney?.Invoke(money);
+        }
+
+        public void IncreaseMoney(int value)
         {
             money += value;
             OnUpdateMoney?.Invoke(money);

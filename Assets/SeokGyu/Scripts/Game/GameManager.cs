@@ -17,6 +17,12 @@ namespace EverScord
 
         private IDictionary<int, CharacterControl> playerDict = new Dictionary<int, CharacterControl>();
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
+        [SerializeField] private CostDatas costDatas;
+        public CostDatas CostDatas
+        {
+            get { return costDatas; }
+            private set { costDatas = value; }
+        }
 
         public static GameManager Instance
         {
