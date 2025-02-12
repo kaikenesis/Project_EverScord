@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.AddressableAssets;
 
 namespace EverScord.Weapons
 {
@@ -9,7 +8,6 @@ namespace EverScord.Weapons
     {
         [SerializeField] private ParticleSystem hitEffect;
         [SerializeField] private int hitEffectCount;
-        [SerializeField] private List<AssetReferenceGameObject> assetReferenceList;
 
         private PhotonView photonView;
         private LinkedList<Bullet> myBullets, otherBullets;
@@ -24,14 +22,6 @@ namespace EverScord.Weapons
             photonView = GetComponent<PhotonView>();
 
             GameManager.Instance.InitControl(this);
-
-            InitPools();
-        }
-
-        private async void InitPools()
-        {
-            foreach (AssetReference reference in assetReferenceList)
-                await ResourceManager.Instance.CreatePool(reference.AssetGUID);
         }
 
         void Update()

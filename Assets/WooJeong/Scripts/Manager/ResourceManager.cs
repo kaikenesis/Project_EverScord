@@ -153,8 +153,7 @@ public class ResourceManager : Singleton<ResourceManager>
             return null;
         }
 
-        if (!PoolRoot)
-            PoolRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_POOLROOT).transform;
+        SetPoolRoot();
 
         GameObject obj = Instantiate(prefabDictionary[addressableKey]);
         obj.name = $"{prefabDictionary[addressableKey].name}_Pooled";
@@ -172,6 +171,17 @@ public class ResourceManager : Singleton<ResourceManager>
         prefabDictionary.Remove(addressableKey);
 
         Addressables.Release(addressableKey);
+    }
+
+    private void SetPoolRoot()
+    {
+        if (PoolRoot)
+            return;
+        
+        PoolRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_POOLROOT).transform;
+
+        if (!PoolRoot)
+            PoolRoot = new GameObject("PoolRoot").transform;
     }
 
     //private void OnDestroy()
