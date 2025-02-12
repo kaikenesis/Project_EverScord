@@ -20,6 +20,12 @@ namespace EverScord
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
+        [SerializeField] private CostDatas costDatas;
+        public CostDatas CostDatas
+        {
+            get { return costDatas; }
+            private set { costDatas = value; }
+        }
 
         [SerializeField] private LayerMask groundLayer;
         private IDictionary<int, CharacterControl> playerDict;

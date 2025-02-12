@@ -45,6 +45,8 @@ namespace EverScord
         {
             if (bLock == true && curType == (EType)type && this.slotNum == slotNum)
             {
+                int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Unlock;
+                GameManager.Instance.userData.DecreaseMoney(cost);
                 bLock = false;
                 lockImg.enabled = false;
             }
