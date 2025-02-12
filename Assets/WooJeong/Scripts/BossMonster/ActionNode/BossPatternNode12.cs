@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPatternNode12 : MonoBehaviour
+[CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern12")]
+public class BossPatternNode12 : BAttackPatternNode
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void Setup(GameObject gameObject)
     {
-        
+        bossData = GetValue<BossData>("BossData");
+        actionNodeImplement = gameObject.AddComponent<BossPattern12_Imp>();
+        base.Setup(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override NodeState Evaluate()
     {
-        
+        if (bossData.Phase == 2)
+            attackable = true;
+        return base.Evaluate();
     }
 }

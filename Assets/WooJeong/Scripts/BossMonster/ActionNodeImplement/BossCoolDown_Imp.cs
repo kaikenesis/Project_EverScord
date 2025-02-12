@@ -11,7 +11,7 @@ public class BossCoolDown_Imp : ActionNodeImplement
     protected override IEnumerator Action()
     {
         Debug.Log("CoolDown start");
-        if(isUnder90 == false && bossData.IsUnderHP90() == true)
+        if(isUnder90 == false && bossData.IsUnderHP(90) == true)
         {
             isUnder90 = true;
         }

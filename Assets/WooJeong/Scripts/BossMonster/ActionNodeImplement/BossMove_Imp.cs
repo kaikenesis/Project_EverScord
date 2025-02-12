@@ -7,8 +7,9 @@ public class BossMove_Imp : ActionNodeImplement
 {
     private NavMeshAgent navMeshAgent;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
     }
 
@@ -42,7 +43,7 @@ public class BossMove_Imp : ActionNodeImplement
     protected override IEnumerator Action()
     {
         Debug.Log("move start");
-        PlayAnimation("Walk");
+        bossRPC.PlayAnimation("Walk");
         navMeshAgent.enabled = true;
         while (true)
         {

@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern2")]
+[CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern02")]
 public class BossPatternNode02 : BAttackPatternNode
 {
     public override void Setup(GameObject gameObject)
     {
-        bossData = GetValue<BossData>("BossData");
         actionNodeImplement = gameObject.AddComponent<BossPattern02_Imp>();
         base.Setup(gameObject);
     }

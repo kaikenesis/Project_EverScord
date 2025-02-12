@@ -6,9 +6,13 @@ public abstract class BAttackPatternNode : BActionNode
 {
     protected BossData bossData;
     protected bool isRunning = false;
+    protected bool attackable = false;
 
     public override NodeState Evaluate()
     {
+        if (!attackable)
+            return NodeState.FAILURE;
+
         if (!isRunning)
         {
             int random = Random.Range(1, 8);

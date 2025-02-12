@@ -7,7 +7,15 @@ public class BossPatternNode14 : BAttackPatternNode
 {
     public override void Setup(GameObject gameObject)
     {
+        bossData = GetValue<BossData>("BossData");
         actionNodeImplement = gameObject.AddComponent<BossPattern14_Imp>();
         base.Setup(gameObject);
+    }
+
+    public override NodeState Evaluate()
+    {
+        if (bossData.Phase == 2)
+            attackable = true;
+        return base.Evaluate();
     }
 }
