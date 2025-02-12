@@ -10,8 +10,9 @@ namespace EverScord.Skill
 
         [field: SerializeField, Range(0.0f, 1.0f)]
         public float LaserLerpRate { get; private set; }
-        [field: SerializeField] public float Duration           { get; private set; }
-        [field: SerializeField] public GameObject BarrierPrefab { get; private set; }
-        [field: SerializeField] public GameObject LaserPrefab   { get; private set; }
+        [field: SerializeField] public float Duration            { get; private set; }
+        [field: SerializeField] public GameObject BarrierPrefab  { get; private set; }
+        [field: SerializeField] public GameObject LaserPrefab    { get; private set; }
+        [field: SerializeField] public GameObject LaserBurnTrail { get; private set; }
     }
 }
