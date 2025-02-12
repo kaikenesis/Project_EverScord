@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossPattern14_Imp : ActionNodeImplement
 {
-    protected override IEnumerator Action()
+    protected override IEnumerator Act()
     {
         Debug.Log("Attack14 start");
         yield return new WaitForSeconds(5f);

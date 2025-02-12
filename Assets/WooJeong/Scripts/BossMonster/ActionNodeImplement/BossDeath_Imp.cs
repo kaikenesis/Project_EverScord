@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossDeath_Imp : ActionNodeImplement
 {
-    protected override IEnumerator Action()
+    protected override IEnumerator Act()
     {
         Debug.Log("Death start");
         yield return new WaitForSeconds(5f);

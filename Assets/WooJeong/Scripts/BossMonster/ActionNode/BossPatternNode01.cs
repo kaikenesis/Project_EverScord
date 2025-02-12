@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern1")]
+[CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern01")]
 public class BossPatternNode01 : BAttackPatternNode
 {
     public override void Setup(GameObject gameObject)
@@ -16,7 +16,7 @@ public class BossPatternNode01 : BAttackPatternNode
     {
         if (!isRunning)
         {
-            int random = Random.Range(1, 10);
+            int random = Random.Range(0, 10);
             if (random <= 5)
             {
                 return NodeState.FAILURE;

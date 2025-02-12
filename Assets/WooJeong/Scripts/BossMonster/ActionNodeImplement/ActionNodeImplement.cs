@@ -1,5 +1,7 @@
+using EverScord.Monster;
 using Photon.Pun;
 using System.Collections;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public abstract class ActionNodeImplement : MonoBehaviour
@@ -7,14 +9,14 @@ public abstract class ActionNodeImplement : MonoBehaviour
     protected Coroutine action;
     protected bool isEnd = false;
     protected BossData bossData;
-    protected Animator animator;
-    protected PhotonView photonView;
     protected GameObject player;
+    protected BossRPC bossRPC;
+    protected LayerMask playerLayer;
 
-    private void Awake()
+    protected virtual void Awake()
     {
-        photonView = GetComponent<PhotonView>();
-        animator = GetComponent<Animator>();
+        bossRPC = GetComponent<BossRPC>();
+        playerLayer = LayerMask.GetMask("Player");
     }
 
     public virtual void Setup(BossData bossData)
@@ -32,40 +34,28 @@ public abstract class ActionNodeImplement : MonoBehaviour
         }
 
         if (action == null)
-            action = StartCoroutine(Action());
+            action = StartCoroutine(Act());
 
         return NodeState.RUNNING;
     }
 
-    protected abstract IEnumerator Action();
+    protected abstract IEnumerator Act();
 
-    protected void PlayAnimation(string animationName)
+    public void LookPlayer()
     {
-        if (animator == null)
-        {
-            photonView = GetComponent<PhotonView>();
-            animator = GetComponent<Animator>();
-        }
-        animator.CrossFade(animationName, 0.3f, -1, 0);
-        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName); 
+        Vector3 dir = player.transform.position - transform.position;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 20);
+        transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
     }
 
-    [PunRPC]
-    protected void SyncAnimation(string animationName)
+    public bool IsLookPlayer(float distance)
     {
-        if (animator == null)
+        Vector3 start = new(transform.position.x, transform.position.y + 0.3f, transform.position.z);
+        if (Physics.Raycast(start, transform.forward, distance, playerLayer))
         {
-            photonView = GetComponent<PhotonView>();
-            animator = GetComponent<Animator>();
+            return true;
         }
-        animator.CrossFade(animationName, 0.3f, -1, 0);
-    }
-
-    [PunRPC]
-    protected void SyncBossProjectile(float projectileSpeed)
-    {
-        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", transform.position, Quaternion.identity);
-        BossProjectile bp = go.GetComponent<BossProjectile>();
-        bp.Setup(transform.forward, projectileSpeed);
+        Debug.DrawRay(start, transform.forward * distance, Color.red);
+        return false;
     }
 }

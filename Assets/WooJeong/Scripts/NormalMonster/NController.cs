@@ -12,6 +12,7 @@ public abstract class NController : MonoBehaviour
     [HideInInspector] public int LastAttack = 0;
     [HideInInspector] public GameObject player;
     public Dictionary<string, float> clipDict = new();
+    public float HP = 0;
     public float stunTime = 2;
     public bool isStun = false;
     public bool isDead = false;
@@ -38,6 +39,7 @@ public abstract class NController : MonoBehaviour
 
     protected void Awake()
     {
+        HP = monsterData.HP;
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
 
@@ -66,6 +68,13 @@ public abstract class NController : MonoBehaviour
         SetNearestPlayer();
         
         Setup();
+    }
+
+    public void DecreaseHP(float hp)
+    {
+        HP -= hp;
+        if (HP <= 0)
+            isDead = true;
     }
 
     public void StartFSM()

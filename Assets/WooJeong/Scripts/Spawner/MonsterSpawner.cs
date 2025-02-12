@@ -29,11 +29,6 @@ public class MonsterSpawner : MonoBehaviour
         StartCoroutine(Spawn());
     }
 
-    private void OnDisable()
-    {
-        //ResourceManager.Instance.Destroy(monster.AssetGUID);
-    }
-
     private IEnumerator Spawn()
     {
         if(!PhotonNetwork.IsMasterClient)
@@ -52,7 +47,6 @@ public class MonsterSpawner : MonoBehaviour
                 if (PhotonNetwork.AllocateViewID(view))
                 {
                     data = view.ViewID;
-                    //PhotonNetwork.RaiseEvent(spawnEvent, data, raiseEventOptions, sendOptions);
                     photonView.RPC("SyncSpawn", RpcTarget.Others, data);
                 }
 
