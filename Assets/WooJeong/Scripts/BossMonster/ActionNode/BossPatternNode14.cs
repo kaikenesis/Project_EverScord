@@ -14,7 +14,7 @@ public class BossPatternNode14 : BAttackPatternNode
 
     public override NodeState Evaluate()
     {
-        if (bossData.Phase == 2)
+        if (attackable == false && bossData.Phase == 2)
             attackable = true;
         return base.Evaluate();
     }

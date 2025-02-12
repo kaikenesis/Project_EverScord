@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossPattern13_Imp : ActionNodeImplement
 {
-    protected override IEnumerator Action()
+    protected override IEnumerator Act()
     {
         throw new System.NotImplementedException();
     }

@@ -35,7 +35,7 @@ public class BossData : ScriptableObject
 
     public bool IsUnderHP(float hp)
     {
-        if (HP >= MaxHP/100 * hp)
+        if (HP > MaxHP/100 * hp)
         {
             return false;
         }

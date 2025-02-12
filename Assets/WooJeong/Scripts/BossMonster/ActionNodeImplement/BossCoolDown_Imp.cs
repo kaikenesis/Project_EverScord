@@ -8,7 +8,7 @@ public class BossCoolDown_Imp : ActionNodeImplement
     private float coolDown1 = 5;
     private float coolDown2 = 10;
 
-    protected override IEnumerator Action()
+    protected override IEnumerator Act()
     {
         Debug.Log("CoolDown start");
         if(isUnder90 == false && bossData.IsUnderHP(90) == true)

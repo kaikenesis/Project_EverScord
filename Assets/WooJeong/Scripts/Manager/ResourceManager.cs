@@ -50,7 +50,7 @@ public class ResourceManager : Singleton<ResourceManager>
             Debug.LogError($"Failed to load addressable asset: {addressableKey}");
         }
     }
-
+    
     // 풀에서 오브젝트 가져오기
     public GameObject GetFromPool(string addressableKey, Vector3 position, Quaternion rotation)
     {

@@ -8,7 +8,7 @@ public class BossTest : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Space))
             bossData.ReduceHp(10);
     }
 }

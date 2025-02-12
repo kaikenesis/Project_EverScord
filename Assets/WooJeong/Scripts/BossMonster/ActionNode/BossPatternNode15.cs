@@ -19,7 +19,7 @@ public class BossPatternNode15 : BAttackPatternNode
         if (!isUsed) 
             return NodeState.FAILURE;
 
-        if (bossData.Phase == 2 && bossData.IsUnderHP(20))
+        if (attackable == false && bossData.Phase == 2 && bossData.IsUnderHP(20))
             attackable = true;
 
         if (!attackable)

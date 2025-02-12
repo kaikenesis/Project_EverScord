@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class BossPattern05_Imp : ActionNodeImplement
 {
-    protected override IEnumerator Action()
+    private float attackRadius = 10;
+    protected override IEnumerator Act()
     {
-        throw new System.NotImplementedException();
+        Vector3 projectorPos = transform.position + (transform.forward * Mathf.Sqrt(attackRadius * attackRadius)/2);
+        bossRPC.QuaterProjectEnable(projectorPos, 1);
+        yield return null;
     }
 }

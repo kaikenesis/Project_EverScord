@@ -16,7 +16,7 @@ public class BossPatternNode01 : BAttackPatternNode
     {
         if (!isRunning)
         {
-            int random = Random.Range(1, 10);
+            int random = Random.Range(0, 10);
             if (random <= 5)
             {
                 return NodeState.FAILURE;

@@ -14,7 +14,7 @@ public class BossPatternNode05 : BAttackPatternNode
 
     public override NodeState Evaluate()
     {
-        if (bossData.IsUnderHP(80))
+        if (attackable == false && bossData.IsUnderHP(80))
             attackable = true;
         return base.Evaluate();
     }

@@ -35,12 +35,12 @@ public class BossMove_Imp : ActionNodeImplement
         }
 
         if (action == null)
-            action = StartCoroutine(Action());
+            action = StartCoroutine(Act());
 
         return NodeState.RUNNING;
     }
 
-    protected override IEnumerator Action()
+    protected override IEnumerator Act()
     {
         Debug.Log("move start");
         bossRPC.PlayAnimation("Walk");
@@ -48,7 +48,9 @@ public class BossMove_Imp : ActionNodeImplement
         while (true)
         {
             navMeshAgent.destination = player.transform.position;
-            if (CalcDistance() < navMeshAgent.stoppingDistance)
+            float distance = CalcDistance();
+            LookPlayer();
+            if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance))
             {
                 navMeshAgent.enabled = false;
                 Debug.Log("move end");

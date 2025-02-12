@@ -7,7 +7,7 @@ public class BossPattern01_Imp : ActionNodeImplement
     //private float projectileSize = 1;
     private float projectileSpeed = 5f;
 
-    protected override IEnumerator Action()
+    protected override IEnumerator Act()
     {
         Debug.Log("Attack1 start");
         bossRPC.PlayAnimation("Shoot");
@@ -15,10 +15,10 @@ public class BossPattern01_Imp : ActionNodeImplement
         for (int i = 0; i < 7; i++)
         {
             bossRPC.FireBossProjectile(transform.position, transform.forward, projectileSpeed);
-            //photonView.RPC("SyncBossProjectile", RpcTarget.All, transform.position, transform.forward, projectileSpeed);
             yield return new WaitForSeconds(0.14f);
         }
         yield return new WaitForSeconds(0.5f);
+        bossRPC.PlayAnimation("Idle");
 
         isEnd = true;
         action = null;

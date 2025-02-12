@@ -13,14 +13,8 @@ public class BossSpawner : MonoBehaviour
     private string assetName = "Boss";
     private float curTime = 0;
     private int spawnCount = 0;
-    private int allocateCompleteCount = 1;
 
-    private const byte spawnEvent = 1;
-    private const byte allocateViewIDEvent = 2;
-    private const byte allocateCompleteEventCode = 3;
     private object data;
-    private RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others };
-    private SendOptions sendOptions = new SendOptions { Reliability = true };
     private GameObject mo;
     private PhotonView photonView;
 
@@ -70,6 +64,5 @@ public class BossSpawner : MonoBehaviour
         PhotonView view = mo.GetPhotonView();
         view.ViewID = viewID;
         Debug.Log("[client] ∏ÛΩ∫≈Õ viewID = " + view.ViewID);
-        //PhotonNetwork.RegisterPhotonView(view);
     }
 }
