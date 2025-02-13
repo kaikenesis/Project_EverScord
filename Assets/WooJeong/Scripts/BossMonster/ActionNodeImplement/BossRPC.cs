@@ -24,8 +24,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         projectorCharge.pivot = new Vector3(0, 0f, 5f);
         goProjectorQ = new GameObject();
         goProjectorQ.name = "ProjectorQuater";
-        projectorQuater = goProjectorQ.GetComponent<DecalProjector>();
         goProjectorQ.transform.parent = transform;
+        projectorQuater = goProjectorQ.GetComponent<DecalProjector>();
+        //projectorQuater.material = 
     }
 
     public void PlayAnimation(string animationName)

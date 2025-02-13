@@ -13,12 +13,7 @@ public class MonsterSpawner : MonoBehaviour
     private int spawnCount = 0;
     private int allocateCompleteCount = 1;
 
-    private const byte spawnEvent = 1;
-    private const byte allocateViewIDEvent = 2;
-    private const byte allocateCompleteEventCode = 3;
-    private object data;
-    private RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others };
-    private SendOptions sendOptions = new SendOptions { Reliability = true };
+    private int data;
     private GameObject mo;
     private PhotonView photonView;
 
@@ -50,10 +45,14 @@ public class MonsterSpawner : MonoBehaviour
                     photonView.RPC("SyncSpawn", RpcTarget.Others, data);
                 }
 
-                if(spawnCount ==0)
+                NController nController = mo.GetComponent<NController>();
+                nController.SetGUID(monster.AssetGUID);
+
+                if (allocateCompleteCount == PhotonNetwork.PlayerList.Length)
                 {
-                    NController nController = mo.GetComponent<NController>();
-                    nController.SetGUID(monster.AssetGUID);
+                    Debug.Log("[MasterClient] 모든 플레이어가 스폰 완료! FSM 시작");
+                    allocateCompleteCount = 1;
+                    nController.StartFSM();
                 }
 
                 spawnCount++;
@@ -73,12 +72,10 @@ public class MonsterSpawner : MonoBehaviour
         mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
         PhotonView view = mo.GetPhotonView();
         view.ViewID = viewID;
-        if (spawnCount == 0)
-        {
-            NController nController = mo.GetComponent<NController>();
-            nController.SetGUID(monster.AssetGUID);
-        }
-        spawnCount++;
+
+        NController nController = mo.GetComponent<NController>();
+        nController.SetGUID(monster.AssetGUID);
+
         Debug.Log("[client] 몬스터 viewID = " + view.ViewID);
         //PhotonNetwork.RegisterPhotonView(view);
         photonView.RPC("SpawnComplete", RpcTarget.MasterClient);
