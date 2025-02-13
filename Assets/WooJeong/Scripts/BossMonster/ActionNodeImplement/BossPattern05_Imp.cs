@@ -17,7 +17,7 @@ public class BossPattern05_Imp : ActionNodeImplement
         //충돌 판정
         foreach (var player in GameManager.Instance.playerPhotonViews)
         {
-            Vector3 toPlayerVector = player.transform.position - transform.position;
+            Vector3 toPlayerVector = (player.transform.position - transform.position).normalized;
             if(toPlayerVector.magnitude > attackRadius)
                 continue;
 

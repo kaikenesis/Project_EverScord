@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -7,11 +8,15 @@ public class BossPattern04_Imp : ActionNodeImplement
 {
     private float chargeRange = 10;
     private BoxCollider boxCollider;
-    private DecalProjector projector;
 
     protected override void Awake()
     {
         base.Awake();
+        boxCollider = transform.AddComponent<BoxCollider>();
+        boxCollider.size = new Vector3(1, 1, 3);
+        boxCollider.center = new Vector3(0, 1, 1.5f);
+        boxCollider.isTrigger = true;
+        boxCollider.enabled = false;
     }
 
     protected override IEnumerator Act()
@@ -36,8 +41,7 @@ public class BossPattern04_Imp : ActionNodeImplement
         Vector3 endPoint = transform.position + transform.forward * (chargeRange-3);
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            Vector3 curPosition = Vector3.Lerp(startPoint, endPoint, t / duration);
-            transform.Translate(curPosition);
+            transform.position = Vector3.Lerp(startPoint, endPoint, t / duration);
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }
