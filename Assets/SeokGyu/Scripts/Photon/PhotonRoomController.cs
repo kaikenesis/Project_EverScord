@@ -406,9 +406,9 @@ namespace EverScord
         {
             if (bDebug == true)
             {
-                if (GUI.Button(new Rect(400, 0, 150, 60), "JoinRoom"))
+                if (GUI.Button(new Rect(400, 0, 150, 60), "Show Me The Money"))
                 {
-                    CreatePhotonRoom();
+                    GameManager.Instance.userData.IncreaseMoney(10000);
                 }
                 
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))

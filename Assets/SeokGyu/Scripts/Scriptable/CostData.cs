@@ -4,7 +4,7 @@ namespace EverScord
 {
     [SerializeField]
     [CreateAssetMenu(menuName = "EverScord/Game/CostDatas", fileName = "newCostDatas")]
-    public class CostDatas : ScriptableObject
+    public class CostData : ScriptableObject
     {
         [SerializeField] private SlotCost[] slotCostDatas;
 

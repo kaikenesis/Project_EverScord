@@ -12,7 +12,7 @@ namespace EverScord
         [SerializeField] private Transform containor;
         [SerializeField] private TMP_Text text;
 
-        private UIFactorSlot.EType panelType;
+        private int panelTypeNum;
         private List<UIFactorSlot> slots = new List<UIFactorSlot>();
 
         public static Action<int> OnUnlockFactor = delegate { };
@@ -30,7 +30,7 @@ namespace EverScord
 
         private void HandleClickedSlot(int type, int slotNum)
         {
-            if ((int)panelType != type || slots[slotNum].bConfirmed == true || slots[slotNum - 1].bLock == true) return;
+            if (panelTypeNum != type || slots[slotNum].bConfirmed == true || slots[slotNum - 1].bLock == true) return;
 
             if (slots[slotNum].bLock == true)
             {
@@ -44,9 +44,9 @@ namespace EverScord
             }
         }
 
-        public void Initialize(UIFactorSlot.EType type, int slotCount, int confirmedCount)
+        public void Initialize(int typeNum, int slotCount, int confirmedCount)
         {
-            SetTitle(type);
+            SetTitle(typeNum);
 
             for (int i = 0; i < slotCount; i++)
             {
@@ -58,21 +58,21 @@ namespace EverScord
                 obj.SetActive(true);
 
                 UIFactorSlot slot = obj.GetComponent<UIFactorSlot>();
-                slot.Initialize(type, bConfirmed, i);
+                slot.Initialize(typeNum, bConfirmed, i);
                 slots.Add(slot);
             }
         }
 
-        private void SetTitle(UIFactorSlot.EType type)
+        private void SetTitle(int typeNum)
         {
-            panelType = type;
+            panelTypeNum = typeNum;
 
-            switch (type)
+            switch (typeNum)
             {
-                case UIFactorSlot.EType.ALPHA:
+                case 0:
                     text.text = "Alpha";
                     break;
-                case UIFactorSlot.EType.BETA:
+                case 1:
                     text.text = "Beta";
                     break;
             }
