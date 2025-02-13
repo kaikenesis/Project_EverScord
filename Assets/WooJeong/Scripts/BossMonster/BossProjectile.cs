@@ -1,3 +1,6 @@
+using EverScord;
+using EverScord.Character;
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
@@ -28,5 +31,17 @@ public class BossProjectile : MonoBehaviour
         curTime = 0;
         ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        if(other.gameObject.CompareTag("Player"))
+        {
+            CharacterControl controller = other.GetComponent<CharacterControl>();
+            controller.DecreaseHP(10);
+        }
+
+        ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
+    }
 }

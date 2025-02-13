@@ -1,3 +1,4 @@
+using EverScord.Character;
 using Photon.Pun;
 using System.Collections;
 using UnityEngine;
@@ -137,9 +138,13 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("monster attack");
-        }
+            CharacterControl controller = other.GetComponent<CharacterControl>();
+            controller.DecreaseHP(10);
+        }        
     }
 }

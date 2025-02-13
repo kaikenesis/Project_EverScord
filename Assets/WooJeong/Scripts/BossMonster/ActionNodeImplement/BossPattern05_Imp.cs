@@ -1,4 +1,5 @@
 using EverScord;
+using EverScord.Character;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +11,8 @@ public class BossPattern05_Imp : ActionNodeImplement
     {
         Vector3 projectorPos = transform.position + (transform.forward * Mathf.Sqrt(attackRadius * attackRadius)/2);
         bossRPC.PlayAnimation("Idle");
-        yield return bossRPC.ProjectEnable(2, 1.5f);
         bossRPC.PlayAnimation("StandingAttack");
-
+        yield return bossRPC.ProjectEnable(2, 1f);
         yield return new WaitForSeconds(0.5f);
         //충돌 판정
         foreach (var player in GameManager.Instance.playerPhotonViews)
@@ -32,12 +32,12 @@ public class BossPattern05_Imp : ActionNodeImplement
             if (degree <= 45)
             {
                 // 플레이어 충돌 함수 추가
-                CharacterController controller = player.GetComponent<CharacterController>();
-                //controller.DereaseHP(10);
+                CharacterControl controller = player.GetComponent<CharacterControl>();
+                controller.DecreaseHP(10);
             }
         }
-
-        yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 0.5f);
+        yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1.5f);
+        bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
     }
