@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class Singleton<T> : MonoBehaviourPunCallbacks where T : Component
+    public class Singleton<T> : MonoBehaviour where T : Component
     {
-        public static T instance;
+        private static T instance;
         public static T Instance
         {
             get
@@ -28,7 +28,7 @@ namespace EverScord
             }
         }
 
-        public virtual void Awake()
+        protected virtual void Awake()
         {
             if (instance == null)
             {
