@@ -100,9 +100,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void ProjectorSetup()
     {
         Projector1.renderingLayerMask = 2;
-        Projector1.material = monsterData.DecalMat;
+        Projector1.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
         Projector2.renderingLayerMask = 2;
-        Projector2.material = monsterData.DecalMat;
+        Projector2.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
         Projector1.size = new Vector3(monsterData.AttackRangeX1,
                                       monsterData.AttackRangeY1,
                                       monsterData.AttackRangeZ1);
@@ -219,7 +219,6 @@ public abstract class NController : MonoBehaviour, IEnemy
             return true;
         }
         Debug.DrawRay(start, transform.forward * distance, Color.red);
-        Debug.Log("raycast fail");
         return false;
     }
 

@@ -7,26 +7,55 @@ using UnityEngine.Rendering.Universal;
 
 public class BossRPC : MonoBehaviour, IEnemy
 {
-    public float hp;
+    public Dictionary<string, float> clipDict = new();
+    
     [SerializeField] private BossData bossData;
     private PhotonView photonView;
     private Animator animator;
     private DecalProjector projectorCharge;
     private DecalProjector projectorQuater;
-    private GameObject goProjectorQ;
+    private GameObject projectorQuaterPivot;
+    private float attackRadius6 = 10;
 
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
-        projectorCharge = GetComponent<DecalProjector>();
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            clipDict[clip.name] = clip.length;
+        }
+        
+        SetProjectors();
+    }
+
+    private void SetProjectors()
+    {
+        //projector1
+        projectorCharge = gameObject.AddComponent<DecalProjector>();
         projectorCharge.size = new Vector3(1, 1, 10);
         projectorCharge.pivot = new Vector3(0, 0f, 5f);
-        goProjectorQ = new GameObject();
-        goProjectorQ.name = "ProjectorQuater";
-        goProjectorQ.transform.parent = transform;
-        projectorQuater = goProjectorQ.GetComponent<DecalProjector>();
-        //projectorQuater.material = 
+        projectorCharge.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
+        projectorCharge.renderingLayerMask = 2;
+        projectorCharge.enabled = false;
+
+        //projector2
+        projectorQuaterPivot = new GameObject();
+        projectorQuaterPivot.name = "ProjectorQuaterPivot";
+        projectorQuaterPivot.transform.parent = transform;
+        projectorQuaterPivot.transform.localPosition = Vector3.zero;
+
+        GameObject projectorObj = new GameObject();
+        projectorObj.transform.parent = projectorQuaterPivot.transform;
+        projectorObj.transform.Rotate(new Vector3(90, 0, 0));
+        projectorObj.transform.localPosition = new Vector3(5, 0, attackRadius6 / 2);
+        projectorQuater = projectorObj.AddComponent<DecalProjector>();
+        projectorQuater.renderingLayerMask = 2;
+        projectorQuater.size = new Vector3(attackRadius6, attackRadius6, 1);
+        projectorQuater.material = ResourceManager.Instance.GetAsset<Material>("DecalRedQuater");
+        projectorQuater.enabled = false;
+
+        projectorQuaterPivot.transform.Rotate(new Vector3(0, -45, 0));
     }
 
     public void PlayAnimation(string animationName)
@@ -58,43 +87,29 @@ public class BossRPC : MonoBehaviour, IEnemy
         bp.Setup(position, direction, projectileSpeed);
     }
 
-    public virtual IEnumerator ChargeProjectEnable(float projectTime)
+    public virtual IEnumerator ProjectEnable(int projectorNum, float projectTime)
     {
-        photonView.RPC("SyncChargeProjectorEnable", RpcTarget.All);
+        photonView.RPC("SyncProjectorEnable", RpcTarget.All, projectorNum);
         yield return new WaitForSeconds(projectTime);
-        photonView.RPC("SyncChargeProjectorDisable", RpcTarget.All);
+        photonView.RPC("SyncProjectorDisable", RpcTarget.All, projectorNum);
     }
 
     [PunRPC]
-    protected void SyncChargeProjectorEnable()
+    protected void SyncProjectorEnable(int projectorNum)
     {
-        projectorCharge.enabled = true;
+        if(projectorNum == 1)
+            projectorCharge.enabled = true;
+        else
+            projectorQuater.enabled = true;
     }
 
     [PunRPC]
-    protected void SyncChargeProjectorDisable()
+    protected void SyncProjectorDisable(int projectorNum)
     {
-        projectorCharge.enabled = false;
-    }
-
-    public virtual IEnumerator QuaterProjectEnable(Vector3 position, float projectTime)
-    {
-        photonView.RPC("SyncChargeProjectorEnable", RpcTarget.All, position);
-        yield return new WaitForSeconds(projectTime);
-        photonView.RPC("SyncChargeProjectorDisable", RpcTarget.All, position);
-    }
-
-    [PunRPC]
-    protected void SyncQuaterProjectorEnable(Vector3 position)
-    {
-        goProjectorQ.transform.position = position;
-        projectorQuater.enabled = true;
-    }
-
-    [PunRPC]
-    protected void SyncQuaterProjectorDisable(Vector3 position)
-    {
-        projectorQuater.enabled = false;
+        if(projectorNum == 1)
+            projectorCharge.enabled = false;
+        else
+            projectorQuater.enabled = false;
     }
 
     public void DecreaseHP(float hp)

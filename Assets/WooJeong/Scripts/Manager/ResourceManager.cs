@@ -24,6 +24,24 @@ public class ResourceManager : Singleton<ResourceManager>
     // 풀 크기 설정
     private const int DEFAULT_POOL_SIZE = 10;
 
+    public T GetAsset<T>(string addressableKey) where T : class
+    {
+        if (!objectDictionary.ContainsKey(addressableKey))
+        {
+            Debug.Log("load test");
+            AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(addressableKey);
+            handle.WaitForCompletion();
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                Debug.Log("load complete");
+                objectDictionary[addressableKey] = handle.Result as Object;
+                Debug.Log(objectDictionary[addressableKey]);
+            }
+        }
+
+        return objectDictionary[addressableKey] as T;
+    }
+
     // 어드레서블 에셋을 로드하고 풀 생성
     public async Task CreatePool(string addressableKey, int poolSize = DEFAULT_POOL_SIZE)
     {

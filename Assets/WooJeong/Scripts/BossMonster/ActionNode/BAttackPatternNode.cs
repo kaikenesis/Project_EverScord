@@ -15,8 +15,8 @@ public abstract class BAttackPatternNode : BActionNode
 
         if (!isRunning)
         {
-            int random = Random.Range(1, 8);
-            if (random <= 1)
+            int random = Random.Range(1, 9);
+            if (random != 1)
             {
                 return NodeState.FAILURE;
             }

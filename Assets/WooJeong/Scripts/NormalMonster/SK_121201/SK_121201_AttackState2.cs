@@ -35,7 +35,6 @@ public class SK_121201_AttackState2 : NAttackState
         attackObj.transform.position = monsterController.player.transform.position;
         MonsterAttack ma = attackObj.AddComponent<MonsterAttack>();
         ma.Setup(monsterController.monsterData.AttackRangeX2,
-            monsterController.monsterData.ProjectionTime,
-            monsterController.monsterData.DecalMat);
+            monsterController.monsterData.ProjectionTime);
     }
 }

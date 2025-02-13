@@ -51,7 +51,6 @@ public abstract class NRunState : MonoBehaviour, IState
         }
 
         navMeshAgent.destination = monsterController.player.transform.position;
-        Debug.Log(navMeshAgent.remainingDistance);
         if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
         {
             Exit();

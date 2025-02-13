@@ -13,15 +13,15 @@ public class MonsterAttack : MonoBehaviour
     private void Awake()
     {
         projector = gameObject.AddComponent<DecalProjector>();
+        projector.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
         capCollider = gameObject.AddComponent<CapsuleCollider>();
         projector.renderingLayerMask = 2;
     }
 
-    public void Setup(float radius, float projectTime, Material decalMat)
+    public void Setup(float radius, float projectTime)
     {
         this.projectTime = projectTime;
         
-        projector.material = decalMat;
         projector.size = new Vector3(radius * 2, radius * 2, radius * 2);
         capCollider.radius = radius;
 

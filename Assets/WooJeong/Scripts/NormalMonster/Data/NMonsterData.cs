@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/Data/NormalMonsterData")]
 public class NMonsterData : ScriptableObject
 {
-    [field: SerializeField] public Material DecalMat { get; protected set; }
     [field: SerializeField] public float HP { get; protected set; }
     [field: SerializeField] public float MoveSpeed { get; protected set; }
     [field: SerializeField] public float CoolDown1 { get; protected set; }

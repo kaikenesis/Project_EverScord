@@ -18,7 +18,7 @@ public class BossPattern04_Imp : ActionNodeImplement
     {
         Debug.Log("Attack4 start");
         bossRPC.PlayAnimation("Idle");
-        yield return bossRPC.ChargeProjectEnable(1f);
+        yield return bossRPC.ProjectEnable(1, 1f);
 
         bossRPC.PlayAnimation("RushAttack");
         yield return StartCoroutine(Charge(1));
@@ -36,7 +36,8 @@ public class BossPattern04_Imp : ActionNodeImplement
         Vector3 endPoint = transform.position + transform.forward * (chargeRange-3);
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            transform.position = Vector3.Lerp(startPoint, endPoint, t / duration);
+            Vector3 curPosition = Vector3.Lerp(startPoint, endPoint, t / duration);
+            transform.Translate(curPosition);
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }
