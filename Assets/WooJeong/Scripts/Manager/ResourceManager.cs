@@ -16,6 +16,9 @@ public class ResourceManager : Singleton<ResourceManager>
 
     // 프리팹의 원본을 보관할 Dictionary
     private Dictionary<string, GameObject> prefabDictionary = new Dictionary<string, GameObject>();
+
+    private Dictionary<string, Object> objectDictionary = new();
+    
     public Transform PoolRoot { get; private set; }
 
     // 풀 크기 설정
