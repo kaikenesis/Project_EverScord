@@ -11,16 +11,20 @@ namespace EverScord
         [SerializeField] private Image optionImg;
         private int curTypeNum;
         private int slotNum;
+        private Color newOptionColor;
+        private string newOptionName;
+        private float newOptionValue;
 
         public bool bLock { get; private set; }
         public bool bConfirmed { get; private set; }
         public string curOptionName { get; private set; }
         public float curOptionValue { get; private set; }
 
+
         public static Action<int, int> OnClickedSlot = delegate { };
         public static Action<int> OnDisplayOptionList = delegate { };
-        public static Action<string, string, float, float> OnRequestUpdateInfo = delegate { };
-        public static Action<Color, string, float> OnRequestApplyOption = delegate { };
+        public static Action<string, float, string, float> OnRequestUpdateInfo = delegate { };
+        public static Action<Color, string, float, string, float> OnRequestApplyOption = delegate { };
 
         private void Awake()
         {
@@ -42,44 +46,53 @@ namespace EverScord
         #region Handle Methods
         private void HandleRequestUnlock(int typeNum, int slotNum)
         {
-            if (bLock == true && curTypeNum == typeNum && this.slotNum == slotNum)
-            {
-                int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Unlock;
-                GameManager.Instance.userData.DecreaseMoney(cost);
-                bLock = false;
-                lockImg.enabled = false;
-            }
+            if (bLock == false || curTypeNum != typeNum || this.slotNum != slotNum) return;
+
+            int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Unlock;
+            GameManager.Instance.userData.DecreaseMoney(cost);
+            bLock = false;
+            lockImg.enabled = false;
         }
 
         private void HandleRequestReroll(int typeNum, int slotNum)
         {
-            if (bLock == false && curTypeNum == typeNum && this.slotNum == slotNum)
-            {
-                int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
-                GameManager.Instance.userData.DecreaseMoney(cost);
+            if (bLock == true || curTypeNum != typeNum || this.slotNum != slotNum) return;
 
-                FactorDatas datas = GameManager.Instance.FactorDatas[typeNum];
+            int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
+            GameManager.Instance.userData.DecreaseMoney(cost);
 
-                int randomOptionNum = UnityEngine.Random.Range(0, datas.OptionDatas.Length - 1);
+            FactorDatas datas = GameManager.Instance.FactorDatas[typeNum];
 
-                Color imgColor = datas.OptionDatas[randomOptionNum].ImgColor;
-                string name = datas.OptionDatas[randomOptionNum].Name;
+            int randomOptionNum = UnityEngine.Random.Range(0, datas.OptionDatas.Length);
 
-                int randomValueNum = UnityEngine.Random.Range(0, datas.OptionDatas[randomOptionNum].Values.Length - 1);
-                float value = datas.OptionDatas[randomOptionNum].Values[randomValueNum];
+            newOptionColor = datas.OptionDatas[randomOptionNum].ImgColor;
+            newOptionName = datas.OptionDatas[randomOptionNum].Name;
 
-                OnRequestApplyOption?.Invoke(imgColor, name, value);
-            }
+            int randomValueNum = UnityEngine.Random.Range(0, datas.OptionDatas[randomOptionNum].Values.Length);
+            newOptionValue = datas.OptionDatas[randomOptionNum].Values[randomValueNum];
+
+            OnRequestApplyOption?.Invoke(newOptionColor, newOptionName, newOptionValue, curOptionName, curOptionValue);
         }
 
-        private void HandleApplyOption(int typeNum, int slotNum, Color optionImgColor, string newName, float newValue)
+        private void HandleApplyOption(int typeNum, int slotNum, Color newColor, string newName, float newValue)
         {
-            if (bLock == false && curTypeNum == typeNum && this.slotNum == slotNum)
+            if (bLock == true || curTypeNum != typeNum || this.slotNum != slotNum) return;
+
+            if (newName == "")
             {
-                OnRequestUpdateInfo?.Invoke(curOptionName, newName, curOptionValue, newValue);
-                
+                OnRequestUpdateInfo?.Invoke(newOptionName, newOptionValue, curOptionName, curOptionValue);
+
                 optionImg.enabled = true;
-                optionImg.color = optionImgColor;
+                optionImg.color = newOptionColor;
+                curOptionName = newOptionName;
+                curOptionValue = newOptionValue;
+            }
+            else
+            {
+                OnRequestUpdateInfo?.Invoke(newName, newValue, curOptionName, curOptionValue);
+
+                optionImg.enabled = true;
+                optionImg.color = newColor;
                 curOptionName = newName;
                 curOptionValue = newValue;
             }

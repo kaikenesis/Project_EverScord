@@ -33,7 +33,7 @@ namespace EverScord
             options.Add(optionInfo);
         }
 
-        private void HandleRequestUpdateInfo(string prevName, string newName, float prevValue, float newValue)
+        private void HandleRequestUpdateInfo(string newName, float newValue, string prevName, float prevValue)
         {
             for (int i = 0; i < options.Count; i++)
             {

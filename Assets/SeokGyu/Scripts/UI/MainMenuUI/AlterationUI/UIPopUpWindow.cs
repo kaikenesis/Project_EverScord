@@ -16,10 +16,10 @@ namespace EverScord
 
         enum EType
         {
-            NONE,
-            UNLOCK_FACTOR,
-            REROLL_FACTOR,
-            APPLY_OPTION,
+            None,
+            Unlock,
+            Reroll,
+            Apply,
             MAX
         }
 
@@ -28,16 +28,18 @@ namespace EverScord
         [SerializeField] private TMP_Text acceptText;
         [SerializeField] private TMP_Text refuseText;
         [SerializeField] private PopUpWindowData data;
-        private EType curWindowType = EType.NONE;
+        private EType curWindowType = EType.None;
         private bool bCanAccept = false;
 
         public static Action OnAcceptUnlock = delegate { };
         public static Action OnAcceptReroll = delegate { };
+        public static Action OnApplyOption = delegate { };
         
         private void Awake()
         {
             UIFactorPanel.OnUnlockFactor += HandleUnlockFactor;
             UIFactorPanel.OnRerollFactor += HandleRerollFactor;
+            UIFactorSlot.OnRequestApplyOption += HandleRequestApplyOption;
 
             gameObject.SetActive(false);
         }
@@ -46,8 +48,10 @@ namespace EverScord
         {
             UIFactorPanel.OnUnlockFactor -= HandleUnlockFactor;
             UIFactorPanel.OnRerollFactor -= HandleRerollFactor;
+            UIFactorSlot.OnRequestApplyOption -= HandleRequestApplyOption;
         }
 
+        #region Handle Methods
         private void HandleUnlockFactor(int cost)
         {
             DisplayUnlockFactor(cost);
@@ -59,11 +63,17 @@ namespace EverScord
             DisplayRerollFactor(cost);
         }
 
+        private void HandleRequestApplyOption(Color imgColor, string newName, float newValue, string curName, float curValue)
+        {
+            DisplayApplyOption(curName, curValue, newName, newValue);
+        }
+        #endregion // Handle Methods
+
         private void DisplayUnlockFactor(int cost)
         {
             // mainMsg, subMsg, acceptText, cancelText, 요구 money, 현재 money 데이터로 분리 필요
             gameObject.SetActive(true);
-            curWindowType = EType.UNLOCK_FACTOR;
+            curWindowType = EType.Unlock;
             int money;
             if (GameManager.Instance.userData != null)
                 money = GameManager.Instance.userData.money;
@@ -88,7 +98,7 @@ namespace EverScord
         private void DisplayRerollFactor(int cost)
         {
             gameObject.SetActive(true);
-            curWindowType = EType.REROLL_FACTOR;
+            curWindowType = EType.Reroll;
             int money;
             if (GameManager.Instance.userData != null)
                 money = GameManager.Instance.userData.money;
@@ -110,30 +120,23 @@ namespace EverScord
             refuseText.text = "취소";
         }
 
-        private void DisplayApplyOption()
+        private void DisplayApplyOption(string curName, float curValue, string newName, float newValue)
         {
             gameObject.SetActive(true);
-            curWindowType = EType.APPLY_OPTION;
-            int pay = 0;
-            int money;
-            if (GameManager.Instance.userData != null)
-                money = GameManager.Instance.userData.money;
-            else
-                money = -1;
+            curWindowType = EType.Apply;
 
-            if (money < pay)
+            if(curName == "" || curValue == 0)
             {
-                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
-                bCanAccept = false;
+                mainMessage.text = $"현재 : X\n적용 후 : {newName}, {newValue}\n적용하시겠습니까?";
             }
             else
             {
-                SetMessage($"필요한 재화 : {pay}\n 개조하시겠습니까?", $"보유 재화 : {money}");
-                bCanAccept = true;
+                mainMessage.text = $"현재 : {curName}, {curValue}\n적용 후 : {newName}, {newValue}\n적용하시겠습니까?";
             }
+            subMessage.text = "";
 
-            acceptText.text = "개조";
-            refuseText.text = "취소";
+            acceptText.text = "적용";
+            refuseText.text = "유지";
         }
 
         private void SetMessage(string mainMessage, string subMessage)
@@ -146,29 +149,29 @@ namespace EverScord
         {
             switch(curWindowType)
             {
-                case EType.UNLOCK_FACTOR:
+                case EType.Unlock:
                     {
                         if (bCanAccept == true)
                         {
                             OnAcceptUnlock?.Invoke();
-                            curWindowType = EType.NONE;
+                            curWindowType = EType.None;
                             gameObject.SetActive(false);
                         }
                     }
                     break;
-                case EType.REROLL_FACTOR:
+                case EType.Reroll:
                     {
                         if (bCanAccept == true)
                         {
                             OnAcceptReroll?.Invoke();
-                            curWindowType = EType.NONE;
-                            gameObject.SetActive(false);
                         }
                     }
                     break;
-                case EType.APPLY_OPTION:
+                case EType.Apply:
                     {
-                        // 적용한 옵션 UI Image 적용 ( 임시로 색상 변경 )
+                        OnApplyOption?.Invoke();
+                        curWindowType = EType.None;
+                        gameObject.SetActive(false);
                     }
                     break;
             }
@@ -176,7 +179,7 @@ namespace EverScord
 
         public void OnCancled()
         {
-            curWindowType = EType.NONE;
+            curWindowType = EType.None;
             gameObject.SetActive(false);
         }
     }

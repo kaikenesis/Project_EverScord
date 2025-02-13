@@ -15,14 +15,15 @@ namespace EverScord
         public static Action<int, int> OnRequestUnlock = delegate { };
         public static Action<int, int> OnRequestReroll = delegate { };
         public static Action<int, int, Color, string, float> OnApplyOption = delegate { };
+        public static Action<int, int, Color, string, float> OnApplyConfirmedOption = delegate { };
 
         private void Awake()
         {
             UIPopUpWindow.OnAcceptUnlock += HandleAcceptUnlock;
             UIPopUpWindow.OnAcceptReroll += HandleAcceptReroll;
+            UIPopUpWindow.OnApplyOption += HandleApplyOption;
             UIFactorSlot.OnClickedSlot += HandleClickedSlot;
-            UIFactorOptionList.OnRequestApplyOption += HandleRequestApplyOption;
-            UIFactorSlot.OnRequestApplyOption += HandleRequestApplyOption;
+            UIFactorOptionList.OnApplyOption += HandleApplyOption;
 
             Init();
         }
@@ -31,9 +32,9 @@ namespace EverScord
         {
             UIPopUpWindow.OnAcceptUnlock -= HandleAcceptUnlock;
             UIPopUpWindow.OnAcceptReroll -= HandleAcceptReroll;
+            UIPopUpWindow.OnApplyOption -= HandleApplyOption;
             UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
-            UIFactorOptionList.OnRequestApplyOption -= HandleRequestApplyOption;
-            UIFactorSlot.OnRequestApplyOption -= HandleRequestApplyOption;
+            UIFactorOptionList.OnApplyOption -= HandleApplyOption;
         }
 
         #region Handle Methods
@@ -47,15 +48,20 @@ namespace EverScord
             OnRequestReroll?.Invoke(selectType, selectIndex);
         }
 
+        private void HandleApplyOption()
+        {
+            OnApplyOption?.Invoke(selectType, selectIndex, new Color(), "", 0.0f);
+        }
+
+        private void HandleApplyOption(Color newColor, string newName, float newValue)
+        {
+            OnApplyOption.Invoke(selectType, selectIndex, newColor, newName, newValue);
+        }
+
         private void HandleClickedSlot(int type, int slotNum)
         {
             selectType = type;
             selectIndex = slotNum;
-        }
-
-        private void HandleRequestApplyOption(Color optionImgColor, string name, float value)
-        {
-            OnApplyOption?.Invoke(selectType, selectIndex, optionImgColor, name, value);
         }
         #endregion // Handle Methods
 
