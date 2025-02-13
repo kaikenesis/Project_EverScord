@@ -7,7 +7,10 @@ public class BossPattern06_Imp : ActionNodeImplement
     protected override IEnumerator Act()
     {
         Debug.Log("Attack6 start");
-        yield return new WaitForSeconds(5f);
+        bossRPC.PlayAnimation("RotatingShot");
+        yield return new WaitForSeconds(1f);
+        yield return bossRPC.LaserEnable(2f);
+        yield return new WaitForSeconds(bossRPC.clipDict["RotatingShot"] - 3f);
         isEnd = true;
         action = null;
         Debug.Log("Attack6 end");

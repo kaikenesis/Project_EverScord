@@ -10,6 +10,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public Dictionary<string, float> clipDict = new();
     
     [SerializeField] private BossData bossData;
+    [SerializeField] private GameObject laserPoint;
     private PhotonView photonView;
     private Animator animator;
     private DecalProjector projectorCharge;
@@ -123,5 +124,13 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         bossData.ReduceHp(hp);
         hp = bossData.HP;
+    }
+
+    public IEnumerator LaserEnable(float enableTime)
+    {
+        Debug.Log("Laser active");
+        laserPoint.SetActive(true);
+        yield return new WaitForSeconds(enableTime);
+        laserPoint.SetActive(false);
     }
 }
