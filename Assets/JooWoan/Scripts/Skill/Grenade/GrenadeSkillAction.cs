@@ -61,7 +61,8 @@ namespace EverScord.Skill
             stampedMarker   = Instantiate(this.skill.HitMarker, transform).transform;
 
             stampedMarker.gameObject.SetActive(false);
-            HideHitMarker();
+            
+            SetHitMarker(false);
             SetLineVisibility(false);
 
             StartCoroutine(cooldownTimer.RunTimer());
@@ -88,6 +89,8 @@ namespace EverScord.Skill
 
         private IEnumerator ActivateSkill()
         {
+            SetHitMarker(true);
+            
             while (hasActivated)
             {
                 SetForce();
@@ -113,7 +116,7 @@ namespace EverScord.Skill
         {
             hasActivated = false;
 
-            HideHitMarker();
+            SetHitMarker(false);
             SetLineVisibility(false);
             activator.PlayerUIControl?.SetAimCursor(activator, true);
 
@@ -154,6 +157,7 @@ namespace EverScord.Skill
 
             stampCoroutine = StartCoroutine(StampMarker());
             cooldownTimer.ResetElapsedTime();
+            SetHitMarker(false);
         }
 
         private void Predict()
@@ -168,8 +172,8 @@ namespace EverScord.Skill
             int maxPoints = skill.MaxPoints;
             float predictInterval = skill.PredictInterval;
 
-            UpdateLine(maxPoints, 0, currentPosition);
             estimatedTime = 0f;
+            UpdateLine(maxPoints, 0, currentPosition);
 
             for (int i = 1; i < maxPoints; i++)
             {
@@ -182,11 +186,10 @@ namespace EverScord.Skill
                 if (Physics.Raycast(currentPosition, currentVelocity.normalized, out RaycastHit hit, overlap, GameManager.GroundLayer))
                 {
                     UpdateLine(i, i - 1, hit.point);
-                    ShowHitMarker(hit);
+                    MoveHitMarker(hit);
                     break;
                 }
 
-                HideHitMarker();
                 currentPosition = nextPosition;
                 UpdateLine(maxPoints, i, currentPosition);
             }
@@ -210,16 +213,15 @@ namespace EverScord.Skill
             return velocity;
         }
 
-        private void ShowHitMarker(RaycastHit hit)
+        private void MoveHitMarker(RaycastHit hit)
         {
-            hitMarker.gameObject.SetActive(true);
             hitMarker.position = hit.point + hit.normal * skill.HitMarkerGroundOffset;
-            hitMarker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
+            // hitMarker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
         }
 
-        private void HideHitMarker()
+        private void SetHitMarker(bool state)
         {
-            hitMarker.gameObject.SetActive(false);
+            hitMarker.gameObject.SetActive(state);
         }
 
         private IEnumerator StampMarker()
@@ -227,9 +229,9 @@ namespace EverScord.Skill
             if (!photonView.IsMine)
                 yield break;
 
-            stampedMarker.gameObject.SetActive(true);
             stampedMarker.position = hitMarker.position;
             stampedMarker.rotation = hitMarker.rotation;
+            stampedMarker.gameObject.SetActive(true);
 
             yield return new WaitForSeconds(estimatedTime);
 

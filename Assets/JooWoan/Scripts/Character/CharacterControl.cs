@@ -61,6 +61,8 @@ namespace EverScord.Character
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
 
+        private const float SKIN_RATIO = 0.1f;
+
         void Awake()
         {
             photonView       = GetComponent<PhotonView>();
@@ -78,7 +80,7 @@ namespace EverScord.Character
             CameraControl    = Instantiate(cameraPrefab, cameraHub);
 
             // Unity docs: Set skinwidth 10% of the Radius
-            controller.skinWidth = controller.radius * 0.1f;
+            controller.skinWidth = controller.radius * SKIN_RATIO;
 
             AnimationControl.Init(photonView);
             weapon.Init(this);
