@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BossPattern02_Imp : ActionNodeImplement
 {
-    private float projectileSpeed = 5f;
+    private float projectileSpeed = 10f;
 
     protected override IEnumerator Act()
     {
@@ -16,10 +16,10 @@ public class BossPattern02_Imp : ActionNodeImplement
         {
             Vector3 direction = Quaternion.AngleAxis(-30, Vector3.up) * transform.forward;
             Vector3 direction2 = Quaternion.AngleAxis(30, Vector3.up) * transform.forward;
-
-            bossRPC.FireBossProjectile(transform.position, direction, projectileSpeed);
-            bossRPC.FireBossProjectile(transform.position, transform.forward, projectileSpeed);
-            bossRPC.FireBossProjectile(transform.position, direction2, projectileSpeed);
+            Vector3 pos = transform.position + transform.forward * 2;
+            bossRPC.FireBossProjectile(pos, direction, projectileSpeed);
+            bossRPC.FireBossProjectile(pos, transform.forward, projectileSpeed);
+            bossRPC.FireBossProjectile(pos, direction2, projectileSpeed);
 
             yield return new WaitForSeconds(0.14f);
         }

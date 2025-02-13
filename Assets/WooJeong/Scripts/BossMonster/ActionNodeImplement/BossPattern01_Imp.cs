@@ -5,7 +5,7 @@ using UnityEngine;
 public class BossPattern01_Imp : ActionNodeImplement
 {
     //private float projectileSize = 1;
-    private float projectileSpeed = 5f;
+    private float projectileSpeed = 10f;
 
     protected override IEnumerator Act()
     {
@@ -14,7 +14,9 @@ public class BossPattern01_Imp : ActionNodeImplement
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < 7; i++)
         {
-            bossRPC.FireBossProjectile(transform.position, transform.forward, projectileSpeed);
+            Vector3 pos = transform.position + transform.forward * 2;
+
+            bossRPC.FireBossProjectile(pos, transform.forward, projectileSpeed);
             yield return new WaitForSeconds(0.14f);
         }
         yield return new WaitForSeconds(0.5f);
