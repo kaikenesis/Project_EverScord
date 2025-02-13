@@ -23,13 +23,14 @@ namespace EverScord
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
 
         [SerializeField] private CostDatas costDatas;
+        [SerializeField] private LayerMask groundLayer, enemyLayer;
+
         public CostDatas CostDatas
         {
             get { return costDatas; }
             private set { costDatas = value; }
         }
 
-        [SerializeField] private LayerMask groundLayer, enemyLayer;
         private IDictionary<int, CharacterControl> playerDict;
 
         public static GameManager Instance

@@ -1,8 +1,9 @@
 using UnityEngine;
+using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
-    public class Bullet : MonoBehaviour
+    public class Bullet : MonoBehaviour, IPoolable
     {
         private const float COLLISION_STEP = 0.5f;
         
@@ -128,6 +129,11 @@ namespace EverScord.Weapons
         {
             // Exclude bullet drop
             return InitialPosition + InitialVelocity * Lifetime;
+        }
+
+        public void SetGameObject(bool state)
+        {
+            gameObject.SetActive(state);
         }
     }
 }
