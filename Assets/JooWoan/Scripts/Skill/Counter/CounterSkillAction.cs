@@ -87,6 +87,9 @@ namespace EverScord.Skill
 
         private void UpdateBarrierPosition(Transform barrierTransform)
         {
+            if (!barrierTransform || !activator)
+                return;
+                
             barrierTransform.position = new Vector3(
                 activator.transform.position.x,
                 barrierTransform.position.y,
@@ -106,8 +109,6 @@ namespace EverScord.Skill
         {
             if (laserControl)
                 return;
-
-            Debug.Log("Start laser");
 
             activator.TrackAim();
             activator.PlayerWeapon.FireBullet();
@@ -143,10 +144,7 @@ namespace EverScord.Skill
             if (!laserControl)
                 return;
 
-            Debug.Log("End laser");
-
             activator.PlayerWeapon.SetShootingStance(activator, false);
-
             laserControl.DisablePrepare();
 
             int totalChildCount = laserControl.transform.childCount;

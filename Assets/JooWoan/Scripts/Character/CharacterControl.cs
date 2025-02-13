@@ -59,7 +59,6 @@ namespace EverScord.Character
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
-
         private Vector3 remoteMouseRayHitPos;
 
         void Awake()
@@ -133,6 +132,7 @@ namespace EverScord.Character
 
         private void LerpRemoteInfo()
         {
+            MouseRayHitPos = Vector3.Lerp(MouseRayHitPos, remoteMouseRayHitPos, Time.deltaTime * 10f);
         }
 
         private void SetInput()
@@ -306,7 +306,7 @@ namespace EverScord.Character
             }
             else if (stream.IsReading)
             {
-                MouseRayHitPos = (Vector3)stream.ReceiveNext();
+                remoteMouseRayHitPos = (Vector3)stream.ReceiveNext();
             }
         }
 

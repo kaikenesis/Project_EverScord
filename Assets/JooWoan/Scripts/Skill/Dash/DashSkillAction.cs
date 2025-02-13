@@ -7,6 +7,7 @@ namespace EverScord.Skill
     public class DashSkillAction : MonoBehaviour, ISkillAction
     {
         private const float SPEED_DROP_POINT = 0.7f;
+        private const float SPEED_DROP_RATE = 0.02f;
 
         private CharacterControl activator;
         private DashSkill skill;
@@ -60,7 +61,7 @@ namespace EverScord.Skill
             float moveSpeed     = originalSpeed * skill.SpeedMultiplier;
 
             float decreaseStartTime = skill.Duration * SPEED_DROP_POINT;
-            float decreaseRate = SPEED_DROP_POINT;
+            float decreaseValue = SPEED_DROP_POINT;
 
             activator.SetSpeed(moveSpeed);
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
@@ -73,10 +74,9 @@ namespace EverScord.Skill
             {
                 if (i >= decreaseStartTime)
                 {
-                    decreaseRate += 0.02f;
-                    Debug.Log(decreaseRate);
-                    moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, decreaseRate);
-                    animatorSpeed = Mathf.Lerp(animatorSpeed, 1f, decreaseRate);
+                    decreaseValue += SPEED_DROP_RATE;
+                    moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, decreaseValue);
+                    animatorSpeed = Mathf.Lerp(animatorSpeed, 1f, decreaseValue);
 
                     activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
                     activator.SetSpeed(moveSpeed);
