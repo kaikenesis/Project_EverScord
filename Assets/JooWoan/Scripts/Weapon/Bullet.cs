@@ -1,10 +1,12 @@
 using UnityEngine;
+using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
-    public class Bullet : MonoBehaviour
+    public class Bullet : MonoBehaviour, IPoolable
     {
         private const float COLLISION_STEP = 0.5f;
+        
         [field: SerializeField] public TrailRenderer TracerEffect   { get; private set; }
         public BulletInfo BulletInfo                                { get; private set; }
         public Vector3 InitialPosition                              { get; private set; }
@@ -12,6 +14,7 @@ namespace EverScord.Weapons
         public float Lifetime                                       { get; private set; }
         public bool IsDestroyed                                     { get; private set; }
         public int ViewID                                           { get; private set; }
+
         private int bulletID = -1;
         public int BulletID => bulletID;
 
@@ -90,9 +93,8 @@ namespace EverScord.Weapons
                         continue;
 
                     GameManager.Instance.BulletsControl.BulletHitEffect(hit.point, -direction);
-                    int enemyLayerNum = LayerMask.NameToLayer("Enemy");
 
-                    if (hit.transform.gameObject.layer == enemyLayerNum)
+                    if (hit.transform.gameObject.layer == GameManager.EnemyLayerNumber)
                     {
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(sourceWeapon.Damage, monster);
@@ -127,6 +129,11 @@ namespace EverScord.Weapons
         {
             // Exclude bullet drop
             return InitialPosition + InitialVelocity * Lifetime;
+        }
+
+        public void SetGameObject(bool state)
+        {
+            gameObject.SetActive(state);
         }
     }
 }

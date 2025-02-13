@@ -4,8 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
-using ExitGames.Client.Photon.StructWrapping;
-using Unity.Mathematics;
+using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
@@ -163,24 +162,27 @@ namespace EverScord.Weapons
             GunPoint.forward = facingDir;
         }
 
-        private void FireBullet()
+        public void FireBullet()
         {
             shotEffect.Emit(1);
 
-            Vector3 gunpointPos = GunPoint.position;
-            Vector3 bulletVector = GunPoint.forward * bulletSpeed;
+            Vector3 gunpointPos     = GunPoint.position;
+            Vector3 bulletVector    = GunPoint.forward * bulletSpeed;
 
-            GameObject pooledBullet = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID, transform.position, Quaternion.identity);
-            GameObject pooledSmoke  = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID,  transform.position, Quaternion.identity);
+            Bullet bullet           = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
+            SmokeTrail smokeTrail   = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
 
-            Bullet bullet = pooledBullet.GetComponent<Bullet>();
-            bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
+            if (smokeTrail)
+            {
+                smokeTrail.transform.forward = bulletVector;
+                smokeTrail.Init(bullet);
+            }
 
-            SmokeTrail smokeTrail = pooledSmoke.GetComponent<SmokeTrail>();
-            smokeTrail.transform.forward = bulletVector;
-            smokeTrail.Init(bullet);
-
-            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
+            if (bullet)
+            {
+                bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
+                GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
+            }
 
             if (!PhotonNetwork.IsConnected)
                 return;
@@ -188,7 +190,7 @@ namespace EverScord.Weapons
             photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);
         }
 
-        private void SetShootingStance(CharacterControl shooter, bool state)
+        public void SetShootingStance(CharacterControl shooter, bool state)
         {
             shooter.SetIsAiming(state);
             shooter.RigControl.SetAimWeight(state);
@@ -254,18 +256,21 @@ namespace EverScord.Weapons
         {
             shotEffect.Emit(1);
 
-            GameObject pooledBullet = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID, transform.position, Quaternion.identity);
-            GameObject pooledSmoke  = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID,  transform.position, Quaternion.identity);
+            Bullet bullet           = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
+            SmokeTrail smokeTrail   = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
 
-            Bullet bullet = pooledBullet.GetComponent<Bullet>();
-            bullet.Init(gunpointPos, bulletVector, bulletInfo, viewID);
-            bullet.SetBulletID(bulletID);
+            if (smokeTrail)
+            {
+                smokeTrail.transform.forward = bulletVector;
+                smokeTrail.Init(bullet);
+            }
 
-            SmokeTrail smokeTrail = pooledSmoke.GetComponent<SmokeTrail>();
-            smokeTrail.transform.forward = bulletVector;
-            smokeTrail.Init(bullet);
-
-            GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
+            if (bullet)
+            {
+                bullet.Init(gunpointPos, bulletVector, bulletInfo, viewID);
+                bullet.SetBulletID(bulletID);
+                GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
+            }
         }
 
         [PunRPC]

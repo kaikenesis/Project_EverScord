@@ -4,7 +4,6 @@ using UnityEngine;
 using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
-using Photon.Realtime;
 
 namespace EverScord
 {
@@ -17,19 +16,21 @@ namespace EverScord
         public List<PhotonView> playerPhotonViews   { get; private set; }
         public BulletControl BulletsControl         { get; private set; }
         public EnemyHitControl EnemyHitsControl     { get; private set; }
+        public static int EnemyLayerNumber          { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
 
         [SerializeField] private CostDatas costDatas;
+        [SerializeField] private LayerMask groundLayer, enemyLayer;
+
         public CostDatas CostDatas
         {
             get { return costDatas; }
             private set { costDatas = value; }
         }
 
-        [SerializeField] private LayerMask groundLayer, enemyLayer;
         private IDictionary<int, CharacterControl> playerDict;
 
         public static GameManager Instance
@@ -60,8 +61,9 @@ namespace EverScord
 
         private void Init()
         {
-            playerDict = new Dictionary<int, CharacterControl>();
-            playerPhotonViews = new();
+            EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
+            playerDict          = new Dictionary<int, CharacterControl>();
+            playerPhotonViews   = new();
         }
 
         public void UpdateUserName(string newName)
