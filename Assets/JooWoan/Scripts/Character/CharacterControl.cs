@@ -14,6 +14,7 @@ namespace EverScord.Character
         [SerializeField] private float speed;
         [SerializeField] private float gravity;
         [SerializeField] private float mass;
+        [SerializeField] private float health;
         [SerializeField] private float bodyRotateSpeed;
 
         [Header("Ground Check")]
@@ -58,6 +59,8 @@ namespace EverScord.Character
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
+
+        private Vector3 remoteMouseRayHitPos;
 
         void Awake()
         {
@@ -105,7 +108,10 @@ namespace EverScord.Character
         void Update()
         {
             if (!photonView.IsMine)
+            {
+                LerpRemoteInfo();
                 return;
+            }
 
             SetInput();
             SetMovingDirection();
@@ -123,6 +129,10 @@ namespace EverScord.Character
             weapon.Shoot(this);
 
             UseSkills();
+        }
+
+        private void LerpRemoteInfo()
+        {
         }
 
         private void SetInput()
@@ -160,7 +170,7 @@ namespace EverScord.Character
             controller.Move(velocity * Time.deltaTime);
         }
 
-        private void TrackAim()
+        public void TrackAim()
         {
             Ray ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
 
@@ -241,6 +251,16 @@ namespace EverScord.Character
             IsAiming = state;
         }
 
+        public void SetMouseButtonDown(bool state)
+        {
+            playerInputInfo.pressedLeftMouseButton = state;
+        }
+
+        public void DecreaseHP(float amount)
+        {
+            health = Mathf.Max(0, health - amount);
+        }
+
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             GameManager.Instance.AddPlayerPhotonView(info.photonView);
@@ -280,11 +300,14 @@ namespace EverScord.Character
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-        }
-
-        private void ResetMouseClick()
-        {
-            playerInputInfo.pressedLeftMouseButton = false;
+            if (stream.IsWriting)
+            {
+                stream.SendNext(MouseRayHitPos);
+            }
+            else if (stream.IsReading)
+            {
+                MouseRayHitPos = (Vector3)stream.ReceiveNext();
+            }
         }
 
         [PunRPC]
@@ -295,15 +318,22 @@ namespace EverScord.Character
         }
 
         [PunRPC]
+        public void SyncCounterSkill(Vector3 mouseRayHitPos, bool toggle, int index)
+        {
+            CounterSkillAction skillAction = (CounterSkillAction)skillList[index].SkillAction;
+
+            MouseRayHitPos = MouseRayHitPos;
+            playerInputInfo.pressedLeftMouseButton = true;
+        }
+
+        [PunRPC]
         public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
         {
-            MouseRayHitPos = mouseRayHitPos;
-
             GrenadeSkillAction skillAction = (GrenadeSkillAction)skillList[index].SkillAction;
             skillAction.SyncGrenadeSkill(throwDir);
 
+            MouseRayHitPos = mouseRayHitPos;
             playerInputInfo.pressedLeftMouseButton = true;
-            Invoke(nameof(ResetMouseClick), 0.05f);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
