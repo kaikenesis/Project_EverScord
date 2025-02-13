@@ -60,7 +60,7 @@ namespace EverScord.Skill
             float moveSpeed     = originalSpeed * skill.SpeedMultiplier;
 
             float decreaseStartTime = skill.Duration * SPEED_DROP_POINT;
-            float decreaseDuration  = (1 - SPEED_DROP_POINT) * skill.Duration;
+            float decreaseRate = SPEED_DROP_POINT;
 
             activator.SetSpeed(moveSpeed);
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
@@ -73,8 +73,10 @@ namespace EverScord.Skill
             {
                 if (i >= decreaseStartTime)
                 {
-                    moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, decreaseDuration);
-                    animatorSpeed = Mathf.Lerp(animatorSpeed, 1f, decreaseDuration);
+                    decreaseRate += 0.02f;
+                    Debug.Log(decreaseRate);
+                    moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, decreaseRate);
+                    animatorSpeed = Mathf.Lerp(animatorSpeed, 1f, decreaseRate);
 
                     activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
                     activator.SetSpeed(moveSpeed);

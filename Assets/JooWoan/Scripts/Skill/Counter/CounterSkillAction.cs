@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
+using Photon.Pun;
 
 namespace EverScord.Skill
 {
@@ -13,6 +14,7 @@ namespace EverScord.Skill
         private Coroutine skillCoroutine;
         private Hovl_Laser laserControl;
         private Transform laserBurnTrail;
+        private PhotonView photonView;
 
         private EJob ejob;
         private int skillIndex;
@@ -34,6 +36,8 @@ namespace EverScord.Skill
             this.skill      = (CounterSkill)skill;
             this.skillIndex = skillIndex;
             this.ejob       = ejob;
+
+            photonView = activator.CharacterPhotonView;
 
             cooldownTimer = new CooldownTimer(skill.Cooldown);
             StartCoroutine(cooldownTimer.RunTimer());
@@ -59,10 +63,14 @@ namespace EverScord.Skill
 
                 if (activator.PlayerInputInfo.pressedLeftMouseButton)
                 {
+                    activator.SetMouseButtonDown(false);
                     toggleLaser = !toggleLaser;
 
                     Action selectedAction = toggleLaser ? ShootLaser : StopLaser;
                     selectedAction();
+
+                    if (PhotonNetwork.IsConnected && photonView.IsMine)
+                        photonView.RPC(nameof(activator.SyncCounterSkill), RpcTarget.Others, activator.MouseRayHitPos, toggleLaser, skillIndex);
                 }
 
                 RotateLaser();
@@ -98,8 +106,12 @@ namespace EverScord.Skill
         {
             if (laserControl)
                 return;
-            
+
+            Debug.Log("Start laser");
+
+            activator.TrackAim();
             activator.PlayerWeapon.FireBullet();
+
             laserControl = Instantiate(skill.LaserPrefab, CharacterSkill.SkillRoot).GetComponent<Hovl_Laser>();
             laserBurnTrail = Instantiate(skill.LaserBurnTrail).transform;
         }
@@ -108,10 +120,12 @@ namespace EverScord.Skill
         {
             if (!laserControl)
                 return;
-        
+
             activator.PlayerWeapon.SetShootingStance(activator, true);
 
-            laserBurnTrail.position = activator.MouseRayHitPos;
+            if (laserBurnTrail)
+                laserBurnTrail.position = activator.MouseRayHitPos;
+
             laserControl.transform.position = activator.PlayerWeapon.GunPoint.position;
             
             Vector3 lookDir = activator.MouseRayHitPos - laserControl.transform.position;
@@ -128,7 +142,9 @@ namespace EverScord.Skill
         {
             if (!laserControl)
                 return;
-            
+
+            Debug.Log("End laser");
+
             activator.PlayerWeapon.SetShootingStance(activator, false);
 
             laserControl.DisablePrepare();
@@ -139,6 +155,7 @@ namespace EverScord.Skill
                 laserControl.transform.GetChild(i).SetParent(CharacterSkill.SkillRoot);
             
             Destroy(laserControl.gameObject, 0.1f);
+
             laserControl = null;
             toggleLaser = false;
         }

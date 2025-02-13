@@ -94,7 +94,10 @@ namespace EverScord.Skill
                 Predict();
                 
                 if (activator.PlayerInputInfo.pressedLeftMouseButton)
+                {
+                    activator.SetMouseButtonDown(false);
                     Fire();
+                }
 
                 if (cooldownTimer.IsCooldown)
                 {
