@@ -50,6 +50,12 @@ public class MonsterSpawner : MonoBehaviour
                     photonView.RPC("SyncSpawn", RpcTarget.Others, data);
                 }
 
+                if(spawnCount ==0)
+                {
+                    NController nController = mo.GetComponent<NController>();
+                    nController.SetGUID(monster.AssetGUID);
+                }
+
                 spawnCount++;
                 curTime = 0f;
                 yield break;
@@ -67,6 +73,12 @@ public class MonsterSpawner : MonoBehaviour
         mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
         PhotonView view = mo.GetPhotonView();
         view.ViewID = viewID;
+        if (spawnCount == 0)
+        {
+            NController nController = mo.GetComponent<NController>();
+            nController.SetGUID(monster.AssetGUID);
+        }
+        spawnCount++;
         Debug.Log("[client] ∏ÛΩ∫≈Õ viewID = " + view.ViewID);
         //PhotonNetwork.RegisterPhotonView(view);
         photonView.RPC("SpawnComplete", RpcTarget.MasterClient);

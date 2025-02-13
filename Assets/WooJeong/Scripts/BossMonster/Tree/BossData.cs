@@ -18,7 +18,7 @@ public class BossData : ScriptableObject
         Phase = 1;
     }
 
-    public void ReduceHp(int decrease)
+    public void ReduceHp(float decrease)
     {
         HP -= decrease;
         if (HP < 0) 

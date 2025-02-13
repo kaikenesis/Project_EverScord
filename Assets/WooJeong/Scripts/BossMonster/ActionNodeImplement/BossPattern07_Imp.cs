@@ -6,7 +6,9 @@ public class BossPattern07_Imp : ActionNodeImplement
 {
     protected override IEnumerator Act()
     {
-        throw new System.NotImplementedException();
+        isEnd = true;
+        action = null;
+        yield return null;
     }
 
 }

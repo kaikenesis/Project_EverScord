@@ -12,12 +12,6 @@ public class BossPattern04_Imp : ActionNodeImplement
     protected override void Awake()
     {
         base.Awake();
-        boxCollider = GetComponent<BoxCollider>();
-        projector = GetComponent<DecalProjector>();
-        projector.enabled = false;
-
-        boxCollider.enabled = false;
-        boxCollider.size = new Vector3(1, 1, 1);
     }
 
     protected override IEnumerator Act()

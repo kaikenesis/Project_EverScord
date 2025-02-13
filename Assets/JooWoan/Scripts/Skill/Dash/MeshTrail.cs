@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using EverScord.Pool;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -13,8 +14,9 @@ namespace EverScord.Skill
         private List<SkinnedMeshRenderer> skinnedMeshRenderers = new();
         private Material trailMat;
         private DashSkillAction skillAction;
-        private WaitForSeconds fadeWait;
+        private WaitForSeconds fadeWait, trailRefreshWait;
         private float trailRefreshRate, trailDestroyDelay, fadeRate;
+        private readonly string DUMMY_ASSET_GUID;
 
         public MeshTrail(Transform characterTransform, DashSkillAction skillAction)
         {
@@ -24,8 +26,11 @@ namespace EverScord.Skill
             trailMat                = skillAction.Skill.TrailMAT;
 
             trailDestroyDelay       = (1f / SHADER_VAR_FADE * fadeRate) + 0.01f;
+            DUMMY_ASSET_GUID        = skillAction.Skill.DummyAssetReference.AssetGUID;
 
-            fadeWait = new WaitForSeconds(fadeRate);
+            fadeWait                = new WaitForSeconds(fadeRate);
+            trailRefreshWait        = new WaitForSeconds(trailRefreshRate);
+
             InitSkinRenderers(characterTransform);
         }
 
@@ -54,19 +59,21 @@ namespace EverScord.Skill
 
                 for (int i = 0; i < skinnedMeshRenderers.Count; i++)
                 {
-                    GameObject dummySkin = new GameObject();
+                    MeshTrailDummy dummy = ResourceManager.Instance.GetFromPool(DUMMY_ASSET_GUID) as MeshTrailDummy;
 
-                    dummySkin.transform.SetPositionAndRotation(
+                    if (dummy == null)
+                    {
+                        Debug.LogWarning("Dash Skill : Dummy has gone missing...");
+                        continue;
+                    }
+
+                    dummy.transform.SetPositionAndRotation(
                         skinnedMeshRenderers[i].transform.position,
                         skinnedMeshRenderers[i].transform.rotation
                     );
 
-                    MeshRenderer meshRenderer = dummySkin.AddComponent<MeshRenderer>();
-                    MeshFilter meshFilter     = dummySkin.AddComponent<MeshFilter>();
-
-                    Mesh mesh = new Mesh();
-                    skinnedMeshRenderers[i].BakeMesh(mesh);
-                    meshFilter.mesh = mesh;
+                    skinnedMeshRenderers[i].BakeMesh(dummy.DummyMesh);
+                    dummy.DummyMeshFilter.mesh = dummy.DummyMesh;
 
                     int matCount = skinnedMeshRenderers[i].materials.Length;
                     Material[] matArr = new Material[matCount];
@@ -74,18 +81,23 @@ namespace EverScord.Skill
                     for (int j = 0; j < matCount; j++)
                         matArr[j] = trailMat;
 
-                    meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
-                    meshRenderer.materials = matArr;
+                    dummy.DummyMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
+                    dummy.DummyMeshRenderer.materials = matArr;
 
                     if (matArr.Length > 0)
-                        skillAction.StartCoroutine(FadeTrail(meshRenderer.materials));
+                        skillAction.StartCoroutine(FadeTrail(dummy.DummyMeshRenderer.materials));
 
-                    Object.Destroy(dummySkin, trailDestroyDelay);
-                    Object.Destroy(mesh, trailDestroyDelay);
+                    skillAction.StartCoroutine(DestroyDummy(dummy));
                 }
                 
-                yield return new WaitForSeconds(trailRefreshRate);
+                yield return trailRefreshWait;
             }
+        }
+
+        public IEnumerator DestroyDummy(IPoolable pooledDummy)
+        {
+            yield return new WaitForSeconds(trailDestroyDelay);
+            ResourceManager.Instance.ReturnToPool(pooledDummy, DUMMY_ASSET_GUID);
         }
 
         public IEnumerator FadeTrail(Material[] matArr)

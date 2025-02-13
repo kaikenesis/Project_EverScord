@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public abstract class NController : MonoBehaviour
+public abstract class NController : MonoBehaviour, IEnemy
 {
     [SerializeField] public NMonsterData monsterData;
 
@@ -26,6 +26,7 @@ public abstract class NController : MonoBehaviour
     public BoxCollider BoxCollider1 { get; protected set; }
     public BoxCollider BoxCollider2 { get; protected set; }
     public Animator Animator { get; protected set; }
+    public string GUID { get; protected set; }
 
     private PhotonView photonView;
 
@@ -70,7 +71,18 @@ public abstract class NController : MonoBehaviour
         Setup();
     }
 
+    public void SetGUID(string guid)
+    {
+        GUID = guid;
+    }
+
     public void DecreaseHP(float hp)
+    {
+        photonView.RPC("SyncMonsterHP", RpcTarget.All, hp);
+    }
+
+    [PunRPC]
+    protected void SyncMonsterHP(float hp)
     {
         HP -= hp;
         if (HP <= 0)

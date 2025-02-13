@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2274894591086291516}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Tongue_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7699414316711394202}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_TailEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5782926444677197157}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L UpperArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3856604939580198511}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R HorseLink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: -6756132631049739330}
   - component: {fileID: -6482400314617246485}
   - component: {fileID: -5010177802551704481}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SK_112206
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,6 +183,7 @@ MonoBehaviour:
   monsterData: {fileID: 11400000, guid: 25b3fc6c1909f944984fb71d25c40d88, type: 2}
   LastAttack: 0
   player: {fileID: 0}
+  HP: 0
   stunTime: 2
   isStun: 0
   isDead: 0
@@ -235,8 +236,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &-6756132631049739330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,7 +308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2712739652336738830}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Finger0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -338,7 +339,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1644813817127166357}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_jaw_DR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -369,7 +370,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9042063220261488702}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Tail4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -401,7 +402,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6388079590072173649}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Foot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -433,7 +434,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7020040581324892526}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_Tntcl_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -464,7 +465,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6427500938934254005}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -496,7 +497,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8816491699831512646}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Forearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -528,7 +529,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5942462401571378298}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L ForeTwist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -560,7 +561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2052148371702853338}
   - component: {fileID: 8798667253620748208}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -613,7 +614,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8146495733716474766}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Finger1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -644,7 +645,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4695150290377304748}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Foot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -676,7 +677,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1676486620180075335}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Toe0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -707,7 +708,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3741321650279007288}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_jaw_DL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -738,7 +739,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2909853693038248940}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L HorseLink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -770,7 +771,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 288794587529324488}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -803,7 +804,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3326729331198561113}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Finger0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -834,7 +835,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8972393211376206628}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core RUpArmTwist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -865,7 +866,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7832718925605901493}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core LUpArmTwist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -896,7 +897,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1501187326160976520}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -932,7 +933,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4406066518444632605}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -964,7 +965,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2835533201910747622}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Tail2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -996,7 +997,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5403319362710279996}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_tongue_EndD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1027,7 +1028,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3882207420990929375}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1062,7 +1063,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3036471598500449423}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1094,7 +1095,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3310209193836915442}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_Egg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1126,7 +1127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5659468968728257427}
   - component: {fileID: 6068936916259806801}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Killer_tongue_Named
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1260,7 +1261,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5290809060675272642}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Forearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1292,7 +1293,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8892625795199771797}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Tongue_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1324,7 +1325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8892155173656208625}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Tongue_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1356,7 +1357,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6764953647293752388}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1388,7 +1389,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1967990110055786017}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_jaw_UL_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1419,7 +1420,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 646637316805249250}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_tongue_EndU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1450,7 +1451,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9124910365800133459}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Toe0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1481,7 +1482,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3871204591671605563}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Finger1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1512,7 +1513,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2153031113537748791}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R UpperArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1545,7 +1546,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2486950123450426687}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R ForeTwist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1576,7 +1577,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6008496336826389727}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Tongue_00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1608,7 +1609,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7212285664012106396}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Tail3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1640,7 +1641,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7923628252854836573}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Clavicle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1673,7 +1674,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5433358676835650793}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1706,7 +1707,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8872480305533600010}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core L Clavicle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1739,7 +1740,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3942658122989243979}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1771,7 +1772,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 772791813789771124}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core R Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1803,7 +1804,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2850138309324976520}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1837,7 +1838,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 364671089990805749}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Spine1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1870,7 +1871,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5884435603363205967}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Pelvis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1903,7 +1904,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7017737859156282117}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_jaw_UR_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1934,7 +1935,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6646731590054786441}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bone_Tntcl_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1966,7 +1967,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8394718140262023739}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Core Tail1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,12 +1,13 @@
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
 using UnityEngine;
 
 namespace EverScord
 {
     public class GameDirector : MonoBehaviour
     {
+        [SerializeField] private List<AssetReferenceGameObject> assetReferenceList;
         [SerializeField] private List<GameObject> photonPrefabList;
         [SerializeField] private GameObject playerObj;
 
@@ -14,6 +15,7 @@ namespace EverScord
         {
             // CreatePlayer();
             SpawnPhotonPrefabs();
+            LoadPools();
         }
 
         private void CreatePlayer()
@@ -40,6 +42,12 @@ namespace EverScord
                 pool.ResourceCache.Add(photonPrefabList[i].name, photonPrefabList[i]);
                 PhotonNetwork.Instantiate(photonPrefabList[i].name, Vector3.zero, Quaternion.identity);
             }
+        }
+
+        public async void LoadPools()
+        {
+            foreach (AssetReference reference in assetReferenceList)
+                await ResourceManager.Instance.CreatePool(reference.AssetGUID);
         }
     }
 }

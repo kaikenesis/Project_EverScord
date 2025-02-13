@@ -9,9 +9,9 @@ namespace EverScord.Monster
             GameManager.Instance.InitControl(this);
         }
 
-        public void ApplyDamageToEnemy(int damage, NController monster)
+        public void ApplyDamageToEnemy(float hp, IEnemy monster)
         {
-            // monster.ApplyDamage(damage);
+            monster?.DecreaseHP(hp);
         }
     }
 }

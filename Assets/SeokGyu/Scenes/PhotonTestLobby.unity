@@ -824,10 +824,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82fbce94390716f408092d9188ef760d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  poolRootPrefab: {fileID: 5089530317106278914, guid: 09114c549156c134b87d9af5cbf44524, type: 3}
+  assetReferenceList:
+  - m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: db97ba35f680c914480ecc075d752dbf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
   costDatas: {fileID: 11400000, guid: 81c63ebcd1e9c584eb11fc0d6c5c3ee5, type: 2}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &397471283
 MonoBehaviour:
   m_ObjectHideFlags: 0
