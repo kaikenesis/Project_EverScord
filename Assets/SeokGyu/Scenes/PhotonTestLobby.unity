@@ -824,13 +824,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82fbce94390716f408092d9188ef760d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  costData: {fileID: 11400000, guid: 81c63ebcd1e9c584eb11fc0d6c5c3ee5, type: 2}
-  factorDatas:
-  - {fileID: 11400000, guid: cd13e581f8ce3674598bb8a75c5f40fb, type: 2}
-  - {fileID: 11400000, guid: 390ea0e15434f4548a271be88fe997e3, type: 2}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  costData: {fileID: 11400000, guid: b15b2b6eb22afd64587a95c1b8c7e12f, type: 2}
+  factorDatas:
+  - {fileID: 11400000, guid: cd13e581f8ce3674598bb8a75c5f40fb, type: 2}
+  - {fileID: 11400000, guid: 390ea0e15434f4548a271be88fe997e3, type: 2}
 --- !u!114 &397471283
 MonoBehaviour:
   m_ObjectHideFlags: 0
