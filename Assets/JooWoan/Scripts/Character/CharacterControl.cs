@@ -340,7 +340,7 @@ namespace EverScord.Character
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
-        #region GIZMO
+        #region GIZMOS
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = new Color(0, 1, 0, 0.4f);

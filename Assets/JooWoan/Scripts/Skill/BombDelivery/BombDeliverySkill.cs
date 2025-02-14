@@ -1,0 +1,14 @@
+using UnityEngine;
+
+namespace EverScord.Skill
+{
+    [CreateAssetMenu(fileName = "Bomb Delivery Skill", menuName = "EverScord/Character Skill/Bomb Delivery Skill")]
+    public class BombDeliverySkill : CharacterSkill
+    {
+        [field: SerializeField] public GameObject BombPrefab            { get; private set; }
+        [field: SerializeField] public GameObject SmallTeleportEffect   { get; private set; }
+        [field: SerializeField] public GameObject TeleportEffect        { get; private set; }
+        [field: SerializeField] public LayerMask DetectLayer            { get; private set; }
+        [field: SerializeField] public float DetectRadius               { get; private set; }
+    }
+}

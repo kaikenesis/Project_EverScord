@@ -13,7 +13,6 @@ namespace EverScord.Skill
         private CooldownTimer cooldownTimer;
         private Coroutine skillCoroutine;
         private Hovl_Laser laserControl;
-        private Transform laserBurnTrail;
         private PhotonView photonView;
 
         private EJob ejob;
@@ -114,7 +113,6 @@ namespace EverScord.Skill
             activator.PlayerWeapon.FireBullet();
 
             laserControl = Instantiate(skill.LaserPrefab, CharacterSkill.SkillRoot).GetComponent<Hovl_Laser>();
-            laserBurnTrail = Instantiate(skill.LaserBurnTrail).transform;
         }
 
         private void RotateLaser()
@@ -123,9 +121,6 @@ namespace EverScord.Skill
                 return;
 
             activator.PlayerWeapon.SetShootingStance(activator, true);
-
-            if (laserBurnTrail)
-                laserBurnTrail.position = activator.MouseRayHitPos;
 
             laserControl.transform.position = activator.PlayerWeapon.GunPoint.position;
             

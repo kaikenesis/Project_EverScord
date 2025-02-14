@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace EverScord.Skill
@@ -13,6 +11,5 @@ namespace EverScord.Skill
         [field: SerializeField] public float Duration            { get; private set; }
         [field: SerializeField] public GameObject BarrierPrefab  { get; private set; }
         [field: SerializeField] public GameObject LaserPrefab    { get; private set; }
-        [field: SerializeField] public GameObject LaserBurnTrail { get; private set; }
     }
 }
