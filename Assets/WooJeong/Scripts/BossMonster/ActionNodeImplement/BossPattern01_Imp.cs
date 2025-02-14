@@ -5,7 +5,7 @@ using UnityEngine;
 public class BossPattern01_Imp : ActionNodeImplement
 {
     //private float projectileSize = 1;
-    private float projectileSpeed = 10f;
+    private float projectileSpeed = 20f;
 
     protected override IEnumerator Act()
     {

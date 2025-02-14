@@ -41,7 +41,9 @@ public class BossProjectile : MonoBehaviour
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
         }
-
-        ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
+        if(!other.gameObject.CompareTag("Projectile"))
+        {
+            ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
+        }
     }
 }

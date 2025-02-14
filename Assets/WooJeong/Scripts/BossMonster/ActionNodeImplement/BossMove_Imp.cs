@@ -42,7 +42,6 @@ public class BossMove_Imp : ActionNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("move start");
         bossRPC.PlayAnimation("Walk");
         navMeshAgent.enabled = true;
         while (true)
@@ -53,7 +52,6 @@ public class BossMove_Imp : ActionNodeImplement
             if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance))
             {
                 navMeshAgent.enabled = false;
-                Debug.Log("move end");
                 isEnd = true;
                 action = null;
                 yield break;
