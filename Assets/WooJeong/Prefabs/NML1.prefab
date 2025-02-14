@@ -2523,7 +2523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3080794507657669635}
-  - component: {fileID: 4841306836154259744}
+  - component: {fileID: -1218758695365087477}
   - component: {fileID: 4499415461103685746}
   - component: {fileID: -6443132038947976497}
   - component: {fileID: -8124922415643634730}
@@ -2545,8 +2545,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 765653272355838846}
   - {fileID: 7270267085845274773}
@@ -2554,7 +2554,7 @@ Transform:
   - {fileID: 4913892290897653664}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4841306836154259744
+--- !u!114 &-1218758695365087477
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2563,19 +2563,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 8161522195390990312}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc7f3f6923298034486accb6db146a9b, type: 3}
+  m_Script: {fileID: 11500000, guid: ae9811e478ced424a82fe64d313bfd8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: a8cf17830f29ba34d915c4274283ef05, type: 2}
+  HP: 0
   LastAttack: 0
   player: {fileID: 0}
-  HP: 0
   stunTime: 2
   isStun: 0
   isDead: 0
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!65 &4499415461103685746
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -26,6 +26,5 @@ public class BossPattern02_Imp : ActionNodeImplement
         bossRPC.PlayAnimation("Idle");
 
         isEnd = true;
-        action = null;
     }
 }

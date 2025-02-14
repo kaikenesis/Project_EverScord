@@ -30,6 +30,7 @@ public abstract class ActionNodeImplement : MonoBehaviour
         if (isEnd)
         {
             isEnd = false;
+            action = null;
             return NodeState.SUCCESS;
         }
 

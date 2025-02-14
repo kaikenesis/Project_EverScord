@@ -18,7 +18,7 @@ public class NML1_Controller : NController
         stunState = gameObject.AddComponent<NML1_StunState>();
         deathState = gameObject.AddComponent<NML1_DeathState>();
 
-        var temp = monsterData as NMD_112301;
+        var temp = monsterData as NML1_Data;
         chargeRange = temp.ChargeRange;
 
         Projector2.size = new Vector3(monsterData.AttackRangeX2,

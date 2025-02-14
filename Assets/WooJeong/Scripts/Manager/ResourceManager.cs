@@ -28,14 +28,11 @@ public class ResourceManager : Singleton<ResourceManager>
     {
         if (!objectDictionary.ContainsKey(addressableKey))
         {
-            Debug.Log("load test");
             AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(addressableKey);
             handle.WaitForCompletion();
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                Debug.Log("load complete");
                 objectDictionary[addressableKey] = handle.Result as Object;
-                Debug.Log(objectDictionary[addressableKey]);
             }
         }
 
