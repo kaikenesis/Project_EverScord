@@ -8,6 +8,8 @@ namespace EverScord.Skill
 {
     public class CounterSkillAction : MonoBehaviour, ISkillAction
     {
+        private const float LASER_HIT_RADIUS = 0.5f;
+
         private CharacterControl activator;
         private CounterSkill skill;
         private CooldownTimer cooldownTimer;
@@ -18,6 +20,8 @@ namespace EverScord.Skill
         private EJob ejob;
         private int skillIndex;
 
+        private float elapsedSkillTime;
+        private float elapsedLaserTime;
 
         private bool toggleLaser = false;
         public bool CanAttackWhileSkill => false;
@@ -48,6 +52,7 @@ namespace EverScord.Skill
                 return;
 
             cooldownTimer.ResetElapsedTime();
+            elapsedLaserTime = skill.DamageInterval;
             skillCoroutine = StartCoroutine(ActivateSkill());
         }
 
@@ -56,23 +61,15 @@ namespace EverScord.Skill
             GameObject barrier = Instantiate(skill.BarrierPrefab, activator.transform);
             barrier.transform.SetParent(CharacterSkill.SkillRoot);
 
-            for (float i = 0f; i <= skill.Duration; i += Time.deltaTime)
+            for (elapsedSkillTime = 0f; elapsedSkillTime <= skill.Duration; elapsedSkillTime += Time.deltaTime)
             {
                 UpdateBarrierPosition(barrier.transform);
 
-                if (activator.PlayerInputInfo.pressedLeftMouseButton)
-                {
-                    activator.SetMouseButtonDown(false);
-                    toggleLaser = !toggleLaser;
+                if (ejob == EJob.DEALER)
+                    OffensiveAction();
+                else
+                    SupportAction();
 
-                    Action selectedAction = toggleLaser ? ShootLaser : StopLaser;
-                    selectedAction();
-
-                    if (PhotonNetwork.IsConnected && photonView.IsMine)
-                        photonView.RPC(nameof(activator.SyncCounterSkill), RpcTarget.Others, activator.MouseRayHitPos, toggleLaser, skillIndex);
-                }
-
-                RotateLaser();
                 yield return null;
             }
 
@@ -102,6 +99,24 @@ namespace EverScord.Skill
 
             for (int i = 0; i < barrierParticles.Length; i++)
                 barrierParticles[i].Stop();
+        }
+
+        public void OffensiveAction()
+        {
+            if (activator.PlayerInputInfo.pressedLeftMouseButton)
+            {
+                activator.SetMouseButtonDown(false);
+                toggleLaser = !toggleLaser;
+
+                Action selectedAction = toggleLaser ? ShootLaser : StopLaser;
+                selectedAction();
+
+                if (PhotonNetwork.IsConnected && photonView.IsMine)
+                    photonView.RPC(nameof(activator.SyncCounterSkill), RpcTarget.Others, activator.MouseRayHitPos, toggleLaser, skillIndex);
+            }
+
+            RotateLaser();
+            ApplyDamage();
         }
         
         private void ShootLaser()
@@ -134,6 +149,32 @@ namespace EverScord.Skill
             );
         }
 
+        private void ApplyDamage()
+        {
+            if (!laserControl || !toggleLaser)
+                return;
+            
+            elapsedLaserTime += elapsedSkillTime;
+
+            if (elapsedLaserTime > skill.DamageInterval)
+            {
+                elapsedLaserTime = 0f;
+
+                Vector3 laserOrigin = activator.PlayerWeapon.GunPoint.position;
+                Vector3 laserDir = activator.MouseRayHitPos - laserOrigin;
+
+                if (!Physics.Raycast(laserOrigin, laserDir, out RaycastHit hit, Mathf.Infinity, GameManager.EnemyLayer))
+                    return;
+
+                Debug.Log("?");
+                
+                float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
+
+                IEnemy monster = hit.transform.GetComponent<IEnemy>();
+                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
+            }
+        }
+
         private void StopLaser()
         {
             if (!laserControl)
@@ -151,11 +192,6 @@ namespace EverScord.Skill
 
             laserControl = null;
             toggleLaser = false;
-        }
-
-        public void OffensiveAction()
-        {
-            throw new NotImplementedException();
         }
 
         public void SupportAction()

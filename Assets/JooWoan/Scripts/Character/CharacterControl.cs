@@ -1,21 +1,24 @@
+using System.Collections.Generic;
 using UnityEngine;
-using EverScord.Weapons;
 using Photon.Pun;
+using EverScord.Weapons;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
-using System.Collections.Generic;
 
 namespace EverScord.Character
 {
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
+        private const float SKIN_RATIO = 0.1f;
+
         [Header("Character")]
         [SerializeField] private float speed;
         [SerializeField] private float gravity;
         [SerializeField] private float mass;
-        [SerializeField] private float health;
         [SerializeField] private float bodyRotateSpeed;
+        [SerializeField] private float maxHealth;
+        [SerializeField] private float currentHealth;
 
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius;
@@ -61,7 +64,14 @@ namespace EverScord.Character
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
 
-        private const float SKIN_RATIO = 0.1f;
+        public float CurrentHealth
+        {
+            get { return currentHealth; }
+            set
+            {
+                currentHealth = value;
+            }
+        }
 
         void Awake()
         {
@@ -81,6 +91,8 @@ namespace EverScord.Character
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
+            
+            CurrentHealth = maxHealth;
 
             AnimationControl.Init(photonView);
             weapon.Init(this);
@@ -260,7 +272,18 @@ namespace EverScord.Character
 
         public void DecreaseHP(float amount)
         {
-            health = Mathf.Max(0, health - amount);
+            CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+            
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
+        }
+
+        public void IncreaseHP(float amount)
+        {
+            CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+            
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
         }
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
@@ -336,6 +359,12 @@ namespace EverScord.Character
 
             MouseRayHitPos = mouseRayHitPos;
             playerInputInfo.pressedLeftMouseButton = true;
+        }
+
+        [PunRPC]
+        private void SyncHealth(float health)
+        {
+            CurrentHealth = health;
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

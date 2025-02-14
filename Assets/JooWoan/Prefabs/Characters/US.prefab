@@ -12410,8 +12410,9 @@ MonoBehaviour:
   speed: 7
   gravity: -40
   mass: 1
-  health: 20
   bodyRotateSpeed: 500
+  maxHealth: 100
+  currentHealth: 100
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
   weapon: {fileID: 6018587541618258978}

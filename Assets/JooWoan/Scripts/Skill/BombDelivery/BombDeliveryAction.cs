@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using System;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Skill
 {
@@ -14,7 +15,7 @@ namespace EverScord.Skill
         private BombDeliverySkill skill;
         private CooldownTimer cooldownTimer;
         private Coroutine skillCoroutine;
-        private Collider closestEnemy;
+        private Transform closestTarget;
 
         private EJob ejob;
         private int skillIndex;
@@ -44,47 +45,100 @@ namespace EverScord.Skill
 
         private IEnumerator ActivateSkill()
         {
-            Collider[] colliders = Physics.OverlapSphere(activator.transform.position, skill.DetectRadius, skill.DetectLayer);
+            if (ejob == EJob.DEALER)
+                OffensiveAction();
+            else
+                SupportAction();
 
-            var electricEffect = Instantiate(skill.TeleportElectric, activator.transform);
-            electricEffect.transform.position = activator.transform.position;
+            yield return new WaitForSeconds(0.1f);
+            skillCoroutine = null;
+        }
 
-            if (colliders.Length <= 0)
-                yield break;
+        public void OffensiveAction()
+        {
+            if (!SetClosestTarget(GameManager.EnemyLayer))
+                return;
 
-            closestEnemy = colliders[0];
-            float closestDistance = Vector3.Distance(activator.transform.position, colliders[0].transform.position);
+            TeleportPlayer();
 
-            for (int i = 1; i < colliders.Length; i++)
-            {
-                float distance = Vector3.Distance(activator.transform.position, colliders[i].transform.position);
+            var explodeEffect = Instantiate(skill.BombPrefab, CharacterSkill.SkillRoot);
+            explodeEffect.transform.position = closestTarget.position;
 
-                if (closestDistance > distance)
-                {
-                    closestDistance = distance;
-                    closestEnemy = colliders[i];
-                }
-            }
+            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
 
+            IEnemy enemy = closestTarget.GetComponent<IEnemy>();
+            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
+
+            // Stun Enemy
+        }
+
+        public void SupportAction()
+        {
+            if (!SetClosestTarget(GameManager.PlayerLayer))
+                return;
+
+            TeleportPlayer();
+
+            var healEffect = Instantiate(skill.HealEffect, CharacterSkill.SkillRoot);
+            healEffect.transform.position = closestTarget.position;
+
+            CharacterControl targetPlayer = closestTarget.GetComponent<CharacterControl>();
+
+            // Start Coroutine and increase hp for 3 seconds, set particle to loop
+            targetPlayer.IncreaseHP(skill.HealAmount);
+        }
+
+        private void TeleportPlayer()
+        {
             var effect1 = Instantiate(skill.TeleportEffect, CharacterSkill.SkillRoot);
             var effect2 = Instantiate(skill.TeleportEffect, CharacterSkill.SkillRoot);
 
             Vector3 effectScale = effect1.transform.localScale;
             effect1.transform.localScale = new Vector3(effectScale.x * 0.5f, effectScale.y * 0.5f, effectScale.z * 0.5f);
 
-            effect1.transform.position = activator.transform.position;
-            activator.transform.position = GetSafeTeleportPosition(closestEnemy);
-            effect2.transform.position = activator.transform.position;
-
-            ExplodeBomb();
+            effect1.transform.position   = activator.transform.position;
+            activator.transform.position = GetSafeTeleportPosition(closestTarget.position);
+            effect2.transform.position   = activator.transform.position;
         }
 
-        private Vector3 GetSafeTeleportPosition(Collider enemyCol)
+        private bool SetClosestTarget(LayerMask layerMask)
         {
-            Vector3 enemyPos = enemyCol.transform.position;
-            Vector3 playerToEnemyDir = (enemyPos - activator.transform.position).normalized;
+            Collider[] colliders = Physics.OverlapSphere(activator.transform.position, skill.DetectRadius, layerMask);
 
-            Vector3 teleportPos = enemyPos;
+            var electricEffect = Instantiate(skill.TeleportElectric, activator.transform);
+            electricEffect.transform.position = activator.transform.position;
+
+            if (colliders.Length <= 0)
+                return false;
+
+            closestTarget = colliders[0].transform;
+            float closestDistance = -1;
+
+            bool isPlayerLayer = layerMask == GameManager.PlayerLayer;
+
+            for (int i = 1; i < colliders.Length; i++)
+            {
+                float distance = Vector3.Distance(activator.transform.position, colliders[i].transform.position);
+
+                if (closestDistance < 0 || (closestDistance > distance))
+                {
+                    // Exclude myself
+                    if (isPlayerLayer && colliders[i].transform.root == activator.transform)
+                        continue;
+                    
+                    closestDistance = distance;
+                    closestTarget = colliders[i].transform;
+                }
+            }
+
+            return closestDistance != -1;
+        }
+
+        private Vector3 GetSafeTeleportPosition(Vector3 targetPos)
+        {
+            Vector3 playerToTargetDir = (targetPos - activator.transform.position).normalized;
+
+            Vector3 teleportPos = targetPos;
             float checkRadius = activator.Controller.radius;
 
             int checkCount = 0;
@@ -94,41 +148,17 @@ namespace EverScord.Skill
             {
                 ++checkCount;
                 distance += CHECK_DISTANCE_OFFSET;
-                teleportPos = enemyPos + playerToEnemyDir * distance;
+                teleportPos = targetPos + playerToTargetDir * distance;
             }
 
             teleportPos.y = 0f;
             return teleportPos;
         }
 
-        private void ExplodeBomb()
-        {
-            Action selectedAction = (ejob == EJob.DEALER) ? OffensiveAction : SupportAction;
-            selectedAction();
-        }
-
-        public void OffensiveAction()
-        {
-            var effect = Instantiate(skill.BombPrefab, CharacterSkill.SkillRoot);
-            effect.transform.position = closestEnemy.transform.position;
-
-            // Calculate total damage
-            float calculatedDamage = skill.BaseDamage;
-
-            IEnemy enemy = closestEnemy.GetComponent<IEnemy>();
-            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
-
-            // Stun Enemy
-        }
-
-        public void SupportAction()
-        {
-            throw new NotImplementedException();
-        }
-
         #region GIZMOS
         private void OnDrawGizmos()
         {
+            if (!Application.isPlaying) return;
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(activator.transform.position, skill.DetectRadius);
         }

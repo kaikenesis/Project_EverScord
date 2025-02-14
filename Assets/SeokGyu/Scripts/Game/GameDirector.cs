@@ -9,22 +9,11 @@ namespace EverScord
     {
         [SerializeField] private List<AssetReferenceGameObject> assetReferenceList;
         [SerializeField] private List<GameObject> photonPrefabList;
-        [SerializeField] private GameObject playerObj;
 
         private void Awake()
         {
-            // CreatePlayer();
             SpawnPhotonPrefabs();
             LoadPools();
-        }
-
-        private void CreatePlayer()
-        {
-            //Transform[] points = pointGroup.GetComponentsInChildren<Transform>();
-            //int idx = Random.Range(1, points.Length);
-            DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
-            pool.ResourceCache.Add(playerObj.name, playerObj);
-            PhotonNetwork.Instantiate(playerObj.name, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
         }
 
         public void SpawnPhotonPrefabs()
