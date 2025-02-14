@@ -6,37 +6,86 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/AI/BlackBoard", fileName = "newBlackBoard")]
     public class BaseBlackBoard : ScriptableObject
     {
-        protected Dictionary<string, object> values = new Dictionary<string, object>();
+        protected Dictionary<string, int> intValues = new Dictionary<string, int>();
+        protected Dictionary<string, bool> boolValues = new Dictionary<string, bool>();
+        protected Dictionary<string, object> objectValues = new Dictionary<string, object>();
 
-        public void SetValue(string key, object value)
+        public void SetValue(string key, int value)
         {
-            if (values.ContainsKey(key))
+            if (intValues.ContainsKey(key))
             {
-                values[key] = value;
+                intValues[key] = value;
                 return;
             }
             else
             {
-                values.Add(key, value);
+                intValues.Add(key, value);
+                Debug.Log($"{key} : {value}");
             }
         }
 
-        protected T GetValue<T>(string key) where T : class
+        public void SetValue(string key, bool value)
         {
-            if (!values.ContainsKey(key))
-                return null;
-
-            return values[key] as T;
+            if (boolValues.ContainsKey(key))
+            {
+                boolValues[key] = value;
+                return;
+            }
+            else
+            {
+                boolValues.Add(key, value);
+                Debug.Log($"{key} : {value}");
+            }
         }
 
-        protected bool DeleteData(string key)
+        public void SetValue(string key, object value)
         {
-            if (!values.ContainsKey(key))
-                return false;
-
-            values.Remove(key);
-            return true;
+            if (objectValues.ContainsKey(key))
+            {
+                objectValues[key] = value;
+                return;
+            }
+            else
+            {
+                objectValues.Add(key, value);
+                Debug.Log($"{key} : {value}");
+            }
         }
 
+        public void GetValue(string key, out bool value)
+        {
+            if (!boolValues.ContainsKey(key))
+            {
+                value = false;
+                return;
+            }
+
+            value = boolValues[key];
+            Debug.Log($"{boolValues[key]}");
+        }
+
+        public void GetValue(string key, out int value)
+        {
+            if (!intValues.ContainsKey(key))
+            {
+                value = 0;
+                return;
+            }
+
+            value = intValues[key];
+            Debug.Log($"{intValues[key]}");
+        }
+
+        public void GetValue<T>(string key, out T value) where T : class
+        {
+            if (!objectValues.ContainsKey(key))
+            {
+                value = null;
+                return;
+            }
+
+            value = objectValues[key] as T;
+            Debug.Log($"{objectValues[key]}");
+        }
     }
 }

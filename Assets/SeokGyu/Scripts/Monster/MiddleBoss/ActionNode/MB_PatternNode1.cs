@@ -1,31 +1,21 @@
+using System;
 using UnityEngine;
 
 namespace EverScord
 {
-    public class MB_PatternNode1 : BActionNode
+    [SerializeField]
+    [CreateAssetMenu(menuName = "EverScord/Monster/MB_ActionNode/Pattern1", fileName = "Pattern1")]
+    public class MB_PatternNode1 : ActionNode
     {
-        public override void Setup(GameObject gameObject)
+        public override void Init()
         {
-            base.Setup(gameObject);
+            onUpdate = Pattern1;
         }
 
-        public override NodeState Evaluate()
+        private INode.ENodeState Pattern1()
         {
-            //if (!isRunning)
-            //{
-            //    int random = Random.Range(0, 10);
-            //    if (random <= 5)
-            //    {
-            //        return NodeState.FAILURE;
-            //    }
-            //    isRunning = true;
-            //}
-
-            //state = actionNodeImplement.Evaluate();
-            //if (state == NodeState.SUCCESS)
-            //    isRunning = false;
-
-            return state;
+            Debug.Log("MiddleBoss_Pattern1");
+            return INode.ENodeState.SUCCESS;
         }
     }
 }
