@@ -1,11 +1,15 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
+using System;
 
 namespace EverScord.Skill
 {
     public class BombDeliveryAction : MonoBehaviour, ISkillAction
     {
+        private const int MAX_COLLISION_CHECK = 100;
+        private const float CHECK_DISTANCE_OFFSET = 0.5f;
+
         private CharacterControl activator;
         private BombDeliverySkill skill;
         private CooldownTimer cooldownTimer;
@@ -57,26 +61,37 @@ namespace EverScord.Skill
                 }
             }
 
-            var effect1 = Instantiate(skill.SmallTeleportEffect, CharacterSkill.SkillRoot);
+            var effect1 = Instantiate(skill.TeleportEffect, CharacterSkill.SkillRoot);
+            var effect2 = Instantiate(skill.TeleportEffect, CharacterSkill.SkillRoot);
+
+            Vector3 effectScale = effect1.transform.localScale;
+            effect1.transform.localScale = new Vector3(effectScale.x * 0.5f, effectScale.y * 0.5f, effectScale.z * 0.5f);
+
             effect1.transform.position = activator.transform.position;
 
             activator.transform.position = GetSafeTeleportPosition(closest);
 
-            var effect2 = Instantiate(skill.TeleportEffect, CharacterSkill.SkillRoot);
             effect2.transform.position = activator.transform.position;
         }
 
         private Vector3 GetSafeTeleportPosition(Collider enemyCol)
         {
-            float enemyRadius = Mathf.Max(enemyCol.bounds.size.x, enemyCol.bounds.size.z) / 2f;
-            float playerRadius = activator.Controller.radius;
-            float totalOffset = enemyRadius + playerRadius;
+            Vector3 enemyPos = enemyCol.transform.position;
+            Vector3 playerToEnemyDir = (enemyPos - activator.transform.position).normalized;
 
-            totalOffset *= 1.1f;
+            Vector3 teleportPos = enemyPos;
+            float checkRadius = activator.Controller.radius;
 
-            Vector3 teleportDir = (enemyCol.transform.position - activator.transform.position).normalized;
-            Vector3 teleportPos = enemyCol.transform.position - totalOffset * teleportDir;
-            
+            int checkCount = 0;
+            float distance = 1f;
+
+            while (Physics.CheckSphere(teleportPos, checkRadius, skill.CollidableLayer) && checkCount <= MAX_COLLISION_CHECK)
+            {
+                ++checkCount;
+                distance += CHECK_DISTANCE_OFFSET;
+                teleportPos = enemyPos + playerToEnemyDir * distance;
+            }
+
             teleportPos.y = 0f;
             return teleportPos;
         }
