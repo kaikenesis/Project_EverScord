@@ -14,6 +14,7 @@ namespace EverScord.Skill
         private BombDeliverySkill skill;
         private CooldownTimer cooldownTimer;
         private Coroutine skillCoroutine;
+        private Collider closestEnemy;
 
         private EJob ejob;
         private int skillIndex;
@@ -37,6 +38,7 @@ namespace EverScord.Skill
             if (cooldownTimer.IsCooldown || IsUsingSkill)
                 return;
 
+            cooldownTimer.ResetElapsedTime();
             skillCoroutine = StartCoroutine(ActivateSkill());
         }
 
@@ -44,10 +46,13 @@ namespace EverScord.Skill
         {
             Collider[] colliders = Physics.OverlapSphere(activator.transform.position, skill.DetectRadius, skill.DetectLayer);
 
+            var electricEffect = Instantiate(skill.TeleportElectric, activator.transform);
+            electricEffect.transform.position = activator.transform.position;
+
             if (colliders.Length <= 0)
                 yield break;
 
-            Collider closest = colliders[0];
+            closestEnemy = colliders[0];
             float closestDistance = Vector3.Distance(activator.transform.position, colliders[0].transform.position);
 
             for (int i = 1; i < colliders.Length; i++)
@@ -57,7 +62,7 @@ namespace EverScord.Skill
                 if (closestDistance > distance)
                 {
                     closestDistance = distance;
-                    closest = colliders[i];
+                    closestEnemy = colliders[i];
                 }
             }
 
@@ -68,10 +73,10 @@ namespace EverScord.Skill
             effect1.transform.localScale = new Vector3(effectScale.x * 0.5f, effectScale.y * 0.5f, effectScale.z * 0.5f);
 
             effect1.transform.position = activator.transform.position;
-
-            activator.transform.position = GetSafeTeleportPosition(closest);
-
+            activator.transform.position = GetSafeTeleportPosition(closestEnemy);
             effect2.transform.position = activator.transform.position;
+
+            ExplodeBomb();
         }
 
         private Vector3 GetSafeTeleportPosition(Collider enemyCol)
@@ -94,6 +99,31 @@ namespace EverScord.Skill
 
             teleportPos.y = 0f;
             return teleportPos;
+        }
+
+        private void ExplodeBomb()
+        {
+            Action selectedAction = (ejob == EJob.DEALER) ? OffensiveAction : SupportAction;
+            selectedAction();
+        }
+
+        public void OffensiveAction()
+        {
+            var effect = Instantiate(skill.BombPrefab, CharacterSkill.SkillRoot);
+            effect.transform.position = closestEnemy.transform.position;
+
+            // Calculate total damage
+            float calculatedDamage = skill.BaseDamage;
+
+            IEnemy enemy = closestEnemy.GetComponent<IEnemy>();
+            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
+
+            // Stun Enemy
+        }
+
+        public void SupportAction()
+        {
+            throw new NotImplementedException();
         }
 
         #region GIZMOS

@@ -48,14 +48,13 @@ namespace EverScord.Skill
             if (cooldownTimer.IsCooldown || IsUsingSkill)
                 return;
 
+            cooldownTimer.ResetElapsedTime();
             skillCoroutine = StartCoroutine(ActivateSkill());
             trailCoroutine = StartCoroutine(meshTrail.ActivateTrail(skill.Duration));
         }
 
         private IEnumerator ActivateSkill()
         {
-            cooldownTimer.ResetElapsedTime();
-
             float animatorSpeed = skill.SpeedMultiplier;
             float originalSpeed = activator.CharacterSpeed;
             float moveSpeed     = originalSpeed * skill.SpeedMultiplier;
@@ -67,8 +66,11 @@ namespace EverScord.Skill
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
             activator.PhysicsControl.AddImpact(activator.LookDir, skill.DashForce);
 
-            GameObject effect = Instantiate(skill.EffectPrefab, activator.transform);
-            effect.transform.position = activator.transform.position;
+            GameObject tornadoEffect = Instantiate(skill.DashTornado, activator.transform);
+            GameObject sparkEffect   = Instantiate(skill.DashSpark, activator.transform);
+
+            tornadoEffect.transform.position = activator.transform.position;
+            sparkEffect.transform.position = activator.transform.position;
 
             for (float i = 0f; i < skill.Duration; i += Time.deltaTime)
             {
@@ -88,11 +90,21 @@ namespace EverScord.Skill
             activator.AnimationControl.SetAnimatorSpeed();
 
             // effect will be automatically destroyed due to particle system settings
-            effect.GetComponent<ParticleSystem>().Stop();
+            tornadoEffect.GetComponent<ParticleSystem>().Stop();
 
             StopCoroutine(trailCoroutine);
             trailCoroutine = null;
             skillCoroutine = null;
+        }
+
+        public void OffensiveAction()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SupportAction()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

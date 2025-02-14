@@ -152,5 +152,15 @@ namespace EverScord.Skill
             laserControl = null;
             toggleLaser = false;
         }
+
+        public void OffensiveAction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SupportAction()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

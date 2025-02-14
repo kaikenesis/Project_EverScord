@@ -243,5 +243,15 @@ namespace EverScord.Skill
         {
             this.throwDir = throwDir;
         }
+
+        public void OffensiveAction()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SupportAction()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
