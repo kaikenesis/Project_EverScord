@@ -2,25 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_112301_AttackState1 : NAttackState
+public class NMS1_AttackState1 : NAttackState
 {
     protected override void Setup()
     {
-        monsterController = GetComponent<SK_112301_Controller>();
+        monsterController = GetComponent<NMS1_Controller>();
     }
     
     protected override IEnumerator Attack()
     {
         yield return project = StartCoroutine(monsterController.ProjectAttackRange(1));
-
         monsterController.PlayAnimation("Attack1");
-        float time = monsterController.clipDict["Attack1"];
-
-        yield return new WaitForSeconds(time / 3);
+        float time = monsterController.clipDict["Attack1"] + monsterController.clipDict["Attack1_Loop"];
+        yield return new WaitForSeconds(time);
         monsterController.BoxCollider1.enabled = true;
-        yield return new WaitForSeconds(time / 3);
+        time = monsterController.clipDict["Attack1_Attack"];
+        yield return new WaitForSeconds(time);
         monsterController.BoxCollider1.enabled = false;
-        yield return new WaitForSeconds(time / 3);
+        time = monsterController.clipDict["Attack1_End"];
+        yield return new WaitForSeconds(time);
         StartCoroutine(monsterController.CoolDown1());
         attack = null;
         Exit();

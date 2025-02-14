@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_112301_StunState : NStunState
+public class NMS1_DeathState : NDeathState
 {
     protected override void Setup()
     {
-        monsterController = GetComponent<SK_112301_Controller>();
+        monsterController = GetComponent<NMS1_Controller>();
     }
 }

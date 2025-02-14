@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SK_122101_AttackState2 : NAttackState
+public class NMS1_AttackState2 : NAttackState
 {
     protected override void Setup()
     {
-        monsterController = GetComponent<SK_122101_Controller>();
+        monsterController = GetComponent<NMS1_Controller>();
     }
     
     protected override IEnumerator Attack()

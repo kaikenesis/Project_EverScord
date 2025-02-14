@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class SK_112301_Controller : NController
+public class NML1_Controller : NController
 {
     private float chargeRange;
 
@@ -11,12 +11,12 @@ public class SK_112301_Controller : NController
 
     protected override void Setup()
     {
-        runState = gameObject.AddComponent<SK_112301_RunState>();
-        attackState1 = gameObject.AddComponent<SK_112301_AttackState1>();
-        attackState2 = gameObject.AddComponent<SK_112301_AttackState2>();
-        waitState = gameObject.AddComponent<SK_112301_WaitState>();
-        stunState = gameObject.AddComponent<SK_112301_StunState>();
-        deathState = gameObject.AddComponent<SK_112301_DeathState>();
+        runState = gameObject.AddComponent<NML1_RunState>();
+        attackState1 = gameObject.AddComponent<NML1_AttackState1>();
+        attackState2 = gameObject.AddComponent<NML1_AttackState2>();
+        waitState = gameObject.AddComponent<NML1_WaitState>();
+        stunState = gameObject.AddComponent<NML1_StunState>();
+        deathState = gameObject.AddComponent<NML1_DeathState>();
 
         var temp = monsterData as NMD_112301;
         chargeRange = temp.ChargeRange;
