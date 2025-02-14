@@ -38,24 +38,20 @@ public class SK_121201_AttackState1 : NAttackState
                 break;
             }
         }
-        
-        GameObject attackObj = new GameObject();
-        //GameObject attackObj = PhotonNetwork.Instantiate("MonsterAttack", monsterController.player.transform.position, Quaternion.identity);
 
-        attackObj.name = "att1";
-        attackObj.transform.position = monsterController.player.transform.position;
-        MonsterAttack ma = attackObj.AddComponent<MonsterAttack>();
-        ma.Setup(monsterController.monsterData.AttackRangeX1,
-            monsterController.monsterData.ProjectionTime);
+        monsterController.InstantiateMonsterAttack(
+            monsterController.player.transform.position,
+            monsterController.monsterData.AttackRangeX1,
+            monsterController.monsterData.ProjectionTime,
+            "NML2_A1_Effect01");
 
         if (player2 != null)
         {
-            GameObject attackObj2 = new GameObject();
-            attackObj2.name = "att1_2";
-            attackObj2.transform.position = player2.transform.position;
-            MonsterAttack ma2 = attackObj2.AddComponent<MonsterAttack>();
-            ma2.Setup(monsterController.monsterData.AttackRangeX1,
-                monsterController.monsterData.ProjectionTime);
+            monsterController.InstantiateMonsterAttack(
+                player2.transform.position,
+                monsterController.monsterData.AttackRangeX1,
+                monsterController.monsterData.ProjectionTime,
+                "NML2_A1_Effect01");
         }
     }
 }

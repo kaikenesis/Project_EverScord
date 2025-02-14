@@ -31,10 +31,10 @@ public class SK_121201_AttackState2 : NAttackState
 
     private void Fire()
     {
-        GameObject attackObj = new GameObject();
-        attackObj.transform.position = monsterController.player.transform.position;
-        MonsterAttack ma = attackObj.AddComponent<MonsterAttack>();
-        ma.Setup(monsterController.monsterData.AttackRangeX2,
-            monsterController.monsterData.ProjectionTime);
+        monsterController.InstantiateMonsterAttack(
+            monsterController.player.transform.position,
+            monsterController.monsterData.AttackRangeX2,
+            monsterController.monsterData.ProjectionTime,
+            "NML2_A2_Effect");
     }
 }

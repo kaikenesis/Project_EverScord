@@ -4,11 +4,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class SK_112206_AttackState1 : NAttackState
+public class NMM1_AttackState1 : NAttackState
 {
     protected override void Setup()
     {
-        monsterController = GetComponent<SK_112206_Controller>();
+        monsterController = GetComponent<NMM1_Controller>();
     }
 
     protected override IEnumerator Attack()

@@ -21,9 +21,8 @@ public class BossPattern04_Imp : ActionNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack4 start");
         bossRPC.PlayAnimation("Idle");
-        yield return bossRPC.ProjectEnable(1, 1f);
+        yield return bossRPC.ProjectEnable(4, 1f);
 
         bossRPC.PlayAnimation("RushAttack");
         yield return StartCoroutine(Charge(1));
@@ -32,7 +31,6 @@ public class BossPattern04_Imp : ActionNodeImplement
         bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
-        Debug.Log("Attack4 end");
     }
 
     private IEnumerator Charge(float duration)

@@ -40,6 +40,10 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     protected void Awake()
     {
+        _ = ResourceManager.Instance.CreatePool("MonsterAttack");
+        _ = ResourceManager.Instance.CreatePool("NML2_A1_Effect01");
+        _ = ResourceManager.Instance.CreatePool("NML2_A2_Effect");
+
         HP = monsterData.HP;
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
@@ -74,6 +78,19 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void SetGUID(string guid)
     {
         GUID = guid;
+    }
+
+    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey)
+    {
+        photonView.RPC("SyncMonsterAttack", RpcTarget.All, pos, width, projectTime, addressableKey);
+    }
+
+    [PunRPC]
+    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey)
+    {
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
+        MonsterAttack ma = go.GetComponent<MonsterAttack>();
+        ma.Setup(width, projectTime, addressableKey);
     }
 
     public void DecreaseHP(float hp)

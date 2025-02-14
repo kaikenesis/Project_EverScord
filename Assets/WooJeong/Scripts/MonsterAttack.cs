@@ -9,6 +9,7 @@ public class MonsterAttack : MonoBehaviour
     private DecalProjector projector;
     private CapsuleCollider capCollider;
     private float projectTime;
+    private string addressableKey;
 
     private void Awake()
     {
@@ -18,12 +19,12 @@ public class MonsterAttack : MonoBehaviour
         projector.renderingLayerMask = 2;
     }
 
-    public void Setup(float radius, float projectTime)
+    public void Setup(float width, float projectTime, string addressableKey)
     {
         this.projectTime = projectTime;
-        
-        projector.size = new Vector3(radius * 2, radius * 2, radius * 2);
-        capCollider.radius = radius;
+        this.addressableKey = addressableKey;
+        projector.size = new Vector3(width, width, width);
+        capCollider.radius = width/2;
 
         gameObject.transform.Rotate(90, 0, 0);
         projector.enabled = false;
@@ -39,8 +40,10 @@ public class MonsterAttack : MonoBehaviour
         projector.enabled = false;
 
         capCollider.enabled = true;
+        GameObject effect = ResourceManager.Instance.GetFromPool(addressableKey, transform.position, Quaternion.identity);
         yield return new WaitForSeconds(projectTime);
         capCollider.enabled = false;
+        ResourceManager.Instance.ReturnToPool(effect, addressableKey);
 
         Destroy(gameObject);
     }

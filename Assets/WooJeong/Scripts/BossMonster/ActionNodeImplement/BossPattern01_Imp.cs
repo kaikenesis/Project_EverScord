@@ -9,7 +9,6 @@ public class BossPattern01_Imp : ActionNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack1 start");
         bossRPC.PlayAnimation("Shoot");
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < 7; i++)
@@ -24,6 +23,5 @@ public class BossPattern01_Imp : ActionNodeImplement
 
         isEnd = true;
         action = null;
-        Debug.Log("Attack1 end");
     }
 }
