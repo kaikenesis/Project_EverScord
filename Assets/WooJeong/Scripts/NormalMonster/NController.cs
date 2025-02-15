@@ -100,8 +100,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void StunMonster(float stunTime)
     {
-        isStun = true;
-        this.stunTime = stunTime;
+        photonView.RPC("SyncMonsterStun", RpcTarget.All, stunTime);
     }
 
     [PunRPC]
@@ -110,6 +109,13 @@ public abstract class NController : MonoBehaviour, IEnemy
         HP -= hp;
         if (HP <= 0)
             isDead = true;
+    }
+
+    [PunRPC]
+    protected void SyncMonsterStun(float stunTime)
+    {
+        isStun = true;
+        this.stunTime = stunTime;
     }
 
     public void StartFSM()
