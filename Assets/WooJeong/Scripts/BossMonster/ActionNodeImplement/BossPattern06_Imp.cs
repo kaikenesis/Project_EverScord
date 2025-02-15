@@ -19,4 +19,13 @@ public class BossPattern06_Imp : ActionNodeImplement
         Debug.Log("Attack6 end");
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("laser hit");
+            CharacterControl control = other.GetComponent<CharacterControl>();
+            control.DecreaseHP(10);
+        }
+    }
 }

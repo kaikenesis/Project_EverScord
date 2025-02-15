@@ -8,7 +8,6 @@ public class BossBTree : BTree
 
     protected override void SetupTree()
     {
-        _ = ResourceManager.Instance.CreatePool("BossProjectile");
         root.Init();
         root.CreateBlackboard();
         bossData.ResetParams();

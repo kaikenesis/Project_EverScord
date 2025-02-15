@@ -10,6 +10,12 @@ public class BossProjectile : MonoBehaviour
     private float speed;
     private int lifeTime = 2;
     private float curTime = 0;
+    private PhotonView photonView;
+
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
 
     public void Setup(Vector3 position, Vector3 direction, float speed)
     {
@@ -36,14 +42,21 @@ public class BossProjectile : MonoBehaviour
     {
         if (!PhotonNetwork.IsMasterClient)
             return;
+        if(other.gameObject.CompareTag("Projectile") || other.gameObject.CompareTag("Enemy"))
+        {
+            return;
+        }
         if(other.gameObject.CompareTag("Player"))
         {
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
         }
-        if(!other.gameObject.CompareTag("Projectile"))
-        {
-            ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
-        }
+        photonView.RPC("SyncReturnBullet", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void SyncReturnBullet()
+    {
+        ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
     }
 }

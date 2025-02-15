@@ -27,6 +27,8 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void Awake()
     {
+        _ = ResourceManager.Instance.CreatePool("BossProjectile", 63);
+
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
@@ -110,13 +112,31 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
     {
-        photonView.RPC("SyncBossProjectile", RpcTarget.All, position, direction, projectileSpeed);
+        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
+        PhotonView view = go.GetComponent<PhotonView>();
+        if(view.ViewID == 0)
+        {
+            if (PhotonNetwork.AllocateViewID(view))
+            {
+                int viewID = view.ViewID;
+                photonView.RPC("SyncBossProjectile", RpcTarget.Others, position, direction, projectileSpeed, viewID);
+            }
+        }
+        else
+        {
+            photonView.RPC("SyncBossProjectile", RpcTarget.Others, position, direction, projectileSpeed, view.ViewID);
+        }
+        BossProjectile bp = go.GetComponent<BossProjectile>();
+        bp.Setup(position, direction, projectileSpeed);
     }
 
     [PunRPC]
-    public void SyncBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
+    public void SyncBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed, int viewID)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
+        PhotonView view = go.GetComponent<PhotonView>();
+        if(view.ViewID == 0)
+            view.ViewID = viewID;
         BossProjectile bp = go.GetComponent<BossProjectile>();
         bp.Setup(position, direction, projectileSpeed);
     }
@@ -206,17 +226,6 @@ public class BossRPC : MonoBehaviour, IEnemy
         laserPoint.SetActive(true);
         yield return new WaitForSeconds(enableTime);
         laserPoint.SetActive(false);
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            Debug.Log("laser hit");
-            CharacterControl control = other.GetComponent<CharacterControl>();
-            control.DecreaseHP(10);
-        }
     }
 
     public void StunMonster(float stunTime)

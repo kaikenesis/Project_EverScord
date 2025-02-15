@@ -2530,7 +2530,7 @@ GameObject:
   - component: {fileID: -3258865942156880407}
   m_Layer: 8
   m_Name: NML1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2567,12 +2567,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: a8cf17830f29ba34d915c4274283ef05, type: 2}
-  HP: 0
   LastAttack: 0
   player: {fileID: 0}
+  HP: 0
   stunTime: 2
   isStun: 0
   isDead: 0
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!65 &4499415461103685746
 BoxCollider:
   m_ObjectHideFlags: 0
