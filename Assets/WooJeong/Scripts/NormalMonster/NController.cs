@@ -40,10 +40,6 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     protected void Awake()
     {
-        _ = ResourceManager.Instance.CreatePool("MonsterAttack");
-        _ = ResourceManager.Instance.CreatePool("NML2_A1_Effect01");
-        _ = ResourceManager.Instance.CreatePool("NML2_A2_Effect");
-
         HP = monsterData.HP;
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();

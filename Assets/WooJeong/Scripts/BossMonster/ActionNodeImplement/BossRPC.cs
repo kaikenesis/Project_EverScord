@@ -27,7 +27,6 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void Awake()
     {
-        _ = ResourceManager.Instance.CreatePool("BossProjectile", 63);
 
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
@@ -231,5 +230,31 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void StunMonster(float stunTime)
     {
         return;
+    }
+
+    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey)
+    {
+        photonView.RPC("SyncStoneAttack", RpcTarget.All, pos, width, projectTime, effectAddressableKey);
+    }
+
+    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, bool isPhase2)
+    {
+        photonView.RPC("SyncStoneAttack2", RpcTarget.All, pos, width, projectTime, effectAddressableKey, isPhase2);
+    }
+
+    [PunRPC]
+    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey)
+    {
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
+        MonsterAttack ma = go.GetComponent<MonsterAttack>();
+        ma.Setup(width, projectTime, addressableKey);
+    }
+
+    [PunRPC]
+    protected void SyncStoneAttack2(Vector3 pos, float width, float projectTime, string addressableKey, bool isPhase2)
+    {
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
+        MonsterAttack ma = go.GetComponent<MonsterAttack>();
+        ma.Setup(width, projectTime, addressableKey, isPhase2);
     }
 }

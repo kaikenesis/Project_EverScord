@@ -56,6 +56,11 @@ namespace EverScord
         {
             foreach (AssetReference reference in assetReferenceList)
                 await ResourceManager.Instance.CreatePool(reference.AssetGUID);
+            _ = ResourceManager.Instance.CreatePool("BossProjectile", 63);
+            _ = ResourceManager.Instance.CreatePool("StoneUp", 9);
+            _ = ResourceManager.Instance.CreatePool("MonsterAttack");
+            _ = ResourceManager.Instance.CreatePool("NML2_A1_Effect01");
+            _ = ResourceManager.Instance.CreatePool("NML2_A2_Effect");
         }
     }
 
