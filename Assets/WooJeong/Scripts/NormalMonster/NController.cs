@@ -98,6 +98,12 @@ public abstract class NController : MonoBehaviour, IEnemy
         photonView.RPC("SyncMonsterHP", RpcTarget.All, hp);
     }
 
+    public void StunMonster(float stunTime)
+    {
+        isStun = true;
+        this.stunTime = stunTime;
+    }
+
     [PunRPC]
     protected void SyncMonsterHP(float hp)
     {

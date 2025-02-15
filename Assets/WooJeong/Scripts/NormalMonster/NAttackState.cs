@@ -145,6 +145,6 @@ public abstract class NAttackState : MonoBehaviour, IState
         {
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
-        }        
+        }
     }
 }
