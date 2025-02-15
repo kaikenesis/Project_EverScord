@@ -22,12 +22,11 @@ public abstract class NDeathState : MonoBehaviour, IState
     private IEnumerator Death()
     {
         yield return new WaitForSeconds(monsterController.clipDict["Dying"]);
-        ResourceManager.Instance.ReturnToPool(gameObject, monsterController.GUID);
         Exit();
     }
 
     public void Exit()
     {
-        Destroy(this.gameObject);
+        monsterController.Death();
     }
 }

@@ -117,12 +117,14 @@ public abstract class NRunState : MonoBehaviour, IState
     protected void ExitToStun()
     {
         isEnter = false;
+        navMeshAgent.destination = transform.position;
         monsterController.StunState();
     }
 
     protected void ExitToDeath()
     {
         isEnter = false;
+        navMeshAgent.destination = transform.position;
         monsterController.DeathState();
     }
 }

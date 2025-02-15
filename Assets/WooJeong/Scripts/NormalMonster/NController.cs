@@ -98,11 +98,6 @@ public abstract class NController : MonoBehaviour, IEnemy
         photonView.RPC("SyncMonsterHP", RpcTarget.All, hp);
     }
 
-    public void StunMonster(float stunTime)
-    {
-        photonView.RPC("SyncMonsterStun", RpcTarget.All, stunTime);
-    }
-
     [PunRPC]
     protected void SyncMonsterHP(float hp)
     {
@@ -111,11 +106,28 @@ public abstract class NController : MonoBehaviour, IEnemy
             isDead = true;
     }
 
+    public void StunMonster(float stunTime)
+    {
+        photonView.RPC("SyncMonsterStun", RpcTarget.All, stunTime);
+    }
+
     [PunRPC]
     protected void SyncMonsterStun(float stunTime)
     {
         isStun = true;
         this.stunTime = stunTime;
+    }
+
+    public void Death()
+    {
+        photonView.RPC("SyncMonsterDeath", RpcTarget.All);
+    }
+
+    [PunRPC]
+    protected void SyncMonsterDeath()
+    {
+        isDead = false;
+        ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 
     public void StartFSM()
