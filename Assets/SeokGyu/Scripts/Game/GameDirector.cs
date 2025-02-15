@@ -9,22 +9,13 @@ namespace EverScord
     {
         [SerializeField] private List<AssetReferenceGameObject> assetReferenceList;
         [SerializeField] private List<GameObject> photonPrefabList;
-        [SerializeField] private GameObject playerObj;
+        [SerializeField] private List<PhotonCharacterInfo> photonCharacterInfoList;
 
         private void Awake()
         {
-            // CreatePlayer();
             SpawnPhotonPrefabs();
+            CreatePlayer();
             LoadPools();
-        }
-
-        private void CreatePlayer()
-        {
-            //Transform[] points = pointGroup.GetComponentsInChildren<Transform>();
-            //int idx = Random.Range(1, points.Length);
-            DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
-            pool.ResourceCache.Add(playerObj.name, playerObj);
-            PhotonNetwork.Instantiate(playerObj.name, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
         }
 
         public void SpawnPhotonPrefabs()
@@ -44,10 +35,34 @@ namespace EverScord
             }
         }
 
+        private void CreatePlayer()
+        {
+            DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
+
+            foreach (PhotonCharacterInfo info in photonCharacterInfoList)
+            {
+                if (info.CharacterType != GameManager.Instance.userData.character)
+                    continue;
+
+                if (!pool.ResourceCache.ContainsKey(info.PhotonPrefab.name))
+                    pool.ResourceCache.Add(info.PhotonPrefab.name, info.PhotonPrefab);
+
+                PhotonNetwork.Instantiate(info.PhotonPrefab.name, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
+                break;
+            }
+        }
+
         public async void LoadPools()
         {
             foreach (AssetReference reference in assetReferenceList)
                 await ResourceManager.Instance.CreatePool(reference.AssetGUID);
         }
+    }
+
+    [System.Serializable]
+    public class PhotonCharacterInfo
+    {
+        public ECharacter CharacterType;
+        public GameObject PhotonPrefab;
     }
 }

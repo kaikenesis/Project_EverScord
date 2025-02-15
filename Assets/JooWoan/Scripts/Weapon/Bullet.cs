@@ -1,5 +1,6 @@
 using UnityEngine;
 using EverScord.Pool;
+using EverScord.Skill;
 
 namespace EverScord.Weapons
 {
@@ -96,8 +97,10 @@ namespace EverScord.Weapons
 
                     if (hit.transform.gameObject.layer == GameManager.EnemyLayerNumber)
                     {
+                        float calculatedDamage = DamageCalculator.GetBulletDamage(ViewID, sourceWeapon);
+
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
-                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(sourceWeapon.Damage, monster);
+                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
                     }
 
                     SetTracerEffectPosition(currentPoint);

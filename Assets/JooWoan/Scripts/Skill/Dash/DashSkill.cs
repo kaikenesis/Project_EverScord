@@ -11,7 +11,8 @@ namespace EverScord.Skill
         [field: SerializeField] public float SpeedMultiplier                        { get; private set; }
         [field: SerializeField] public float TrailRefreshRate                       { get; private set; }
         [field: SerializeField] public float TrailFadeRate                          { get; private set; }
-        [field: SerializeField] public GameObject EffectPrefab                      { get; private set; }
+        [field: SerializeField] public GameObject DashTornado                       { get; private set; }
+        [field: SerializeField] public GameObject DashSpark                         { get; private set; }
         [field: SerializeField] public Material TrailMAT                            { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject DummyAssetReference { get; private set; }
     }

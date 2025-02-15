@@ -830,6 +830,9 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 512
   costData: {fileID: 11400000, guid: b15b2b6eb22afd64587a95c1b8c7e12f, type: 2}
   factorDatas:
   - {fileID: 11400000, guid: cd13e581f8ce3674598bb8a75c5f40fb, type: 2}
@@ -6357,7 +6360,16 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5215415058879358403, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 8697452383649702968, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 6667682243663595900, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 4248994679548260396, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 786532821139845792, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 1636340097396822796, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 8843955485658823414, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 4584625126910400651, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+    - {fileID: 7706374020879463763, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

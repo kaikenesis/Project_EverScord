@@ -1,21 +1,24 @@
+using System.Collections.Generic;
 using UnityEngine;
-using EverScord.Weapons;
 using Photon.Pun;
+using EverScord.Weapons;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
-using System.Collections.Generic;
 
 namespace EverScord.Character
 {
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
+        private const float SKIN_RATIO = 0.1f;
+
         [Header("Character")]
         [SerializeField] private float speed;
         [SerializeField] private float gravity;
         [SerializeField] private float mass;
-        [SerializeField] private float health;
         [SerializeField] private float bodyRotateSpeed;
+        [SerializeField] private float maxHealth;
+        [SerializeField] private float currentHealth;
 
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius;
@@ -45,10 +48,10 @@ namespace EverScord.Character
         public ISkillAction CurrentSkillInfo                            { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
+        public EJob CharacterJob                                        { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
-
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
         public CharacterController Controller => controller;
@@ -59,8 +62,16 @@ namespace EverScord.Character
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
-
         private Vector3 remoteMouseRayHitPos;
+
+        public float CurrentHealth
+        {
+            get { return currentHealth; }
+            set
+            {
+                currentHealth = value;
+            }
+        }
 
         void Awake()
         {
@@ -79,7 +90,9 @@ namespace EverScord.Character
             CameraControl    = Instantiate(cameraPrefab, cameraHub);
 
             // Unity docs: Set skinwidth 10% of the Radius
-            controller.skinWidth = controller.radius * 0.1f;
+            controller.skinWidth = controller.radius * SKIN_RATIO;
+            
+            CurrentHealth = maxHealth;
 
             AnimationControl.Init(photonView);
             weapon.Init(this);
@@ -95,14 +108,12 @@ namespace EverScord.Character
             }
 
             CameraControl.Init(PlayerTransform);
-            
-            for (int i = 0; i < skillList.Count; i++)
-                skillList[i].Init(this, i);
         }
 
         void Start()
         {
             GameManager.Instance.InitControl(this);
+            SetSkills();
         }
 
         void Update()
@@ -133,6 +144,7 @@ namespace EverScord.Character
 
         private void LerpRemoteInfo()
         {
+            MouseRayHitPos = Vector3.Lerp(MouseRayHitPos, remoteMouseRayHitPos, Time.deltaTime * 10f);
         }
 
         private void SetInput()
@@ -241,6 +253,21 @@ namespace EverScord.Character
             }
         }
 
+        private void SetSkills()
+        {
+            if (!photonView.IsMine)
+                return;
+
+            for (int i = 0; i < skillList.Count; i++)
+            {
+                CharacterJob = GameManager.Instance.userData.job;
+                skillList[i].Init(this, i, CharacterJob);
+
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC(nameof(SyncInitSkill), RpcTarget.Others, i, (int)CharacterJob);
+            }
+        }
+
         public void SetSpeed(float speed)
         {
             this.speed = speed;
@@ -258,7 +285,18 @@ namespace EverScord.Character
 
         public void DecreaseHP(float amount)
         {
-            health = Mathf.Max(0, health - amount);
+            CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+            
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
+        }
+
+        public void IncreaseHP(float amount)
+        {
+            CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+            
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
         }
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
@@ -306,8 +344,15 @@ namespace EverScord.Character
             }
             else if (stream.IsReading)
             {
-                MouseRayHitPos = (Vector3)stream.ReceiveNext();
+                remoteMouseRayHitPos = (Vector3)stream.ReceiveNext();
             }
+        }
+
+        [PunRPC]
+        private void SyncInitSkill(int index, int characterJob)
+        {
+            CharacterJob = (EJob)characterJob;
+            skillList[index].Init(this, index, (EJob)characterJob);
         }
 
         [PunRPC]
@@ -336,9 +381,15 @@ namespace EverScord.Character
             playerInputInfo.pressedLeftMouseButton = true;
         }
 
+        [PunRPC]
+        private void SyncHealth(float health)
+        {
+            CurrentHealth = health;
+        }
+
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
-        #region GIZMO
+        #region GIZMOS
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = new Color(0, 1, 0, 0.4f);

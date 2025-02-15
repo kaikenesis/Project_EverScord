@@ -20,9 +20,10 @@ namespace EverScord
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
+        public static LayerMask PlayerLayer => instance.playerLayer;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
 
-        [SerializeField] private LayerMask groundLayer, enemyLayer;
+        [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer;
 
         [SerializeField] private CostData costData;
         public CostData CostDatas
@@ -102,6 +103,11 @@ namespace EverScord
                     playerDict[character.CharacterPhotonView.ViewID] = character;
                     break;
             }
+        }
+
+        public static bool IsEveryPlayerLoaded
+        {
+            get { return PhotonNetwork.PlayerList.Length == Instance.playerPhotonViews.Count; }
         }
     }
 }

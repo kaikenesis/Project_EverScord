@@ -7,6 +7,7 @@ namespace EverScord.Skill
     public class DashSkillAction : MonoBehaviour, ISkillAction
     {
         private const float SPEED_DROP_POINT = 0.7f;
+        private const float SPEED_DROP_RATE = 0.02f;
 
         private CharacterControl activator;
         private DashSkill skill;
@@ -47,36 +48,37 @@ namespace EverScord.Skill
             if (cooldownTimer.IsCooldown || IsUsingSkill)
                 return;
 
+            cooldownTimer.ResetElapsedTime();
             skillCoroutine = StartCoroutine(ActivateSkill());
             trailCoroutine = StartCoroutine(meshTrail.ActivateTrail(skill.Duration));
         }
 
         private IEnumerator ActivateSkill()
         {
-            cooldownTimer.ResetElapsedTime();
-
             float animatorSpeed = skill.SpeedMultiplier;
             float originalSpeed = activator.CharacterSpeed;
             float moveSpeed     = originalSpeed * skill.SpeedMultiplier;
 
             float decreaseStartTime = skill.Duration * SPEED_DROP_POINT;
-            float decreaseRate = SPEED_DROP_POINT;
+            float decreaseValue = SPEED_DROP_POINT;
 
             activator.SetSpeed(moveSpeed);
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
             activator.PhysicsControl.AddImpact(activator.LookDir, skill.DashForce);
 
-            GameObject effect = Instantiate(skill.EffectPrefab, activator.transform);
-            effect.transform.position = activator.transform.position;
+            GameObject tornadoEffect = Instantiate(skill.DashTornado, activator.transform);
+            GameObject sparkEffect   = Instantiate(skill.DashSpark, activator.transform);
+
+            tornadoEffect.transform.position = activator.transform.position;
+            sparkEffect.transform.position = activator.transform.position;
 
             for (float i = 0f; i < skill.Duration; i += Time.deltaTime)
             {
                 if (i >= decreaseStartTime)
                 {
-                    decreaseRate += 0.02f;
-                    Debug.Log(decreaseRate);
-                    moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, decreaseRate);
-                    animatorSpeed = Mathf.Lerp(animatorSpeed, 1f, decreaseRate);
+                    decreaseValue += SPEED_DROP_RATE;
+                    moveSpeed = Mathf.Lerp(moveSpeed, originalSpeed, decreaseValue);
+                    animatorSpeed = Mathf.Lerp(animatorSpeed, 1f, decreaseValue);
 
                     activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
                     activator.SetSpeed(moveSpeed);
@@ -88,11 +90,21 @@ namespace EverScord.Skill
             activator.AnimationControl.SetAnimatorSpeed();
 
             // effect will be automatically destroyed due to particle system settings
-            effect.GetComponent<ParticleSystem>().Stop();
+            tornadoEffect.GetComponent<ParticleSystem>().Stop();
 
             StopCoroutine(trailCoroutine);
             trailCoroutine = null;
             skillCoroutine = null;
+        }
+
+        public void OffensiveAction()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SupportAction()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
