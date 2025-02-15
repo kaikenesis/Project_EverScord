@@ -6,9 +6,24 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/AI/BlackBoard", fileName = "newBlackBoard")]
     public class BaseBlackBoard : ScriptableObject
     {
-        protected Dictionary<string, int> intValues = new Dictionary<string, int>();
         protected Dictionary<string, bool> boolValues = new Dictionary<string, bool>();
+        protected Dictionary<string, int> intValues = new Dictionary<string, int>();
+        protected Dictionary<string, float> floatValues = new Dictionary<string, float>();
         protected Dictionary<string, object> objectValues = new Dictionary<string, object>();
+
+        public void SetValue(string key, bool value)
+        {
+            if (boolValues.ContainsKey(key))
+            {
+                boolValues[key] = value;
+                return;
+            }
+            else
+            {
+                boolValues.Add(key, value);
+                Debug.Log($"{key} : {value}");
+            }
+        }
 
         public void SetValue(string key, int value)
         {
@@ -24,16 +39,16 @@ namespace EverScord
             }
         }
 
-        public void SetValue(string key, bool value)
+        public void SetValue(string key, float value)
         {
-            if (boolValues.ContainsKey(key))
+            if (floatValues.ContainsKey(key))
             {
-                boolValues[key] = value;
+                floatValues[key] = value;
                 return;
             }
             else
             {
-                boolValues.Add(key, value);
+                floatValues.Add(key, value);
                 Debug.Log($"{key} : {value}");
             }
         }
@@ -61,7 +76,7 @@ namespace EverScord
             }
 
             value = boolValues[key];
-            Debug.Log($"{boolValues[key]}");
+            //Debug.Log($"{boolValues[key]}");
         }
 
         public void GetValue(string key, out int value)
@@ -74,6 +89,18 @@ namespace EverScord
 
             value = intValues[key];
             Debug.Log($"{intValues[key]}");
+        }
+
+        public void GetValue(string key, out float value)
+        {
+            if (!floatValues.ContainsKey(key))
+            {
+                value = 0;
+                return;
+            }
+
+            value = floatValues[key];
+            //Debug.Log($"{floatValues[key]}");
         }
 
         public void GetValue<T>(string key, out T value) where T : class

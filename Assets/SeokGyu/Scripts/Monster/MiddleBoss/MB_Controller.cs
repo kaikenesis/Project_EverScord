@@ -3,15 +3,16 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class MB_Controller : MonoBehaviour
+    public class MB_Controller : MonoBehaviour, IStatus
     {
         private float curHealth;
-        [SerializeField] private float maxDistance = 50.0f;
-        [SerializeField] private float lagerRotSpeed = 10.0f;
+        [SerializeField] private MiddleBossData data;
+        [SerializeField] private Transform Mesh;
         [SerializeField] private Transform[] lager;
-        private BoxCollider[] colliders;
+        [SerializeField] private Transform lagerPatternPos;
         private RaycastHit[] hit;
-        private float delay = 0.01f;
+        private float countTime = 0.0f;
+        private bool bPlaylagerPattern = false;
 
         public float CurHealth
         {
@@ -21,44 +22,115 @@ namespace EverScord
 
         private void Awake()
         {
-            colliders = new BoxCollider[lager.Length];
             hit = new RaycastHit[lager.Length];
 
             for (int i = 0; i < lager.Length; i++)
             {
-                colliders[i] = lager[i].gameObject.GetComponent<BoxCollider>();
-                colliders[i].size = new Vector3(maxDistance, colliders[i].size.y, colliders[i].size.z);
-                colliders[i].center = new Vector3(maxDistance / 2.0f, colliders[i].center.y, colliders[i].center.z);
+                lager[i].gameObject.SetActive(false);
             }
-            StartCoroutine(Pattern2());
-
-            Lager.OnEnter += HandleEnter;
         }
 
-        private void OnDestroy()
+        private void Update()
         {
-            Lager.OnEnter -= HandleEnter;
-        }
+            CountSkillTime();
 
-        public void HandleEnter()
-        {
-            Debug.Log("OnTrigger");
-        }
-
-        private IEnumerator Pattern2()
-        {
-            while(true)
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                for (int i = 0; i < hit.Length; i++)
-                {
-                    Physics.Raycast(transform.position, lager[i].right * maxDistance, out hit[i], maxDistance);
-                    Debug.DrawRay(transform.position, lager[i].right * maxDistance, Color.blue, delay);
+                StartCoroutine(LagerPattern());
+            }
+        }
 
-                    lager[i].RotateAround(transform.position, new Vector3(0, 1, 0), lagerRotSpeed * Time.deltaTime);
+        private void CountSkillTime()
+        {
+            if (bPlaylagerPattern)
+            {
+                countTime += Time.deltaTime;
+                if (countTime >= data.LagerPatternPlayTime)
+                {
+                    for (int i = 0; i < lager.Length; i++)
+                    {
+                        lager[i].gameObject.SetActive(false);
+                    }
+                    countTime = 0.0f;
+                    bPlaylagerPattern = false;
+                }
+                Debug.Log(countTime);
+            }
+        }
+
+        private IEnumerator LagerPattern()
+        {
+            if (bPlaylagerPattern == true) yield break;
+
+            bPlaylagerPattern = true;
+            for (int i = 0; i < lager.Length; i++)
+            {
+                lager[i].gameObject.SetActive(true);
+            }
+
+            float activeTime = data.LagerCastTime + data.LagerActivateTime;
+
+            while (bPlaylagerPattern)
+            {
+                if (countTime <= data.LagerCastTime)
+                {
+                    // 땅속으로 숨고 다니 나타나는 애니메이션 재생 및 캐릭터 이동
+                    transform.SetPositionAndRotation(lagerPatternPos.position, lagerPatternPos.rotation);
+                    RotateLager(false);
+                }
+                else if (countTime <= activeTime)
+                {
+                    RotateLager(true);
                 }
 
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSeconds(Time.deltaTime);
             }
+
+            InitLagerPattern();
+        }
+
+        private void RotateLager(bool bRotate)
+        {
+            for (int i = 0; i < hit.Length; i++)
+            {
+                Vector3 offset = lager[i].right * data.LagerDistOffset + Mesh.localPosition;
+
+                if (Physics.Raycast(offset, lager[i].right * data.LagerMaxDistance, out hit[i], data.LagerMaxDistance))
+                {
+                    Vector3 newPos = lager[i].right * hit[i].distance / 2.0f + Mesh.localPosition;
+
+                    lager[i].localScale = new Vector3(hit[i].distance, lager[i].localScale.y, lager[i].localScale.z);
+                    lager[i].localPosition = newPos + offset;
+                }
+                else
+                {
+                    Vector3 newPos = lager[i].right * data.LagerMaxDistance / 2.0f + Mesh.localPosition;
+
+                    lager[i].localScale = new Vector3(data.LagerMaxDistance, lager[i].localScale.y, lager[i].localScale.z);
+                    lager[i].localPosition = newPos + offset;
+                }
+
+                Debug.DrawRay(offset, lager[i].right * data.LagerMaxDistance, Color.blue, Time.deltaTime);
+                if (i == 0)
+                    Debug.DrawRay(offset, lager[i].right * data.LagerMaxDistance, Color.red, Time.deltaTime);
+
+                if(bRotate == true)
+                    lager[i].RotateAround(Mesh.position, new Vector3(0, 1, 0), data.LagerRotSpeed * Time.deltaTime);
+            }
+        }
+
+        private void InitLagerPattern()
+        {
+            Vector3 initPos = new Vector3(0, 0, 0);
+            for (int i = 0; i < lager.Length; i++)
+            {
+                lager[i].SetLocalPositionAndRotation(initPos, Quaternion.Euler(0, i * 90, 0));
+            }
+        }
+
+        public void TakeDamage(GameObject sender, float damage)
+        {
+            Debug.Log($"{name} || Sender : {sender.name}, Damage : {damage}");
         }
     }
 }

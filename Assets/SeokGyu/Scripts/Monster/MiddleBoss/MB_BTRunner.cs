@@ -11,10 +11,11 @@ namespace EverScord
 
         protected override void Init()
         {
-            blackboard.SetValue("IsDead", false);
-            blackboard.SetValue("IsCooldown", false);
+            blackboard.SetValue("bDead", false);
+            blackboard.SetValue("bCooldown", true);
+            blackboard.SetValue("Cooldown", data.Cooldown);
             blackboard.SetValue("Phase", 0);
-            blackboard.SetValue("Owner", owner);
+            blackboard.SetValue("Owner", (object)owner);
         }
 
         //public void IncreaseHealth(float value)

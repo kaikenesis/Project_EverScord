@@ -7,6 +7,8 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Monster/MB_DecoratorNode/IsCooldown", fileName = "IsCooldown")]
     public class MB_IsCooldown : DecoratorNode
     {
+        bool bCooldown;
+
         public override void Init()
         {
             onUpdate = IsCooldown;
@@ -17,7 +19,11 @@ namespace EverScord
 
         private INode.ENodeState IsCooldown()
         {
-            Debug.Log("MiddleBoss_IsCooldown");
+            blackboard.GetValue("bCooldown", out bCooldown);
+
+            if (bCooldown == true)
+                return INode.ENodeState.FAILURE;
+
             return INode.ENodeState.SUCCESS;
         }
     }
