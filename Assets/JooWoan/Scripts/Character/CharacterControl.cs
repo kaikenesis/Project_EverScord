@@ -64,6 +64,10 @@ namespace EverScord.Character
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
 
+        private SkinnedMeshRenderer[] skinRenderers;
+        private int originalSkinLayer;
+        bool test = false;
+
         public float CurrentHealth
         {
             get { return currentHealth; }
@@ -82,6 +86,7 @@ namespace EverScord.Character
 
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
+            skinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
 
             uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
             cameraHub        = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
@@ -92,6 +97,9 @@ namespace EverScord.Character
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
             
+            if (skinRenderers.Length > 0)
+                originalSkinLayer = skinRenderers[0].gameObject.layer;
+
             CurrentHealth = maxHealth;
 
             AnimationControl.Init(photonView);
@@ -113,7 +121,7 @@ namespace EverScord.Character
         void Start()
         {
             GameManager.Instance.InitControl(this);
-            SetSkills();
+            SetJobAndSkills();
         }
 
         void Update()
@@ -253,7 +261,7 @@ namespace EverScord.Character
             }
         }
 
-        private void SetSkills()
+        private void SetJobAndSkills()
         {
             if (!photonView.IsMine)
                 return;
@@ -264,7 +272,7 @@ namespace EverScord.Character
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC(nameof(SyncInitSkill), RpcTarget.Others, i, (int)CharacterJob);
+                    photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob);
             }
         }
 
@@ -302,6 +310,19 @@ namespace EverScord.Character
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             GameManager.Instance.AddPlayerPhotonView(info.photonView);
+        }
+
+        public void SetCharacterOutline(bool state)
+        {
+            int OutlineLayerNumber = Mathf.RoundToInt(Mathf.Log(GameManager.OutlineLayer.value, 2));
+
+            for (int i = 0; i < skinRenderers.Length; i++)
+            {
+                if (state)
+                    skinRenderers[i].gameObject.layer = OutlineLayerNumber;
+                else
+                    skinRenderers[i].gameObject.layer = originalSkinLayer;
+            }
         }
 
         public bool IsGrounded
@@ -351,7 +372,7 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncInitSkill(int index, int characterJob)
+        private void SyncJobAndSkills(int index, int characterJob)
         {
             CharacterJob = (EJob)characterJob;
             skillList[index].Init(this, index, (EJob)characterJob);

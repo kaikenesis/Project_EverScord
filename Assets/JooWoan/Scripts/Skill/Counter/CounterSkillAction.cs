@@ -3,14 +3,12 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using Photon.Pun;
-using Unity.Burst.CompilerServices;
-using UnityEngine.TextCore.Text;
 
 namespace EverScord.Skill
 {
     public class CounterSkillAction : MonoBehaviour, ISkillAction
     {
-        private const float SELECT_SPHERE_RADIUS = 1f;
+        private const float RAYCAST_LENGTH = 100f;
 
         private CharacterControl activator;
         private CounterSkill skill;
@@ -21,12 +19,15 @@ namespace EverScord.Skill
         private Coroutine buffCoroutine;
 
         private EJob ejob;
+        private Camera activatorCam;
+        private CharacterControl cachedTarget;
         private int skillIndex;
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
 
         private bool toggleLaser = false;
+        private bool isOutlineActivated = false;
 
         public bool CanAttackWhileSkill => false;
         public bool IsUsingSkill
@@ -44,7 +45,8 @@ namespace EverScord.Skill
             this.skillIndex = skillIndex;
             this.ejob       = ejob;
 
-            photonView = activator.CharacterPhotonView;
+            photonView      = activator.CharacterPhotonView;
+            activatorCam    = activator.CameraControl.Cam;
 
             cooldownTimer = new CooldownTimer(skill.Cooldown);
             StartCoroutine(cooldownTimer.RunTimer());
@@ -57,6 +59,8 @@ namespace EverScord.Skill
 
             cooldownTimer.ResetElapsedTime();
             elapsedLaserTime = skill.DamageInterval;
+            isOutlineActivated = false;
+
             skillCoroutine = StartCoroutine(ActivateSkill());
         }
 
@@ -81,6 +85,7 @@ namespace EverScord.Skill
 
             StopBarrier(barrier);
             StopLaser();
+            SetOutline(false);
 
             skillCoroutine = null;
         }
@@ -204,15 +209,20 @@ namespace EverScord.Skill
             if (buffCoroutine != null)
                 return;
 
+            Ray ray = activatorCam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
+
+            if (!Physics.Raycast(ray, out RaycastHit hit, RAYCAST_LENGTH, GameManager.PlayerLayer))
+            {
+                SetOutline(false);
+                return;
+            }
+
+            if (!isOutlineActivated)
+                SetOutline(true, hit);
+
             if (activator.PlayerInputInfo.pressedLeftMouseButton)
             {
-                Vector3 camPos = activator.CameraControl.Cam.transform.position;
-
-                if (!Physics.Raycast(camPos, activator.MouseRayHitPos - camPos, out RaycastHit hit, Mathf.Infinity, GameManager.PlayerLayer))
-                    return;
-
                 CharacterControl character = hit.collider.GetComponent<CharacterControl>();
-
                 buffCoroutine = StartCoroutine(GrantBuff(character));
 
                 if (PhotonNetwork.IsConnected && photonView.IsMine)
@@ -243,6 +253,21 @@ namespace EverScord.Skill
         {
             CharacterControl target = GameManager.Instance.PlayerDict[viewID];
             buffCoroutine = StartCoroutine(GrantBuff(target));
+        }
+
+        private void SetOutline(bool state, RaycastHit hit = default)
+        {
+            if (state && !isOutlineActivated)
+            {
+                isOutlineActivated = true;
+                cachedTarget = hit.collider.GetComponent<CharacterControl>();
+                cachedTarget.SetCharacterOutline(true);
+            }
+            else if (isOutlineActivated)
+            {
+                isOutlineActivated = false;
+                cachedTarget.SetCharacterOutline(false);
+            }
         }
     }
 }
