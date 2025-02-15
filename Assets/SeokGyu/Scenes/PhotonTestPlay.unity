@@ -10400,7 +10400,13 @@ MonoBehaviour:
     m_EditorAssetChanged: 1
   photonPrefabList:
   - {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
-  - {fileID: 2709675858173580103, guid: a13836e0c03af074396aebdfc4302125, type: 3}
+  photonCharacterInfoList:
+  - CharacterType: 0
+    PhotonPrefab: {fileID: 1168435554659620443, guid: d7a247317ae50a04699682a02c96e5a7, type: 3}
+  - CharacterType: 1
+    PhotonPrefab: {fileID: 2709675858173580103, guid: a13836e0c03af074396aebdfc4302125, type: 3}
+  - CharacterType: 2
+    PhotonPrefab: {fileID: 8636842966431899009, guid: 590874915090b3e4495c799feb4e796e, type: 3}
 --- !u!4 &636165179
 Transform:
   m_ObjectHideFlags: 0

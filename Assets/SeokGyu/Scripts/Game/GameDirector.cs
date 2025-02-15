@@ -9,10 +9,12 @@ namespace EverScord
     {
         [SerializeField] private List<AssetReferenceGameObject> assetReferenceList;
         [SerializeField] private List<GameObject> photonPrefabList;
+        [SerializeField] private List<PhotonCharacterInfo> photonCharacterInfoList;
 
         private void Awake()
         {
             SpawnPhotonPrefabs();
+            CreatePlayer();
             LoadPools();
         }
 
@@ -33,10 +35,31 @@ namespace EverScord
             }
         }
 
+        private void CreatePlayer()
+        {
+            foreach (PhotonCharacterInfo info in photonCharacterInfoList)
+            {
+                if (info.CharacterType != GameManager.Instance.userData.character)
+                    continue;
+
+                DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
+                pool.ResourceCache.Add(info.PhotonPrefab.name, info.PhotonPrefab);
+                PhotonNetwork.Instantiate(info.PhotonPrefab.name, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
+                break;
+            }
+        }
+
         public async void LoadPools()
         {
             foreach (AssetReference reference in assetReferenceList)
                 await ResourceManager.Instance.CreatePool(reference.AssetGUID);
         }
+    }
+
+    [System.Serializable]
+    public class PhotonCharacterInfo
+    {
+        public ECharacter CharacterType;
+        public GameObject PhotonPrefab;
     }
 }
