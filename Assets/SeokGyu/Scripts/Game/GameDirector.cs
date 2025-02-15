@@ -37,13 +37,16 @@ namespace EverScord
 
         private void CreatePlayer()
         {
+            DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
+
             foreach (PhotonCharacterInfo info in photonCharacterInfoList)
             {
                 if (info.CharacterType != GameManager.Instance.userData.character)
                     continue;
 
-                DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
-                pool.ResourceCache.Add(info.PhotonPrefab.name, info.PhotonPrefab);
+                if (!pool.ResourceCache.ContainsKey(info.PhotonPrefab.name))
+                    pool.ResourceCache.Add(info.PhotonPrefab.name, info.PhotonPrefab);
+
                 PhotonNetwork.Instantiate(info.PhotonPrefab.name, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
                 break;
             }

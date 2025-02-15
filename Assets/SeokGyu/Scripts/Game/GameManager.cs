@@ -104,5 +104,10 @@ namespace EverScord
                     break;
             }
         }
+
+        public static bool IsEveryPlayerLoaded
+        {
+            get { return PhotonNetwork.PlayerList.Length == Instance.playerPhotonViews.Count; }
+        }
     }
 }

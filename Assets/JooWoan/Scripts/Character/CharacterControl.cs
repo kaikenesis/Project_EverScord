@@ -48,10 +48,10 @@ namespace EverScord.Character
         public ISkillAction CurrentSkillInfo                            { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
+        public EJob CharacterJob                                        { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
-
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
         public CharacterController Controller => controller;
@@ -108,14 +108,12 @@ namespace EverScord.Character
             }
 
             CameraControl.Init(PlayerTransform);
-            
-            for (int i = 0; i < skillList.Count; i++)
-                skillList[i].Init(this, i);
         }
 
         void Start()
         {
             GameManager.Instance.InitControl(this);
+            SetSkills();
         }
 
         void Update()
@@ -255,6 +253,21 @@ namespace EverScord.Character
             }
         }
 
+        private void SetSkills()
+        {
+            if (!photonView.IsMine)
+                return;
+
+            for (int i = 0; i < skillList.Count; i++)
+            {
+                CharacterJob = GameManager.Instance.userData.job;
+                skillList[i].Init(this, i, CharacterJob);
+
+                if (PhotonNetwork.IsConnected)
+                    photonView.RPC(nameof(SyncInitSkill), RpcTarget.Others, i, (int)CharacterJob);
+            }
+        }
+
         public void SetSpeed(float speed)
         {
             this.speed = speed;
@@ -333,6 +346,13 @@ namespace EverScord.Character
             {
                 remoteMouseRayHitPos = (Vector3)stream.ReceiveNext();
             }
+        }
+
+        [PunRPC]
+        private void SyncInitSkill(int index, int characterJob)
+        {
+            CharacterJob = (EJob)characterJob;
+            skillList[index].Init(this, index, (EJob)characterJob);
         }
 
         [PunRPC]

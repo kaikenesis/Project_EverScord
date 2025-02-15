@@ -1,5 +1,8 @@
 using UnityEngine;
+using Photon.Pun;
 using EverScord.Character;
+using Object = UnityEngine.Object;
+using System;
 
 namespace EverScord.Skill
 {
@@ -29,7 +32,7 @@ namespace EverScord.Skill
         [field: SerializeField] public CharacterSkill Skill { get; private set; }
         public ISkillAction SkillAction { get; private set; }
 
-        public void Init(CharacterControl activator, int skillIndex)
+        public void Init(CharacterControl activator, int skillIndex, EJob characterJob)
         {
             if (Skill == null)
             {
@@ -37,15 +40,10 @@ namespace EverScord.Skill
                 return;
             }
 
-            EJob ejob = EJob.DEALER;
-
-            if (GameManager.Instance.userData != null)
-                ejob = GameManager.Instance.userData.job;
-
             ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, CharacterSkill.SkillRoot).GetComponent<ISkillAction>();
 
             SkillAction = skillAction;
-            SkillAction.Init(activator, Skill, ejob, skillIndex);
+            SkillAction.Init(activator, Skill, characterJob, skillIndex);
         }
     }
 }

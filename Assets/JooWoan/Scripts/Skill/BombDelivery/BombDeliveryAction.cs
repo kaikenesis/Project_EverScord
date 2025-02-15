@@ -111,16 +111,16 @@ namespace EverScord.Skill
             if (colliders.Length <= 0)
                 return false;
 
-            closestTarget = colliders[0].transform;
+            closestTarget = null;
             float closestDistance = -1;
 
             bool isPlayerLayer = layerMask == GameManager.PlayerLayer;
 
-            for (int i = 1; i < colliders.Length; i++)
+            for (int i = 0; i < colliders.Length; i++)
             {
                 float distance = Vector3.Distance(activator.transform.position, colliders[i].transform.position);
 
-                if (closestDistance < 0 || (closestDistance > distance))
+                if (!closestTarget || (closestDistance > distance))
                 {
                     // Exclude myself
                     if (isPlayerLayer && colliders[i].transform.root == activator.transform)
@@ -131,7 +131,7 @@ namespace EverScord.Skill
                 }
             }
 
-            return closestDistance != -1;
+            return closestTarget != null;
         }
 
         private Vector3 GetSafeTeleportPosition(Vector3 targetPos)
