@@ -256,8 +256,8 @@ namespace EverScord.Weapons
         {
             shotEffect.Emit(1);
 
-            Bullet bullet           = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
-            SmokeTrail smokeTrail   = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
+            Bullet bullet         = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
+            SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
 
             if (smokeTrail)
             {

@@ -166,8 +166,6 @@ namespace EverScord.Skill
                 if (!Physics.Raycast(laserOrigin, laserDir, out RaycastHit hit, Mathf.Infinity, GameManager.EnemyLayer))
                     return;
 
-                Debug.Log("?");
-                
                 float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
 
                 IEnemy monster = hit.transform.GetComponent<IEnemy>();
@@ -196,7 +194,7 @@ namespace EverScord.Skill
 
         public void SupportAction()
         {
-            throw new NotImplementedException();
+
         }
     }
 }
