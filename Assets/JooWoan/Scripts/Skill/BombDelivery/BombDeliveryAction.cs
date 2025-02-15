@@ -61,7 +61,7 @@ namespace EverScord.Skill
 
             TeleportPlayer();
 
-            var explodeEffect = Instantiate(skill.BombPrefab, CharacterSkill.SkillRoot);
+            var explodeEffect = Instantiate(skill.BombPrefab, closestTarget);
             explodeEffect.transform.position = closestTarget.position;
 
             float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
@@ -79,7 +79,7 @@ namespace EverScord.Skill
 
             TeleportPlayer();
 
-            var healEffect = Instantiate(skill.HealEffect, CharacterSkill.SkillRoot);
+            var healEffect = Instantiate(skill.HealEffect, closestTarget);
             healEffect.transform.position = closestTarget.position;
 
             CharacterControl targetPlayer = closestTarget.GetComponent<CharacterControl>();

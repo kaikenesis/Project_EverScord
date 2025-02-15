@@ -334,6 +334,8 @@ namespace EverScord.Character
         public bool IsShooting => playerInputInfo.holdLeftMouseButton;
         public bool IsMoving => moveInput.magnitude > 0 || PhysicsControl.IsImpactAdded;
 
+
+        #region PUN RPC
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -365,9 +367,16 @@ namespace EverScord.Character
         [PunRPC]
         public void SyncCounterSkill(Vector3 mouseRayHitPos, bool toggle, int index)
         {
-            CounterSkillAction skillAction = (CounterSkillAction)skillList[index].SkillAction;
-
             MouseRayHitPos = MouseRayHitPos;
+            playerInputInfo.pressedLeftMouseButton = true;
+        }
+
+        [PunRPC]
+        public void SyncCounterSupport(int viewID, int index)
+        {
+            CounterSkillAction skillAction = (CounterSkillAction)skillList[index].SkillAction;
+            skillAction.SyncGrantBuff(viewID);
+
             playerInputInfo.pressedLeftMouseButton = true;
         }
 
@@ -388,6 +397,7 @@ namespace EverScord.Character
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+        #endregion
 
         #region GIZMOS
         private void OnDrawGizmosSelected()

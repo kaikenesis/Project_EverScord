@@ -3,12 +3,14 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using Photon.Pun;
+using Unity.Burst.CompilerServices;
+using UnityEngine.TextCore.Text;
 
 namespace EverScord.Skill
 {
     public class CounterSkillAction : MonoBehaviour, ISkillAction
     {
-        private const float LASER_HIT_RADIUS = 0.5f;
+        private const float SELECT_SPHERE_RADIUS = 1f;
 
         private CharacterControl activator;
         private CounterSkill skill;
@@ -16,6 +18,7 @@ namespace EverScord.Skill
         private Coroutine skillCoroutine;
         private Hovl_Laser laserControl;
         private PhotonView photonView;
+        private Coroutine buffCoroutine;
 
         private EJob ejob;
         private int skillIndex;
@@ -24,6 +27,7 @@ namespace EverScord.Skill
         private float elapsedLaserTime;
 
         private bool toggleLaser = false;
+
         public bool CanAttackWhileSkill => false;
         public bool IsUsingSkill
         {
@@ -63,7 +67,7 @@ namespace EverScord.Skill
 
             for (elapsedSkillTime = 0f; elapsedSkillTime <= skill.Duration; elapsedSkillTime += Time.deltaTime)
             {
-                UpdateBarrierPosition(barrier.transform);
+                UpdateBarrierPosition(barrier.transform, activator);
 
                 if (ejob == EJob.DEALER)
                     OffensiveAction();
@@ -81,15 +85,15 @@ namespace EverScord.Skill
             skillCoroutine = null;
         }
 
-        private void UpdateBarrierPosition(Transform barrierTransform)
+        private void UpdateBarrierPosition(Transform barrierTransform, CharacterControl targetCharacter)
         {
-            if (!barrierTransform || !activator)
+            if (!barrierTransform || !targetCharacter)
                 return;
                 
             barrierTransform.position = new Vector3(
-                activator.transform.position.x,
+                targetCharacter.transform.position.x,
                 barrierTransform.position.y,
-                activator.transform.position.z
+                targetCharacter.transform.position.z
             );
         }
 
@@ -194,7 +198,51 @@ namespace EverScord.Skill
 
         public void SupportAction()
         {
+            if (!activator.CharacterPhotonView.IsMine)
+                return;
 
+            if (buffCoroutine != null)
+                return;
+
+            if (activator.PlayerInputInfo.pressedLeftMouseButton)
+            {
+                Vector3 camPos = activator.CameraControl.Cam.transform.position;
+
+                if (!Physics.Raycast(camPos, activator.MouseRayHitPos - camPos, out RaycastHit hit, Mathf.Infinity, GameManager.PlayerLayer))
+                    return;
+
+                CharacterControl character = hit.collider.GetComponent<CharacterControl>();
+
+                buffCoroutine = StartCoroutine(GrantBuff(character));
+
+                if (PhotonNetwork.IsConnected && photonView.IsMine)
+                    photonView.RPC(nameof(activator.SyncCounterSupport), RpcTarget.Others, character.CharacterPhotonView.ViewID, skillIndex);
+            }
+        }
+
+        public IEnumerator GrantBuff(CharacterControl target)
+        {
+            GameObject barrier = Instantiate(skill.BarrierPrefab);
+            barrier.transform.SetParent(CharacterSkill.SkillRoot);
+
+            // Increase target stat
+            
+            while (skillCoroutine != null)
+            {
+                UpdateBarrierPosition(barrier.transform, target);
+                yield return null;
+            }
+
+            barrier.transform.SetParent(target.transform);
+            StopBarrier(barrier);
+
+            buffCoroutine = null;
+        }
+
+        public void SyncGrantBuff(int viewID)
+        {
+            CharacterControl target = GameManager.Instance.PlayerDict[viewID];
+            buffCoroutine = StartCoroutine(GrantBuff(target));
         }
     }
 }
