@@ -218,4 +218,9 @@ public class BossRPC : MonoBehaviour, IEnemy
             control.DecreaseHP(10);
         }
     }
+
+    public void StunMonster(float stunTime)
+    {
+        return;
+    }
 }

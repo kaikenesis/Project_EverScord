@@ -7,7 +7,7 @@ using UnityEngine;
 public class BossPattern07_Imp : ActionNodeImplement
 {
     private float attackDamage = 10;
-    private float attackRadius = 20;
+    private float attackRadius = 100;
     private float attackLifeTime = 4;
     private float safeRadius = 7.5f;
     private float curTime = 0;
