@@ -12,5 +12,6 @@ namespace EverScord.Skill
         [field: SerializeField] public LayerMask CollidableLayer        { get; private set; }
         [field: SerializeField] public float DetectRadius               { get; private set; }
         [field: SerializeField] public float HealAmount                 { get; private set; }
+        [field: SerializeField] public float StunDuration               { get; private set; }
     }
 }

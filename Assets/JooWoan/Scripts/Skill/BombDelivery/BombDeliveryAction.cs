@@ -69,7 +69,7 @@ namespace EverScord.Skill
             IEnemy enemy = closestTarget.GetComponent<IEnemy>();
             GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
 
-            // Stun Enemy
+            enemy.StunMonster(skill.StunDuration);
         }
 
         public void SupportAction()
