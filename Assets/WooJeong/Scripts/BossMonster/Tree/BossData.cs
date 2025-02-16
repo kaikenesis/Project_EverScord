@@ -5,8 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/Data/BossData")]
 public class BossData : ScriptableObject
 {
-    public float HP { get; protected set; }
-    public int Phase { get; protected set; }
+    [field: SerializeField] public float HP { get; protected set; }
+    [field: SerializeField] public int Phase { get; protected set; }
     [field: SerializeField] public float MaxHP { get; protected set; }
     [field: SerializeField] public float Speed { get; protected set; }
     [field: SerializeField] public float StopDistance { get; protected set; }

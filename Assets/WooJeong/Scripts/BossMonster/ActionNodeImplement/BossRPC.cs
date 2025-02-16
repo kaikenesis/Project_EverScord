@@ -1,8 +1,11 @@
+using EverScord;
 using EverScord.Character;
 using EverScord.Monster;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -16,6 +19,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     [SerializeField] private GameObject laserPoint;
     private PhotonView photonView;
     private Animator animator;
+    private BoxCollider hitBox;
     private DecalProjector projectorCharge;
     private DecalProjector projectorQuater;
     private DecalProjector projectorP7_Danger;
@@ -23,12 +27,12 @@ public class BossRPC : MonoBehaviour, IEnemy
     private GameObject projectorQuaterPivot;
     private GameObject projectorP7_GObject;
     private float attackRadius6 = 10;
-    private float attackRadius7 = 100;
+    private float attackRadius7 = 80;
     private float safeRadius7 = 7.5f;
 
     private void Awake()
     {
-
+        hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
@@ -36,6 +40,11 @@ public class BossRPC : MonoBehaviour, IEnemy
             clipDict[clip.name] = clip.length;
         }
         SetProjectors();
+    }
+    public void DecreaseHP(float hp)
+    {
+        Debug.Log("Boss Hit");
+        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
     }
 
     private void SetProjectors()
@@ -80,7 +89,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
         projectorP7_Danger = projectorForPatter7.AddComponent<DecalProjector>();
         projectorP7_Danger.renderingLayerMask = 2;
-        projectorP7_Danger.size = new Vector3(attackRadius7, attackRadius7, 1);
+        projectorP7_Danger.size = new Vector3(0, 0, 1);
         projectorP7_Danger.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
         projectorP7_Danger.enabled = false;
 
@@ -195,6 +204,17 @@ public class BossRPC : MonoBehaviour, IEnemy
         }
     }
 
+    public void SetScaleProjectorP7_Safe(float size)
+    {
+        photonView.RPC("SyncScaleProjectorP7_Safe", RpcTarget.All, size);
+    }
+
+    [PunRPC]
+    private void SyncScaleProjectorP7_Safe(float size)
+    {
+        projectorP7_Safe.size = new Vector3(size, size, 1);
+    }
+
     public void MoveProjectorP7_Safe(Vector3 pos)
     {
         photonView.RPC("SyncProjectorP7_SafePosition", RpcTarget.All, pos);
@@ -206,10 +226,24 @@ public class BossRPC : MonoBehaviour, IEnemy
         projectorP7_Safe.transform.position = pos;
     }
 
-    public void DecreaseHP(float hp)
+    public void ScalingProjectorP7_Danger()
     {
-        Debug.Log("Boss Hit");
-        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
+        photonView.RPC("SyncScaleProjectorP7_Danger", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private IEnumerator SyncScaleProjectorP7_Danger()
+    {        
+        projectorP7_Danger.enabled = true;
+        Vector3 startSize = new Vector3(0, 0, 1);
+        Vector3 endSize = new Vector3(attackRadius7, attackRadius7, 1);
+
+        for (float t = 0f; t < 0.5f; t += Time.deltaTime)
+        {
+            projectorP7_Danger.size = Vector3.Lerp(startSize, endSize, t / 0.5f);
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        projectorP7_Danger.enabled = false;
     }
 
     [PunRPC]
@@ -241,7 +275,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         //}
         //ResourceManager.Instance.ReturnToPool(laser, "BossLaser");
 
-        yield return new WaitForSeconds(enableTime - 0.5f);
+        yield return new WaitForSeconds(enableTime);
         laserPoint.SetActive(false);
     }
 
@@ -305,5 +339,33 @@ public class BossRPC : MonoBehaviour, IEnemy
         }
         BossMonsterStoneAttack ma = go.GetComponent<BossMonsterStoneAttack>();
         ma.Setup(width, projectTime, addressableKey, attackDamage);
+    }
+
+    public IEnumerator EnableShield()
+    {
+        hitBox.enabled = false;
+        GameObject shield = ResourceManager.Instance.GetFromPool("P15_Effect", transform.position, Quaternion.identity);
+        photonView.RPC("SyncShield", RpcTarget.Others);
+        yield return new WaitForSeconds(8f);
+        BossShield bossShield = shield.GetComponent<BossShield>();
+        if (bossShield.HP > 0)
+        {
+            ScalingProjectorP7_Danger();
+            foreach (var player in GameManager.Instance.playerPhotonViews)
+            {
+                CharacterControl control = player.GetComponent<CharacterControl>();
+                control.DecreaseHP(50);
+            }
+        }
+        ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
+    }
+
+    [PunRPC]
+    protected IEnumerator SyncShield()
+    {
+        hitBox.enabled = false;
+        GameObject shield = ResourceManager.Instance.GetFromPool("P15_Effect", transform.position, Quaternion.identity);
+        yield return new WaitForSeconds(8f);
+        ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
     }
 }

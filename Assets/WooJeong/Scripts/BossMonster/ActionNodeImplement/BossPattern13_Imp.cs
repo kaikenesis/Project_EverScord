@@ -9,26 +9,27 @@ public class BossPattern13_Imp : ActionNodeImplement
     private float attackDamage = 10;
     private float attackRadius = 100;
     private float attackLifeTime = 4;
-    private float safeRadius = 5f;
+    private float safeRange = 5f;
     private float curTime = 0;
-    private float attackSpan = 0.5f;
+    private float attackSpan = 1f;
     private Vector3 safePos = Vector3.zero;
     private float safeStartDistance = 4;
     private float randomRange = 10;
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack13 start");
+        Debug.Log("Attack7 start");
         bossRPC.PlayAnimation("StandingAttack");
         safePos = transform.position + transform.forward * safeStartDistance;
         yield return new WaitForSeconds(1f);
+        bossRPC.SetScaleProjectorP7_Safe(safeRange);
         StartCoroutine(bossRPC.ProjectEnable(7, attackLifeTime));
-        StartCoroutine(SetRandomPos(attackLifeTime));
+        StartCoroutine(MoveSafePos(attackLifeTime));
         StartCoroutine(Attack(attackLifeTime));
         yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1f);
         bossRPC.PlayAnimation("Idle");
         yield return new WaitForSeconds(4f);
-        Debug.Log("Attack13 end");
+        Debug.Log("Attack7 end");
         curTime = 0;
         isEnd = true;
         action = null;
@@ -50,18 +51,20 @@ public class BossPattern13_Imp : ActionNodeImplement
             {
                 float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
                 float distanceToSafe = Vector3.Distance(player.transform.position, safePos);
-                if (distanceToPlayer < attackRadius && distanceToSafe > safeRadius)
+                Debug.Log(distanceToSafe);
+                if (distanceToSafe > safeRange / 2)
                 {
                     CharacterControl control = player.GetComponent<CharacterControl>();
                     control.DecreaseHP(attackDamage);
                     Debug.Log("p7 hit");
                 }
             }
+            bossRPC.ScalingProjectorP7_Danger();
             yield return new WaitForSeconds(attackSpan);
         }
     }
 
-    private IEnumerator SetRandomPos(float duration)
+    private IEnumerator MoveSafePos(float duration)
     {
         Vector3 startPoint = safePos;
         Vector3 endPoint = new Vector3(safePos.x + Random.Range(-randomRange, randomRange),
