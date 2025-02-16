@@ -424,6 +424,10 @@ namespace EverScord.Character
         private void SyncHealth(float health)
         {
             CurrentHealth = health;
+
+            GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
+            var effect = Instantiate(healEffect, transform);
+            effect.transform.position = transform.position;
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

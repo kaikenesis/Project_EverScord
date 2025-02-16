@@ -20,7 +20,7 @@ namespace EverScord.Skill
         private Coroutine skillCoroutine;
         private Coroutine stampCoroutine;
 
-        private Vector3 throwDir;
+        private Vector3 throwDir, grenadeImpactPosition;
         private EJob ejob;
 
         private float force;
@@ -61,9 +61,8 @@ namespace EverScord.Skill
             stampedMarker   = Instantiate(this.skill.HitMarker, transform).transform;
 
             stampedMarker.gameObject.SetActive(false);
-            
-            SetHitMarker(false);
-            SetLineVisibility(false);
+            hitMarker.gameObject.SetActive(false);
+            trajectoryLine.enabled = false;
 
             StartCoroutine(cooldownTimer.RunTimer());
         }
@@ -81,6 +80,7 @@ namespace EverScord.Skill
                 return;
             }
 
+            SetHitMarker(true);
             SetLineVisibility(true);
             activator.PlayerUIControl?.SetAimCursor(activator, false);
 
@@ -89,8 +89,6 @@ namespace EverScord.Skill
 
         private IEnumerator ActivateSkill()
         {
-            SetHitMarker(true);
-            
             while (hasActivated)
             {
                 SetForce();
@@ -151,7 +149,7 @@ namespace EverScord.Skill
 
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
 
-            thrownObject.GetComponent<GrenadeImpact>().Init(activator, skill);
+            thrownObject.GetComponent<GrenadeImpact>().Init(activator, this);
             thrownObject.AddForce(throwDir * force, ForceMode.Impulse);
 
             if (stampCoroutine != null)
@@ -205,6 +203,9 @@ namespace EverScord.Skill
 
         private void SetLineVisibility(bool state)
         {
+            if (!photonView.IsMine)
+                return;
+            
             trajectoryLine.enabled = state;
         }
 
@@ -223,6 +224,9 @@ namespace EverScord.Skill
 
         private void SetHitMarker(bool state)
         {
+            if (!photonView.IsMine)
+                return;
+            
             hitMarker.gameObject.SetActive(state);
         }
 
@@ -246,14 +250,36 @@ namespace EverScord.Skill
             this.throwDir = throwDir;
         }
 
+        public void SetGrenadeImpactPosition(Vector3 position)
+        {
+            grenadeImpactPosition = position;
+        }
+
         public void OffensiveAction()
         {
-            throw new System.NotImplementedException();
+            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, skill.ExplosionRadius, GameManager.EnemyLayer);
+            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                IEnemy enemy = colliders[i].GetComponent<IEnemy>();
+                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
+            }
         }
 
         public void SupportAction()
         {
-            throw new System.NotImplementedException();
+            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, skill.ExplosionRadius, GameManager.PlayerLayer);
+            float calculatedHeal = skill.BaseHeal;
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].transform.root == activator.transform)
+                    continue;
+
+                CharacterControl player = colliders[i].GetComponent<CharacterControl>();
+                player.IncreaseHP(calculatedHeal);
+            }
         }
     }
 }

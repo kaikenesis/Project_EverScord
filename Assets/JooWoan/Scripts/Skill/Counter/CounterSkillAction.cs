@@ -178,7 +178,9 @@ namespace EverScord.Skill
                 float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
 
                 IEnemy monster = hit.transform.GetComponent<IEnemy>();
-                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
+
+                if (activator.CharacterPhotonView.IsMine)
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
             }
         }
 

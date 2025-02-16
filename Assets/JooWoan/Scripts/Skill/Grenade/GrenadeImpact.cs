@@ -1,52 +1,34 @@
 using UnityEngine;
+using System;
 using EverScord.Character;
 
 namespace EverScord.Skill
 {
     public class GrenadeImpact : MonoBehaviour
     {
-        private CharacterControl activator;
-        private GrenadeSkill skill;
+        private Action skillAction = null;
+        private GrenadeSkillAction skill;
 
         void OnDisable()
         {
-            if (activator.CharacterJob == EJob.HEALER)
-                ApplyHeal();
-            else
-                ApplyDamage();
+            if (skillAction == null)
+                return;
+            
+            skill.SetGrenadeImpactPosition(transform.position);
+            skillAction.Invoke();
         }
 
-        public void Init(CharacterControl activator, GrenadeSkill skill)
+        public void Init(CharacterControl activator, GrenadeSkillAction skill)
         {
-            this.activator = activator;
+            if (!activator.CharacterPhotonView.IsMine)
+                return;
+
             this.skill = skill;
-        }
-
-        private void ApplyHeal()
-        {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, skill.ExplosionRadius, GameManager.PlayerLayer);
-            float calculatedHeal = skill.BaseHeal;
-
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                if (colliders[i].transform.root == activator.transform)
-                    continue;
-
-                CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                player.IncreaseHP(calculatedHeal);
-            }
-        }
-
-        private void ApplyDamage()
-        {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, skill.ExplosionRadius, GameManager.EnemyLayer);
-            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
-
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                IEnemy enemy = colliders[i].GetComponent<IEnemy>();
-                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
-            }
+            
+            if (activator.CharacterJob == EJob.DEALER)
+                skillAction = skill.OffensiveAction;
+            else
+                skillAction = skill.SupportAction;
         }
     }
 }

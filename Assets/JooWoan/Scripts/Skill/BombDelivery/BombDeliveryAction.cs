@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
+using Photon.Pun;
 
 namespace EverScord.Skill
 {
@@ -67,7 +68,8 @@ namespace EverScord.Skill
             IEnemy enemy = closestTarget.GetComponent<IEnemy>();
             GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
 
-            enemy.StunMonster(skill.StunDuration);
+            if (activator.CharacterPhotonView.IsMine)
+                enemy.StunMonster(skill.StunDuration);
         }
 
         public void SupportAction()
@@ -79,7 +81,9 @@ namespace EverScord.Skill
             CharacterControl targetPlayer = closestTarget.GetComponent<CharacterControl>();
 
             // Start Coroutine and increase hp for 3 seconds, set particle to loop
-            targetPlayer.IncreaseHP(skill.HealAmount);
+
+            if (activator.CharacterPhotonView.IsMine)
+                targetPlayer.IncreaseHP(skill.HealAmount);
         }
 
         private void TeleportPlayer()
