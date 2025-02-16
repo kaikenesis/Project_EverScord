@@ -10,6 +10,7 @@ namespace EverScord.Skill
     {
         [field: SerializeField] public string Name;
         [field: SerializeField] public float BaseDamage;
+        [field: SerializeField] public float BaseHeal;
         [field: SerializeField] public float Cooldown;
         [field: SerializeField] public GameObject SkillPrefab;
 

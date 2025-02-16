@@ -26,5 +26,9 @@ namespace EverScord
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
         public const string TWEEN_AMMORELOAD = "AmmoReload";
+
+        // Addressable Keys
+        public const string KEY_TRAJECTORYLINE_MAT = "TrajectoryLineMAT";
+        public const string KEY_HEAL_EFFECT = "HealEffect";
     }
 }

@@ -1,8 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
-using System;
-using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Skill
 {
@@ -78,10 +76,6 @@ namespace EverScord.Skill
                 return;
 
             TeleportPlayer();
-
-            var healEffect = Instantiate(skill.HealEffect, closestTarget);
-            healEffect.transform.position = closestTarget.position;
-
             CharacterControl targetPlayer = closestTarget.GetComponent<CharacterControl>();
 
             // Start Coroutine and increase hp for 3 seconds, set particle to loop

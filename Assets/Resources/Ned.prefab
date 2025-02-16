@@ -535,7 +535,7 @@ MonoBehaviour:
   weapon: {fileID: 6163937095246642853}
   skillList:
   - <Skill>k__BackingField: {fileID: 11400000, guid: 3dfb1606df65ad14294bfacda373ea41, type: 2}
-  - <Skill>k__BackingField: {fileID: 11400000, guid: e51215101053b274a9a1c32374d063c2, type: 2}
+  - <Skill>k__BackingField: {fileID: 11400000, guid: 065d0796e9d854f4296b5e5224593788, type: 2}
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
   cameraPrefab: {fileID: 6716463709426020098, guid: b7ba58d67a16a9642b900e15c37509a6, type: 3}
   rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
@@ -568,6 +568,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimPointPrefab: {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
+  shotEffect: {fileID: 8697624914000545340}
+  bulletInfo: {fileID: 11400000, guid: eec83c359a4a188449cd4428af21f105, type: 2}
+  bulletSpeed: 100
   <BulletAssetReference>k__BackingField:
     m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
     m_SubObjectName: 
@@ -578,7 +581,6 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  shotEffect: {fileID: 8697624914000545340}
   <GunPoint>k__BackingField: {fileID: 5000854565782103814}
   <WeaponTransform>k__BackingField: {fileID: 5722305271450859557}
   <LeftTarget>k__BackingField: {fileID: 4707739217572464861}
@@ -592,8 +594,6 @@ MonoBehaviour:
   <ReloadTime>k__BackingField: 3
   <WeaponRange>k__BackingField: 10
   <MaxAmmo>k__BackingField: 30
-  bulletInfo: {fileID: 11400000, guid: eec83c359a4a188449cd4428af21f105, type: 2}
-  bulletSpeed: 100
 --- !u!143 &3573913637258047973
 CharacterController:
   m_ObjectHideFlags: 0

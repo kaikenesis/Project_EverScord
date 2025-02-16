@@ -150,6 +150,8 @@ namespace EverScord.Skill
             SetForce();
 
             Rigidbody thrownObject = Instantiate(projectile, startPoint.position, Quaternion.identity);
+
+            thrownObject.GetComponent<GrenadeImpact>().Init(activator, skill);
             thrownObject.AddForce(throwDir * force, ForceMode.Impulse);
 
             if (stampCoroutine != null)

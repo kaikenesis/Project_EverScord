@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: GrenadeSkill
   BaseDamage: 10
+  BaseHeal: 10
   Cooldown: 3
   SkillPrefab: {fileID: 1322690896785909928, guid: 07f7bb21166f341429be39814e3bd6b3, type: 3}
   <GrenadeStartPoint>k__BackingField: {fileID: 3727081715274472048, guid: 5dc1d28378aa08e45b3d2cef86bbf338, type: 3}
   <HitMarker>k__BackingField: {fileID: 1898189779652114, guid: 34dfcaa6bb3c3cd4da2080dc3fac234b, type: 3}
-  <FadeMarker>k__BackingField: {fileID: 1009947694827970, guid: cf5b2b2099b4e95488a7004fe327a581, type: 3}
   <PoisonBomb>k__BackingField: {fileID: 2947036328020528552, guid: 05899301fe3f4184e9886fc5b9fdc913, type: 3}
   <HealBomb>k__BackingField: {fileID: 2947036328020528552, guid: 05899301fe3f4184e9886fc5b9fdc913, type: 3}
   <PredictInterval>k__BackingField: 0.025
   <HitMarkerGroundOffset>k__BackingField: 0.1
-  <ExplosionRadius>k__BackingField: 0
+  <ExplosionRadius>k__BackingField: 7
   <MaxPoints>k__BackingField: 200

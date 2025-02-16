@@ -5,12 +5,14 @@ using EverScord.Weapons;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
+using UnityEditor.Experimental.GraphView;
 
 namespace EverScord.Character
 {
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         private const float SKIN_RATIO = 0.1f;
+        private const float REMOTE_LERP_VALUE = 10f;
 
         [Header("Character")]
         [SerializeField] private float speed;
@@ -45,7 +47,7 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
-        public ISkillAction CurrentSkillInfo                            { get; private set; }
+        public ISkillAction CurrentSkillAction                          { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
         public EJob CharacterJob                                        { get; private set; }
@@ -66,7 +68,6 @@ namespace EverScord.Character
 
         private SkinnedMeshRenderer[] skinRenderers;
         private int originalSkinLayer;
-        bool test = false;
 
         public float CurrentHealth
         {
@@ -74,6 +75,7 @@ namespace EverScord.Character
             set
             {
                 currentHealth = value;
+                // Change Helath UI
             }
         }
 
@@ -152,7 +154,7 @@ namespace EverScord.Character
 
         private void LerpRemoteInfo()
         {
-            MouseRayHitPos = Vector3.Lerp(MouseRayHitPos, remoteMouseRayHitPos, Time.deltaTime * 10f);
+            MouseRayHitPos = Vector3.Lerp(MouseRayHitPos, remoteMouseRayHitPos, Time.deltaTime * REMOTE_LERP_VALUE);
         }
 
         private void SetInput()
@@ -251,8 +253,11 @@ namespace EverScord.Character
                 if (weapon.IsReloading && !skillList[i].SkillAction.CanAttackWhileSkill)
                     continue;
 
+                if (IsUsingSkill && CurrentSkillAction != skillList[i].SkillAction)
+                    continue;
+
                 info.SkillAction.Activate();
-                CurrentSkillInfo = skillList[i].SkillAction;
+                CurrentSkillAction = skillList[i].SkillAction;
 
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i);
@@ -302,7 +307,11 @@ namespace EverScord.Character
         public void IncreaseHP(float amount)
         {
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
-            
+
+            GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
+            var effect = Instantiate(healEffect, transform);
+            effect.transform.position = transform.position;
+
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
         }
@@ -381,7 +390,7 @@ namespace EverScord.Character
         [PunRPC]
         private void SyncUseSkill(int index)
         {
-            CurrentSkillInfo = skillList[index].SkillAction;
+            CurrentSkillAction = skillList[index].SkillAction;
             skillList[index].SkillAction.Activate();
         }
 
