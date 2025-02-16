@@ -13,9 +13,9 @@ public class BossPattern04_Imp : ActionNodeImplement
     {
         base.Awake();
         boxCollider = transform.AddComponent<BoxCollider>();
-        boxCollider.size = new Vector3(1, 1, 3);
+        boxCollider.size = new Vector3(2, 1, 3);
         boxCollider.center = new Vector3(0, 1, 1.5f);
-        boxCollider.isTrigger = true;
+        //boxCollider.isTrigger = true;
         boxCollider.enabled = false;
     }
 

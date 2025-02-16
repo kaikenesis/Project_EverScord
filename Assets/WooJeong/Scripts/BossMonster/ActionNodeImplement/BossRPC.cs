@@ -42,7 +42,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         // projector for pattern4
         projectorCharge = gameObject.AddComponent<DecalProjector>();
-        projectorCharge.size = new Vector3(1, 1, 10);
+        projectorCharge.size = new Vector3(2, 1, 10);
         projectorCharge.pivot = new Vector3(0, 0f, 5f);
         projectorCharge.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
         projectorCharge.renderingLayerMask = 2;
@@ -219,12 +219,40 @@ public class BossRPC : MonoBehaviour, IEnemy
         hp = bossData.HP;
     }
 
-    public IEnumerator LaserEnable(float enableTime)
+    public void LaserEnable(float enableTime)
     {
-        Debug.Log("Laser active");
-        laserPoint.SetActive(true);        
-        yield return new WaitForSeconds(enableTime);
+        photonView.RPC("SyncLaser", RpcTarget.All, enableTime);
+    }
+
+    [PunRPC]
+    public IEnumerator SyncLaser(float enableTime)
+    {
+        laserPoint.SetActive(true);
+
+        //GameObject laser = ResourceManager.Instance.GetFromPool("BossLaser", transform.position, Quaternion.identity);
+        //laser.transform.parent = transform;
+
+        //Quaternion startPoint = transform.rotation;
+        //Quaternion endPoint = Quaternion.AngleAxis(179, Vector3.up);
+        //for (float t = 0f; t < enableTime; t += Time.deltaTime)
+        //{
+        //    laser.transform.rotation = Quaternion.Lerp(startPoint, endPoint, t / enableTime);
+        //    yield return new WaitForSeconds(Time.deltaTime);
+        //}
+        //ResourceManager.Instance.ReturnToPool(laser, "BossLaser");
+
+        yield return new WaitForSeconds(enableTime - 0.5f);
         laserPoint.SetActive(false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("laser hit");
+            CharacterControl control = other.GetComponent<CharacterControl>();
+            control.DecreaseHP(10);
+        }
     }
 
     public void StunMonster(float stunTime)
