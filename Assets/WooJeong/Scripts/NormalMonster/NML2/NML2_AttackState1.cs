@@ -43,7 +43,8 @@ public class NML2_AttackState1 : NAttackState
             monsterController.player.transform.position,
             monsterController.monsterData.AttackRangeX1,
             monsterController.monsterData.ProjectionTime,
-            "NML2_A1_Effect01");
+            "NML2_A1_Effect01",
+            monsterController.monsterData.AttackDamage1);
 
         if (player2 != null)
         {
@@ -51,7 +52,8 @@ public class NML2_AttackState1 : NAttackState
                 player2.transform.position,
                 monsterController.monsterData.AttackRangeX1,
                 monsterController.monsterData.ProjectionTime,
-                "NML2_A1_Effect01");
+                "NML2_A1_Effect01",
+                monsterController.monsterData.AttackDamage1);
         }
     }
 }

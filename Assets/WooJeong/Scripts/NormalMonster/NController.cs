@@ -9,13 +9,13 @@ public abstract class NController : MonoBehaviour, IEnemy
 {
     [SerializeField] public NMonsterData monsterData;
 
+    public float HP = 0;
+    [HideInInspector] public Dictionary<string, float> clipDict = new();
     [HideInInspector] public int LastAttack = 0;
     [HideInInspector] public GameObject player;
-    public Dictionary<string, float> clipDict = new();
-    public float HP = 0;
-    public float stunTime = 2;
-    public bool isStun = false;
-    public bool isDead = false;
+    [HideInInspector] public float stunTime = 2;
+    [HideInInspector] public bool isStun = false;
+    [HideInInspector] public bool isDead = false;
     protected float curCool1 = 0;
     protected float curCool2 = 0;
     protected RaycastHit hit;
@@ -40,7 +40,6 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     protected void Awake()
     {
-        HP = monsterData.HP;
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
 
@@ -76,17 +75,17 @@ public abstract class NController : MonoBehaviour, IEnemy
         GUID = guid;
     }
 
-    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey)
+    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage)
     {
-        photonView.RPC("SyncMonsterAttack", RpcTarget.All, pos, width, projectTime, addressableKey);
+        photonView.RPC("SyncMonsterAttack", RpcTarget.All, pos, width, projectTime, addressableKey, attackDamage);
     }
 
     [PunRPC]
-    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey)
+    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
         MonsterAttack ma = go.GetComponent<MonsterAttack>();
-        ma.Setup(width, projectTime, addressableKey);
+        ma.Setup(width, projectTime, addressableKey, attackDamage);
     }
 
     public void DecreaseHP(float hp)
@@ -129,7 +128,11 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void StartFSM()
     {
         if (PhotonNetwork.IsMasterClient)
+        {
+            HP = monsterData.HP;
+            LastAttack = 0;
             WaitState();
+        }
     }
 
     protected abstract void Setup();

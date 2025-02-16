@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BossPattern06_Imp : ActionNodeImplement
 {
-    private float laserLifeTime = 5;
+    private float laserLifeTime = 3;
 
     protected override IEnumerator Act()
     {
@@ -13,7 +13,7 @@ public class BossPattern06_Imp : ActionNodeImplement
         bossRPC.PlayAnimation("RotatingShot");
         yield return new WaitForSeconds(1f);
         yield return bossRPC.LaserEnable(laserLifeTime);
-        yield return new WaitForSeconds(bossRPC.clipDict["RotatingShot"] - laserLifeTime - 1);
+        bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
         Debug.Log("Attack6 end");

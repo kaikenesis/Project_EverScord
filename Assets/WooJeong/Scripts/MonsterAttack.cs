@@ -1,11 +1,11 @@
-using EverScord.Monster;
+using EverScord.Character;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class MonsterAttack : MonoBehaviour
 {
+    private float attackDamage;
     private DecalProjector projector;
     private CapsuleCollider capCollider;
     private float projectTime;
@@ -20,10 +20,11 @@ public class MonsterAttack : MonoBehaviour
         projector.renderingLayerMask = 2;
     }
 
-    public void Setup(float width, float projectTime, string effectAddressableKey)
+    public void Setup(float width, float projectTime, string effectAddressableKey, float attackDamage)
     {
         this.projectTime = projectTime;
         this.effectAddressableKey = effectAddressableKey;
+        this.attackDamage = attackDamage;
         projector.size = new Vector3(width, width, width);
         capCollider.radius = width/2;
 
@@ -34,20 +35,6 @@ public class MonsterAttack : MonoBehaviour
         StartCoroutine(Attack());
     }
 
-    public void Setup(float width, float projectTime, string effectAddressableKey, bool isPhase2)
-    {
-        this.projectTime = projectTime;
-        this.effectAddressableKey = effectAddressableKey;
-        projector.size = new Vector3(width, width, width);
-        capCollider.radius = width / 2;
-
-        gameObject.transform.Rotate(90, 0, 0);
-        projector.enabled = false;
-        capCollider.enabled = false;
-
-        StartCoroutine(StoneUp());
-    }
-
     public IEnumerator Attack()
     {
         projector.enabled = true;
@@ -56,31 +43,20 @@ public class MonsterAttack : MonoBehaviour
 
         capCollider.enabled = true;
         GameObject effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
-        yield return new WaitForSeconds(projectTime);
+        ParticleSystem effectParticle = effect.GetComponent<ParticleSystem>();
+        yield return new WaitForSeconds(effectParticle.main.duration);
         capCollider.enabled = false;
         ResourceManager.Instance.ReturnToPool(effect, effectAddressableKey);
 
         ResourceManager.Instance.ReturnToPool(gameObject, "MonsterAttack");
     }
 
-    public IEnumerator StoneUp()
-    {
-        projector.enabled = true;
-        yield return new WaitForSeconds(projectTime);
-        projector.enabled = false;
-
-        capCollider.enabled = true;
-        GameObject effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
-        yield return new WaitForSeconds(1.0f);
-        ParticleSystem effectParticle =  effect.GetComponent<ParticleSystem>();
-        effectParticle.Pause();        
-        //capCollider.enabled = false;
-        //ResourceManager.Instance.ReturnToPool(effect, effectAddressableKey);
-        //ResourceManager.Instance.ReturnToPool(gameObject, "MonsterAttack");
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        //if(other.gameObject.CompareTag)
+        if(other.gameObject.CompareTag("Player"))
+        {
+            CharacterControl control = other.gameObject.GetComponent<CharacterControl>();
+            control.DecreaseHP(attackDamage);
+        }
     }
 }

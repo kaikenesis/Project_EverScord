@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 public class BossRPC : MonoBehaviour, IEnemy
 {
@@ -34,7 +35,6 @@ public class BossRPC : MonoBehaviour, IEnemy
         {
             clipDict[clip.name] = clip.length;
         }
-        
         SetProjectors();
     }
 
@@ -222,7 +222,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public IEnumerator LaserEnable(float enableTime)
     {
         Debug.Log("Laser active");
-        laserPoint.SetActive(true);
+        laserPoint.SetActive(true);        
         yield return new WaitForSeconds(enableTime);
         laserPoint.SetActive(false);
     }
@@ -232,29 +232,50 @@ public class BossRPC : MonoBehaviour, IEnemy
         return;
     }
 
-    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey)
+    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, float attackDamage)
     {
-        photonView.RPC("SyncStoneAttack", RpcTarget.All, pos, width, projectTime, effectAddressableKey);
-    }
-
-    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, bool isPhase2)
-    {
-        photonView.RPC("SyncStoneAttack2", RpcTarget.All, pos, width, projectTime, effectAddressableKey, isPhase2);
+        photonView.RPC("SyncStoneAttack", RpcTarget.All, pos, width, projectTime, effectAddressableKey, attackDamage);
     }
 
     [PunRPC]
-    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey)
+    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
         MonsterAttack ma = go.GetComponent<MonsterAttack>();
-        ma.Setup(width, projectTime, addressableKey);
+        ma.Setup(width, projectTime, addressableKey, attackDamage);
+    }
+
+    public void InstantiateStoneAttack2(Vector3 pos, float width, float projectTime, string effectAddressableKey, float attackDamage)
+    {
+        GameObject go = ResourceManager.Instance.GetFromPool("BossMonsterStoneAttack", pos, Quaternion.identity);
+        PhotonView view = go.GetComponent<PhotonView>();
+        BossMonsterStoneAttack ma = go.GetComponent<BossMonsterStoneAttack>();
+        ma.Setup(width, projectTime, effectAddressableKey, attackDamage);
+        if (view.ViewID == 0)
+        {
+            if (PhotonNetwork.AllocateViewID(view))
+            {
+                int viewID = view.ViewID;
+                photonView.RPC("SyncStoneAttack2", RpcTarget.Others, pos, width, projectTime, effectAddressableKey, attackDamage, viewID);
+            }
+        }
+        else
+        {
+            photonView.RPC("SyncStoneAttack2", RpcTarget.Others, pos, width, projectTime, effectAddressableKey, attackDamage, null);
+        }
+
     }
 
     [PunRPC]
-    protected void SyncStoneAttack2(Vector3 pos, float width, float projectTime, string addressableKey, bool isPhase2)
+    protected void SyncStoneAttack2(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage, int viewID)
     {
-        GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
-        MonsterAttack ma = go.GetComponent<MonsterAttack>();
-        ma.Setup(width, projectTime, addressableKey, isPhase2);
+        GameObject go = ResourceManager.Instance.GetFromPool("BossMonsterStoneAttack", pos, Quaternion.identity);
+        PhotonView view = go.GetComponent<PhotonView>();
+        if(view.ViewID == 0)
+        {
+            view.ViewID = viewID;
+        }
+        BossMonsterStoneAttack ma = go.GetComponent<BossMonsterStoneAttack>();
+        ma.Setup(width, projectTime, addressableKey, attackDamage);
     }
 }
