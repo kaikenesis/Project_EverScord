@@ -11,7 +11,7 @@ namespace EverScord.Skill
         private Vector3 strikeStartPos, strikeEndPos;
         private LayerMask targetLayer;
         private GameObject bomb, flames, healCircle;
-        private WaitForSeconds waitStrikeInterval, waitBombDrop, waitFlameDuration;
+        private WaitForSeconds waitStrikeInterval, waitBombDrop, waitZoneDuration;
         private AircraftControl aircraft;
         private float calculatedImpact;
         private bool isOffensive;
@@ -21,19 +21,19 @@ namespace EverScord.Skill
             Skill = (AirStrikeSkill)skill;
 
             waitStrikeInterval  = new WaitForSeconds(Skill.ExplosionInterval);
-            waitFlameDuration   = new WaitForSeconds(Skill.FlameDuration);
-            waitBombDrop        = new WaitForSeconds(0.1f);
+            waitZoneDuration    = new WaitForSeconds(Skill.ZoneDuration);
+            waitBombDrop        = new WaitForSeconds(0.3f);
 
             isOffensive = activator.CharacterJob == EJob.DEALER;
-            
+
             aircraft = Instantiate(Skill.AircraftPrefab).GetComponent<AircraftControl>();
             aircraft.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
+
             
             if (isOffensive)
             {
                 targetLayer = GameManager.EnemyLayer;
                 calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
-
                 bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.BombEffectReference.AssetGUID);
                 flames = ResourceManager.Instance.GetAsset<GameObject>(Skill.FlameEffectReference.AssetGUID);
             }
@@ -43,9 +43,8 @@ namespace EverScord.Skill
 
                 // Calculate total heal amount
                 calculatedImpact = Skill.BaseHeal;
-
-                bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.BombEffectReference.AssetGUID);
-                healCircle = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealEffectReference.AssetGUID);
+                bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealBombEffectReference.AssetGUID);
+                healCircle = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealZoneEffectReference.AssetGUID);
             }
 
             base.Init(activator, skill, ejob, skillIndex);
@@ -79,9 +78,7 @@ namespace EverScord.Skill
                 if (photonView.IsMine)
                     StartCoroutine(ProceedCollisionCheck(dropPosition));
 
-                if (isOffensive)
-                    StartCoroutine(CreateFlames(dropPosition));
-
+                StartCoroutine(CreateZone(dropPosition));
                 yield return waitStrikeInterval;
             }
         }
@@ -107,30 +104,56 @@ namespace EverScord.Skill
             }
         }
 
-        private IEnumerator CreateFlames(Vector3 dropPosition)
+        private IEnumerator CreateZone(Vector3 dropPosition)
         {
             yield return waitBombDrop;
             
-            GameObject flameEffect = Instantiate(flames, CharacterSkill.SkillRoot);
-            flameEffect.transform.position = dropPosition;
-
             FlameControl flameControl = null;
+            HealZoneControl healZoneControl = null;
+
+            GameObject flameEffect = null;
+            GameObject healEffect = null;
+
+            if (isOffensive)
+            {
+                flameEffect = Instantiate(flames, CharacterSkill.SkillRoot);
+                flameEffect.transform.position = dropPosition;
+            }
+            else
+            {
+                healEffect = Instantiate(healCircle, CharacterSkill.SkillRoot);
+                healEffect.transform.position = dropPosition;
+            }
 
             if (photonView.IsMine)
             {
-                flameControl = flameEffect.GetComponent<FlameControl>();
+                if (isOffensive)
+                {
+                    flameControl = flameEffect.GetComponent<FlameControl>();
 
-                flameControl.Init(
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy,
-                    Skill.FlameHurtInterval,
-                    Skill.FlameBaseDamage,
-                    targetLayer
-                );
+                    flameControl.Init(
+                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy,
+                        Skill.ZoneInfluenceInterval,
+                        Skill.FlameBaseDamage,
+                        targetLayer
+                    );
+                }
+                else
+                {
+                    healZoneControl = healEffect.GetComponent<HealZoneControl>();
+
+                    healZoneControl.Init(
+                        Skill.ZoneInfluenceInterval,
+                        Skill.HealBaseAmount,
+                        targetLayer
+                    );
+                }
             }
 
-            yield return waitFlameDuration;
+            yield return waitZoneDuration;
 
             CharacterSkill.StopEffectParticles(flameEffect);
+            CharacterSkill.StopEffectParticles(healEffect);
         }
 
         public override IEnumerator ThrowObject()

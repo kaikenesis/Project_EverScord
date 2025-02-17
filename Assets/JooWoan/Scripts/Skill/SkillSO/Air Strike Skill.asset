@@ -28,8 +28,9 @@ MonoBehaviour:
   <ExplosionRadius>k__BackingField: 4
   <ExplosionInterval>k__BackingField: 0.05
   <FlameBaseDamage>k__BackingField: 1
-  <FlameHurtInterval>k__BackingField: 0.5
-  <FlameDuration>k__BackingField: 5
+  <HealBaseAmount>k__BackingField: 1
+  <ZoneDuration>k__BackingField: 5
+  <ZoneInfluenceInterval>k__BackingField: 0.5
   <BombCount>k__BackingField: 5
   <AirCraftSpeed>k__BackingField: 230
   <AirCraftTravelDistance>k__BackingField: 100
@@ -42,13 +43,18 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  <HealBombEffectReference>k__BackingField:
+    m_AssetGUID: aefa065272400f44bbc1a5471cfe2334
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   <FlameEffectReference>k__BackingField:
     m_AssetGUID: f293a2dcc753a4a489fefe7f8f312d69
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  <HealEffectReference>k__BackingField:
-    m_AssetGUID: 9a82614d794528e45873a3bb0fd1806d
+  <HealZoneEffectReference>k__BackingField:
+    m_AssetGUID: c499430e99ad6164bb06655608891d43
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

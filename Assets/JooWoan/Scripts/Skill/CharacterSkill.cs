@@ -44,6 +44,9 @@ namespace EverScord.Skill
         {
             // Effect will be destroyed due to particle stop action mode
             
+            if (effect == null)
+                return;
+
             ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>();
 
             for (int i = 0; i < particles.Length; i++)
