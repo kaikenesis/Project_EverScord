@@ -9,19 +9,21 @@ namespace EverScord.Skill
         private Action skillDelegate = null;
         private GrenadeSkillAction skillAction = null;
         private GameObject explosionEffect;
+        private CharacterControl thrower;
+        private bool isPhotonViewMine = false;
 
         void OnCollisionEnter(Collision collision)
         {
-            if (skillAction == null)
+            if (((1 << collision.gameObject.layer) & skillAction.Skill.CollisionLayer) == 0)
                 return;
 
-            if (((1 << collision.gameObject.layer) & skillAction.Skill.CollisionLayer) == 0)
+            if (collision.transform.root == thrower.transform)
                 return;
 
             var effect = Instantiate(explosionEffect, CharacterSkill.SkillRoot);
             effect.transform.position = transform.position;
 
-            if (skillDelegate != null)
+            if (thrower.CharacterPhotonView.IsMine && skillAction != null && skillDelegate != null)
             {
                 skillAction.SetGrenadeImpactPosition(transform.position);
                 skillDelegate.Invoke();
@@ -32,15 +34,10 @@ namespace EverScord.Skill
 
         public void Init(CharacterControl activator, ThrowSkillAction skillAction)
         {
-            if (!activator.CharacterPhotonView.IsMine)
-                return;
-
             this.skillAction = skillAction as GrenadeSkillAction;
 
-            if (!skillAction)
-                return;
-
             GrenadeSkill grenadeSkill = this.skillAction.Skill;
+            thrower = activator;
             
             if (activator.CharacterJob == EJob.DEALER)
             {

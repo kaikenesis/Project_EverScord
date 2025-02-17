@@ -21,21 +21,7 @@ namespace EverScord.Skill
                 grenade = Skill.HealBomb;
 
             base.Init(activator, skill, ejob, skillIndex);
-            SetStampMarkerColor();
-        }
-
-        private void SetStampMarkerColor()
-        {
-            ParticleSystem[] particles = predictor.StampedMarker.GetComponentsInChildren<ParticleSystem>();
-
-            if (particles.Length == 0)
-                return;
-
-            for (int i = 0; i < particles.Length; i++)
-            {
-                ParticleSystem.MainModule settings = particles[i].main;
-                settings.startColor = new ParticleSystem.MinMaxGradient(Skill.StampMarkerColor);
-            }
+            TrajectoryPredictor.SetStampMarkerColor(predictor.StampedMarker, Skill.StampMarkerColor);
         }
 
         public override void OffensiveAction()

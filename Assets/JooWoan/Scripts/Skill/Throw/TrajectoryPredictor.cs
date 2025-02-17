@@ -233,6 +233,20 @@ namespace EverScord.Skill
             stampedMarker.gameObject.SetActive(state);
         }
 
+        public static void SetStampMarkerColor(Transform marker, Color32 color)
+        {
+            ParticleSystem[] particles = marker.GetComponentsInChildren<ParticleSystem>();
+
+            if (particles.Length == 0)
+                return;
+
+            for (int i = 0; i < particles.Length; i++)
+            {
+                ParticleSystem.MainModule settings = particles[i].main;
+                settings.startColor = new ParticleSystem.MinMaxGradient(color);
+            }
+        }
+
         public void SyncInfo(Vector3 thrownPosition, Vector3 groundDirection, float initialVelocity, float trajectoryAngle, float estimatedTime)
         {
             this.thrownPosition  = thrownPosition;
