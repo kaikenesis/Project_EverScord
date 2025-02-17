@@ -7,25 +7,21 @@ namespace EverScord.Skill
     public class GrenadeSkillAction : ThrowSkillAction
     {
         public GrenadeSkill Skill { get; private set; }
-        private GameObject grenade;
         private Vector3 grenadeImpactPosition;
         
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {            
             Skill = (GrenadeSkill)skill;
 
-            if (ejob == EJob.DEALER)
-                grenade = Skill.PoisonBomb;
-
-            else if (ejob == EJob.HEALER)
-                grenade = Skill.HealBomb;
-
             base.Init(activator, skill, ejob, skillIndex);
-            TrajectoryPredictor.SetStampMarkerColor(predictor.StampedMarker, Skill.StampMarkerColor);
+            CharacterSkill.SetMarkerColor(predictor.StampedMarker.gameObject, Skill.StampMarkerColor);
         }
 
         public override void OffensiveAction()
         {
+            if (!photonView.IsMine)
+                return;
+
             Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, Skill.ExplosionRadius, GameManager.EnemyLayer);
             float calculatedDamage = DamageCalculator.GetSkillDamage(activator, Skill);
 
@@ -38,6 +34,9 @@ namespace EverScord.Skill
 
         public override void SupportAction()
         {
+            if (!photonView.IsMine)
+                return;
+            
             Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, Skill.ExplosionRadius, GameManager.PlayerLayer);
             float calculatedHeal = Skill.BaseHeal;
 
@@ -58,10 +57,10 @@ namespace EverScord.Skill
 
         public override IEnumerator ThrowObject()
         {
-            Transform throwingObject = Instantiate(grenade, CharacterSkill.SkillRoot).transform;
-            throwingObject.GetComponent<GrenadeImpact>().Init(activator, this);
+            Transform grenade = Instantiate(Skill.ThrowingObject, CharacterSkill.SkillRoot).transform;
+            grenade.GetComponent<ThrowableImpact>().Init(activator, this);
 
-            StartCoroutine(predictor.ThrowObject(throwingObject));
+            StartCoroutine(predictor.ThrowObject(grenade));
             yield break;
         }
     }

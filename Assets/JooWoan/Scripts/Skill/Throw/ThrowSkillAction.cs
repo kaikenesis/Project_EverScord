@@ -8,16 +8,17 @@ namespace EverScord.Skill
     public abstract class ThrowSkillAction : SkillAction
     {
         protected TrajectoryPredictor predictor;
-        public TrajectoryPredictor Predictor => predictor;
         protected Coroutine predictionCoroutine;
         protected bool hasActivated = false;
 
+        public TrajectoryPredictor Predictor => predictor;
+        public ThrowSkill ThrowingSkill { get; private set; }
         private WaitForSeconds waitSkillEnd = new WaitForSeconds(0.1f);
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
-            ThrowSkill throwSkill = (ThrowSkill)skill;
-            predictor = new TrajectoryPredictor(activator, transform, throwSkill);
+            ThrowingSkill = (ThrowSkill)skill;
+            predictor = new TrajectoryPredictor(activator, transform, ThrowingSkill);
 
             base.Init(activator, skill, ejob, skillIndex);
         }

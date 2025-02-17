@@ -25,6 +25,30 @@ namespace EverScord.Skill
                 return GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
             }
         }
+
+        public static void SetMarkerColor(GameObject marker, Color32 color)
+        {
+            ParticleSystem[] particles = marker.GetComponentsInChildren<ParticleSystem>();
+
+            if (particles.Length == 0)
+                return;
+
+            for (int i = 0; i < particles.Length; i++)
+            {
+                ParticleSystem.MainModule settings = particles[i].main;
+                settings.startColor = new ParticleSystem.MinMaxGradient(color);
+            }
+        }
+
+        public static void StopEffectParticles(GameObject effect)
+        {
+            // Effect will be destroyed due to particle stop action mode
+            
+            ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>();
+
+            for (int i = 0; i < particles.Length; i++)
+                particles[i].Stop();
+        }
     }
 
     [System.Serializable]
