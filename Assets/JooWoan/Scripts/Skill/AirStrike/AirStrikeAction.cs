@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
-using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.Skill
 {
@@ -13,6 +12,7 @@ namespace EverScord.Skill
         private LayerMask targetLayer;
         private GameObject bomb, flames, healCircle;
         private WaitForSeconds waitStrikeInterval, waitBombDrop, waitFlameDuration;
+        private AircraftControl aircraft;
         private float calculatedImpact;
         private bool isOffensive;
 
@@ -25,6 +25,9 @@ namespace EverScord.Skill
             waitBombDrop        = new WaitForSeconds(0.1f);
 
             isOffensive = activator.CharacterJob == EJob.DEALER;
+            
+            aircraft = Instantiate(Skill.AircraftPrefab).GetComponent<AircraftControl>();
+            aircraft.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
             
             if (isOffensive)
             {
@@ -63,6 +66,8 @@ namespace EverScord.Skill
             Vector3 direction = (strikeEndPos - strikeStartPos).normalized;
             float dropDistance = Vector3.Distance(strikeStartPos, strikeEndPos) / Mathf.Max(1, Skill.BombCount - 1);
             float distanceSum = 0f;
+
+            aircraft.EnableAircraft(strikeStartPos, direction);
 
             for (int i = 0; i < Skill.BombCount; i++, distanceSum += dropDistance)
             {
