@@ -31,7 +31,7 @@ namespace EverScord.Skill
     public class SkillActionInfo
     {
         [field: SerializeField] public CharacterSkill Skill { get; private set; }
-        public ISkillAction SkillAction { get; private set; }
+        public SkillAction SkillAction { get; private set; }
 
         public void Init(CharacterControl activator, int skillIndex, EJob characterJob)
         {
@@ -41,7 +41,7 @@ namespace EverScord.Skill
                 return;
             }
 
-            ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, CharacterSkill.SkillRoot).GetComponent<ISkillAction>();
+            SkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, CharacterSkill.SkillRoot).GetComponent<SkillAction>();
 
             SkillAction = skillAction;
             SkillAction.Init(activator, Skill, characterJob, skillIndex);

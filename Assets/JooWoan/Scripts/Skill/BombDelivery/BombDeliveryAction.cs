@@ -1,45 +1,31 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
-using Photon.Pun;
 
 namespace EverScord.Skill
 {
-    public class BombDeliveryAction : MonoBehaviour, ISkillAction
+    public class BombDeliveryAction : SkillAction
     {
         private const int MAX_COLLISION_CHECK = 100;
         private const float CHECK_DISTANCE_OFFSET = 0.5f;
 
-        private CharacterControl activator;
         private BombDeliverySkill skill;
-        private CooldownTimer cooldownTimer;
-        private Coroutine skillCoroutine;
         private Transform closestTarget;
 
-        private EJob ejob;
-        private int skillIndex;
-
-        public bool IsUsingSkill { get { return skillCoroutine != null; } }
-        public bool CanAttackWhileSkill => false;
-
-        public void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
-            this.activator  = activator;
-            this.skill      = (BombDeliverySkill)skill;
-            this.skillIndex = skillIndex;
-            this.ejob       = ejob;
+            this.skill = (BombDeliverySkill)skill;
 
-            cooldownTimer = new CooldownTimer(skill.Cooldown);
-            StartCoroutine(cooldownTimer.RunTimer());
+            base.Init(activator, skill, ejob, skillIndex);
         }
 
-        public void Activate()
+        public override bool Activate()
         {
-            if (cooldownTimer.IsCooldown || IsUsingSkill)
-                return;
+            if (!base.Activate())
+                return false;
 
-            cooldownTimer.ResetElapsedTime();
             skillCoroutine = StartCoroutine(ActivateSkill());
+            return true;
         }
 
         private IEnumerator ActivateSkill()
@@ -53,7 +39,7 @@ namespace EverScord.Skill
             skillCoroutine = null;
         }
 
-        public void OffensiveAction()
+        public override void OffensiveAction()
         {
             if (!SetClosestTarget(GameManager.EnemyLayer))
                 return;
@@ -72,7 +58,7 @@ namespace EverScord.Skill
                 enemy.StunMonster(skill.StunDuration);
         }
 
-        public void SupportAction()
+        public override void SupportAction()
         {
             if (!SetClosestTarget(GameManager.PlayerLayer))
                 return;

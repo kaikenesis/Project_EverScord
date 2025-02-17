@@ -4,7 +4,6 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
-using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
@@ -171,16 +170,16 @@ namespace EverScord.Weapons
             Bullet bullet         = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
             SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID)  as SmokeTrail;
 
-            if (smokeTrail)
-            {
-                smokeTrail.transform.forward = bulletVector;
-                smokeTrail.Init(bullet);
-            }
-
             if (bullet)
             {
                 bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
                 GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
+            }
+
+            if (smokeTrail)
+            {
+                smokeTrail.transform.forward = bulletVector;
+                smokeTrail.Init(bullet);
             }
 
             if (!PhotonNetwork.IsConnected)

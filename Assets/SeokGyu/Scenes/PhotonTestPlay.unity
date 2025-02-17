@@ -167,18 +167,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assetReferenceList:
-  - m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: db97ba35f680c914480ecc075d752dbf
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: d37f449475111c14b887d21209cd87ff
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 1
+  - Reference:
+      m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 5
+  - Reference:
+      m_AssetGUID: db97ba35f680c914480ecc075d752dbf
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 5
+  - Reference:
+      m_AssetGUID: d37f449475111c14b887d21209cd87ff
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
+    PoolSize: 10
 --- !u!1 &66857358
 GameObject:
   m_ObjectHideFlags: 0

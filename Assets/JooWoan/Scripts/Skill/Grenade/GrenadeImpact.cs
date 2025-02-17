@@ -1,34 +1,57 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 using EverScord.Character;
 
 namespace EverScord.Skill
 {
     public class GrenadeImpact : MonoBehaviour
     {
-        private Action skillAction = null;
-        private GrenadeSkillAction skill;
+        private Action skillDelegate = null;
+        private GrenadeSkillAction skillAction = null;
+        private GameObject explosionEffect;
 
-        void OnDisable()
+        void OnCollisionEnter(Collision collision)
         {
             if (skillAction == null)
                 return;
+
+            if (((1 << collision.gameObject.layer) & skillAction.Skill.CollisionLayer) == 0)
+                return;
+
+            var effect = Instantiate(explosionEffect, CharacterSkill.SkillRoot);
+            effect.transform.position = transform.position;
+
+            if (skillDelegate != null)
+            {
+                skillAction.SetGrenadeImpactPosition(transform.position);
+                skillDelegate.Invoke();
+            }
             
-            skill.SetGrenadeImpactPosition(transform.position);
-            skillAction.Invoke();
+            Destroy(gameObject);
         }
 
-        public void Init(CharacterControl activator, GrenadeSkillAction skill)
+        public void Init(CharacterControl activator, ThrowSkillAction skillAction)
         {
             if (!activator.CharacterPhotonView.IsMine)
                 return;
 
-            this.skill = skill;
+            this.skillAction = skillAction as GrenadeSkillAction;
+
+            if (!skillAction)
+                return;
+
+            GrenadeSkill grenadeSkill = this.skillAction.Skill;
             
             if (activator.CharacterJob == EJob.DEALER)
-                skillAction = skill.OffensiveAction;
+            {
+                skillDelegate = skillAction.OffensiveAction;
+                explosionEffect = ResourceManager.Instance.GetAsset<GameObject>(grenadeSkill.DamageEffectReference.AssetGUID);
+            }
             else
-                skillAction = skill.SupportAction;
+            {
+                skillDelegate = skillAction.SupportAction;
+                explosionEffect = ResourceManager.Instance.GetAsset<GameObject>(grenadeSkill.HealEffectReference.AssetGUID);
+            }
         }
     }
 }

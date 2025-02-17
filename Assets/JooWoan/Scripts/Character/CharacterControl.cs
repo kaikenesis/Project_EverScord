@@ -47,7 +47,7 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
-        public ISkillAction CurrentSkillAction                          { get; private set; }
+        public SkillAction CurrentSkillAction                          { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
         public EJob CharacterJob                                        { get; private set; }
@@ -411,13 +411,15 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
+        public void SyncThrowSkill(Vector3 mouseRayHitPos, Vector3 thrownPosition, Vector3 groundDirection, float initialVelocity, float trajectoryAngle, float estimatedTime, int index)
         {
-            GrenadeSkillAction skillAction = (GrenadeSkillAction)skillList[index].SkillAction;
-            skillAction.SyncGrenadeSkill(throwDir);
+            ThrowSkillAction skillAction = (ThrowSkillAction)skillList[index].SkillAction;
 
             MouseRayHitPos = mouseRayHitPos;
             playerInputInfo.pressedLeftMouseButton = true;
+
+            skillAction.Predictor.SyncInfo(thrownPosition, groundDirection, initialVelocity, trajectoryAngle, estimatedTime);
+            skillAction.StartCoroutine(skillAction.ThrowObject());
         }
 
         [PunRPC]

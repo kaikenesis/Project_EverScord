@@ -6,22 +6,16 @@ using Photon.Pun;
 
 namespace EverScord.Skill
 {
-    public class CounterSkillAction : MonoBehaviour, ISkillAction
+    public class CounterSkillAction : SkillAction
     {
         private const float RAYCAST_LENGTH = 100f;
 
-        private CharacterControl activator;
         private CounterSkill skill;
-        private CooldownTimer cooldownTimer;
-        private Coroutine skillCoroutine;
         private Hovl_Laser laserControl;
-        private PhotonView photonView;
         private Coroutine buffCoroutine;
 
-        private EJob ejob;
         private Camera activatorCam;
         private CharacterControl cachedTarget;
-        private int skillIndex;
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
@@ -29,39 +23,24 @@ namespace EverScord.Skill
         private bool toggleLaser = false;
         private bool isOutlineActivated = false;
 
-        public bool CanAttackWhileSkill => false;
-        public bool IsUsingSkill
+        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
-            get
-            {
-                return skillCoroutine != null;
-            }
+            this.skill   = (CounterSkill)skill;
+            activatorCam = activator.CameraControl.Cam;
+
+            base.Init(activator, skill, ejob, skillIndex);
         }
 
-        public void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override bool Activate()
         {
-            this.activator  = activator;
-            this.skill      = (CounterSkill)skill;
-            this.skillIndex = skillIndex;
-            this.ejob       = ejob;
-
-            photonView      = activator.CharacterPhotonView;
-            activatorCam    = activator.CameraControl.Cam;
-
-            cooldownTimer = new CooldownTimer(skill.Cooldown);
-            StartCoroutine(cooldownTimer.RunTimer());
-        }
-
-        public void Activate()
-        {
-            if (cooldownTimer.IsCooldown || IsUsingSkill)
-                return;
-
-            cooldownTimer.ResetElapsedTime();
+            if (!base.Activate())
+                return false;
+            
             elapsedLaserTime = skill.DamageInterval;
             isOutlineActivated = false;
 
             skillCoroutine = StartCoroutine(ActivateSkill());
+            return true;
         }
 
         private IEnumerator ActivateSkill()
@@ -110,7 +89,7 @@ namespace EverScord.Skill
                 barrierParticles[i].Stop();
         }
 
-        public void OffensiveAction()
+        public override void OffensiveAction()
         {
             if (activator.PlayerInputInfo.pressedLeftMouseButton)
             {
@@ -203,7 +182,7 @@ namespace EverScord.Skill
             toggleLaser = false;
         }
 
-        public void SupportAction()
+        public override void SupportAction()
         {
             if (!activator.CharacterPhotonView.IsMine)
                 return;
