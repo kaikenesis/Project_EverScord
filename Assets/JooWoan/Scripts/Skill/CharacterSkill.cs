@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 using EverScord.Character;
+
 using Object = UnityEngine.Object;
-using System;
 
 namespace EverScord.Skill
 {
@@ -13,7 +13,6 @@ namespace EverScord.Skill
         [field: SerializeField] public float BaseHeal;
         [field: SerializeField] public float Cooldown;
         [field: SerializeField] public GameObject SkillPrefab;
-
         private static Transform skillRoot;
         public static Transform SkillRoot
         {
@@ -26,17 +25,35 @@ namespace EverScord.Skill
             }
         }
 
-        public static void StopEffectParticles(GameObject effect)
+        public static ParticleSystem[] SetEffectParticles(GameObject effect, bool shouldPlay)
         {
             // Effect will be destroyed due to particle stop action mode
             
             if (effect == null)
-                return;
+                return null;
 
             ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>();
+            SetEffectParticles(particles, shouldPlay);
 
+            return particles;
+        }
+
+        public static void SetEffectParticles(ParticleSystem[] particles, bool shouldPlay)
+        {
+            if (particles == null)
+                return;
+            
             for (int i = 0; i < particles.Length; i++)
-                particles[i].Stop();
+            {
+                if (!shouldPlay)
+                    particles[i].Stop();
+
+                else
+                {
+                    particles[i].Clear();
+                    particles[i].Play();
+                }
+            }
         }
     }
 

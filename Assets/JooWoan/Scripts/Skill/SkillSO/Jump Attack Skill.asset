@@ -18,6 +18,28 @@ MonoBehaviour:
   Cooldown: 3
   SkillPrefab: {fileID: 4109157859279932737, guid: 3adcdb15eb3894542b62d0e272a7c371, type: 3}
   <Duration>k__BackingField: 5
-  <StanceEffect>k__BackingField: {fileID: 8335679974969060829, guid: b159c78cf1af7b34eab7b8247018ead0, type: 3}
-  <JumpLandEffect>k__BackingField: {fileID: 0}
-  <Marker>k__BackingField: {fileID: 1898189779652114, guid: 34dfcaa6bb3c3cd4da2080dc3fac234b, type: 3}
+  <LandingDuration>k__BackingField: 1.5
+  <Radius>k__BackingField: 4
+  <StampMarkerColor>k__BackingField:
+    serializedVersion: 2
+    rgba: 419455487
+  <StanceEffect>k__BackingField:
+    m_AssetGUID: b159c78cf1af7b34eab7b8247018ead0
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <ExplosionEffect>k__BackingField:
+    m_AssetGUID: 17b826ee9de29254b8e7b147ca57ceb5
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
+  <HealEffect>k__BackingField:
+    m_AssetGUID: e8fbc3ef14306b946810e70b6bceb33d
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <Marker>k__BackingField:
+    m_AssetGUID: 7d06ffabf3215024da5e6c440173aa7e
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0

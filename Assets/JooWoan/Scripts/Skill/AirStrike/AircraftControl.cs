@@ -11,6 +11,7 @@ namespace EverScord.Skill
         private float aircraftHeight;
         private float totalTravelDistance;
         private float travelSpeed;
+        private float startDelay;
 
         void Awake()
         {
@@ -28,10 +29,11 @@ namespace EverScord.Skill
             lightDir = lightSource.transform.forward;
         }
 
-        public void Init(float totalTravelDistance, float travelSpeed)
+        public void Init(float totalTravelDistance, float travelSpeed, float startDelay = 0f)
         {
             this.totalTravelDistance = totalTravelDistance;
             this.travelSpeed = travelSpeed;
+            this.startDelay = startDelay;
         }
 
         public void EnableAircraft(Vector3 shadowPoint, Vector3 moveDir)

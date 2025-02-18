@@ -16,7 +16,7 @@ namespace EverScord.Skill
         private float calculatedImpact;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
-        {            
+        {
             Skill = (AirStrikeSkill)skill;
 
             waitStrikeInterval  = new WaitForSeconds(Skill.ExplosionInterval);
@@ -26,8 +26,7 @@ namespace EverScord.Skill
             aircraft = Instantiate(Skill.AircraftPrefab).GetComponent<AircraftControl>();
             aircraft.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
 
-            
-            if (isOffensive)
+            if (ejob == EJob.DEALER)
             {
                 targetLayer = GameManager.EnemyLayer;
                 calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
@@ -88,7 +87,7 @@ namespace EverScord.Skill
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (isOffensive)
+                if (ejob == EJob.DEALER)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
@@ -111,7 +110,7 @@ namespace EverScord.Skill
             GameObject flameEffect = null;
             GameObject healEffect = null;
 
-            if (isOffensive)
+            if (ejob == EJob.DEALER)
             {
                 flameEffect = Instantiate(flames, CharacterSkill.SkillRoot);
                 flameEffect.transform.position = dropPosition;
@@ -124,7 +123,7 @@ namespace EverScord.Skill
 
             if (photonView.IsMine)
             {
-                if (isOffensive)
+                if (ejob == EJob.DEALER)
                 {
                     flameControl = flameEffect.GetComponent<FlameControl>();
 
@@ -149,8 +148,8 @@ namespace EverScord.Skill
 
             yield return waitZoneDuration;
 
-            CharacterSkill.StopEffectParticles(flameEffect);
-            CharacterSkill.StopEffectParticles(healEffect);
+            CharacterSkill.SetEffectParticles(flameEffect, false);
+            CharacterSkill.SetEffectParticles(healEffect, false);
         }
 
         public override IEnumerator ThrowObject()

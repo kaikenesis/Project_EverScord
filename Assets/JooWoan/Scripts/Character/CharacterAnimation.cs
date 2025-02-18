@@ -24,7 +24,7 @@ namespace EverScord.Character
             if (!photonView.IsMine)
                 return;
 
-            if (character.HasState(CharacterState.SKILL_STANCE))
+            if (character.HasState(CharState.SKILL_STANCE))
                 return;
 
             if (!character.IsMoving)
@@ -56,35 +56,32 @@ namespace EverScord.Character
             photonView.RPC(nameof(SyncSetBool), RpcTarget.Others, name, state);
         }
 
-        public void CrossFade(AnimationClip clip, float transition)
+        public void CrossFade(AnimationParam param)
         {
-            if (!clip)
-                return;
-
-            anim.CrossFade(clip.name, transition, -1, 0f);
+            anim.CrossFade(param.ClipName, param.Transition, param.Layer, param.NormalizedTimeOffset, param.NormalizedTransitionTime);
 
             if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            photonView.RPC(nameof(SyncCrossFade), RpcTarget.Others, clip.name, transition);
+            photonView.RPC(nameof(SyncCrossFade), RpcTarget.Others, param.ClipName, param.Transition, param.Layer, param.NormalizedTimeOffset, param.NormalizedTransitionTime);
         }
 
-        public void Play(AnimationClip clip)
+        public void Play(AnimationClip clip, int layer = -1, float normalizedTime = 0f)
         {
             if (!clip)
                 return;
 
-            Play(clip.name);
+            Play(clip.name, layer, normalizedTime);
         }
 
-        public void Play(string clipName)
+        public void Play(string clipName, int layer = -1, float normalizedTime = 0f)
         {
-            anim.Play(clipName, -1, 0f);
+            anim.Play(clipName, layer, normalizedTime);
 
             if (!PhotonNetwork.IsConnected || !photonView.IsMine)
                 return;
 
-            photonView.RPC(nameof(SyncPlay), RpcTarget.Others, clipName);
+            photonView.RPC(nameof(SyncPlay), RpcTarget.Others, clipName, layer, normalizedTime);
         }
 
         public void SetAnimatorSpeed(float speed = 1f)
@@ -93,7 +90,7 @@ namespace EverScord.Character
         }
 
         #region PUN RPC
-        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////////////////////////////////////
 
         [PunRPC]
         public void SyncSetBool(string name, bool state)
@@ -102,18 +99,36 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        public void SyncPlay(string clipName)
+        public void SyncPlay(string clipName, int layer, float normalizedTime)
         {
-            anim.Play(clipName, -1, 0f);
+            anim.Play(clipName, layer, normalizedTime);
         }
 
         [PunRPC]
-        public void SyncCrossFade(string clipName, float transition)
+        public void SyncCrossFade(string clipName, float transition, int layer, float normalizedTimeOffset, float normalizedTransitionTime)
         {
-            anim.CrossFade(clipName, transition, -1, 0f);
+            anim.CrossFade(clipName, transition, layer, normalizedTimeOffset, normalizedTransitionTime);
         }
 
-        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+        ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////////////////////////////////////
         #endregion
+    }
+
+    public struct AnimationParam
+    {
+        public string ClipName;
+        public float Transition;
+        public int Layer;
+        public float NormalizedTimeOffset;
+        public float NormalizedTransitionTime;
+
+        public AnimationParam(string clipName, float transition, int layer = -1, float normalizedTimeOffset = 0f, float normalizedTransitionTime = 0f)
+        {
+            ClipName = clipName;
+            Transition = transition;
+            Layer = layer;
+            NormalizedTimeOffset = normalizedTimeOffset;
+            NormalizedTransitionTime = normalizedTransitionTime;
+        }
     }
 }
