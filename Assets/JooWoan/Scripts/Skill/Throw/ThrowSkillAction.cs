@@ -13,7 +13,7 @@ namespace EverScord.Skill
 
         public TrajectoryPredictor Predictor => predictor;
         public ThrowSkill ThrowingSkill { get; private set; }
-        private WaitForSeconds waitSkillEnd = new WaitForSeconds(0.1f);
+        private WaitForSeconds waitDelay = new WaitForSeconds(0.1f);
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
@@ -55,10 +55,12 @@ namespace EverScord.Skill
                 if (activator.PlayerInputInfo.pressedLeftMouseButton)
                 {
                     activator.SetMouseButtonDown(false);
+                    cooldownTimer.ResetElapsedTime();
+
                     StartCoroutine(ThrowObject());
                     SendRPC();
 
-                    yield return waitSkillEnd;
+                    yield return waitDelay;
                     ExitSkill();
 
                     yield break;

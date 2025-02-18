@@ -9,7 +9,6 @@ namespace EverScord.Skill
     {
         private const float TRAJECTORY_STEP = 0.02f;
         private const float LINE_WIDTH = 0.2f;
-        private const float HITMARKER_GROUND_OFFSET = 0.1f;
 
         // -Physics.gravity.y;
         private readonly float GRAVITY; 
@@ -20,18 +19,15 @@ namespace EverScord.Skill
 
         private Camera cam;
         private LineRenderer trajectoryLine;
+        private SkillMarker skillMarker;
+        public SkillMarker MarkerControl => skillMarker;
 
         private Vector3[] vertexPositions;
-
         private Vector3 throwDirection, thrownPosition, groundDirection;
         private float trajectoryAngle, trajectoryHeight;
         private float initialVelocity, estimatedTime;
         private int totalVertices;
 
-        private Transform stampedMarker, marker;
-        private Coroutine stampCoroutine;
-
-        public Transform StampedMarker => stampedMarker;
         public Vector3 ThrownPosition => thrownPosition;
         public Vector3 GroundDirection => groundDirection;
         public float InitialVelocity => initialVelocity;
@@ -57,21 +53,21 @@ namespace EverScord.Skill
             trajectoryLine.material      = lineMat;
             trajectoryLine.useWorldSpace = true;
 
-            throwPoint    = Object.Instantiate(throwSkill.ThrowPoint, activator.transform).transform;
-            marker        = Object.Instantiate(throwSkill.DestinationMarker, skillTransform).transform;
-            stampedMarker = Object.Instantiate(throwSkill.DestinationMarker, skillTransform).transform;
+            throwPoint = Object.Instantiate(throwSkill.ThrowPoint, activator.transform).transform;
 
-            SetMarker(false);
-            SetStampedMarker(false);
+            skillMarker = new SkillMarker(activator, skillTransform, throwSkill.DestinationMarker);
+            skillMarker.Set(false);
+            skillMarker.SetStamped(false);
+
             SetPathVisibility(false);
         }
 
         public IEnumerator Activate()
         {
-            SetMarker(true);
+            skillMarker.Set(true);
             SetPathVisibility(displayPath);
 
-            while (marker.gameObject.activeSelf)
+            while (!IsThrownObjectMoving)
             {
                 Ray ray = cam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
 
@@ -95,7 +91,7 @@ namespace EverScord.Skill
 
         public void Exit()
         {
-            SetMarker(false);
+            skillMarker.Set(false);
             SetPathVisibility(false);
         }
 
@@ -103,14 +99,11 @@ namespace EverScord.Skill
         {
             IsThrownObjectMoving = true;
 
-            SetMarker(false);
+            skillMarker.Set(false);
             SetPathVisibility(false);
             
-            if (stampCoroutine != null)
-                activator.StopCoroutine(stampCoroutine);
-
             estimatedTime += 0.1f;
-            stampCoroutine = activator.StartCoroutine(StampMarker());
+            skillMarker.Stamp(estimatedTime);
 
             Vector3 position    = thrownPosition;
             Vector3 direction   = groundDirection;
@@ -168,7 +161,7 @@ namespace EverScord.Skill
             vertexPositions[totalVertices - 1] = GetProjectilePosition(thrownPosition, groundDirection, initialVelocity, trajectoryAngle, estimatedTime);
             trajectoryLine.SetPositions(vertexPositions);
 
-            MoveMarker(vertexPositions[totalVertices - 1]);
+            skillMarker.Move(vertexPositions[totalVertices - 1]);
         }
 
         private Vector3 GetProjectilePosition(Vector3 throwPosition, Vector3 direction, float velocity, float angle, float elapsedTime)
@@ -213,25 +206,9 @@ namespace EverScord.Skill
             return (x, y);
         }
 
-        private void MoveMarker(Vector3 hitPoint)
-        {
-            marker.position = hitPoint + new Vector3(0, HITMARKER_GROUND_OFFSET, 0);
-            // marker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
-        }
-
         public void SetPathVisibility(bool state)
         {
             trajectoryLine.enabled = state;
-        }
-
-        private void SetMarker(bool state)
-        {
-            marker.gameObject.SetActive(state);
-        }
-
-        private void SetStampedMarker(bool state)
-        {
-            stampedMarker.gameObject.SetActive(state);
         }
 
         public void SyncInfo(Vector3 thrownPosition, Vector3 groundDirection, float initialVelocity, float trajectoryAngle, float estimatedTime)
@@ -241,18 +218,6 @@ namespace EverScord.Skill
             this.initialVelocity = initialVelocity;
             this.trajectoryAngle = trajectoryAngle;
             this.estimatedTime   = estimatedTime;
-        }
-
-        private IEnumerator StampMarker()
-        {
-            stampedMarker.position = marker.position;
-            stampedMarker.rotation = marker.rotation;
-            SetStampedMarker(true);
-
-            yield return new WaitForSeconds(estimatedTime);
-
-            SetStampedMarker(false);
-            stampCoroutine = null;
         }
     }
 }

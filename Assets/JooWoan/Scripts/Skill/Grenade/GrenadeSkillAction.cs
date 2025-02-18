@@ -14,7 +14,9 @@ namespace EverScord.Skill
             Skill = (GrenadeSkill)skill;
 
             base.Init(activator, skill, ejob, skillIndex);
-            CharacterSkill.SetMarkerColor(predictor.StampedMarker.gameObject, Skill.StampMarkerColor);
+
+            GameObject stampMarker = predictor.MarkerControl.StampedMarker.gameObject;
+            SkillMarker.SetMarkerColor(stampMarker, Skill.StampMarkerColor);
         }
 
         public override void OffensiveAction()

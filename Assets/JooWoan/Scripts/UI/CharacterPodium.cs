@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using EverScord.Character;
 using System;
+using Photon.Pun;
 
 namespace EverScord.UI
 {
@@ -37,14 +38,10 @@ namespace EverScord.UI
 
         void Update()
         {
+            if (!PhotonNetwork.IsConnected)
+                return;
+
             playerInput = InputControl.ReceiveInput();
-
-            if (Input.GetKeyDown(KeyCode.F4)) // delete
-                SetPlayerCam(playerCam.enabled);
-
-            if (Input.GetKeyDown(KeyCode.F5)) // delete
-                SwitchPlayer(CharacterType.UNI);
-
             RotatePlayer();
         }
 

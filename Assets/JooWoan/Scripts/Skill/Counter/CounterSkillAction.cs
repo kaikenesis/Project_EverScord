@@ -10,12 +10,13 @@ namespace EverScord.Skill
     {
         private const float RAYCAST_LENGTH = 100f;
 
-        private CounterSkill skill;
+        // Imported Asset from Hovl
         private Hovl_Laser laserControl;
-        private Coroutine buffCoroutine;
 
+        private CounterSkill skill;
         private Camera activatorCam;
         private CharacterControl cachedTarget;
+        private Coroutine buffCoroutine, barrierCoroutine, grantedBarrierCoroutine;
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
@@ -48,10 +49,10 @@ namespace EverScord.Skill
             GameObject barrier = Instantiate(skill.BarrierPrefab, activator.transform);
             barrier.transform.SetParent(CharacterSkill.SkillRoot);
 
+            barrierCoroutine = StartCoroutine(UpdateBarrierPosition(barrier.transform, activator.transform));
+
             for (elapsedSkillTime = 0f; elapsedSkillTime <= skill.Duration; elapsedSkillTime += Time.deltaTime)
             {
-                UpdateBarrierPosition(barrier.transform, activator);
-
                 if (ejob == EJob.DEALER)
                     OffensiveAction();
                 else
@@ -60,8 +61,6 @@ namespace EverScord.Skill
                 yield return null;
             }
 
-            barrier.transform.SetParent(activator.transform);
-
             StopBarrier(barrier);
             StopLaser();
             SetOutline(false);
@@ -69,24 +68,23 @@ namespace EverScord.Skill
             skillCoroutine = null;
         }
 
-        private void UpdateBarrierPosition(Transform barrierTransform, CharacterControl targetCharacter)
+        private IEnumerator UpdateBarrierPosition(Transform barrierTransform, Transform targetCharacter)
         {
-            if (!barrierTransform || !targetCharacter)
-                return;
-                
-            barrierTransform.position = new Vector3(
-                targetCharacter.transform.position.x,
-                barrierTransform.position.y,
-                targetCharacter.transform.position.z
-            );
+            while (barrierTransform && targetCharacter)
+            {
+                barrierTransform.position = new Vector3(
+                    targetCharacter.transform.position.x,
+                    barrierTransform.position.y,
+                    targetCharacter.transform.position.z
+                );
+
+                yield return null;
+            }
         }
 
         private void StopBarrier(GameObject barrier)
         {
-            ParticleSystem[] barrierParticles = barrier.GetComponentsInChildren<ParticleSystem>();
-
-            for (int i = 0; i < barrierParticles.Length; i++)
-                barrierParticles[i].Stop();
+            CharacterSkill.StopEffectParticles(barrier);
         }
 
         public override void OffensiveAction()
@@ -217,12 +215,11 @@ namespace EverScord.Skill
             barrier.transform.SetParent(CharacterSkill.SkillRoot);
 
             // Increase target stat
-            
+
+            grantedBarrierCoroutine = StartCoroutine(UpdateBarrierPosition(barrier.transform, target.transform));
+
             while (skillCoroutine != null)
-            {
-                UpdateBarrierPosition(barrier.transform, target);
                 yield return null;
-            }
 
             barrier.transform.SetParent(target.transform);
             StopBarrier(barrier);

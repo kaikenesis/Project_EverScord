@@ -50,7 +50,7 @@ namespace EverScord.Skill
                 markers[i] = Instantiate(airStrikeMarker, CharacterSkill.SkillRoot);
                 markers[i].transform.position = markerPos[i];
 
-                CharacterSkill.SetMarkerColor(markers[i], airStrikeSkill.AirStrikeMarkerColor);
+                SkillMarker.SetMarkerColor(markers[i], airStrikeSkill.AirStrikeMarkerColor);
 
                 if (i > 0)
                     markers[i].SetActive(false);

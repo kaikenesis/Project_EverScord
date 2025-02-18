@@ -5,7 +5,6 @@ using EverScord.Weapons;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
-using UnityEditor.Experimental.GraphView;
 
 namespace EverScord.Character
 {
@@ -47,10 +46,11 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
-        public SkillAction CurrentSkillAction                          { get; private set; }
+        public SkillAction CurrentSkillAction                           { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
         public EJob CharacterJob                                        { get; private set; }
+        public CharacterState State                                     { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -139,8 +139,8 @@ namespace EverScord.Character
 
             PhysicsControl.ApplyGravity(this);
             PhysicsControl.ApplyImpact(this);
-            Move();
 
+            Move();
             AnimationControl.AnimateMovement(this, moveDir);
 
             TrackAim();
@@ -181,6 +181,9 @@ namespace EverScord.Character
 
         private void Move()
         {
+            if (HasState(CharacterState.SKILL_STANCE))
+                return;
+
             movement = new Vector3(moveInput.x, 0, moveInput.z);
 
             Vector3 velocity = movement * speed;
@@ -296,6 +299,32 @@ namespace EverScord.Character
             playerInputInfo.pressedLeftMouseButton = state;
         }
 
+        public void SetState(SetCharacterStateMode mode, CharacterState state)
+        {
+            switch (mode)
+            {
+                case SetCharacterStateMode.ADD:
+                    State |= state;
+                    break;
+
+                case SetCharacterStateMode.REMOVE:
+                    State &= ~state;
+                    break;
+
+                case SetCharacterStateMode.CLEAR:
+                    State = 0;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public bool HasState(CharacterState state)
+        {
+            return (State & state) != 0;
+        }
+
         public void DecreaseHP(float amount)
         {
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
@@ -314,11 +343,6 @@ namespace EverScord.Character
 
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
-        }
-
-        public void OnPhotonInstantiate(PhotonMessageInfo info)
-        {
-            GameManager.Instance.AddPlayerPhotonView(info.photonView);
         }
 
         public void SetCharacterOutline(bool state)
@@ -364,9 +388,13 @@ namespace EverScord.Character
         public bool IsShooting => playerInputInfo.holdLeftMouseButton;
         public bool IsMoving => moveInput.magnitude > 0 || PhysicsControl.IsImpactAdded;
 
-
-        #region PUN RPC
+        #region Photon
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        {
+            GameManager.Instance.AddPlayerPhotonView(info.photonView);
+        }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {

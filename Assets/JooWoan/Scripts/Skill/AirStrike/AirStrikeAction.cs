@@ -14,7 +14,6 @@ namespace EverScord.Skill
         private WaitForSeconds waitStrikeInterval, waitBombDrop, waitZoneDuration;
         private AircraftControl aircraft;
         private float calculatedImpact;
-        private bool isOffensive;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {            
@@ -23,8 +22,6 @@ namespace EverScord.Skill
             waitStrikeInterval  = new WaitForSeconds(Skill.ExplosionInterval);
             waitZoneDuration    = new WaitForSeconds(Skill.ZoneDuration);
             waitBombDrop        = new WaitForSeconds(0.3f);
-
-            isOffensive = activator.CharacterJob == EJob.DEALER;
 
             aircraft = Instantiate(Skill.AircraftPrefab).GetComponent<AircraftControl>();
             aircraft.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);

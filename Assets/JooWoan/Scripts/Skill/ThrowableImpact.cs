@@ -6,9 +6,26 @@ namespace EverScord.Skill
 {
     public abstract class ThrowableImpact : MonoBehaviour
     {
+        protected const float MAX_DURATION = 10f;
+
         protected Action onSkillActivated = null;
         protected ThrowSkillAction skillAction = null;
         protected CharacterControl thrower;
+        protected CooldownTimer timer;
+
+        protected void Awake()
+        {
+            timer = new CooldownTimer(MAX_DURATION);
+            StartCoroutine(timer.RunTimer(true));
+        }
+
+        void Update()
+        {
+            if (timer.IsCooldown)
+                return;
+
+            Destroy(gameObject);
+        }
 
         public abstract void OnCollisionEnter(Collision collision);
 
