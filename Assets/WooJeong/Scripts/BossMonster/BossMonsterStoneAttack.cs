@@ -79,4 +79,9 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     {
         return;
     }
+
+    public void TestDamage(GameObject sender, float value)
+    {
+        throw new System.NotImplementedException();
+    }
 }

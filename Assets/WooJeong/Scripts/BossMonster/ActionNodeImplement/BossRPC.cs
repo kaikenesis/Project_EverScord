@@ -369,4 +369,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         animator.speed = 1;
         ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
     }
+
+    public void TestDamage(GameObject sender, float value)
+    {
+        throw new System.NotImplementedException();
+    }
 }

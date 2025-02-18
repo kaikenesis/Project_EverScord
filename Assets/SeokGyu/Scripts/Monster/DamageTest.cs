@@ -2,19 +2,19 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class DamageTest : MonoBehaviour, IStatus
+    public class DamageTest : MonoBehaviour, IEnemy
     {
-        public void TakeDamage(GameObject sender, float damage)
+        public void TestDamage(GameObject sender, float value)
         {
-            Debug.Log($"{name} || Sender : {sender.name}, Damage : {damage}");
+            Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");
         }
-        
-        public void IncreaseHealth(float value)
+
+        public void DecreaseHP(float hp)
         {
             throw new System.NotImplementedException();
         }
 
-        public void DecreaseHealth(float value)
+        public void StunMonster(float stunTime)
         {
             throw new System.NotImplementedException();
         }

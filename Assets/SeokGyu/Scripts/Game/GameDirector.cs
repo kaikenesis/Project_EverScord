@@ -48,20 +48,6 @@ namespace EverScord
                 break;
             }
         }
-
-        public async void LoadPools()
-        {
-            foreach (AssetReference reference in assetReferenceList)
-                await ResourceManager.Instance.CreatePool(reference.AssetGUID);
-            _ = ResourceManager.Instance.CreatePool("BossProjectile", 63);
-            _ = ResourceManager.Instance.CreatePool("StoneUp", 9);
-            _ = ResourceManager.Instance.CreatePool("MonsterAttack");
-            _ = ResourceManager.Instance.CreatePool("BossMonsterStoneAttack");
-            _ = ResourceManager.Instance.CreatePool("BossLaser", 1);
-            _ = ResourceManager.Instance.CreatePool("P15_Effect", 1);
-            _ = ResourceManager.Instance.CreatePool("NML2_A1_Effect01");
-            _ = ResourceManager.Instance.CreatePool("NML2_A2_Effect");
-        }
     }
 
     [System.Serializable]

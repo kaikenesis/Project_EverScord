@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IEnemy
 {
+    public void TestDamage(GameObject sender, float value);
     public void DecreaseHP(float hp);
     public void StunMonster(float stunTime);
 }

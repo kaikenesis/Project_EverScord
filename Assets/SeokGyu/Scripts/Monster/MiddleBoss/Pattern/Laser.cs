@@ -8,7 +8,7 @@ namespace EverScord
     {
         private float tickTime = 0.5f;
         private float countTime = 0.0f;
-        private List<IStatus> hitList = new List<IStatus>();
+        private List<IEnemy> hitList = new List<IEnemy>();
 
         private void Update()
         {
@@ -22,7 +22,7 @@ namespace EverScord
                 countTime = 0;
                 for (int i = 0; i < hitList.Count; i++)
                 {
-                    hitList[i].TakeDamage(gameObject, 10.0f);
+                    hitList[i].TestDamage(gameObject, 10.0f);
                 }
             }
         }
@@ -31,7 +31,7 @@ namespace EverScord
         {
             if (other.gameObject.tag == "Player")
             {
-                IStatus status;
+                IEnemy status;
                 if(other.gameObject.TryGetComponent(out status))
                 {
                     hitList.Add(status);
@@ -43,7 +43,7 @@ namespace EverScord
         {
             if (other.gameObject.tag == "Player")
             {
-                IStatus status;
+                IEnemy status;
                 if (other.gameObject.TryGetComponent(out status))
                 {
                     if(hitList.Contains(status))

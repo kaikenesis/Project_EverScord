@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class MB_Controller : MonoBehaviour, IPunObservable, IStatus, IAction
+    public class MB_Controller : MonoBehaviour, IPunObservable, IEnemy, IAction
     {
         [SerializeField] private MiddleBossData data;
         [SerializeField] private Transform Mesh;
@@ -163,11 +163,6 @@ namespace EverScord
             animator.SetBool("bDig", remoteDig);
         }
 
-        public void TakeDamage(GameObject sender, float damage)
-        {
-            Debug.Log($"{name} || Sender : {sender.name}, Damage : {damage}");
-        }
-
         public void DoAction(IAction.EType type)
         {
             //if (!PhotonNetwork.IsMasterClient) return;
@@ -220,6 +215,21 @@ namespace EverScord
                 remoteDig = (bool)stream.ReceiveNext();
                 remotePattern2 = (bool)stream.ReceiveNext();
             }
+        }
+
+        public void TestDamage(GameObject sender, float value)
+        {
+            Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");
+        }
+
+        public void DecreaseHP(float hp)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void StunMonster(float stunTime)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

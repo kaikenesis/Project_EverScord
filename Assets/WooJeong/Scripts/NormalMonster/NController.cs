@@ -378,4 +378,8 @@ public abstract class NController : MonoBehaviour, IEnemy
         Transition(deathState);
     }
 
+    public void TestDamage(GameObject sender, float value)
+    {
+        throw new System.NotImplementedException();
+    }
 }
