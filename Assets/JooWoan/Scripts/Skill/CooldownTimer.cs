@@ -16,8 +16,11 @@ namespace EverScord.Skill
             elapsedTime = cooldown;
         }
 
-        public IEnumerator RunTimer()
+        public IEnumerator RunTimer(bool resetTime = false)
         {
+            if (resetTime)
+                ResetElapsedTime();
+
             while (!shouldStopTimer)
             {
                 elapsedTime += Time.deltaTime;

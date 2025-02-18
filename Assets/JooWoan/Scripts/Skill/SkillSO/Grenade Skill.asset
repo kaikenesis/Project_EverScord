@@ -14,14 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: GrenadeSkill
   BaseDamage: 10
+  BaseHeal: 10
   Cooldown: 3
   SkillPrefab: {fileID: 1322690896785909928, guid: 07f7bb21166f341429be39814e3bd6b3, type: 3}
-  <GrenadeStartPoint>k__BackingField: {fileID: 3727081715274472048, guid: 5dc1d28378aa08e45b3d2cef86bbf338, type: 3}
-  <HitMarker>k__BackingField: {fileID: 1898189779652114, guid: 34dfcaa6bb3c3cd4da2080dc3fac234b, type: 3}
-  <FadeMarker>k__BackingField: {fileID: 1009947694827970, guid: cf5b2b2099b4e95488a7004fe327a581, type: 3}
-  <PoisonBomb>k__BackingField: {fileID: 2947036328020528552, guid: 05899301fe3f4184e9886fc5b9fdc913, type: 3}
-  <HealBomb>k__BackingField: {fileID: 2947036328020528552, guid: 05899301fe3f4184e9886fc5b9fdc913, type: 3}
-  <PredictInterval>k__BackingField: 0.025
-  <HitMarkerGroundOffset>k__BackingField: 0.1
-  <ExplosionRadius>k__BackingField: 0
-  <MaxPoints>k__BackingField: 200
+  <ThrowPoint>k__BackingField: {fileID: 3727081715274472048, guid: 5dc1d28378aa08e45b3d2cef86bbf338, type: 3}
+  <ThrowingObject>k__BackingField: {fileID: 9219727077848919278, guid: 05899301fe3f4184e9886fc5b9fdc913, type: 3}
+  <DestinationMarker>k__BackingField: {fileID: 1898189779652114, guid: 34dfcaa6bb3c3cd4da2080dc3fac234b, type: 3}
+  <CollisionLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 1856
+  <DisplayTrajectory>k__BackingField: 1
+  <Gravity>k__BackingField: 45
+  <DamageEffectReference>k__BackingField:
+    m_AssetGUID: aefa065272400f44bbc1a5471cfe2334
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
+  <HealEffectReference>k__BackingField:
+    m_AssetGUID: aefa065272400f44bbc1a5471cfe2334
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <StampMarkerColor>k__BackingField:
+    serializedVersion: 2
+    rgba: 419455487
+  <ExplosionRadius>k__BackingField: 3

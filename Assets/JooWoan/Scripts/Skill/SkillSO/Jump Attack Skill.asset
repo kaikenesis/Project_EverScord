@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adca7e6d964e4e042b3614f6bbcb703a, type: 3}
+  m_Name: Jump Attack Skill
+  m_EditorClassIdentifier: 
+  Name: JumpAttackSkill
+  BaseDamage: 8
+  BaseHeal: 8
+  Cooldown: 3
+  SkillPrefab: {fileID: 4109157859279932737, guid: 3adcdb15eb3894542b62d0e272a7c371, type: 3}
+  <Duration>k__BackingField: 5
+  <StanceEffect>k__BackingField: {fileID: 8335679974969060829, guid: b159c78cf1af7b34eab7b8247018ead0, type: 3}
+  <JumpLandEffect>k__BackingField: {fileID: 0}
+  <Marker>k__BackingField: {fileID: 1898189779652114, guid: 34dfcaa6bb3c3cd4da2080dc3fac234b, type: 3}

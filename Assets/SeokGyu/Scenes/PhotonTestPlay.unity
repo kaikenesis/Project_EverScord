@@ -131,6 +131,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 30491908}
+  - component: {fileID: 30491909}
   m_Layer: 0
   m_Name: PoolRoot
   m_TagString: PoolRoot
@@ -153,6 +154,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &30491909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30491907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80df9714b8091a43ab7c238a4b6ea94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assetReferenceList:
+  - Reference:
+      m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 5
+  - Reference:
+      m_AssetGUID: db97ba35f680c914480ecc075d752dbf
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 5
+  - Reference:
+      m_AssetGUID: d37f449475111c14b887d21209cd87ff
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
+    PoolSize: 10
 --- !u!1 &66857358
 GameObject:
   m_ObjectHideFlags: 0
@@ -10385,19 +10417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 375a006a65043654bb54a8e9839a8533, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assetReferenceList:
-  - m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: db97ba35f680c914480ecc075d752dbf
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 1
-  - m_AssetGUID: d37f449475111c14b887d21209cd87ff
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 1
   photonPrefabList:
   - {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
   photonCharacterInfoList:
@@ -15471,7 +15490,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1222196088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15584,7 +15603,7 @@ GameObject:
   - component: {fileID: 1346935643}
   m_Layer: 0
   m_Name: Directional Light
-  m_TagString: Untagged
+  m_TagString: MainLight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

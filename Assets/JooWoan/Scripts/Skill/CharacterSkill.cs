@@ -10,6 +10,7 @@ namespace EverScord.Skill
     {
         [field: SerializeField] public string Name;
         [field: SerializeField] public float BaseDamage;
+        [field: SerializeField] public float BaseHeal;
         [field: SerializeField] public float Cooldown;
         [field: SerializeField] public GameObject SkillPrefab;
 
@@ -24,13 +25,26 @@ namespace EverScord.Skill
                 return GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
             }
         }
+
+        public static void StopEffectParticles(GameObject effect)
+        {
+            // Effect will be destroyed due to particle stop action mode
+            
+            if (effect == null)
+                return;
+
+            ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>();
+
+            for (int i = 0; i < particles.Length; i++)
+                particles[i].Stop();
+        }
     }
 
     [System.Serializable]
     public class SkillActionInfo
     {
         [field: SerializeField] public CharacterSkill Skill { get; private set; }
-        public ISkillAction SkillAction { get; private set; }
+        public SkillAction SkillAction { get; private set; }
 
         public void Init(CharacterControl activator, int skillIndex, EJob characterJob)
         {
@@ -40,7 +54,7 @@ namespace EverScord.Skill
                 return;
             }
 
-            ISkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, CharacterSkill.SkillRoot).GetComponent<ISkillAction>();
+            SkillAction skillAction = Object.Instantiate(Skill.SkillPrefab, CharacterSkill.SkillRoot).GetComponent<SkillAction>();
 
             SkillAction = skillAction;
             SkillAction.Init(activator, Skill, characterJob, skillIndex);

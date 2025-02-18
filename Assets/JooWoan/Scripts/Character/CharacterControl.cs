@@ -11,6 +11,7 @@ namespace EverScord.Character
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         private const float SKIN_RATIO = 0.1f;
+        private const float REMOTE_LERP_VALUE = 10f;
 
         [Header("Character")]
         [SerializeField] private float speed;
@@ -45,10 +46,11 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
-        public ISkillAction CurrentSkillInfo                            { get; private set; }
+        public SkillAction CurrentSkillAction                           { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
         public EJob CharacterJob                                        { get; private set; }
+        public CharacterState State                                     { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -64,12 +66,16 @@ namespace EverScord.Character
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
 
+        private SkinnedMeshRenderer[] skinRenderers;
+        private int originalSkinLayer;
+
         public float CurrentHealth
         {
             get { return currentHealth; }
             set
             {
                 currentHealth = value;
+                // Change Helath UI
             }
         }
 
@@ -82,6 +88,7 @@ namespace EverScord.Character
 
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
+            skinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
 
             uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
             cameraHub        = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
@@ -92,6 +99,9 @@ namespace EverScord.Character
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
             
+            if (skinRenderers.Length > 0)
+                originalSkinLayer = skinRenderers[0].gameObject.layer;
+
             CurrentHealth = maxHealth;
 
             AnimationControl.Init(photonView);
@@ -113,7 +123,7 @@ namespace EverScord.Character
         void Start()
         {
             GameManager.Instance.InitControl(this);
-            SetSkills();
+            SetJobAndSkills();
         }
 
         void Update()
@@ -129,8 +139,8 @@ namespace EverScord.Character
 
             PhysicsControl.ApplyGravity(this);
             PhysicsControl.ApplyImpact(this);
-            Move();
 
+            Move();
             AnimationControl.AnimateMovement(this, moveDir);
 
             TrackAim();
@@ -144,7 +154,7 @@ namespace EverScord.Character
 
         private void LerpRemoteInfo()
         {
-            MouseRayHitPos = Vector3.Lerp(MouseRayHitPos, remoteMouseRayHitPos, Time.deltaTime * 10f);
+            MouseRayHitPos = Vector3.Lerp(MouseRayHitPos, remoteMouseRayHitPos, Time.deltaTime * REMOTE_LERP_VALUE);
         }
 
         private void SetInput()
@@ -171,6 +181,9 @@ namespace EverScord.Character
 
         private void Move()
         {
+            if (HasState(CharacterState.SKILL_STANCE))
+                return;
+
             movement = new Vector3(moveInput.x, 0, moveInput.z);
 
             Vector3 velocity = movement * speed;
@@ -243,8 +256,11 @@ namespace EverScord.Character
                 if (weapon.IsReloading && !skillList[i].SkillAction.CanAttackWhileSkill)
                     continue;
 
+                if (IsUsingSkill && CurrentSkillAction != skillList[i].SkillAction)
+                    continue;
+
                 info.SkillAction.Activate();
-                CurrentSkillInfo = skillList[i].SkillAction;
+                CurrentSkillAction = skillList[i].SkillAction;
 
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i);
@@ -253,7 +269,7 @@ namespace EverScord.Character
             }
         }
 
-        private void SetSkills()
+        private void SetJobAndSkills()
         {
             if (!photonView.IsMine)
                 return;
@@ -264,7 +280,7 @@ namespace EverScord.Character
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC(nameof(SyncInitSkill), RpcTarget.Others, i, (int)CharacterJob);
+                    photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob);
             }
         }
 
@@ -283,6 +299,32 @@ namespace EverScord.Character
             playerInputInfo.pressedLeftMouseButton = state;
         }
 
+        public void SetState(SetCharacterStateMode mode, CharacterState state)
+        {
+            switch (mode)
+            {
+                case SetCharacterStateMode.ADD:
+                    State |= state;
+                    break;
+
+                case SetCharacterStateMode.REMOVE:
+                    State &= ~state;
+                    break;
+
+                case SetCharacterStateMode.CLEAR:
+                    State = 0;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public bool HasState(CharacterState state)
+        {
+            return (State & state) != 0;
+        }
+
         public void DecreaseHP(float amount)
         {
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
@@ -294,14 +336,26 @@ namespace EverScord.Character
         public void IncreaseHP(float amount)
         {
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
-            
+
+            GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
+            var effect = Instantiate(healEffect, transform);
+            effect.transform.position = transform.position;
+
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
         }
 
-        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        public void SetCharacterOutline(bool state)
         {
-            GameManager.Instance.AddPlayerPhotonView(info.photonView);
+            int OutlineLayerNumber = Mathf.RoundToInt(Mathf.Log(GameManager.OutlineLayer.value, 2));
+
+            for (int i = 0; i < skinRenderers.Length; i++)
+            {
+                if (state)
+                    skinRenderers[i].gameObject.layer = OutlineLayerNumber;
+                else
+                    skinRenderers[i].gameObject.layer = originalSkinLayer;
+            }
         }
 
         public bool IsGrounded
@@ -334,7 +388,13 @@ namespace EverScord.Character
         public bool IsShooting => playerInputInfo.holdLeftMouseButton;
         public bool IsMoving => moveInput.magnitude > 0 || PhysicsControl.IsImpactAdded;
 
+        #region Photon
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        {
+            GameManager.Instance.AddPlayerPhotonView(info.photonView);
+        }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
@@ -349,7 +409,7 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncInitSkill(int index, int characterJob)
+        private void SyncJobAndSkills(int index, int characterJob)
         {
             CharacterJob = (EJob)characterJob;
             skillList[index].Init(this, index, (EJob)characterJob);
@@ -358,36 +418,50 @@ namespace EverScord.Character
         [PunRPC]
         private void SyncUseSkill(int index)
         {
-            CurrentSkillInfo = skillList[index].SkillAction;
+            CurrentSkillAction = skillList[index].SkillAction;
             skillList[index].SkillAction.Activate();
         }
 
         [PunRPC]
         public void SyncCounterSkill(Vector3 mouseRayHitPos, bool toggle, int index)
         {
-            CounterSkillAction skillAction = (CounterSkillAction)skillList[index].SkillAction;
-
             MouseRayHitPos = MouseRayHitPos;
             playerInputInfo.pressedLeftMouseButton = true;
         }
 
         [PunRPC]
-        public void SyncGrenadeSkill(Vector3 mouseRayHitPos, Vector3 throwDir, int index)
+        public void SyncCounterSupport(int viewID, int index)
         {
-            GrenadeSkillAction skillAction = (GrenadeSkillAction)skillList[index].SkillAction;
-            skillAction.SyncGrenadeSkill(throwDir);
+            CounterSkillAction skillAction = (CounterSkillAction)skillList[index].SkillAction;
+            skillAction.SyncGrantBuff(viewID);
+
+            playerInputInfo.pressedLeftMouseButton = true;
+        }
+
+        [PunRPC]
+        public void SyncThrowSkill(Vector3 mouseRayHitPos, Vector3 thrownPosition, Vector3 groundDirection, float initialVelocity, float trajectoryAngle, float estimatedTime, int index)
+        {
+            ThrowSkillAction skillAction = (ThrowSkillAction)skillList[index].SkillAction;
 
             MouseRayHitPos = mouseRayHitPos;
             playerInputInfo.pressedLeftMouseButton = true;
+
+            skillAction.Predictor.SyncInfo(thrownPosition, groundDirection, initialVelocity, trajectoryAngle, estimatedTime);
+            skillAction.StartCoroutine(skillAction.ThrowObject());
         }
 
         [PunRPC]
         private void SyncHealth(float health)
         {
             CurrentHealth = health;
+
+            GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
+            var effect = Instantiate(healEffect, transform);
+            effect.transform.position = transform.position;
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
+        #endregion
 
         #region GIZMOS
         private void OnDrawGizmosSelected()

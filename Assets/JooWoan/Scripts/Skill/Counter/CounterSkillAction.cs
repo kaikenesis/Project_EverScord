@@ -6,54 +6,42 @@ using Photon.Pun;
 
 namespace EverScord.Skill
 {
-    public class CounterSkillAction : MonoBehaviour, ISkillAction
+    public class CounterSkillAction : SkillAction
     {
-        private const float LASER_HIT_RADIUS = 0.5f;
+        private const float RAYCAST_LENGTH = 100f;
 
-        private CharacterControl activator;
-        private CounterSkill skill;
-        private CooldownTimer cooldownTimer;
-        private Coroutine skillCoroutine;
+        // Imported Asset from Hovl
         private Hovl_Laser laserControl;
-        private PhotonView photonView;
 
-        private EJob ejob;
-        private int skillIndex;
+        private CounterSkill skill;
+        private Camera activatorCam;
+        private CharacterControl cachedTarget;
+        private Coroutine buffCoroutine, barrierCoroutine, grantedBarrierCoroutine;
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
 
         private bool toggleLaser = false;
-        public bool CanAttackWhileSkill => false;
-        public bool IsUsingSkill
+        private bool isOutlineActivated = false;
+
+        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
-            get
-            {
-                return skillCoroutine != null;
-            }
+            this.skill   = (CounterSkill)skill;
+            activatorCam = activator.CameraControl.Cam;
+
+            base.Init(activator, skill, ejob, skillIndex);
         }
 
-        public void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override bool Activate()
         {
-            this.activator  = activator;
-            this.skill      = (CounterSkill)skill;
-            this.skillIndex = skillIndex;
-            this.ejob       = ejob;
-
-            photonView = activator.CharacterPhotonView;
-
-            cooldownTimer = new CooldownTimer(skill.Cooldown);
-            StartCoroutine(cooldownTimer.RunTimer());
-        }
-
-        public void Activate()
-        {
-            if (cooldownTimer.IsCooldown || IsUsingSkill)
-                return;
-
-            cooldownTimer.ResetElapsedTime();
+            if (!base.Activate())
+                return false;
+            
             elapsedLaserTime = skill.DamageInterval;
+            isOutlineActivated = false;
+
             skillCoroutine = StartCoroutine(ActivateSkill());
+            return true;
         }
 
         private IEnumerator ActivateSkill()
@@ -61,10 +49,10 @@ namespace EverScord.Skill
             GameObject barrier = Instantiate(skill.BarrierPrefab, activator.transform);
             barrier.transform.SetParent(CharacterSkill.SkillRoot);
 
+            barrierCoroutine = StartCoroutine(UpdateBarrierPosition(barrier.transform, activator.transform));
+
             for (elapsedSkillTime = 0f; elapsedSkillTime <= skill.Duration; elapsedSkillTime += Time.deltaTime)
             {
-                UpdateBarrierPosition(barrier.transform);
-
                 if (ejob == EJob.DEALER)
                     OffensiveAction();
                 else
@@ -73,35 +61,33 @@ namespace EverScord.Skill
                 yield return null;
             }
 
-            barrier.transform.SetParent(activator.transform);
-
             StopBarrier(barrier);
             StopLaser();
+            SetOutline(false);
 
             skillCoroutine = null;
         }
 
-        private void UpdateBarrierPosition(Transform barrierTransform)
+        private IEnumerator UpdateBarrierPosition(Transform barrierTransform, Transform targetCharacter)
         {
-            if (!barrierTransform || !activator)
-                return;
-                
-            barrierTransform.position = new Vector3(
-                activator.transform.position.x,
-                barrierTransform.position.y,
-                activator.transform.position.z
-            );
+            while (barrierTransform && targetCharacter)
+            {
+                barrierTransform.position = new Vector3(
+                    targetCharacter.transform.position.x,
+                    barrierTransform.position.y,
+                    targetCharacter.transform.position.z
+                );
+
+                yield return null;
+            }
         }
 
         private void StopBarrier(GameObject barrier)
         {
-            ParticleSystem[] barrierParticles = barrier.GetComponentsInChildren<ParticleSystem>();
-
-            for (int i = 0; i < barrierParticles.Length; i++)
-                barrierParticles[i].Stop();
+            CharacterSkill.StopEffectParticles(barrier);
         }
 
-        public void OffensiveAction()
+        public override void OffensiveAction()
         {
             if (activator.PlayerInputInfo.pressedLeftMouseButton)
             {
@@ -169,7 +155,9 @@ namespace EverScord.Skill
                 float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
 
                 IEnemy monster = hit.transform.GetComponent<IEnemy>();
-                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
+
+                if (activator.CharacterPhotonView.IsMine)
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
             }
         }
 
@@ -192,9 +180,72 @@ namespace EverScord.Skill
             toggleLaser = false;
         }
 
-        public void SupportAction()
+        public override void SupportAction()
         {
+            if (!activator.CharacterPhotonView.IsMine)
+                return;
 
+            if (buffCoroutine != null)
+                return;
+
+            Ray ray = activatorCam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
+
+            if (!Physics.Raycast(ray, out RaycastHit hit, RAYCAST_LENGTH, GameManager.PlayerLayer))
+            {
+                SetOutline(false);
+                return;
+            }
+
+            if (!isOutlineActivated)
+                SetOutline(true, hit);
+
+            if (activator.PlayerInputInfo.pressedLeftMouseButton)
+            {
+                CharacterControl character = hit.collider.GetComponent<CharacterControl>();
+                buffCoroutine = StartCoroutine(GrantBuff(character));
+
+                if (PhotonNetwork.IsConnected && photonView.IsMine)
+                    photonView.RPC(nameof(activator.SyncCounterSupport), RpcTarget.Others, character.CharacterPhotonView.ViewID, skillIndex);
+            }
+        }
+
+        public IEnumerator GrantBuff(CharacterControl target)
+        {
+            GameObject barrier = Instantiate(skill.BarrierPrefab);
+            barrier.transform.SetParent(CharacterSkill.SkillRoot);
+
+            // Increase target stat
+
+            grantedBarrierCoroutine = StartCoroutine(UpdateBarrierPosition(barrier.transform, target.transform));
+
+            while (skillCoroutine != null)
+                yield return null;
+
+            barrier.transform.SetParent(target.transform);
+            StopBarrier(barrier);
+
+            buffCoroutine = null;
+        }
+
+        public void SyncGrantBuff(int viewID)
+        {
+            CharacterControl target = GameManager.Instance.PlayerDict[viewID];
+            buffCoroutine = StartCoroutine(GrantBuff(target));
+        }
+
+        private void SetOutline(bool state, RaycastHit hit = default)
+        {
+            if (state && !isOutlineActivated)
+            {
+                isOutlineActivated = true;
+                cachedTarget = hit.collider.GetComponent<CharacterControl>();
+                cachedTarget.SetCharacterOutline(true);
+            }
+            else if (isOutlineActivated)
+            {
+                isOutlineActivated = false;
+                cachedTarget.SetCharacterOutline(false);
+            }
         }
     }
 }

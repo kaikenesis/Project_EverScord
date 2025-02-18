@@ -4,7 +4,6 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
-using EverScord.Pool;
 
 namespace EverScord.Weapons
 {
@@ -12,11 +11,15 @@ namespace EverScord.Weapons
 
     public class Weapon : MonoBehaviour
     {
+        private const float ANIM_TRANSITION = 0.25f;
+
         [SerializeField] private GameObject aimPointPrefab;
+        [SerializeField] private ParticleSystem shotEffect;
+        [SerializeField] private BulletInfo bulletInfo;
+        [SerializeField] public float bulletSpeed;
+
         [field: SerializeField] public AssetReferenceGameObject BulletAssetReference    { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject SmokeAssetReference     { get; private set; }
-
-        [SerializeField] private ParticleSystem shotEffect;
         [field: SerializeField] public Transform GunPoint                               { get; private set; }
         [field: SerializeField] public Transform WeaponTransform                        { get; private set; }
         [field: SerializeField] public Transform LeftTarget                             { get; private set; }
@@ -31,17 +34,12 @@ namespace EverScord.Weapons
         public Transform AimPoint                                                       { get; private set; }
         public Camera ShooterCam                                                        { get; private set; }
 
-        [SerializeField] private BulletInfo bulletInfo;
-        [SerializeField] public float bulletSpeed;
-
         private PhotonView photonView;
         private OnShotFired onShotFired;
         private CooldownTimer cooldownTimer;
         private CharacterAnimation animControl;
 
-        private const float ANIM_TRANSITION = 0.25f;
         private int currentAmmo;
-
         private bool isReloading = false;
         public bool IsReloading => isReloading;
 
@@ -127,7 +125,7 @@ namespace EverScord.Weapons
             if (isReloading)
                 return;
 
-            if (shooter.IsUsingSkill && !shooter.CurrentSkillInfo.CanAttackWhileSkill)
+            if (shooter.IsUsingSkill && !shooter.CurrentSkillAction.CanAttackWhileSkill)
                 return;
 
             StartCoroutine(Reload(shooter));
@@ -166,22 +164,22 @@ namespace EverScord.Weapons
         {
             shotEffect.Emit(1);
 
-            Vector3 gunpointPos     = GunPoint.position;
-            Vector3 bulletVector    = GunPoint.forward * bulletSpeed;
+            Vector3 gunpointPos   = GunPoint.position;
+            Vector3 bulletVector  = GunPoint.forward * bulletSpeed;
 
-            Bullet bullet           = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
-            SmokeTrail smokeTrail   = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
-
-            if (smokeTrail)
-            {
-                smokeTrail.transform.forward = bulletVector;
-                smokeTrail.Init(bullet);
-            }
+            Bullet bullet         = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
+            SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID)  as SmokeTrail;
 
             if (bullet)
             {
                 bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
                 GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
+            }
+
+            if (smokeTrail)
+            {
+                smokeTrail.transform.forward = bulletVector;
+                smokeTrail.Init(bullet);
             }
 
             if (!PhotonNetwork.IsConnected)
@@ -215,7 +213,7 @@ namespace EverScord.Weapons
             if (isReloading)
                 return false;
 
-            if (shooter.IsUsingSkill && !shooter.CurrentSkillInfo.CanAttackWhileSkill)
+            if (shooter.IsUsingSkill && !shooter.CurrentSkillAction.CanAttackWhileSkill)
                 return false;
 
             return true;
@@ -248,6 +246,8 @@ namespace EverScord.Weapons
                     onShotFired(currentAmmo);
             }
         }
+
+        #region PUN RPC
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -287,5 +287,6 @@ namespace EverScord.Weapons
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////////////////////////////////////////////////
+        #endregion
     }
 }

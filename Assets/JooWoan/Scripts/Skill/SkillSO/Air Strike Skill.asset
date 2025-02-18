@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 706dadaa614885e40a2afd9721a4cfe7, type: 3}
+  m_Name: Air Strike Skill
+  m_EditorClassIdentifier: 
+  Name: AirStrikeSkill
+  BaseDamage: 6
+  BaseHeal: 6
+  Cooldown: 6
+  SkillPrefab: {fileID: 9206839705790505796, guid: b94dba4e8d436744990975e61affce7a, type: 3}
+  <ThrowPoint>k__BackingField: {fileID: 3727081715274472048, guid: 5dc1d28378aa08e45b3d2cef86bbf338, type: 3}
+  <ThrowingObject>k__BackingField: {fileID: 9219727077848919278, guid: 09197ca665501b142b5c038771929b70, type: 3}
+  <DestinationMarker>k__BackingField: {fileID: 5800148741275645713, guid: 42e7b7090c9d55241a4169cb9310f24f, type: 3}
+  <CollisionLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 1856
+  <DisplayTrajectory>k__BackingField: 1
+  <Gravity>k__BackingField: 45
+  <ExplosionRadius>k__BackingField: 4
+  <ExplosionInterval>k__BackingField: 0.05
+  <FlameBaseDamage>k__BackingField: 1
+  <HealBaseAmount>k__BackingField: 1
+  <ZoneDuration>k__BackingField: 5
+  <ZoneInfluenceInterval>k__BackingField: 0.5
+  <BombCount>k__BackingField: 5
+  <AirCraftSpeed>k__BackingField: 230
+  <AirCraftTravelDistance>k__BackingField: 100
+  <AircraftPrefab>k__BackingField: {fileID: 7658174573154932865, guid: 0b321c67b2073a743be64667fd3fe19b, type: 3}
+  <AirStrikeMarkerColor>k__BackingField:
+    serializedVersion: 2
+    rgba: 419455487
+  <BombEffectReference>k__BackingField:
+    m_AssetGUID: 9a82614d794528e45873a3bb0fd1806d
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <HealBombEffectReference>k__BackingField:
+    m_AssetGUID: aefa065272400f44bbc1a5471cfe2334
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <FlameEffectReference>k__BackingField:
+    m_AssetGUID: f293a2dcc753a4a489fefe7f8f312d69
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <HealZoneEffectReference>k__BackingField:
+    m_AssetGUID: c499430e99ad6164bb06655608891d43
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
