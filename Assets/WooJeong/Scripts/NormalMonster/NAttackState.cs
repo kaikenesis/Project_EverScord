@@ -8,10 +8,10 @@ public abstract class NAttackState : MonoBehaviour, IState
 {
     protected NController monsterController;
     protected bool isAttacking = false;
-    protected bool isEnter = false;
     protected float attackDamage;
     protected Coroutine attack;
     protected Coroutine project;
+    protected Coroutine updating;
     protected Quaternion remoteRot;
 
     protected abstract void Setup();
@@ -23,42 +23,44 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     public void Enter()
     {
-        isEnter = true;
         isAttacking = false;
         monsterController.PlayAnimation("Wait");
+        updating = StartCoroutine(Updating());
     }
 
-    protected virtual void Update()
+    protected IEnumerator Updating()
     {
-        if (!isEnter)
-            return;
-
-        if (monsterController.isStun)
+        while(true)
         {
-            ExitToStun();
-            return;
-        }
+            if (monsterController.isStun)
+            {
+                ExitToStun();
+                yield break;
+            }
 
-        if (monsterController.isDead)
-        {
-            ExitToDeath();
-            return;
-        }
+            if (monsterController.isDead)
+            {
+                ExitToDeath();
+                yield break;
+            }
 
-        if (isAttacking)
-            return;
+            if (!isAttacking)
+            {
+                if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
+                {
+                    isAttacking = false;
+                    ExitToRun();
+                }
 
-        if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
-        {
-            isAttacking = false;
-            ExitToRun();
-        }
+                monsterController.LookPlayer();
+                if (monsterController.IsLookPlayer(monsterController.monsterData.AttackRangeZ1))
+                {
+                    isAttacking = true;
+                    attack = StartCoroutine(Attack());
+                }
+            }
 
-        monsterController.LookPlayer();
-        if (monsterController.IsLookPlayer(monsterController.monsterData.AttackRangeZ1))
-        {
-            isAttacking = true;
-            attack = StartCoroutine(Attack());
+            yield return new WaitForSeconds(Time.deltaTime);
         }
     }
 
@@ -78,19 +80,19 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     protected void ExitToWait()
     {
-        isEnter = false;
+        StopCoroutine(updating);
         monsterController.WaitState();
     }
 
     protected void ExitToRun()
     {
-        isEnter = false;
+        StopCoroutine(updating);
         monsterController.RunState();
     }
 
     protected void ExitToStun()
     {
-        isEnter = false;
+        StopCoroutine(updating);
         if (attack != null)
             StopCoroutine(attack);
         if (project != null)
@@ -117,7 +119,7 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     protected void ExitToDeath()
     {
-        isEnter = false;
+        StopCoroutine(updating);
         if (attack != null)
             StopCoroutine(attack);
         if (project != null)

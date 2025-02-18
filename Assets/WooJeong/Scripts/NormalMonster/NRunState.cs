@@ -8,7 +8,6 @@ using UnityEngine.AI;
 public abstract class NRunState : MonoBehaviour, IState
 {
     protected NController monsterController;
-    protected bool isEnter = false;
     protected PhotonView photonView;
     protected Vector3 remotePos;
     protected Quaternion remoteRot;
@@ -27,34 +26,34 @@ public abstract class NRunState : MonoBehaviour, IState
     public void Enter()
     {
         monsterController.SetNearestPlayer();
-        isEnter = true;
         monsterController.PlayAnimation("Run");
+        StartCoroutine(Updating());
     }
 
-    protected virtual void Update()
+    protected IEnumerator Updating()
     {
-        if (!isEnter)
-            return;
-
-        if (monsterController.isStun)
+        while (true)
         {
-            isEnter = false;
-            ExitToStun();
-            return;
-        }
+            if (monsterController.isStun)
+            {
+                ExitToStun();
+                yield break;
+            }
 
-        if (monsterController.isDead)
-        {
-            isEnter = false;
-            ExitToDeath();
-            return;
-        }
+            if (monsterController.isDead)
+            {
+                ExitToDeath();
+                yield break;
+            }
 
-        navMeshAgent.destination = monsterController.player.transform.position;
-        if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
-        {
-            Exit();
-            return;
+            navMeshAgent.destination = monsterController.player.transform.position;
+            if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
+            {
+                Exit();
+                yield break;
+            }
+
+            yield return new WaitForSeconds(Time.deltaTime);
         }
     }
 
@@ -104,32 +103,27 @@ public abstract class NRunState : MonoBehaviour, IState
 
     protected void ExitToWait()
     {
-        isEnter = false;
         monsterController.WaitState();
     }
 
     protected void ExitToAttack1()
     {
-        isEnter = false;
         monsterController.AttackState1();
     }
 
     protected void ExitToAttack2()
     {
-        isEnter = false;
         monsterController.AttackState2();
     }
 
     protected void ExitToStun()
     {
-        isEnter = false;
         navMeshAgent.destination = transform.position;
         monsterController.StunState();
     }
 
     protected void ExitToDeath()
     {
-        isEnter = false;
         navMeshAgent.destination = transform.position;
         monsterController.DeathState();
     }
