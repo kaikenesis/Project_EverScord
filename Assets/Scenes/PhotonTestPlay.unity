@@ -20793,7 +20793,6 @@ GameObject:
   - component: {fileID: 8116776620684682048}
   - component: {fileID: 8462792372374566151}
   - component: {fileID: 8462792372374566152}
-  - component: {fileID: 8462792372374566153}
   m_Layer: 0
   m_Name: BossSpawner
   m_TagString: Untagged
@@ -20836,19 +20835,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnTimer: 3
---- !u!114 &8462792372374566153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8462792372374566150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95086c954bbd7f54d8667df7b0c8590e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bossData: {fileID: 11400000, guid: 0c3ed0fd6a7c2ac43a3c9abd10f5cc48, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

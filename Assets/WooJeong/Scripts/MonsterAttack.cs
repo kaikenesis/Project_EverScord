@@ -44,6 +44,7 @@ public class MonsterAttack : MonoBehaviour
         capCollider.enabled = true;
         GameObject effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
         ParticleSystem effectParticle = effect.GetComponent<ParticleSystem>();
+        effectParticle.Play();
         yield return new WaitForSeconds(effectParticle.main.duration);
         capCollider.enabled = false;
         ResourceManager.Instance.ReturnToPool(effect, effectAddressableKey);
