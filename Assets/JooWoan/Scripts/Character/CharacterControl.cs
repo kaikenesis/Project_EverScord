@@ -330,7 +330,7 @@ namespace EverScord.Character
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
         }
 
         public void IncreaseHP(float amount)
@@ -342,7 +342,7 @@ namespace EverScord.Character
             effect.transform.position = transform.position;
 
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true);
         }
 
         public void SetCharacterOutline(bool state)
@@ -451,13 +451,16 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncHealth(float health)
+        private void SyncHealth(float health, bool isIncreasing)
         {
             CurrentHealth = health;
 
-            GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
-            var effect = Instantiate(healEffect, transform);
-            effect.transform.position = transform.position;
+            if (isIncreasing)
+            {
+                GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
+                var effect = Instantiate(healEffect, transform);
+                effect.transform.position = transform.position;
+            }
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
