@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class Lager : MonoBehaviour
+    public class Laser : MonoBehaviour
     {
         private float tickTime = 0.5f;
         private float countTime = 0.0f;

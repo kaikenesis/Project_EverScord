@@ -13,18 +13,19 @@ MonoBehaviour:
   m_Name: MB_Data
   m_EditorClassIdentifier: 
   maxHealth: 300
+  curHealth: 300
   moveSpeed: 50
   power: 10
-  phaseHealth:
+  phaseHP:
   - 1
-  - 0.8
   - 0.6
   - 0.4
   - 0.2
-  cooldown: 10
-  lagerMaxDistance: 50
-  lagerDistOffset: 0.8
-  lagerRotSpeed: 80
-  lagerCastTime: 2
-  lagerActivateTime: 4
-  lagerFinishTime: 1.5
+  cooldown: 15
+  laserCount: 4
+  laserMaxDistance: 80
+  laserDistOffset: 0.8
+  laserRotSpeed: 50
+  laserCastTime: 2
+  laserActivateTime: 4
+  laserFinishTime: 1.5

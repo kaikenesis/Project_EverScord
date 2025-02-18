@@ -1,42 +1,92 @@
+using Photon.Pun;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EverScord
 {
-    public class MB_Controller : MonoBehaviour, IStatus
+    public class MB_Controller : MonoBehaviour, IPunObservable, IStatus, IAction
     {
-        private float curHealth;
         [SerializeField] private MiddleBossData data;
         [SerializeField] private Transform Mesh;
-        [SerializeField] private Transform[] lager;
-        [SerializeField] private Transform lagerPatternPos;
+        [SerializeField] private GameObject laserObject;
+        [SerializeField] private Animator animator;
+        private List<GameObject> lasers = new List<GameObject>();
+        private List<BoxCollider> colliders = new List<BoxCollider>();
+        private List<Transform> hitPoints = new List<Transform>();
         private RaycastHit[] hit;
         private float countTime = 0.0f;
         private bool bPlaylagerPattern = false;
 
-        public float CurHealth
-        {
-            get { return curHealth; }
-            protected set { curHealth = value; }
-        }
+        // Photon Sync
+        private Vector3[] remoteHitPointPos;
+        private Vector3[] remoteColliderSize;
+        private Vector3[] remoteColliderCenter;
+        private Quaternion[] remoteLaserRot;
+        private bool remoteDig;
+        private bool remotePattern2;
+        private bool remoteActiveRaser;
 
         private void Awake()
         {
-            hit = new RaycastHit[lager.Length];
-
-            for (int i = 0; i < lager.Length; i++)
+            for (int i = 0; i < data.LaserCount; i++)
             {
-                lager[i].gameObject.SetActive(false);
+                GameObject obj = Instantiate(laserObject, Mesh);
+                lasers.Add(obj);
+
+                BoxCollider box = obj.GetComponent<BoxCollider>();
+                colliders.Add(box);
+
+                MouseTargetV3D mouseTarget = obj.GetComponent<MouseTargetV3D>();
+                hitPoints.Add(mouseTarget.targetCursor);
+            }
+
+            hit = new RaycastHit[lasers.Count];
+            remoteHitPointPos = new Vector3[lasers.Count];
+            remoteColliderSize = new Vector3[lasers.Count];
+            remoteColliderCenter = new Vector3[lasers.Count];
+            remoteLaserRot = new Quaternion[lasers.Count];
+
+            InitLagerPattern();
+            data.Init();
+
+            Vector3 colliderSize = new Vector3(1, 1, data.LaserMaxDistance);
+            Vector3 colliderCenter = new Vector3(0, 0, data.LaserMaxDistance / 2 + 1);
+
+            for (int i = 0; i < lasers.Count; i++)
+            {
+                colliders[i].size = colliderSize;
+                colliders[i].center = colliderCenter;
             }
         }
 
         private void Update()
         {
-            CountSkillTime();
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if(PhotonNetwork.IsConnected)
             {
-                StartCoroutine(LagerPattern());
+                if (!PhotonNetwork.IsMasterClient)
+                {
+                    PhotonSync();
+                }
+                else
+                {
+                    CountSkillTime();
+                }
+            }
+            else
+            {
+                CountSkillTime();
+            }
+        }
+
+        private void InitLagerPattern()
+        {
+            Vector3 initPos = new Vector3(0, 0, 0);
+            int angle = 360 / lasers.Count;
+            for (int i = 0; i < lasers.Count; i++)
+            {
+                lasers[i].transform.SetLocalPositionAndRotation(initPos, Quaternion.Euler(0, i * angle, 0));
+                lasers[i].gameObject.SetActive(false);
             }
         }
 
@@ -45,16 +95,12 @@ namespace EverScord
             if (bPlaylagerPattern)
             {
                 countTime += Time.deltaTime;
-                if (countTime >= data.LagerPatternPlayTime)
+                if (countTime >= data.LaserPatternPlayTime - data.LaserCastTime)
                 {
-                    for (int i = 0; i < lager.Length; i++)
-                    {
-                        lager[i].gameObject.SetActive(false);
-                    }
                     countTime = 0.0f;
                     bPlaylagerPattern = false;
                 }
-                Debug.Log(countTime);
+                //Debug.Log(countTime);
             }
         }
 
@@ -63,25 +109,14 @@ namespace EverScord
             if (bPlaylagerPattern == true) yield break;
 
             bPlaylagerPattern = true;
-            for (int i = 0; i < lager.Length; i++)
+            for (int i = 0; i < lasers.Count; i++)
             {
-                lager[i].gameObject.SetActive(true);
+                lasers[i].gameObject.SetActive(true);
             }
-
-            float activeTime = data.LagerCastTime + data.LagerActivateTime;
 
             while (bPlaylagerPattern)
             {
-                if (countTime <= data.LagerCastTime)
-                {
-                    // 땅속으로 숨고 다니 나타나는 애니메이션 재생 및 캐릭터 이동
-                    transform.SetPositionAndRotation(lagerPatternPos.position, lagerPatternPos.rotation);
-                    RotateLager(false);
-                }
-                else if (countTime <= activeTime)
-                {
-                    RotateLager(true);
-                }
+                RotateLager(true);
 
                 yield return new WaitForSeconds(Time.deltaTime);
             }
@@ -93,44 +128,98 @@ namespace EverScord
         {
             for (int i = 0; i < hit.Length; i++)
             {
-                Vector3 offset = lager[i].right * data.LagerDistOffset + Mesh.localPosition;
+                Vector3 offset = lasers[i].transform.forward * data.LaserDistOffset + Mesh.localPosition;
+                Vector3 colliderOffset = new Vector3(0, 0, 1);
 
-                if (Physics.Raycast(offset, lager[i].right * data.LagerMaxDistance, out hit[i], data.LagerMaxDistance))
+                if (Physics.Raycast(offset, lasers[i].transform.forward * data.LaserMaxDistance, out hit[i], data.LaserMaxDistance))
                 {
-                    Vector3 newPos = lager[i].right * hit[i].distance / 2.0f + Mesh.localPosition;
-
-                    lager[i].localScale = new Vector3(hit[i].distance, lager[i].localScale.y, lager[i].localScale.z);
-                    lager[i].localPosition = newPos + offset;
+                    hitPoints[i].position = hit[i].point;
                 }
                 else
                 {
-                    Vector3 newPos = lager[i].right * data.LagerMaxDistance / 2.0f + Mesh.localPosition;
-
-                    lager[i].localScale = new Vector3(data.LagerMaxDistance, lager[i].localScale.y, lager[i].localScale.z);
-                    lager[i].localPosition = newPos + offset;
+                    hitPoints[i].position = lasers[i].transform.forward * data.LaserMaxDistance;
                 }
 
-                Debug.DrawRay(offset, lager[i].right * data.LagerMaxDistance, Color.blue, Time.deltaTime);
+                Debug.DrawRay(offset, lasers[i].transform.forward * data.LaserMaxDistance, Color.blue, Time.deltaTime);
                 if (i == 0)
-                    Debug.DrawRay(offset, lager[i].right * data.LagerMaxDistance, Color.red, Time.deltaTime);
+                    Debug.DrawRay(offset, lasers[i].transform.forward * data.LaserMaxDistance, Color.red, Time.deltaTime);
 
                 if(bRotate == true)
-                    lager[i].RotateAround(Mesh.position, new Vector3(0, 1, 0), data.LagerRotSpeed * Time.deltaTime);
+                    lasers[i].transform.RotateAround(Mesh.position, new Vector3(0, 1, 0), data.LaserRotSpeed * Time.deltaTime);
             }
         }
 
-        private void InitLagerPattern()
+        private void PhotonSync()
         {
-            Vector3 initPos = new Vector3(0, 0, 0);
-            for (int i = 0; i < lager.Length; i++)
+            for (int i = 0; i < lasers.Count; i++)
             {
-                lager[i].SetLocalPositionAndRotation(initPos, Quaternion.Euler(0, i * 90, 0));
+                hitPoints[i].position = Vector3.Lerp(hitPoints[i].position, remoteHitPointPos[i], 10 * Time.deltaTime);
+                lasers[i].transform.rotation = Quaternion.Lerp(lasers[i].transform.rotation, remoteLaserRot[i], 10 * Time.deltaTime);
+                
+                lasers[i].gameObject.SetActive(remoteActiveRaser);
             }
+
+            animator.SetBool("bPattern2", remotePattern2);
+            animator.SetBool("bDig", remoteDig);
         }
 
         public void TakeDamage(GameObject sender, float damage)
         {
             Debug.Log($"{name} || Sender : {sender.name}, Damage : {damage}");
+        }
+
+        public void DoAction(IAction.EType type)
+        {
+            //if (!PhotonNetwork.IsMasterClient) return;
+
+            switch(type)
+            {
+                case IAction.EType.Action1:
+                    {
+                        if (animator.GetBool("bPattern2") == false)
+                            animator.SetBool("bPattern2", true);
+                        else
+                            StartCoroutine(LagerPattern());
+                    }
+                    break;
+                case IAction.EType.Action2:
+
+                    break;
+                case IAction.EType.Action3:
+
+                    break;
+                case IAction.EType.Action4:
+
+                    break;
+            }
+        }
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if(stream.IsWriting)
+            {
+                for (int i = 0; i < lasers.Count; i++)
+                {
+                    stream.SendNext(hitPoints[i].position);
+                    stream.SendNext(lasers[i].transform.rotation);
+                }
+                stream.SendNext(lasers[0].gameObject.activeSelf);
+
+                stream.SendNext(animator.GetBool("bDig"));
+                stream.SendNext(animator.GetBool("bPattern2"));
+            }
+            else
+            {
+                for (int i = 0; i < lasers.Count; i++)
+                {
+                    remoteHitPointPos[i] = (Vector3)stream.ReceiveNext();
+                    remoteLaserRot[i] = (Quaternion)stream.ReceiveNext();
+                }
+                remoteActiveRaser = (bool)stream.ReceiveNext();
+
+                remoteDig = (bool)stream.ReceiveNext();
+                remotePattern2 = (bool)stream.ReceiveNext();
+            }
         }
     }
 }

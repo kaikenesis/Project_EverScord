@@ -8,5 +8,15 @@ namespace EverScord
         {
             Debug.Log($"{name} || Sender : {sender.name}, Damage : {damage}");
         }
+        
+        public void IncreaseHealth(float value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void DecreaseHealth(float value)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

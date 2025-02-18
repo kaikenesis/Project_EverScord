@@ -24,6 +24,10 @@ namespace EverScord
             if (bCooldown == true)
                 return INode.ENodeState.FAILURE;
 
+            int phase;
+            blackboard.GetValue("Phase", out phase);
+            int patternNum = UnityEngine.Random.Range(1, phase);
+
             return INode.ENodeState.SUCCESS;
         }
     }

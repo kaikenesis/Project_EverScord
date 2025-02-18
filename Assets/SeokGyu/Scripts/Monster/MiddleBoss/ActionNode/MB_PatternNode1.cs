@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 namespace EverScord
 {
@@ -8,7 +6,7 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Monster/MB_ActionNode/Pattern1", fileName = "Pattern1")]
     public class MB_PatternNode1 : ActionNode
     {
-        private MB_Controller Owner;
+        private MB_Controller owner;
 
         public override void Init()
         {
@@ -17,10 +15,11 @@ namespace EverScord
 
         private INode.ENodeState Pattern1()
         {
-            Debug.Log("LagerPattern Play");
-
-            blackboard.GetValue("Owner", out Owner);
-            Owner.StartCoroutine("LagerPattern");
+            blackboard.GetValue("Owner", out owner);
+            if(owner is IAction action)
+            {
+                action.DoAction(IAction.EType.Action1);
+            }
             blackboard.SetValue("bCooldown", true);
 
             return INode.ENodeState.SUCCESS;

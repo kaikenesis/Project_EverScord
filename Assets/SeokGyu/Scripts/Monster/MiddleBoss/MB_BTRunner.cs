@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace EverScord
@@ -14,24 +12,8 @@ namespace EverScord
             blackboard.SetValue("bDead", false);
             blackboard.SetValue("bCooldown", true);
             blackboard.SetValue("Cooldown", data.Cooldown);
-            blackboard.SetValue("Phase", 0);
+            blackboard.SetValue("Phase", data.CurrentPhase());
             blackboard.SetValue("Owner", (object)owner);
         }
-
-        //public void IncreaseHealth(float value)
-        //{
-        //    curHealth += value;
-
-        //    if (curHealth >= maxHealth)
-        //        curHealth = maxHealth;
-        //}
-
-        //public void DecreaseHealth(float value)
-        //{
-        //    curHealth -= value;
-
-        //    if (curHealth <= 0.0f)
-        //        curHealth = 0.0f;
-        //}
     }
 }

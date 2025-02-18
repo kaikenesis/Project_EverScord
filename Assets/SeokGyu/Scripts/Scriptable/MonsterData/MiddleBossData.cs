@@ -7,27 +7,28 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Monster/MiddleBoss", fileName = "newMiddleBossData")]
     public class MiddleBossData : BaseMonsterData
     {
-        [SerializeField] private float[] phaseHealth;
+        [SerializeField] private float[] phaseHP;
         [SerializeField] private float cooldown;
         
         [Space(10f)]
         [Header("LagerPattern")]
-        [SerializeField] private float lagerMaxDistance = 50.0f;
-        [SerializeField] private float lagerDistOffset = 0.8f;
-        [SerializeField] private float lagerRotSpeed = 80.0f;
-        [SerializeField] private float lagerCastTime = 2.0f;
-        [SerializeField] private float lagerActivateTime = 4.0f;
-        [SerializeField] private float lagerFinishTime = 1.5f;
+        [SerializeField] private int laserCount = 4;
+        [SerializeField] private float laserMaxDistance = 50.0f;
+        [SerializeField] private float laserDistOffset = 0.8f;
+        [SerializeField] private float laserRotSpeed = 80.0f;
+        [SerializeField] private float laserCastTime = 2.0f;
+        [SerializeField] private float laserActivateTime = 4.0f;
+        [SerializeField] private float laserFinishTime = 1.5f;
 
-        public int CurrentPhase(float curHealth)
+        public int CurrentPhase()
         {
-            float per = curHealth / MaxHealth;
-            int phase = -1;
+            float per = HealthPercent();
+            int phase = 0;
 
-            for (int i = 0; i < phaseHealth.Length; i++)
+            for (int i = 0; i < phaseHP.Length; i++)
             {
-                if (phaseHealth[i] >= per)
-                    phase = i + 1;
+                if (per <= phaseHP[i])
+                    phase++;
                 else
                     return phase;
             }
@@ -41,48 +42,53 @@ namespace EverScord
             private set { cooldown = value; }
         }
 
-        #region LagerPattern
-        public float LagerMaxDistance
+        #region LaserPattern
+        public int LaserCount
         {
-            get { return lagerMaxDistance; }
-            private set { lagerMaxDistance = value; }
+            get { return laserCount; }
+
+        }
+        public float LaserMaxDistance
+        {
+            get { return laserMaxDistance; }
+            private set { laserMaxDistance = value; }
         }
 
-        public float LagerDistOffset
+        public float LaserDistOffset
         {
-            get { return lagerDistOffset; }
-            private set { lagerDistOffset = value; }
+            get { return laserDistOffset; }
+            private set { laserDistOffset = value; }
         }
 
-        public float LagerRotSpeed
+        public float LaserRotSpeed
         {
-            get { return lagerRotSpeed; }
-            private set { lagerRotSpeed = value; }
+            get { return laserRotSpeed; }
+            private set { laserRotSpeed = value; }
         }
 
-        public float LagerPatternPlayTime
+        public float LaserPatternPlayTime
         {
-            get { return lagerCastTime + lagerActivateTime + lagerFinishTime; }
+            get { return laserCastTime + laserActivateTime + laserFinishTime; }
         }
 
-        public float LagerCastTime
+        public float LaserCastTime
         {
-            get { return lagerCastTime; }
-            private set { lagerCastTime = value; }
+            get { return laserCastTime; }
+            private set { laserCastTime = value; }
         }
 
-        public float LagerActivateTime
+        public float LaserActivateTime
         {
-            get { return lagerActivateTime; }
-            private set { lagerActivateTime = value; }
+            get { return laserActivateTime; }
+            private set { laserActivateTime = value; }
         }
 
-        public float LagerFinishTime
+        public float LaserFinishTime
         {
-            get { return lagerFinishTime; }
-            private set { lagerFinishTime = value; }
+            get { return laserFinishTime; }
+            private set { laserFinishTime = value; }
         }
-        #endregion // LagerPattern
+        #endregion // LaserPattern
 
     }
 }
