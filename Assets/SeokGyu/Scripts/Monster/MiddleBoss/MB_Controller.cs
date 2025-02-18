@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace EverScord
 {
@@ -17,6 +18,7 @@ namespace EverScord
         private RaycastHit[] hit;
         private float countTime = 0.0f;
         private bool bPlaylagerPattern = false;
+        private MB_BTRunner btRunner;
 
         // Photon Sync
         private Vector3[] remoteHitPointPos;
@@ -26,6 +28,7 @@ namespace EverScord
         private bool remoteDig;
         private bool remotePattern2;
         private bool remoteActiveRaser;
+        private float remoteCurHealth;
 
         private void Awake()
         {
@@ -58,6 +61,8 @@ namespace EverScord
                 colliders[i].size = colliderSize;
                 colliders[i].center = colliderCenter;
             }
+
+            btRunner = GetComponent<MB_BTRunner>();
         }
 
         private void Update()
@@ -161,11 +166,14 @@ namespace EverScord
 
             animator.SetBool("bPattern2", remotePattern2);
             animator.SetBool("bDig", remoteDig);
+
+            data.curHealth = remoteCurHealth;
+            btRunner.UpdatePhase();
         }
 
         public void DoAction(IAction.EType type)
         {
-            //if (!PhotonNetwork.IsMasterClient) return;
+            if (!PhotonNetwork.IsMasterClient) return;
 
             switch(type)
             {
@@ -202,6 +210,8 @@ namespace EverScord
 
                 stream.SendNext(animator.GetBool("bDig"));
                 stream.SendNext(animator.GetBool("bPattern2"));
+
+                stream.SendNext(data.curHealth);
             }
             else
             {
@@ -214,12 +224,17 @@ namespace EverScord
 
                 remoteDig = (bool)stream.ReceiveNext();
                 remotePattern2 = (bool)stream.ReceiveNext();
+
+                remoteCurHealth = (float)stream.ReceiveNext();
             }
         }
 
         public void TestDamage(GameObject sender, float value)
         {
             Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");
+
+            data.curHealth -= value;
+            btRunner.UpdatePhase();
         }
 
         public void DecreaseHP(float hp)

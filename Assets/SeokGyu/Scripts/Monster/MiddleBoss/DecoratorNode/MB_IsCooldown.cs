@@ -27,6 +27,7 @@ namespace EverScord
             int phase;
             blackboard.GetValue("Phase", out phase);
             int patternNum = UnityEngine.Random.Range(1, phase);
+            blackboard.SetValue("PatternNum", patternNum);
 
             return INode.ENodeState.SUCCESS;
         }
