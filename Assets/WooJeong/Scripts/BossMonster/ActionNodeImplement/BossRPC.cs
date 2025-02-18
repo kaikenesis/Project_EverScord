@@ -139,8 +139,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
         PhotonView view = go.GetComponent<PhotonView>();
-        if(view.ViewID == 0)
-            view.ViewID = viewID;
+        view.ViewID = viewID;
         BossProjectile bp = go.GetComponent<BossProjectile>();
         bp.Setup(position, direction, projectileSpeed);
     }

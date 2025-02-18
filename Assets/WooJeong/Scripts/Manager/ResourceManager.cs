@@ -147,6 +147,7 @@ public class ResourceManager : Singleton<ResourceManager>
         {
             poolDictionary[addressableKey] = new Queue<GameObject>();
         }
+        Debug.Log("ReturnToPool");
 
         obj.SetActive(false);
         poolDictionary[addressableKey].Enqueue(obj);

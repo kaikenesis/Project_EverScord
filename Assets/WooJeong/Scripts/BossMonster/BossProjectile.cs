@@ -57,6 +57,7 @@ public class BossProjectile : MonoBehaviour
     [PunRPC]
     private void SyncReturnBullet()
     {
+        Debug.Log("SyncReturnBullet");
         ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
     }
 }
