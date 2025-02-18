@@ -1,15 +1,10 @@
 using EverScord;
 using EverScord.Character;
-using EverScord.Monster;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Net;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
 
 public class BossRPC : MonoBehaviour, IEnemy
 {
@@ -90,6 +85,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         projectorP7_Danger = projectorForPatter7.AddComponent<DecalProjector>();
         projectorP7_Danger.renderingLayerMask = 2;
         projectorP7_Danger.size = new Vector3(0, 0, 1);
+        projectorP7_Danger.pivot = new Vector3(0, 0, 0);
         projectorP7_Danger.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
         projectorP7_Danger.enabled = false;
 
@@ -267,10 +263,11 @@ public class BossRPC : MonoBehaviour, IEnemy
         //laser.transform.parent = transform;
 
         //Quaternion startPoint = transform.rotation;
-        //Quaternion endPoint = Quaternion.AngleAxis(179, Vector3.up);
-        //for (float t = 0f; t < enableTime; t += Time.deltaTime)
+        //Quaternion endPoint = Quaternion.AngleAxis(-180, Vector3.up) * transform.rotation;
+        //float time = enableTime / 2;
+        //for (float t = 0f; t < enableTime/2; t += Time.deltaTime)
         //{
-        //    laser.transform.rotation = Quaternion.Lerp(startPoint, endPoint, t / enableTime);
+        //    laser.transform.rotation = Quaternion.Lerp(startPoint, endPoint, t / (enableTime/2));
         //    yield return new WaitForSeconds(Time.deltaTime);
         //}
         //ResourceManager.Instance.ReturnToPool(laser, "BossLaser");
@@ -344,6 +341,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public IEnumerator EnableShield()
     {
         hitBox.enabled = false;
+        animator.speed = 0;
         GameObject shield = ResourceManager.Instance.GetFromPool("P15_Effect", transform.position, Quaternion.identity);
         photonView.RPC("SyncShield", RpcTarget.Others);
         yield return new WaitForSeconds(8f);
@@ -357,6 +355,7 @@ public class BossRPC : MonoBehaviour, IEnemy
                 control.DecreaseHP(50);
             }
         }
+        animator.speed = 1;
         ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
     }
 
@@ -364,8 +363,10 @@ public class BossRPC : MonoBehaviour, IEnemy
     protected IEnumerator SyncShield()
     {
         hitBox.enabled = false;
+        animator.speed = 0;
         GameObject shield = ResourceManager.Instance.GetFromPool("P15_Effect", transform.position, Quaternion.identity);
         yield return new WaitForSeconds(8f);
+        animator.speed = 1;
         ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
     }
 }

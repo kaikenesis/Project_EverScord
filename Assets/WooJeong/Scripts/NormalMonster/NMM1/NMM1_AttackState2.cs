@@ -1,3 +1,5 @@
+using EverScord.Character;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -29,10 +31,5 @@ public class NMM1_AttackState2 : NAttackState
         StartCoroutine(monsterController.CoolDown2());
         attack = null;
         Exit();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log("attack");
     }
 }

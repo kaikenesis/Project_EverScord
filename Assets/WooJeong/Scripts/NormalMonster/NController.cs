@@ -1,4 +1,5 @@
 using EverScord;
+using EverScord.Character;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -68,6 +69,22 @@ public abstract class NController : MonoBehaviour, IEnemy
         SetNearestPlayer();
         
         Setup();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        if (other.gameObject.CompareTag("Player"))
+        {
+            CharacterControl controller = other.GetComponent<CharacterControl>();
+            if (LastAttack == 1)
+                Debug.Log("Attack1");
+            else
+                Debug.Log("Attack2");
+
+            controller.DecreaseHP(10);
+        }
     }
 
     public void SetGUID(string guid)

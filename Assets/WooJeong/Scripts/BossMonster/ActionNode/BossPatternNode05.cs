@@ -17,7 +17,6 @@ public class BossPatternNode05 : BAttackPatternNode
         if (attackable == false && bossData.IsUnderHP(80))
         {
             attackable = true;
-            Debug.Log("5 attackable");
         }
         return base.Evaluate();
     }

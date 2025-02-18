@@ -136,15 +136,4 @@ public abstract class NAttackState : MonoBehaviour, IState
         monsterController.DeathState();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
-
-        if (other.gameObject.CompareTag("Player"))
-        {
-            CharacterControl controller = other.GetComponent<CharacterControl>();
-            controller.DecreaseHP(10);
-        }
-    }
 }

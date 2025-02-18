@@ -83,9 +83,15 @@ public abstract class NRunState : MonoBehaviour, IState
             case 3:
                 {
                     if (monsterController.LastAttack == 1)
+                    {
+                        monsterController.LastAttack = 2;
                         ExitToAttack2();
+                    }
                     else
+                    {
+                        monsterController.LastAttack = 1;
                         ExitToAttack1();
+                    }
                     yield break;
                 }
         }

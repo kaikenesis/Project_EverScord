@@ -7,7 +7,7 @@ using UnityEngine;
 public class BossPattern13_Imp : ActionNodeImplement
 {
     private float attackDamage = 10;
-    private float attackRadius = 100;
+    //private float attackRadius = 100;
     private float attackLifeTime = 4;
     private float safeRange = 5f;
     private float curTime = 0;
@@ -18,7 +18,7 @@ public class BossPattern13_Imp : ActionNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack7 start");
+        Debug.Log("Attack13 start");
         bossRPC.PlayAnimation("StandingAttack");
         safePos = transform.position + transform.forward * safeStartDistance;
         yield return new WaitForSeconds(1f);
@@ -29,7 +29,7 @@ public class BossPattern13_Imp : ActionNodeImplement
         yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1f);
         bossRPC.PlayAnimation("Idle");
         yield return new WaitForSeconds(4f);
-        Debug.Log("Attack7 end");
+        Debug.Log("Attack13 end");
         curTime = 0;
         isEnd = true;
         action = null;
