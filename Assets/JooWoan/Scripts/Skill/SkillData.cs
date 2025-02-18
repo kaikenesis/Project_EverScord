@@ -9,7 +9,6 @@ public class SkillData : MonoBehaviour
     private IDictionary<string, CharacterSkillInfo> skillInfoDict = new Dictionary<string, CharacterSkillInfo>();
     #endregion
 
-    private const string SHEET_PATH = "CSVSheet/SkillSheet";
     private IDictionary<string, CharacterSkillInfo> SkillInfoDict => skillInfoDict;
 
     void Awake()
@@ -19,7 +18,7 @@ public class SkillData : MonoBehaviour
 
     private void Init()
     {
-        var sheet = CSVReader.ReadDataSheet(SHEET_PATH);
+        var sheet = CSVReader.ReadDataSheet("SkillSheet");
 
         for (int i = 0; i < sheet.Count; i++)
         {

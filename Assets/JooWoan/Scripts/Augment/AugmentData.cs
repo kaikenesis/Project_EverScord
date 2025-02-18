@@ -19,14 +19,13 @@ namespace EverScord.Augment
         public IDictionary<string, List<ArmorAugment>> VestAugmentDict => vestAugmentDict;
         public IDictionary<string, List<ArmorAugment>> ShoesAugmentDict => shoesAugmentDict;
 
-        private const string SHEET_PATH = "CSVSheet/ArmorAugmentSheet";
         private const string HELMET_KEY = "Helmet";
         private const string VEST_KEY   = "Vest";
         private const string SHOES_KEY  = "Shoes";
 
         public void Init()
         {
-            var sheet = CSVReader.ReadAugmentSheet(SHEET_PATH);
+            var sheet = CSVReader.ReadAugmentSheet();
 
             foreach (KeyValuePair<string, List<List<string>>> kvp in sheet)
             {

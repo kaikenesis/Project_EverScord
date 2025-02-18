@@ -10,9 +10,9 @@ namespace EverScord.FileIO
         static string LINE_SPLIT = @"\r\n|\n\r|\n|\r";
         static char[] TRIM_CHARS = { '\"' };
 
-        public static IDictionary<string, List<List<string>>> ReadAugmentSheet(string filePath)
+        public static IDictionary<string, List<List<string>>> ReadAugmentSheet()
         {
-            TextAsset data = Resources.Load(filePath) as TextAsset;
+            TextAsset data = ResourceManager.Instance.GetAsset<TextAsset>("ArmorAugmentSheet");
 
             var lines = Regex.Split(data.text, LINE_SPLIT);
             var dict = new Dictionary<string, List<List<string>>>();
@@ -52,10 +52,10 @@ namespace EverScord.FileIO
             return dict;
         }
 
-        public static List<IDictionary<string, string>> ReadDataSheet(string filePath)
+        public static List<IDictionary<string, string>> ReadDataSheet(string assetID)
         {
             var list = new List<IDictionary<string, string>>();
-            TextAsset data = Resources.Load(filePath) as TextAsset;
+            TextAsset data = ResourceManager.Instance.GetAsset<TextAsset>(assetID);
 
             var lines = Regex.Split(data.text, LINE_SPLIT);
 
