@@ -17,15 +17,15 @@ namespace EverScord
         private RaycastHit[] hit;
         private float countTime = 0.0f;
         private bool bPlaylagerPattern = false;
+        private MB_BTRunner btRunner;
 
         // Photon Sync
         private Vector3[] remoteHitPointPos;
-        private Vector3[] remoteColliderSize;
-        private Vector3[] remoteColliderCenter;
         private Quaternion[] remoteLaserRot;
         private bool remoteDig;
         private bool remotePattern2;
         private bool remoteActiveRaser;
+        private float remoteCurHealth;
 
         private void Awake()
         {
@@ -43,8 +43,6 @@ namespace EverScord
 
             hit = new RaycastHit[lasers.Count];
             remoteHitPointPos = new Vector3[lasers.Count];
-            remoteColliderSize = new Vector3[lasers.Count];
-            remoteColliderCenter = new Vector3[lasers.Count];
             remoteLaserRot = new Quaternion[lasers.Count];
 
             InitLagerPattern();
@@ -58,25 +56,22 @@ namespace EverScord
                 colliders[i].size = colliderSize;
                 colliders[i].center = colliderCenter;
             }
+
+            btRunner = GetComponent<MB_BTRunner>();
         }
 
         private void Update()
         {
-            if(PhotonNetwork.IsConnected)
+            if(PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient)
             {
-                if (!PhotonNetwork.IsMasterClient)
-                {
-                    PhotonSync();
-                }
-                else
-                {
-                    CountSkillTime();
-                }
+                PhotonSync();
             }
             else
             {
                 CountSkillTime();
             }
+
+            DebugInput();
         }
 
         private void InitLagerPattern()
@@ -88,6 +83,13 @@ namespace EverScord
                 lasers[i].transform.SetLocalPositionAndRotation(initPos, Quaternion.Euler(0, i * angle, 0));
                 lasers[i].gameObject.SetActive(false);
             }
+
+            animator.SetBool("bPattern2", false);
+        }
+
+        private void Move()
+        {
+            // 근접한 대상 추격, MasterClinet만 계산하고 결과값을 클라이언트에 전달해서 업데이트
         }
 
         private void CountSkillTime()
@@ -161,30 +163,54 @@ namespace EverScord
 
             animator.SetBool("bPattern2", remotePattern2);
             animator.SetBool("bDig", remoteDig);
+
+            data.curHealth = remoteCurHealth;
+            btRunner.UpdatePhase();
         }
 
         public void DoAction(IAction.EType type)
         {
-            //if (!PhotonNetwork.IsMasterClient) return;
+            if (PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient) return;
 
             switch(type)
             {
                 case IAction.EType.Action1:
                     {
                         if (animator.GetBool("bPattern2") == false)
+                        {
                             animator.SetBool("bPattern2", true);
+                            animator.SetBool("bChase", false);
+                        }
                         else
                             StartCoroutine(LagerPattern());
                     }
                     break;
                 case IAction.EType.Action2:
-
+                    {
+                        if (animator.GetBool("bPattern3") == false)
+                        {
+                            animator.SetBool("bPattern3", true);
+                            animator.SetBool("bChase", false);
+                        }
+                    }
                     break;
                 case IAction.EType.Action3:
-
+                    {
+                        if (animator.GetBool("bPattern4") == false)
+                        {
+                            animator.SetBool("bPattern4", true);
+                            animator.SetBool("bChase", false);
+                        }
+                    }
                     break;
                 case IAction.EType.Action4:
-
+                    {
+                        if (animator.GetBool("bPattern5") == false)
+                        {
+                            animator.SetBool("bPattern5", true);
+                            animator.SetBool("bChase", false);
+                        }
+                    }
                     break;
             }
         }
@@ -202,6 +228,8 @@ namespace EverScord
 
                 stream.SendNext(animator.GetBool("bDig"));
                 stream.SendNext(animator.GetBool("bPattern2"));
+
+                stream.SendNext(data.curHealth);
             }
             else
             {
@@ -214,12 +242,17 @@ namespace EverScord
 
                 remoteDig = (bool)stream.ReceiveNext();
                 remotePattern2 = (bool)stream.ReceiveNext();
+
+                remoteCurHealth = (float)stream.ReceiveNext();
             }
         }
 
         public void TestDamage(GameObject sender, float value)
         {
             Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");
+
+            data.curHealth -= value;
+            btRunner.UpdatePhase();
         }
 
         public void DecreaseHP(float hp)
@@ -230,6 +263,14 @@ namespace EverScord
         public void StunMonster(float stunTime)
         {
             throw new System.NotImplementedException();
+        }
+
+        private void DebugInput()
+        {
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                TestDamage(this.gameObject, 30.0f);
+            }
         }
     }
 }
