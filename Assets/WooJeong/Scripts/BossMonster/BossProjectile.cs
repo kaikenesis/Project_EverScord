@@ -61,18 +61,7 @@ public class BossProjectile : MonoBehaviour
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
         }
-<<<<<<< Updated upstream
-        photonView.RPC("SyncReturnBullet", RpcTarget.All);
-    }
-
-    [PunRPC]
-    private void SyncReturnBullet()
-    {
-        Debug.Log("SyncReturnBullet");
-        ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
-=======
         Debug.Log("Trigger Enter");
         IsDestroyed = true;
->>>>>>> Stashed changes
     }
 }

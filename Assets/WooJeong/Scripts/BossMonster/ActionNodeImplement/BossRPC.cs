@@ -137,11 +137,6 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
-<<<<<<< Updated upstream
-        PhotonView view = go.GetComponent<PhotonView>();
-        view.ViewID = viewID;
-=======
->>>>>>> Stashed changes
         BossProjectile bp = go.GetComponent<BossProjectile>();
         projectileController.AddDict(id, bp);
         bp.Setup(id, position, direction, projectileSpeed);
