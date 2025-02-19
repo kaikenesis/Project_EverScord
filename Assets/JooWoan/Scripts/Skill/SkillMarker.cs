@@ -23,6 +23,9 @@ namespace EverScord.Skill
                 StampedMarker = Object.Instantiate(stampedMarker, skillTransform).transform;
             else
                 StampedMarker = Object.Instantiate(marker, skillTransform).transform;
+
+            Set(false);
+            SetStamped(false);
         }
 
         public void Set(bool state)

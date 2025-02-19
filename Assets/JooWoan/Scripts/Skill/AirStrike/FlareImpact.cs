@@ -65,7 +65,7 @@ namespace EverScord.Skill
             yield return new WaitForSeconds(MARKER_DISPLAY_INTERVAL * 2);
 
             for (int i = 0; i < MARKER_COUNT; i++)
-                CharacterSkill.StopEffectParticles(markers[i]);
+                CharacterSkill.SetEffectParticles(markers[i], false);
 
             airStrikeAction.SetAirStrikePosition(strikeStartPos, strikeEndPos);
             onSkillActivated.Invoke();

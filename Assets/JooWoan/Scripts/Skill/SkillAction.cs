@@ -13,7 +13,6 @@ namespace EverScord.Skill
         protected EJob ejob;
         protected int skillIndex;
 
-        protected bool isOffensive => ejob == EJob.DEALER;
         public virtual bool CanAttackWhileSkill
         {
             get { return false; }

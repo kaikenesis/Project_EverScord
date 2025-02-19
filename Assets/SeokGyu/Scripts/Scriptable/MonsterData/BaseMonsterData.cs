@@ -38,22 +38,6 @@ namespace EverScord
             protected set { curHealth = value; }
         }
 
-        public void IncreaseHealth(float value)
-        {
-            curHealth += value;
-
-            if (curHealth > maxHealth)
-                curHealth = maxHealth;
-        }
-
-        public void DecreaseHealth(float value)
-        {
-            curHealth -= value;
-
-            if (curHealth < 0.0f)
-                curHealth = 0.0f;
-        }
-
         public float HealthPercent()
         {
             return curHealth / maxHealth;

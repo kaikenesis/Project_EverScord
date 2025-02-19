@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using EverScord.Character;
 
@@ -11,6 +10,7 @@ namespace EverScord.Skill
         private IDictionary<CharacterControl, CooldownTimer> healTimerDict;
         private float healInterval;
         private float healBaseAmount;
+        private bool isInitialized = false;
 
         public void Init(float healInterval, float healBaseAmount, LayerMask targetLayer)
         {
@@ -19,10 +19,14 @@ namespace EverScord.Skill
             this.targetLayer = targetLayer;
 
             healTimerDict = new Dictionary<CharacterControl, CooldownTimer>();
+            isInitialized = true;
         }
 
         void OnTriggerStay(Collider other)
         {
+            if (!isInitialized)
+                return;
+
             if (((1 << other.gameObject.layer) & targetLayer) == 0)
                 return;
 

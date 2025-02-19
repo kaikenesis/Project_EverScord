@@ -8,6 +8,8 @@ namespace EverScord.Skill
         [field: SerializeField] public GameObject BombPrefab            { get; private set; }
         [field: SerializeField] public GameObject TeleportEffect        { get; private set; }
         [field: SerializeField] public GameObject TeleportElectric      { get; private set; }
+        [field: SerializeField] public GameObject ImpactEffect          { get; private set; }
+        [field: SerializeField] public GameObject HealCircleEffect      { get; private set; }
         [field: SerializeField] public LayerMask CollidableLayer        { get; private set; }
         [field: SerializeField] public float DetectRadius               { get; private set; }
         [field: SerializeField] public float HealAmount                 { get; private set; }

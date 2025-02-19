@@ -84,7 +84,7 @@ namespace EverScord.Skill
 
         private void StopBarrier(GameObject barrier)
         {
-            CharacterSkill.StopEffectParticles(barrier);
+            CharacterSkill.SetEffectParticles(barrier, false);
         }
 
         public override void OffensiveAction()

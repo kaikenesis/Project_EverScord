@@ -10,7 +10,6 @@ namespace EverScord.Monster
         private IDictionary<string, MonsterSkillInfo> monsterInfoDict = new Dictionary<string, MonsterSkillInfo>();
         #endregion
 
-        private const string SHEET_PATH = "CSVSheet/MonsterSheet";
         public IDictionary<string, MonsterSkillInfo> MonsterInfoDict => monsterInfoDict;
 
         void Awake()
@@ -20,7 +19,7 @@ namespace EverScord.Monster
 
         private void Init()
         {
-            var sheet = CSVReader.ReadDataSheet(SHEET_PATH);
+            var sheet = CSVReader.ReadDataSheet("MonsterSheet");
 
             for (int i = 0; i < sheet.Count; i++)
             {

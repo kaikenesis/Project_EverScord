@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Weapons;
@@ -50,7 +51,7 @@ namespace EverScord.Character
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
         public EJob CharacterJob                                        { get; private set; }
-        public CharacterState State                                     { get; private set; }
+        public CharState State                                     { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -65,6 +66,7 @@ namespace EverScord.Character
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
+        private Action onDecreaseHealth;
 
         private SkinnedMeshRenderer[] skinRenderers;
         private int originalSkinLayer;
@@ -181,7 +183,7 @@ namespace EverScord.Character
 
         private void Move()
         {
-            if (HasState(CharacterState.SKILL_STANCE))
+            if (HasState(CharState.SKILL_STANCE))
                 return;
 
             movement = new Vector3(moveInput.x, 0, moveInput.z);
@@ -197,6 +199,9 @@ namespace EverScord.Character
 
         public void TrackAim()
         {
+            if (HasState(CharState.RIGID_ANIMATING))
+                return;
+            
             Ray ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GameManager.GroundLayer))
@@ -226,6 +231,9 @@ namespace EverScord.Character
 
         private void RotateBody()
         {
+            if (HasState(CharState.RIGID_ANIMATING))
+                return;
+            
             float angle = Vector3.Angle(lookDir, PlayerTransform.forward);
 
             if (angle > 2f)
@@ -299,19 +307,24 @@ namespace EverScord.Character
             playerInputInfo.pressedLeftMouseButton = state;
         }
 
-        public void SetState(SetCharacterStateMode mode, CharacterState state)
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
+
+        public void SetState(SetCharState mode, CharState state)
         {
             switch (mode)
             {
-                case SetCharacterStateMode.ADD:
+                case SetCharState.ADD:
                     State |= state;
                     break;
 
-                case SetCharacterStateMode.REMOVE:
+                case SetCharState.REMOVE:
                     State &= ~state;
                     break;
 
-                case SetCharacterStateMode.CLEAR:
+                case SetCharState.CLEAR:
                     State = 0;
                     break;
 
@@ -320,13 +333,29 @@ namespace EverScord.Character
             }
         }
 
-        public bool HasState(CharacterState state)
+        public bool HasState(CharState state)
         {
             return (State & state) != 0;
         }
 
+        public void SubscribeOnDecreaseHealth(Action subscriber)
+        {
+            onDecreaseHealth -= subscriber;
+            onDecreaseHealth += subscriber;
+        }
+
+        public void UnsubscribeOnDecreaseHealth(Action subscriber)
+        {
+            onDecreaseHealth -= subscriber;
+        }
+
         public void DecreaseHP(float amount)
         {
+            onDecreaseHealth?.Invoke();
+            
+            if (HasState(CharState.INVINCIBLE))
+                return;
+            
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             
             if (PhotonNetwork.IsConnected)
@@ -448,6 +477,17 @@ namespace EverScord.Character
 
             skillAction.Predictor.SyncInfo(thrownPosition, groundDirection, initialVelocity, trajectoryAngle, estimatedTime);
             skillAction.StartCoroutine(skillAction.ThrowObject());
+        }
+
+        [PunRPC]
+        public void SyncJumpAttackSkill(Vector3 mouseRayHitPos, Vector3 landingPosition, int index)
+        {
+            JumpAttackAction skillAction = (JumpAttackAction)skillList[index].SkillAction;
+
+            MouseRayHitPos = mouseRayHitPos;
+            playerInputInfo.pressedLeftMouseButton = true;
+
+            skillAction.SyncInfo(mouseRayHitPos, landingPosition);
         }
 
         [PunRPC]

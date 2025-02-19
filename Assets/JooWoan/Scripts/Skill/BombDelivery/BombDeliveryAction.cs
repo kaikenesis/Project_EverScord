@@ -49,6 +49,9 @@ namespace EverScord.Skill
             var explodeEffect = Instantiate(skill.BombPrefab, closestTarget);
             explodeEffect.transform.position = closestTarget.position;
 
+            var impactEffect = Instantiate(skill.ImpactEffect, CharacterSkill.SkillRoot);
+            impactEffect.transform.position = closestTarget.position;
+
             float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
 
             IEnemy enemy = closestTarget.GetComponent<IEnemy>();
@@ -65,6 +68,9 @@ namespace EverScord.Skill
 
             TeleportPlayer();
             CharacterControl targetPlayer = closestTarget.GetComponent<CharacterControl>();
+
+            var healEffect = Instantiate(skill.HealCircleEffect, CharacterSkill.SkillRoot);
+            healEffect.transform.position = closestTarget.position;
 
             // Start Coroutine and increase hp for 3 seconds, set particle to loop
 

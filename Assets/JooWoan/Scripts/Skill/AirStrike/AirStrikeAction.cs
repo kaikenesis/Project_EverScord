@@ -6,28 +6,37 @@ namespace EverScord.Skill
 {
     public class AirStrikeAction : ThrowSkillAction
     {
+        private const float AIRCRAFT_2_SPEED = 1.5f;
+        private const float AIRCRAFT_3_SPEED = 1.8f;
+        private const float AIRCRAFT_2_DELAY = 0.4f;
+        private const float AIRCRAFT_3_DELAY = 1.2f;
+        private const float AIRCRAFT_DISTANCE = 4f;
         public AirStrikeSkill Skill { get; private set; }
 
         private Vector3 strikeStartPos, strikeEndPos;
         private LayerMask targetLayer;
         private GameObject bomb, flames, healCircle;
         private WaitForSeconds waitStrikeInterval, waitBombDrop, waitZoneDuration;
-        private AircraftControl aircraft;
+        private AircraftControl aircraft1, aircraft2, aircraft3;
         private float calculatedImpact;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
-        {            
+        {
             Skill = (AirStrikeSkill)skill;
 
             waitStrikeInterval  = new WaitForSeconds(Skill.ExplosionInterval);
             waitZoneDuration    = new WaitForSeconds(Skill.ZoneDuration);
             waitBombDrop        = new WaitForSeconds(0.3f);
 
-            aircraft = Instantiate(Skill.AircraftPrefab).GetComponent<AircraftControl>();
-            aircraft.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
+            aircraft1 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
+            aircraft2 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
+            aircraft3 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
 
-            
-            if (isOffensive)
+            aircraft1.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
+            aircraft2.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_2_SPEED, AIRCRAFT_2_DELAY);
+            aircraft3.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_3_SPEED, AIRCRAFT_3_DELAY);
+
+            if (ejob == EJob.DEALER)
             {
                 targetLayer = GameManager.EnemyLayer;
                 calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
@@ -63,7 +72,15 @@ namespace EverScord.Skill
             float dropDistance = Vector3.Distance(strikeStartPos, strikeEndPos) / Mathf.Max(1, Skill.BombCount - 1);
             float distanceSum = 0f;
 
-            aircraft.EnableAircraft(strikeStartPos, direction);
+            Vector3 leftAircraftDir  = Quaternion.Euler(0, -90, 0) * direction;
+            Vector3 rightAirCraftDir = Quaternion.Euler(0, 90, 0) * direction;
+
+            Vector3 leftAircraftPos  = strikeStartPos + leftAircraftDir * AIRCRAFT_DISTANCE;
+            Vector3 rightAircraftPos = strikeStartPos + rightAirCraftDir * AIRCRAFT_DISTANCE;
+
+            aircraft1.EnableAircraft(strikeStartPos, direction);
+            aircraft2.EnableAircraft(leftAircraftPos, direction);
+            aircraft3.EnableAircraft(rightAircraftPos, direction);
 
             for (int i = 0; i < Skill.BombCount; i++, distanceSum += dropDistance)
             {
@@ -88,7 +105,7 @@ namespace EverScord.Skill
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (isOffensive)
+                if (ejob == EJob.DEALER)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
@@ -111,7 +128,7 @@ namespace EverScord.Skill
             GameObject flameEffect = null;
             GameObject healEffect = null;
 
-            if (isOffensive)
+            if (ejob == EJob.DEALER)
             {
                 flameEffect = Instantiate(flames, CharacterSkill.SkillRoot);
                 flameEffect.transform.position = dropPosition;
@@ -124,7 +141,7 @@ namespace EverScord.Skill
 
             if (photonView.IsMine)
             {
-                if (isOffensive)
+                if (ejob == EJob.DEALER)
                 {
                     flameControl = flameEffect.GetComponent<FlameControl>();
 
@@ -149,8 +166,8 @@ namespace EverScord.Skill
 
             yield return waitZoneDuration;
 
-            CharacterSkill.StopEffectParticles(flameEffect);
-            CharacterSkill.StopEffectParticles(healEffect);
+            CharacterSkill.SetEffectParticles(flameEffect, false);
+            CharacterSkill.SetEffectParticles(healEffect, false);
         }
 
         public override IEnumerator ThrowObject()
