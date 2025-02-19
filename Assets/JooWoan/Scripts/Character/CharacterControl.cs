@@ -223,6 +223,13 @@ namespace EverScord.Character
                 return;
 
             Vector3 gunPoint2MouseDir = hit.point - cam2GunPointRayHit.point;
+
+            float player2Mouse = Vector3.Distance(transform.position, MouseRayHitPos);
+            float player2Gunpoint = Vector3.Distance(transform.position, cam2GunPointRayHit.point);
+
+            if (player2Mouse < player2Gunpoint)
+                gunPoint2MouseDir = MouseRayHitPos - transform.position;
+
             weapon.SetGunPointDirection(gunPoint2MouseDir);
 
             Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weapon.WeaponRange;
