@@ -46,7 +46,7 @@ namespace EverScord.Skill
                 StopCoroutine(travelCoroutine);
 
             gameObject.SetActive(true);
-            travelCoroutine = StartCoroutine(MoveAircraft(moveDir, wayPoint));
+            travelCoroutine = StartCoroutine(MoveAircraft(moveDir, wayPoint, startDelay));
         }
         
         private Vector3 PositionRelativeToShadow(Vector3 shadowPoint)
@@ -84,8 +84,10 @@ namespace EverScord.Skill
             transform.rotation = rotation;
         }
 
-        private IEnumerator MoveAircraft(Vector3 moveDir, Vector3 wayPoint)
+        private IEnumerator MoveAircraft(Vector3 moveDir, Vector3 wayPoint, float startDelay = 0f)
         {
+            yield return new WaitForSeconds(startDelay);
+
             float halfDistance = totalTravelDistance * 0.5f;
 
             Vector3 startPoint = wayPoint - moveDir * halfDistance;

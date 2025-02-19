@@ -6,13 +6,18 @@ namespace EverScord.Skill
 {
     public class AirStrikeAction : ThrowSkillAction
     {
+        private const float AIRCRAFT_2_SPEED = 1.5f;
+        private const float AIRCRAFT_3_SPEED = 1.8f;
+        private const float AIRCRAFT_2_DELAY = 0.4f;
+        private const float AIRCRAFT_3_DELAY = 1.2f;
+        private const float AIRCRAFT_DISTANCE = 4f;
         public AirStrikeSkill Skill { get; private set; }
 
         private Vector3 strikeStartPos, strikeEndPos;
         private LayerMask targetLayer;
         private GameObject bomb, flames, healCircle;
         private WaitForSeconds waitStrikeInterval, waitBombDrop, waitZoneDuration;
-        private AircraftControl aircraft;
+        private AircraftControl aircraft1, aircraft2, aircraft3;
         private float calculatedImpact;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
@@ -23,8 +28,13 @@ namespace EverScord.Skill
             waitZoneDuration    = new WaitForSeconds(Skill.ZoneDuration);
             waitBombDrop        = new WaitForSeconds(0.3f);
 
-            aircraft = Instantiate(Skill.AircraftPrefab).GetComponent<AircraftControl>();
-            aircraft.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
+            aircraft1 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
+            aircraft2 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
+            aircraft3 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
+
+            aircraft1.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
+            aircraft2.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_2_SPEED, AIRCRAFT_2_DELAY);
+            aircraft3.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_3_SPEED, AIRCRAFT_3_DELAY);
 
             if (ejob == EJob.DEALER)
             {
@@ -62,7 +72,15 @@ namespace EverScord.Skill
             float dropDistance = Vector3.Distance(strikeStartPos, strikeEndPos) / Mathf.Max(1, Skill.BombCount - 1);
             float distanceSum = 0f;
 
-            aircraft.EnableAircraft(strikeStartPos, direction);
+            Vector3 leftAircraftDir  = Quaternion.Euler(0, -90, 0) * direction;
+            Vector3 rightAirCraftDir = Quaternion.Euler(0, 90, 0) * direction;
+
+            Vector3 leftAircraftPos  = strikeStartPos + leftAircraftDir * AIRCRAFT_DISTANCE;
+            Vector3 rightAircraftPos = strikeStartPos + rightAirCraftDir * AIRCRAFT_DISTANCE;
+
+            aircraft1.EnableAircraft(strikeStartPos, direction);
+            aircraft2.EnableAircraft(leftAircraftPos, direction);
+            aircraft3.EnableAircraft(rightAircraftPos, direction);
 
             for (int i = 0; i < Skill.BombCount; i++, distanceSum += dropDistance)
             {
