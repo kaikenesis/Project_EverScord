@@ -7,21 +7,32 @@ namespace EverScord
         private Animator animator;
         [SerializeField] private Transform targetTransform;
         [SerializeField] private Transform movePos;
+        [SerializeField] private Transform targetPos;
 
         private void Awake()
         {
             animator = GetComponent<Animator>();
         }
 
-        public void OnDigStart()
+        public void OnDig()
         {
-            targetTransform.SetPositionAndRotation(movePos.position, movePos.rotation);
-            animator.SetBool("bDig", true);
-        }
+            if (animator.GetBool("bPattern2"))
+            {
+                targetTransform.SetPositionAndRotation(movePos.position, movePos.rotation);
+            }
+            else if (animator.GetBool("bPattern3"))
+            {
+                targetTransform.LookAt(targetPos);
+                targetTransform.transform.position = targetPos.position;
+            }
+            else if (animator.GetBool("bPattern4"))
+            {
 
-        public void OnDigEnd()
-        {
-            animator.SetBool("bDig", false);
+            }
+            else if (animator.GetBool("bPattern5"))
+            {
+
+            }
         }
 
         public void OnStartPattern2()
@@ -33,9 +44,9 @@ namespace EverScord
             }
         }
 
-        public void OnEndPattern2()
+        public void OnEndPattern3()
         {
-            animator.SetBool("bPattern2", false);
+            animator.SetBool("bPattern3", false);
         }
     }
 }

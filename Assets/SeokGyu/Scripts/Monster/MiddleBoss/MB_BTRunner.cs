@@ -13,7 +13,13 @@ namespace EverScord
             blackboard.SetValue("bCooldown", true);
             blackboard.SetValue("Cooldown", data.Cooldown);
             blackboard.SetValue("Phase", data.CurrentPhase());
+            blackboard.SetValue("PatternNum", -1);
             blackboard.SetValue("Owner", (object)owner);
+        }
+
+        public void UpdatePhase()
+        {
+            blackboard.SetValue("Phase", data.CurrentPhase());
         }
     }
 }
