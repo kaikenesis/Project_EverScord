@@ -9,6 +9,7 @@ using UnityEngine.Rendering.Universal;
 public class BossRPC : MonoBehaviour, IEnemy
 {
     public Dictionary<string, float> clipDict = new();
+    public BossProjectileController projectileController;
     
     [SerializeField] private BossData bossData;
     [SerializeField] private GameObject laserPoint;
@@ -27,6 +28,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void Awake()
     {
+        projectileController = gameObject.AddComponent<BossProjectileController>();
         hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
@@ -117,31 +119,32 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
-        PhotonView view = go.GetComponent<PhotonView>();
-        if(view.ViewID == 0)
+        BossProjectile bp = go.GetComponent<BossProjectile>();
+        int id;
+        if (bp.ID == -1)
         {
-            if (PhotonNetwork.AllocateViewID(view))
-            {
-                int viewID = view.ViewID;
-                photonView.RPC("SyncBossProjectile", RpcTarget.Others, position, direction, projectileSpeed, viewID);
-            }
+            id = projectileController.GetIDNum();
+            projectileController.AddDict(id, bp);
         }
         else
-        {
-            photonView.RPC("SyncBossProjectile", RpcTarget.Others, position, direction, projectileSpeed, view.ViewID);
-        }
-        BossProjectile bp = go.GetComponent<BossProjectile>();
-        bp.Setup(position, direction, projectileSpeed);
+            id = bp.ID;
+
+        bp.Setup(id, position, direction, projectileSpeed);
+        photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, projectileSpeed);
     }
 
     [PunRPC]
-    public void SyncBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed, int viewID)
+    public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
+<<<<<<< Updated upstream
         PhotonView view = go.GetComponent<PhotonView>();
         view.ViewID = viewID;
+=======
+>>>>>>> Stashed changes
         BossProjectile bp = go.GetComponent<BossProjectile>();
-        bp.Setup(position, direction, projectileSpeed);
+        projectileController.AddDict(id, bp);
+        bp.Setup(id, position, direction, projectileSpeed);
     }
 
     public IEnumerator ProjectEnable(int patternNum, float projectTime)

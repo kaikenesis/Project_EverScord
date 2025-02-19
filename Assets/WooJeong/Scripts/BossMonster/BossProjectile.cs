@@ -6,19 +6,29 @@ using UnityEngine;
 
 public class BossProjectile : MonoBehaviour
 {
+    public int ID {  get; private set; }
     private Vector3 direction;
     private float speed;
     private int lifeTime = 2;
     private float curTime = 0;
-    private PhotonView photonView;
+
+    public bool IsDestroyed {  get; private set; }
 
     private void Awake()
     {
-        photonView = GetComponent<PhotonView>();
+        ID = -1;
+        IsDestroyed = false;
     }
 
-    public void Setup(Vector3 position, Vector3 direction, float speed)
+    public void SetIsDestroyed(bool isDestroyed)
     {
+        this.IsDestroyed = isDestroyed;
+    }
+
+    public void Setup(int id, Vector3 position, Vector3 direction, float speed)
+    {
+        ID = id;
+        IsDestroyed = false;
         transform.position = position;
         transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
         this.direction = direction;
@@ -51,6 +61,7 @@ public class BossProjectile : MonoBehaviour
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
         }
+<<<<<<< Updated upstream
         photonView.RPC("SyncReturnBullet", RpcTarget.All);
     }
 
@@ -59,5 +70,9 @@ public class BossProjectile : MonoBehaviour
     {
         Debug.Log("SyncReturnBullet");
         ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
+=======
+        Debug.Log("Trigger Enter");
+        IsDestroyed = true;
+>>>>>>> Stashed changes
     }
 }
