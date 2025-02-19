@@ -2,7 +2,6 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 
 namespace EverScord
 {
@@ -22,8 +21,6 @@ namespace EverScord
 
         // Photon Sync
         private Vector3[] remoteHitPointPos;
-        private Vector3[] remoteColliderSize;
-        private Vector3[] remoteColliderCenter;
         private Quaternion[] remoteLaserRot;
         private bool remoteDig;
         private bool remotePattern2;
@@ -46,8 +43,6 @@ namespace EverScord
 
             hit = new RaycastHit[lasers.Count];
             remoteHitPointPos = new Vector3[lasers.Count];
-            remoteColliderSize = new Vector3[lasers.Count];
-            remoteColliderCenter = new Vector3[lasers.Count];
             remoteLaserRot = new Quaternion[lasers.Count];
 
             InitLagerPattern();
@@ -67,21 +62,16 @@ namespace EverScord
 
         private void Update()
         {
-            if(PhotonNetwork.IsConnected)
+            if(PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient)
             {
-                if (!PhotonNetwork.IsMasterClient)
-                {
-                    PhotonSync();
-                }
-                else
-                {
-                    CountSkillTime();
-                }
+                PhotonSync();
             }
             else
             {
                 CountSkillTime();
             }
+
+            DebugInput();
         }
 
         private void InitLagerPattern()
@@ -93,6 +83,13 @@ namespace EverScord
                 lasers[i].transform.SetLocalPositionAndRotation(initPos, Quaternion.Euler(0, i * angle, 0));
                 lasers[i].gameObject.SetActive(false);
             }
+
+            animator.SetBool("bPattern2", false);
+        }
+
+        private void Move()
+        {
+            // 근접한 대상 추격, MasterClinet만 계산하고 결과값을 클라이언트에 전달해서 업데이트
         }
 
         private void CountSkillTime()
@@ -173,26 +170,47 @@ namespace EverScord
 
         public void DoAction(IAction.EType type)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (PhotonNetwork.IsConnected && !PhotonNetwork.IsMasterClient) return;
 
             switch(type)
             {
                 case IAction.EType.Action1:
                     {
                         if (animator.GetBool("bPattern2") == false)
+                        {
                             animator.SetBool("bPattern2", true);
+                            animator.SetBool("bChase", false);
+                        }
                         else
                             StartCoroutine(LagerPattern());
                     }
                     break;
                 case IAction.EType.Action2:
-
+                    {
+                        if (animator.GetBool("bPattern3") == false)
+                        {
+                            animator.SetBool("bPattern3", true);
+                            animator.SetBool("bChase", false);
+                        }
+                    }
                     break;
                 case IAction.EType.Action3:
-
+                    {
+                        if (animator.GetBool("bPattern4") == false)
+                        {
+                            animator.SetBool("bPattern4", true);
+                            animator.SetBool("bChase", false);
+                        }
+                    }
                     break;
                 case IAction.EType.Action4:
-
+                    {
+                        if (animator.GetBool("bPattern5") == false)
+                        {
+                            animator.SetBool("bPattern5", true);
+                            animator.SetBool("bChase", false);
+                        }
+                    }
                     break;
             }
         }
@@ -245,6 +263,14 @@ namespace EverScord
         public void StunMonster(float stunTime)
         {
             throw new System.NotImplementedException();
+        }
+
+        private void DebugInput()
+        {
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                TestDamage(this.gameObject, 30.0f);
+            }
         }
     }
 }

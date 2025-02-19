@@ -6,7 +6,7 @@ namespace EverScord
     {
         public void TestDamage(GameObject sender, float value)
         {
-            Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");
+            //Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");
         }
 
         public void DecreaseHP(float hp)
