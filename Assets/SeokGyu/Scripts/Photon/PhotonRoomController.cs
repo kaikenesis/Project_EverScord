@@ -132,28 +132,30 @@ namespace EverScord
                     break;
                 case ELevel.NORMAL:
                     {
-                        if (IsCanStart())
-                        {
-                            Debug.Log("You Can Start Game");
-                            OnMatchMultiPlay?.Invoke();
-                        }
-                        else
-                        {
-                            Debug.Log("Cannot Start Game");
-                        }
+                        OnMatchMultiPlay?.Invoke();
+                        //if (IsCanStart())
+                        //{
+                        //    Debug.Log("You Can Start Game");
+                            
+                        //}
+                        //else
+                        //{
+                        //    Debug.Log("Cannot Start Game");
+                        //}
                     }
                     break;
                 case ELevel.HARD:
                     {
-                        if (IsCanStart())
-                        {
-                            Debug.Log("You Can Start Game");
-                            OnMatchMultiPlay?.Invoke();
-                        }
-                        else
-                        {
-                            Debug.Log("Cannot Start Game");
-                        }
+                        OnMatchMultiPlay?.Invoke();
+                        //if (IsCanStart())
+                        //{
+                        //    Debug.Log("You Can Start Game");
+                            
+                        //}
+                        //else
+                        //{
+                        //    Debug.Log("Cannot Start Game");
+                        //}
                     }
                     break;
             }
