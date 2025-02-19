@@ -3,7 +3,7 @@ using UnityEngine;
 using EverScord.Weapons;
 using EverScord.Pool;
 
-namespace EverScord
+namespace EverScord.Effects
 {
     public class SmokeTrail : MonoBehaviour, IPoolable
     {

@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
+using EverScord.Effects;
 
 namespace EverScord.Weapons
 {

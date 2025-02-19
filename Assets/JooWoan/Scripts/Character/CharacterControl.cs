@@ -6,6 +6,7 @@ using EverScord.Weapons;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
+using EverScord.Effects;
 
 namespace EverScord.Character
 {
@@ -41,6 +42,12 @@ namespace EverScord.Character
         [Header("Rig")]
         [SerializeField] private CharacterRigControl rigLayerPrefab;
 
+        [Header("Blink Effect")]
+        [SerializeField] private Color hurtColor;
+        [SerializeField] private float hurtBlinkDuration;
+        [SerializeField] private float hurtBlinkIntensity;
+
+
         public PlayerUI PlayerUIControl                                 { get; private set; }
         public CharacterRigControl RigControl                           { get; private set; }
         public CharacterAnimation AnimationControl                      { get; private set; }
@@ -61,13 +68,14 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
+        private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
         private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
         private Action onDecreaseHealth;
-
+        
         private SkinnedMeshRenderer[] skinRenderers;
         private int originalSkinLayer;
 
@@ -77,6 +85,7 @@ namespace EverScord.Character
             set
             {
                 currentHealth = value;
+                blinkEffect.Blink();
                 // Change Helath UI
             }
         }
@@ -104,7 +113,7 @@ namespace EverScord.Character
             if (skinRenderers.Length > 0)
                 originalSkinLayer = skinRenderers[0].gameObject.layer;
 
-            CurrentHealth = maxHealth;
+            currentHealth = maxHealth;
 
             AnimationControl.Init(photonView);
             weapon.Init(this);
@@ -120,6 +129,7 @@ namespace EverScord.Character
             }
 
             CameraControl.Init(PlayerTransform);
+            blinkEffect = BlinkEffect.Create(this, hurtBlinkDuration, hurtBlinkIntensity, hurtColor);
         }
 
         void Start()
