@@ -16,7 +16,7 @@ public class BossProjectileController : MonoBehaviour
 
     private void Update()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if(!photonView.IsMine)
             return;
 
         foreach(var projectile in projectileDict.Values)

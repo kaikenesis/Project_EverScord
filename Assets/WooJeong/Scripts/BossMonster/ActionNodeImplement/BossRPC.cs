@@ -38,11 +38,6 @@ public class BossRPC : MonoBehaviour, IEnemy
         }
         SetProjectors();
     }
-    public void DecreaseHP(float hp)
-    {
-        Debug.Log("Boss Hit");
-        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
-    }
 
     private void SetProjectors()
     {
@@ -239,11 +234,16 @@ public class BossRPC : MonoBehaviour, IEnemy
         projectorP7_Danger.enabled = false;
     }
 
+    public void DecreaseHP(float hp)
+    {
+        Debug.Log("Boss Hit");
+        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
+    }
+    
     [PunRPC]
     protected void SyncBossMonsterHP(float hp)
     {
         bossData.ReduceHp(hp);
-        hp = bossData.HP;
     }
 
     public void LaserEnable(float enableTime)
@@ -255,20 +255,6 @@ public class BossRPC : MonoBehaviour, IEnemy
     public IEnumerator SyncLaser(float enableTime)
     {
         laserPoint.SetActive(true);
-
-        //GameObject laser = ResourceManager.Instance.GetFromPool("BossLaser", transform.position, Quaternion.identity);
-        //laser.transform.parent = transform;
-
-        //Quaternion startPoint = transform.rotation;
-        //Quaternion endPoint = Quaternion.AngleAxis(-180, Vector3.up) * transform.rotation;
-        //float time = enableTime / 2;
-        //for (float t = 0f; t < enableTime/2; t += Time.deltaTime)
-        //{
-        //    laser.transform.rotation = Quaternion.Lerp(startPoint, endPoint, t / (enableTime/2));
-        //    yield return new WaitForSeconds(Time.deltaTime);
-        //}
-        //ResourceManager.Instance.ReturnToPool(laser, "BossLaser");
-
         yield return new WaitForSeconds(enableTime);
         laserPoint.SetActive(false);
     }
@@ -277,7 +263,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("laser hit");
+            Debug.Log("hit");
             CharacterControl control = other.GetComponent<CharacterControl>();
             control.DecreaseHP(10);
         }
