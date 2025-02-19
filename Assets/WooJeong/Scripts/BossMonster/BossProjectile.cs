@@ -50,8 +50,8 @@ public class BossProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
+        //if (!PhotonNetwork.IsMasterClient)
+            //return;
         if(other.gameObject.CompareTag("Projectile") || other.gameObject.CompareTag("Enemy"))
         {
             return;
@@ -61,7 +61,6 @@ public class BossProjectile : MonoBehaviour
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
         }
-        Debug.Log("Trigger Enter");
         IsDestroyed = true;
     }
 }
