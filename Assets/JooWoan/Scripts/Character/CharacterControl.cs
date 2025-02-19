@@ -480,12 +480,14 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        public void SyncJumpAttackSkill(Vector3 landingPosition, int index)
+        public void SyncJumpAttackSkill(Vector3 mouseRayHitPos, Vector3 landingPosition, int index)
         {
             JumpAttackAction skillAction = (JumpAttackAction)skillList[index].SkillAction;
 
+            MouseRayHitPos = mouseRayHitPos;
             playerInputInfo.pressedLeftMouseButton = true;
-            skillAction.SyncInfo(landingPosition);
+
+            skillAction.SyncInfo(mouseRayHitPos, landingPosition);
         }
 
         [PunRPC]

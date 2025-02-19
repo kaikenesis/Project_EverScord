@@ -109,18 +109,18 @@ namespace EverScord.Skill
             while (attackCoroutine == null)
             {
                 if (photonView.IsMine)
+                {
                     skillMarker.Move(activator.MouseRayHitPos);
+                    landingPosition = skillMarker.Marker.position;
+                    landingPosition.y = 0f;
+                }
 
                 if (CanJump && activator.PlayerInputInfo.pressedLeftMouseButton)
                 {
                     SetJumpMode(false);
                     activator.SetMouseButtonDown(false);
-                    
-                    landingPosition = skillMarker.Marker.position;
-                    landingPosition.y = 0f;
 
                     attackCoroutine = StartCoroutine(JumpAttack());
-
                     SendRPC();
                     yield break;
                 }
@@ -235,12 +235,13 @@ namespace EverScord.Skill
             if (!photonView.IsMine || !PhotonNetwork.IsConnected)
                 return;
 
-            photonView.RPC(nameof(activator.SyncJumpAttackSkill), RpcTarget.Others, landingPosition, skillIndex);
+            photonView.RPC(nameof(activator.SyncJumpAttackSkill), RpcTarget.Others, activator.MouseRayHitPos, landingPosition, skillIndex);
         }
 
-        public void SyncInfo(Vector3 landingPosition)
+        public void SyncInfo(Vector3 mouseRayHitPos, Vector3 landingPosition)
         {
             CanJump = true;
+            skillMarker.Move(mouseRayHitPos);
             this.landingPosition = landingPosition;
         }
     }
