@@ -12,11 +12,7 @@ namespace EverScord.Skill
         public bool IsCooldown => elapsedTime < cooldown;
         public float CooldownProgress
         {
-            get
-            {
-                float progress = elapsedTime / Mathf.Max(cooldown, 0.01f);
-                return Mathf.Clamp(progress, 0f, 100f);
-            }
+            get { return Mathf.Clamp01(elapsedTime / Mathf.Max(0.01f, cooldown)); }
         }
 
         public CooldownTimer(float cooldown)
