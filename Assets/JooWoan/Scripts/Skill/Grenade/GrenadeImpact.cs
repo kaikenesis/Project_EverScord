@@ -6,11 +6,8 @@ namespace EverScord.Skill
     {
         private GameObject explosionEffect;
 
-        public override void OnCollisionEnter(Collision collision)
+        protected override void Impact()
         {
-            if (!IsValidCollision(collision))
-                return;
-
             GrenadeSkillAction grenadeSkillAction = skillAction as GrenadeSkillAction;
             GrenadeSkill grenadeSkill = grenadeSkillAction.Skill;
 
@@ -24,8 +21,6 @@ namespace EverScord.Skill
 
             grenadeSkillAction.SetGrenadeImpactPosition(transform.position);
             onSkillActivated.Invoke();
-            
-            Destroy(gameObject);
         }
     }
 }

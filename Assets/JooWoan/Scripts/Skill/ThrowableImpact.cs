@@ -6,35 +6,41 @@ namespace EverScord.Skill
 {
     public abstract class ThrowableImpact : MonoBehaviour
     {
-        protected const float MAX_DURATION = 10f;
-
+        private const float ESTIMATED_TIME_DELAY = 0.1f;
         protected Action onSkillActivated = null;
         protected ThrowSkillAction skillAction = null;
         protected CharacterControl thrower;
-        protected CooldownTimer timer;
-
-        protected void Awake()
-        {
-            timer = new CooldownTimer(MAX_DURATION);
-            StartCoroutine(timer.RunTimer(true));
-        }
+        protected CooldownTimer timer = null;
 
         void Update()
         {
-            if (timer.IsCooldown)
+            if (timer == null || timer.IsCooldown)
                 return;
 
+            Impact();
             Destroy(gameObject);
         }
 
-        public abstract void OnCollisionEnter(Collision collision);
+        protected void OnCollisionEnter(Collision collision)
+        {
+            if (!IsValidCollision(collision))
+                return;
 
-        public virtual void Init(CharacterControl activator, ThrowSkillAction skillAction)
+            Impact();
+            Destroy(gameObject);
+        }
+
+        protected abstract void Impact();
+
+        public virtual void Init(CharacterControl activator, ThrowSkillAction skillAction, TrajectoryInfo info)
         {
             this.skillAction = skillAction;
             thrower = activator;
             
             onSkillActivated = (thrower.CharacterJob == EJob.DEALER) ? skillAction.OffensiveAction : skillAction.SupportAction;
+
+            timer = new CooldownTimer(info.EstimatedTime + ESTIMATED_TIME_DELAY);
+            StartCoroutine(timer.RunTimer(true));
         }
 
         public bool IsValidCollision(Collision collision)

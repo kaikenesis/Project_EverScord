@@ -60,12 +60,12 @@ namespace EverScord.Skill
             grenadeImpactPosition = position;
         }
 
-        public override IEnumerator ThrowObject()
+        public override IEnumerator ThrowObject(TrajectoryInfo info)
         {
             Transform grenade = Instantiate(Skill.ThrowingObject, CharacterSkill.SkillRoot).transform;
-            grenade.GetComponent<ThrowableImpact>().Init(activator, this);
+            grenade.GetComponent<ThrowableImpact>().Init(activator, this, info);
 
-            StartCoroutine(predictor.ThrowObject(grenade));
+            StartCoroutine(predictor.ThrowObject(grenade, info));
             yield break;
         }
     }

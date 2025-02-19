@@ -13,7 +13,7 @@ namespace EverScord.Skill
 
         public TrajectoryPredictor Predictor => predictor;
         public ThrowSkill ThrowingSkill { get; private set; }
-        private WaitForSeconds waitDelay = new WaitForSeconds(0.1f);
+        private WaitForSeconds waitDelay = new WaitForSeconds(0.2f);
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {
@@ -57,8 +57,9 @@ namespace EverScord.Skill
                     activator.SetMouseButtonDown(false);
                     cooldownTimer.ResetElapsedTime();
 
-                    StartCoroutine(ThrowObject());
-                    SendRPC();
+                    TrajectoryInfo info = predictor.GetTrajectoryInfo();
+                    StartCoroutine(ThrowObject(info));
+                    SendRPC(info);
 
                     yield return waitDelay;
                     ExitSkill();
@@ -88,7 +89,7 @@ namespace EverScord.Skill
             }
         }
 
-        private void SendRPC()
+        private void SendRPC(TrajectoryInfo info)
         {
             if (!PhotonNetwork.IsConnected)
                 return;
@@ -97,15 +98,15 @@ namespace EverScord.Skill
                 nameof(activator.SyncThrowSkill),
                 RpcTarget.Others,
                 activator.MouseRayHitPos,
-                predictor.ThrownPosition,
-                predictor.GroundDirection,
-                predictor.InitialVelocity,
-                predictor.TrajectoryAngle,
-                predictor.EstimatedTime,
+                info.ThrownPosition,
+                info.GroundDirection,
+                info.InitialVelocity,
+                info.TrajectoryAngle,
+                info.EstimatedTime,
                 skillIndex
             );
         }
 
-        public abstract IEnumerator ThrowObject();
+        public abstract IEnumerator ThrowObject(TrajectoryInfo info);
     }
 }

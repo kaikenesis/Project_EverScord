@@ -15,23 +15,19 @@ namespace EverScord.Skill
         private GameObject airStrikeMarker;
         private Vector3 thrownDirection;
 
-        public override void Init(CharacterControl activator, ThrowSkillAction skillAction)
+        public override void Init(CharacterControl activator, ThrowSkillAction skillAction, TrajectoryInfo info)
         {
-            base.Init(activator, skillAction);
-
             airStrikeAction = skillAction as AirStrikeAction;
             airStrikeSkill  = skillAction.ThrowingSkill as AirStrikeSkill;
             airStrikeMarker = skillAction.ThrowingSkill.DestinationMarker;
-            thrownDirection = skillAction.Predictor.GroundDirection;
+            thrownDirection = info.GroundDirection;
+            
+            base.Init(activator, skillAction, info);
         }
 
-        public override void OnCollisionEnter(Collision collision)
+        protected override void Impact()
         {
-            if (!IsValidCollision(collision))
-                return;
-
             thrower.StartCoroutine(PrepareStrike());
-            Destroy(gameObject);
         }
 
         private IEnumerator PrepareStrike()

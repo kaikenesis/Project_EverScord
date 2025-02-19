@@ -170,12 +170,12 @@ namespace EverScord.Skill
             CharacterSkill.SetEffectParticles(healEffect, false);
         }
 
-        public override IEnumerator ThrowObject()
+        public override IEnumerator ThrowObject(TrajectoryInfo info)
         {
             GameObject flare = Instantiate(ThrowingSkill.ThrowingObject, CharacterSkill.SkillRoot);
-            flare.GetComponent<ThrowableImpact>().Init(activator, this);
+            flare.GetComponent<ThrowableImpact>().Init(activator, this, info);
 
-            StartCoroutine(predictor.ThrowObject(flare.transform));
+            StartCoroutine(predictor.ThrowObject(flare.transform, info));
             yield break;
         }
 

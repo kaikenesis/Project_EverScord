@@ -482,8 +482,17 @@ namespace EverScord.Character
             MouseRayHitPos = mouseRayHitPos;
             playerInputInfo.pressedLeftMouseButton = true;
 
-            skillAction.Predictor.SyncInfo(thrownPosition, groundDirection, initialVelocity, trajectoryAngle, estimatedTime);
-            skillAction.StartCoroutine(skillAction.ThrowObject());
+            TrajectoryInfo info = new TrajectoryInfo()
+            {
+                ThrownPosition  = thrownPosition,
+                GroundDirection = groundDirection,
+                InitialVelocity = initialVelocity,
+                TrajectoryAngle = trajectoryAngle,
+                EstimatedTime   = estimatedTime
+            };
+
+            skillAction.Predictor.SyncInfo(info);
+            skillAction.StartCoroutine(skillAction.ThrowObject(info));
         }
 
         [PunRPC]

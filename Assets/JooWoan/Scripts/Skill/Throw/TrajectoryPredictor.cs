@@ -95,29 +95,34 @@ namespace EverScord.Skill
             SetPathVisibility(false);
         }
 
-        public IEnumerator ThrowObject(Transform thrownObject)
+        public IEnumerator ThrowObject(Transform thrownObject, TrajectoryInfo info)
         {
             IsThrownObjectMoving = true;
+            
+            float totalTime     = info.EstimatedTime;
+            Vector3 position    = info.ThrownPosition;
+            Vector3 direction   = info.GroundDirection;
+            float velocity      = info.InitialVelocity;
+            float angle         = info.TrajectoryAngle;
 
+            skillMarker.Stamp(totalTime);
             skillMarker.Set(false);
             SetPathVisibility(false);
-            
-            estimatedTime += 0.1f;
-            skillMarker.Stamp(estimatedTime);
 
-            Vector3 position    = thrownPosition;
-            Vector3 direction   = groundDirection;
-            float velocity      = initialVelocity;
-            float angle         = trajectoryAngle;
-
-            for (float t = 0; t <= estimatedTime; t += Time.deltaTime)
+            for (float t = 0; t < totalTime; t += Time.deltaTime)
             {
                 if (thrownObject == null)
-                    break;
+                {
+                    IsThrownObjectMoving = false;
+                    yield break;
+                }
                 
                 thrownObject.position = GetProjectilePosition(position, direction, velocity, angle, t);
                 yield return null;
             }
+
+            if (thrownObject)
+                thrownObject.position = GetProjectilePosition(position, direction, velocity, angle, totalTime);
 
             IsThrownObjectMoving = false;
         }
@@ -211,13 +216,36 @@ namespace EverScord.Skill
             trajectoryLine.enabled = state;
         }
 
-        public void SyncInfo(Vector3 thrownPosition, Vector3 groundDirection, float initialVelocity, float trajectoryAngle, float estimatedTime)
+        public TrajectoryInfo GetTrajectoryInfo()
         {
-            this.thrownPosition  = thrownPosition;
-            this.groundDirection = groundDirection;
-            this.initialVelocity = initialVelocity;
-            this.trajectoryAngle = trajectoryAngle;
-            this.estimatedTime   = estimatedTime;
+            TrajectoryInfo info = new TrajectoryInfo()
+            {
+                ThrownPosition  = thrownPosition,
+                GroundDirection = groundDirection,
+                InitialVelocity = initialVelocity,
+                TrajectoryAngle = trajectoryAngle,
+                EstimatedTime   = estimatedTime
+            };
+
+            return info;
         }
+
+        public void SyncInfo(TrajectoryInfo info)
+        {
+            thrownPosition  = info.ThrownPosition;
+            groundDirection = info.GroundDirection;
+            initialVelocity = info.InitialVelocity;
+            trajectoryAngle = info.TrajectoryAngle;
+            estimatedTime   = info.EstimatedTime;
+        }
+    }
+
+    public struct TrajectoryInfo
+    {
+        public Vector3 ThrownPosition;
+        public Vector3 GroundDirection;
+        public float InitialVelocity;
+        public float TrajectoryAngle;
+        public float EstimatedTime;
     }
 }
