@@ -6,11 +6,11 @@ namespace EverScord.Skill
 {
     public class AirStrikeAction : ThrowSkillAction
     {
-        private const float AIRCRAFT_2_SPEED = 1.5f;
-        private const float AIRCRAFT_3_SPEED = 1.8f;
-        private const float AIRCRAFT_2_DELAY = 0.4f;
-        private const float AIRCRAFT_3_DELAY = 1.2f;
-        private const float AIRCRAFT_DISTANCE = 4f;
+        private const float AIRCRAFT_2_SPEED = 1.3f;
+        private const float AIRCRAFT_3_SPEED = 1.5f;
+        private const float AIRCRAFT_2_DELAY = 0.5f;
+        private const float AIRCRAFT_3_DELAY = 1.1f;
+        private const float AIRCRAFT_DISTANCE = 4.5f;
         public AirStrikeSkill Skill { get; private set; }
 
         private Vector3 strikeStartPos, strikeEndPos;

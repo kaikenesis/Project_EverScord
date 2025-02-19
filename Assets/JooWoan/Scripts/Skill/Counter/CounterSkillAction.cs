@@ -23,6 +23,10 @@ namespace EverScord.Skill
 
         private bool toggleLaser = false;
         private bool isOutlineActivated = false;
+        public override bool CanAttackWhileSkill
+        {
+            get { return ejob == EJob.HEALER; }
+        }
 
         public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
         {

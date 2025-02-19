@@ -15,7 +15,10 @@ namespace EverScord.Skill
 
             base.Init(activator, skill, ejob, skillIndex);
 
+            GameObject mainMarker = predictor.MarkerControl.Marker.gameObject;
             GameObject stampMarker = predictor.MarkerControl.StampedMarker.gameObject;
+            
+            SkillMarker.SetMarkerColor(mainMarker, Skill.MarkerColor);;
             SkillMarker.SetMarkerColor(stampMarker, Skill.StampMarkerColor);
         }
 
