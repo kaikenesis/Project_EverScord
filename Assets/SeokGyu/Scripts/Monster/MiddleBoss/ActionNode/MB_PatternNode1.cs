@@ -15,6 +15,10 @@ namespace EverScord
 
         private INode.ENodeState Pattern1()
         {
+            int num;
+            blackboard.GetValue("PatternNum", out num);
+            if (num != 0) return INode.ENodeState.FAILURE;
+
             blackboard.GetValue("Owner", out owner);
             if(owner is IAction action)
             {

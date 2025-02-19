@@ -5,7 +5,7 @@ namespace EverScord
     public class BaseMonsterData : ScriptableObject
     {
         [SerializeField] private float maxHealth;
-        [SerializeField] private float curHealth;
+        public float curHealth;
         [SerializeField] private float moveSpeed;
         [SerializeField] private float power;
 
@@ -30,12 +30,6 @@ namespace EverScord
         {
             get { return power; }
             protected set { power = value; }
-        }
-
-        public float CurHealth
-        {
-            get { return curHealth; }
-            protected set { curHealth = value; }
         }
 
         public float HealthPercent()

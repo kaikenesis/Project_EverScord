@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,10 +13,25 @@ namespace EverScord
 
         private void Update()
         {
-            if(countTime < tickTime)
+            if(PhotonNetwork.IsConnected)
+            {
+                if(PhotonNetwork.IsMasterClient)
+                {
+                    SendDamageTick();
+                }
+            }
+            else
+            {
+                SendDamageTick();
+            }
+        }
+
+        private void SendDamageTick()
+        {
+            if (countTime < tickTime)
             {
                 countTime += Time.deltaTime;
-                
+
             }
             else
             {
@@ -29,25 +45,54 @@ namespace EverScord
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.tag == "Player")
+            if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
             {
-                IEnemy status;
-                if(other.gameObject.TryGetComponent(out status))
+                if (other.gameObject.tag == "Player")
                 {
-                    hitList.Add(status);
+                    IEnemy status;
+                    if (other.gameObject.TryGetComponent(out status))
+                    {
+                        hitList.Add(status);
+                    }
+                }
+            }
+            else
+            {
+                if (other.gameObject.tag == "Player")
+                {
+                    IEnemy status;
+                    if (other.gameObject.TryGetComponent(out status))
+                    {
+                        hitList.Add(status);
+                    }
                 }
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.gameObject.tag == "Player")
+            if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
             {
-                IEnemy status;
-                if (other.gameObject.TryGetComponent(out status))
+                if (other.gameObject.tag == "Player")
                 {
-                    if(hitList.Contains(status))
-                        hitList.Remove(status);
+                    IEnemy status;
+                    if (other.gameObject.TryGetComponent(out status))
+                    {
+                        if (hitList.Contains(status))
+                            hitList.Remove(status);
+                    }
+                }
+            }
+            else
+            {
+                if (other.gameObject.tag == "Player")
+                {
+                    IEnemy status;
+                    if (other.gameObject.TryGetComponent(out status))
+                    {
+                        if (hitList.Contains(status))
+                            hitList.Remove(status);
+                    }
                 }
             }
         }
