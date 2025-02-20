@@ -98,6 +98,11 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void PlayAnimation(string animationName)
     {
         photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName);
+    }    
+    
+    public void PlayAnimation(string animationName, float transitionDuration)
+    {
+        photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName, transitionDuration);
     }
 
     [PunRPC]
@@ -108,7 +113,18 @@ public class BossRPC : MonoBehaviour, IEnemy
             photonView = GetComponent<PhotonView>();
             animator = GetComponent<Animator>();
         }
-        animator.CrossFade(animationName, 0.3f, -1, 0);
+        animator.CrossFade(animationName, 0.25f, -1, 0);
+    }
+
+    [PunRPC]
+    public void SyncBossAnimation(string animationName, float transitionDuration)
+    {
+        if (animator == null || photonView == null)
+        {
+            photonView = GetComponent<PhotonView>();
+            animator = GetComponent<Animator>();
+        }
+        animator.CrossFade(animationName, transitionDuration, -1, 0);
     }
 
     public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)

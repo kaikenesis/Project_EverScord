@@ -18,7 +18,11 @@ public class BossPatternNode06 : BAttackPatternNode
             return NodeState.FAILURE;
 
         if (attackable == false && bossData.IsUnderHP(70))
+        {
             attackable = true;
+            isRunning = true;
+            state = actionNodeImplement.Evaluate();
+        }
         return base.Evaluate();
     }
 }

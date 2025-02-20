@@ -24,7 +24,6 @@ public class BossProjectileController : MonoBehaviour
             if(projectile.IsDestroyed)
             {
                 ReturnProjectile(projectile.ID);
-                Debug.Log(projectile.ID);
             }
         }
     }
@@ -57,7 +56,6 @@ public class BossProjectileController : MonoBehaviour
     [PunRPC]
     public void SyncProjectileReturn(int id)
     {
-        Debug.Log("Return");
         ResourceManager.Instance.ReturnToPool(projectileDict[id].gameObject, "BossProjectile");
         projectileDict[id].SetIsDestroyed(false);
     }

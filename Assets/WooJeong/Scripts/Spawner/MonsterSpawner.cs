@@ -33,7 +33,7 @@ public class MonsterSpawner : MonoBehaviour
         while(true)
         {
             curTime += Time.deltaTime;
-            if (curTime > spawnTimer && spawnCount <= maxSpawnCount)
+            if (curTime > spawnTimer)
             {
                 Debug.Log("½ºÆù");
                 mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
@@ -58,8 +58,10 @@ public class MonsterSpawner : MonoBehaviour
 
                 spawnCount++;
                 curTime = 0f;
-                yield break;
             }
+            if (spawnCount >= maxSpawnCount)
+                yield break;
+
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }

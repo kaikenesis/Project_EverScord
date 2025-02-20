@@ -1,21 +1,23 @@
+using EverScord.Character;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class V3DLaserCustom : MonoBehaviour
 {
-    //public Transform targetCursor;
-    public float speed = 1f;
+    private float laserDamage = 200;
 
-    private Vector3 mouseWorldPosition;
-
-    // Positioning cursor prefab
-    void FixedUpdate()
+    private void OnTriggerEnter(Collider other)
     {
-        mouseWorldPosition = transform.position + transform.forward * 10;
-
-        Quaternion toRotation = Quaternion.LookRotation(mouseWorldPosition - transform.position);
-        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, speed * Time.deltaTime);
-        //targetCursor.position = mouseWorldPosition;
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("hit");
+            CharacterControl control = other.GetComponent<CharacterControl>();
+            control.DecreaseHP(laserDamage);
+        }
     }
 }

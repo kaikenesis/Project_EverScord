@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NMM2_AttackState2 : MonoBehaviour
+public class NMM2_AttackState2 : NAttackState
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override IEnumerator Attack()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void Setup()
     {
-        
+        monsterController = GetComponent<NMM2_Controller>();
     }
 }

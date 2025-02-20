@@ -8,7 +8,7 @@ public class BossPattern14_Imp : ActionNodeImplement
     protected override IEnumerator Act()
     {
         Debug.Log("Attack14 start");
-        bossRPC.PlayAnimation("RotatingShot");
+        bossRPC.PlayAnimation("RotatingShot", 0);
         yield return new WaitForSeconds(1.5f);
         bossRPC.LaserEnable(bossRPC.clipDict["RotatingShot"] - 3f);
         yield return new WaitForSeconds(bossRPC.clipDict["RotatingShot"] - 1.5f);

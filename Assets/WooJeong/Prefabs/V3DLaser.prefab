@@ -9871,7 +9871,7 @@ MonoBehaviour:
   globalImpactProgressSpeed: 1
   always: 1
   colorizeAll: 1
-  finalColor: {r: 0, g: 0, b: 0, a: 0}
+  finalColor: {r: 0, g: 0.46274513, b: 1, a: 1}
   gammaLinear: 1
   pointLight: {fileID: 1528171767}
   startPointEffect: {fileID: 445746140}
@@ -29399,13 +29399,14 @@ GameObject:
   m_Component:
   - component: {fileID: 619748627}
   - component: {fileID: 1994598898214813368}
+  - component: {fileID: 8662857209383698073}
   m_Layer: 0
   m_Name: V3DLaser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &619748627
 Transform:
   m_ObjectHideFlags: 0
@@ -29416,7 +29417,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.485, z: 0}
-  m_LocalScale: {x: 1.0000005, y: 1, z: 1.0000005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 451232242}
@@ -29431,12 +29432,32 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 933150261}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a0365fd4dc33a743826ee9bbd18fc39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+--- !u!65 &8662857209383698073
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933150261}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 20}
+  m_Center: {x: 0, y: 0, z: 10}
 --- !u!1 &958865894
 GameObject:
   m_ObjectHideFlags: 0
