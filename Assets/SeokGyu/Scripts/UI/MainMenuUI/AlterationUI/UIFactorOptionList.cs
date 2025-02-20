@@ -33,13 +33,13 @@ namespace EverScord
         {
             gameObject.SetActive(true);
 
-            FactorDatas datas = GameManager.Instance.FactorDatas[typeNum];
+            FactorData datas = GameManager.Instance.FactorDatas[typeNum];
             DisplayOption(datas.OptionDatas.Length, datas, typeNum);
         }
 
         private void HandleSelectOption(int typeNum, int optionNum, float value)
         {
-            FactorDatas datas = GameManager.Instance.FactorDatas[typeNum];
+            FactorData datas = GameManager.Instance.FactorDatas[typeNum];
             Color optionImgColor = datas.OptionDatas[optionNum].ImgColor;
             string optionName = datas.OptionDatas[optionNum].Name;
 
@@ -54,7 +54,7 @@ namespace EverScord
             int count = GameManager.Instance.FactorDatas.Length;
             for (int i = 0; i < count; i++)
             {
-                FactorDatas datas = GameManager.Instance.FactorDatas[i];
+                FactorData datas = GameManager.Instance.FactorDatas[i];
 
                 if (max < datas.OptionDatas.Length)
                     max = datas.OptionDatas.Length;
@@ -73,7 +73,7 @@ namespace EverScord
             int count = GameManager.Instance.FactorDatas.Length;
             for (int i = 0; i < count; i++)
             {
-                FactorDatas.OptionData[] optionDatas = GameManager.Instance.FactorDatas[i].OptionDatas;
+                FactorData.OptionData[] optionDatas = GameManager.Instance.FactorDatas[i].OptionDatas;
                 for (int j = 0; j < optionDatas.Length; j++)
                 {
                     OnInitializeOptionName?.Invoke(optionDatas[j].Name);
@@ -83,14 +83,14 @@ namespace EverScord
             gameObject.SetActive(false);
         }
 
-        private void DisplayOption(int count, FactorDatas datas, int typeNum)
+        private void DisplayOption(int count, FactorData datas, int typeNum)
         {
             for (int i = 0; i < options.Count; i++)
             {
                 if (i < count)
                 {
                     options[i].gameObject.SetActive(true);
-                    FactorDatas.OptionData optionData = datas.OptionDatas[i];
+                    FactorData.OptionData optionData = datas.OptionDatas[i];
                     options[i].Initialize(optionData.Name, optionData.Values[optionData.Values.Length - 1], i, typeNum);
                 }
                 else

@@ -61,7 +61,7 @@ namespace EverScord
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
             GameManager.Instance.userData.DecreaseMoney(cost);
 
-            FactorDatas datas = GameManager.Instance.FactorDatas[typeNum];
+            FactorData datas = GameManager.Instance.FactorDatas[typeNum];
 
             int randomOptionNum = UnityEngine.Random.Range(0, datas.OptionDatas.Length);
 

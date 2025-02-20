@@ -33,11 +33,25 @@ namespace EverScord
             private set { costData = value; }
         }
 
-        [SerializeField] private FactorDatas[] factorDatas;
-        public FactorDatas[] FactorDatas
+        [SerializeField] private FactorData[] factorDatas;
+        public FactorData[] FactorDatas
         {
             get { return factorDatas; }
             private set { factorDatas = value; }
+        }
+
+        [SerializeField] private InGameUIData inGameUIData;
+        public InGameUIData InGameUIData
+        {
+            get { return inGameUIData; }
+            private set { inGameUIData = value; }
+        }
+
+        [SerializeField] private ArmorData armorData;
+        public ArmorData ArmorData
+        {
+            get { return armorData; }
+            private set { armorData = value; }
         }
 
         private IDictionary<int, CharacterControl> playerDict;
