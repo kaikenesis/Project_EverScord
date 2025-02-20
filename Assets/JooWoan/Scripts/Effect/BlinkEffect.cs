@@ -7,6 +7,9 @@ namespace EverScord.Effects
 {
     public class BlinkEffect : MonoBehaviour
     {
+        private const float DEFAULT_DURATION = 0.08f;
+        private const float DEFAULT_INTENSITY = 0.7f;
+
         [SerializeField, ColorUsage(true, true)] private Color blinkColor;
         [SerializeField] private float blinkIntensity;
         [SerializeField] private float blinkDuration;
@@ -16,18 +19,21 @@ namespace EverScord.Effects
         private const string EMISSION_KEYWORD = "_EMISSION";
 
         private MonoBehaviour blinkTarget;
-        private SkinnedMeshRenderer[] skinRenderers;
+        private Renderer[] renderers;
         private Coroutine blinkCoroutine;
         private MaterialPropertyBlock mpb;
         private IDictionary<(int, int), (Texture, Color)> emissionDict;
 
-        public static BlinkEffect Create(MonoBehaviour target, float duration, float intensity, Color color)
+        public static BlinkEffect Create(MonoBehaviour target, float duration = DEFAULT_DURATION, float intensity = DEFAULT_INTENSITY, Color color = default)
         {
             if (!target)
             {
                 Debug.LogWarning($"Blink Effect: Failed to find target.");
                 return null;
             }
+
+            if (color == default)
+                color = Color.white;
 
             BlinkEffect blinkEffect = target.AddComponent<BlinkEffect>();
             blinkEffect.Init(target, duration, intensity, color);
@@ -72,7 +78,7 @@ namespace EverScord.Effects
             blinkIntensity = intensity;
             blinkColor = color;
 
-            skinRenderers = target.GetComponentsInChildren<SkinnedMeshRenderer>();
+            renderers = target.GetComponentsInChildren<Renderer>();
             mpb = new MaterialPropertyBlock();
             emissionDict = new Dictionary<(int, int), (Texture, Color)>();
 
@@ -92,35 +98,35 @@ namespace EverScord.Effects
 
         private void SetMaterialSettings()
         {
-            for (int i = 0; i < skinRenderers.Length; i++)
+            for (int i = 0; i < renderers.Length; i++)
             {
-                for (int j = 0; j < skinRenderers[i].sharedMaterials.Length; j++)
+                for (int j = 0; j < renderers[i].sharedMaterials.Length; j++)
                 {
-                    skinRenderers[i].sharedMaterials[j].EnableKeyword(EMISSION_KEYWORD);
-                    skinRenderers[i].sharedMaterials[j].globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                    renderers[i].sharedMaterials[j].EnableKeyword(EMISSION_KEYWORD);
+                    renderers[i].sharedMaterials[j].globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
                 }
             }
         }
 
         public void SetMaterialColors(Color color, bool isReset = false)
         {
-            for (int i = 0; i < skinRenderers.Length; i++)
+            for (int i = 0; i < renderers.Length; i++)
             {
-                for (int j = 0; j < skinRenderers[i].sharedMaterials.Length; j++)
+                for (int j = 0; j < renderers[i].sharedMaterials.Length; j++)
                 {
-                    skinRenderers[i].GetPropertyBlock(mpb, j);
+                    renderers[i].GetPropertyBlock(mpb, j);
 
-                    if (skinRenderers[i].sharedMaterials[j].HasTexture(emissionMapID))
+                    if (renderers[i].sharedMaterials[j].HasTexture(emissionMapID))
                     {
-                        Texture texture = skinRenderers[i].sharedMaterials[j].GetTexture(emissionMapID);
+                        Texture texture = renderers[i].sharedMaterials[j].GetTexture(emissionMapID);
 
                         if (texture != null)
                         {
                             if (!emissionDict.ContainsKey((j, i)))
                             {
                                 emissionDict[(j, i)] = (
-                                    skinRenderers[i].sharedMaterials[j].GetTexture(emissionMapID),
-                                    skinRenderers[i].sharedMaterials[j].GetColor(emissionColorID)
+                                    renderers[i].sharedMaterials[j].GetTexture(emissionMapID),
+                                    renderers[i].sharedMaterials[j].GetColor(emissionColorID)
                                 );
                             }
 
@@ -137,7 +143,7 @@ namespace EverScord.Effects
                     if (!isReset)
                         mpb.SetColor(emissionColorID, color);
 
-                    skinRenderers[i].SetPropertyBlock(mpb, j);
+                    renderers[i].SetPropertyBlock(mpb, j);
                 }
             }
         }

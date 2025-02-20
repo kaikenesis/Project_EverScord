@@ -1,3 +1,4 @@
+using EverScord.Effects;
 using UnityEngine;
 
 namespace EverScord.Monster
@@ -12,6 +13,11 @@ namespace EverScord.Monster
         public void ApplyDamageToEnemy(float hp, IEnemy monster)
         {
             monster?.DecreaseHP(hp);
+
+            BlinkEffect blinkEffect = monster.GetBlinkEffect();
+
+            if (blinkEffect != null)
+                blinkEffect.Blink();
         }
     }
 }

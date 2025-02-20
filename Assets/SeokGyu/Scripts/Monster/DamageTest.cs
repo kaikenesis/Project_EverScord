@@ -1,3 +1,4 @@
+using EverScord.Effects;
 using UnityEngine;
 
 namespace EverScord
@@ -15,6 +16,11 @@ namespace EverScord
         }
 
         public void StunMonster(float stunTime)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public BlinkEffect GetBlinkEffect()
         {
             throw new System.NotImplementedException();
         }

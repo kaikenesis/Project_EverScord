@@ -1,3 +1,4 @@
+using EverScord.Effects;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -271,6 +272,11 @@ namespace EverScord
             {
                 TestDamage(this.gameObject, 30.0f);
             }
+        }
+
+        public BlinkEffect GetBlinkEffect()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

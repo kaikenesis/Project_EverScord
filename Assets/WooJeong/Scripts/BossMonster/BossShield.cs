@@ -1,3 +1,4 @@
+using EverScord.Effects;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -24,6 +25,11 @@ public class BossShield : MonoBehaviour, IEnemy
     }
 
     public void TestDamage(GameObject sender, float value)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public BlinkEffect GetBlinkEffect()
     {
         throw new System.NotImplementedException();
     }

@@ -1,5 +1,6 @@
 using EverScord;
 using EverScord.Character;
+using EverScord.Effects;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public string GUID { get; protected set; }
 
     private PhotonView photonView;
+    private BlinkEffect blinkEffect;
 
     protected IState currentState;
     protected IState runState;
@@ -49,6 +51,8 @@ public abstract class NController : MonoBehaviour, IEnemy
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
         BoxCollider2 = gameObject.AddComponent<BoxCollider>();
         ProjectorSetup();
+
+        blinkEffect = BlinkEffect.Create(this);
 
         Projector1.enabled = false;
         Projector2.enabled = false;
@@ -381,5 +385,10 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void TestDamage(GameObject sender, float value)
     {
         throw new System.NotImplementedException();
+    }
+
+    public BlinkEffect GetBlinkEffect()
+    {
+        return blinkEffect;
     }
 }

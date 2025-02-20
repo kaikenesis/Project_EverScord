@@ -1,3 +1,4 @@
+using EverScord.Effects;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -81,6 +82,11 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     }
 
     public void TestDamage(GameObject sender, float value)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public BlinkEffect GetBlinkEffect()
     {
         throw new System.NotImplementedException();
     }

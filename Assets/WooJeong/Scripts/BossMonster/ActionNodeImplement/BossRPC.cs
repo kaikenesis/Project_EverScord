@@ -1,5 +1,6 @@
 using EverScord;
 using EverScord.Character;
+using EverScord.Effects;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,12 +27,15 @@ public class BossRPC : MonoBehaviour, IEnemy
     private float attackRadius7 = 80;
     private float safeRadius7 = 7.5f;
 
+    private BlinkEffect blinkEffect;
+
     private void Awake()
     {
         projectileController = gameObject.AddComponent<BossProjectileController>();
         hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
+        blinkEffect = BlinkEffect.Create(this);
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
         {
             clipDict[clip.name] = clip.length;
@@ -356,5 +360,10 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void TestDamage(GameObject sender, float value)
     {
         throw new System.NotImplementedException();
+    }
+
+    public BlinkEffect GetBlinkEffect()
+    {
+        return blinkEffect;
     }
 }
