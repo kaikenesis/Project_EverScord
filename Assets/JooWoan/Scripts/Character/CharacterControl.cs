@@ -43,7 +43,7 @@ namespace EverScord.Character
         [SerializeField] private CharacterRigControl rigLayerPrefab;
 
         [Header("Blink Effect")]
-        [SerializeField] private Color hurtColor;
+        [SerializeField, ColorUsage(true, true)] private Color hurtColor;
         [SerializeField] private float hurtBlinkDuration;
         [SerializeField] private float hurtBlinkIntensity;
 

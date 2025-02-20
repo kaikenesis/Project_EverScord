@@ -7,14 +7,19 @@ namespace EverScord.Effects
 {
     public class BlinkEffect : MonoBehaviour
     {
-        [SerializeField] private Color blinkColor;
+        [SerializeField, ColorUsage(true, true)] private Color blinkColor;
         [SerializeField] private float blinkIntensity;
         [SerializeField] private float blinkDuration;
 
+        private static Texture defaultTexture;
+        private static int emissionMapID, emissionColorID;
+        private const string EMISSION_KEYWORD = "_EMISSION";
+
         private MonoBehaviour blinkTarget;
         private SkinnedMeshRenderer[] skinRenderers;
-        private List<List<Color>> originalColors;
         private Coroutine blinkCoroutine;
+        private MaterialPropertyBlock mpb;
+        private IDictionary<(int, int), (Texture, Color)> emissionDict;
 
         public static BlinkEffect Create(MonoBehaviour target, float duration, float intensity, Color color)
         {
@@ -26,8 +31,27 @@ namespace EverScord.Effects
 
             BlinkEffect blinkEffect = target.AddComponent<BlinkEffect>();
             blinkEffect.Init(target, duration, intensity, color);
-            
+
             return blinkEffect;
+        }
+
+        public static Texture GetDefaultTexture()
+        {
+            if (defaultTexture != null)
+                return defaultTexture;
+
+            var texture = new Texture2D(4, 4);
+
+            for (int x = 0; x < texture.width; x++)
+            {
+                for (int y = 0; y < texture.height; y++)
+                    texture.SetPixel(x, y, Color.white);
+            }
+
+            texture.Apply(true, true);
+            defaultTexture = texture;
+
+            return defaultTexture;
         }
 
         void Awake()
@@ -43,33 +67,38 @@ namespace EverScord.Effects
 
         private void Init(MonoBehaviour target, float duration, float intensity, Color color)
         {
-            blinkTarget     = target;
-            blinkDuration   = duration;
-            blinkIntensity  = intensity;
-            blinkColor      = color;
-            skinRenderers   = target.GetComponentsInChildren<SkinnedMeshRenderer>();
+            blinkTarget = target;
+            blinkDuration = duration;
+            blinkIntensity = intensity;
+            blinkColor = color;
 
-            CacheMaterialColors();
+            skinRenderers = target.GetComponentsInChildren<SkinnedMeshRenderer>();
+            mpb = new MaterialPropertyBlock();
+            emissionDict = new Dictionary<(int, int), (Texture, Color)>();
+
+            emissionMapID = Shader.PropertyToID("_EmissionMap");
+            emissionColorID = Shader.PropertyToID("_EmissionColor");
+
+            SetMaterialSettings();
         }
 
         public void Blink()
         {
             if (blinkCoroutine != null)
                 StopCoroutine(blinkCoroutine);
-            
+
             blinkCoroutine = StartCoroutine(StartBlink());
         }
 
-        private void CacheMaterialColors()
+        private void SetMaterialSettings()
         {
-            originalColors = new();
-
             for (int i = 0; i < skinRenderers.Length; i++)
             {
-                originalColors.Add(new());
-
-                for (int j = 0; j < skinRenderers[i].materials.Length; j++)
-                    originalColors[i].Add(skinRenderers[i].materials[j].color);
+                for (int j = 0; j < skinRenderers[i].sharedMaterials.Length; j++)
+                {
+                    skinRenderers[i].sharedMaterials[j].EnableKeyword(EMISSION_KEYWORD);
+                    skinRenderers[i].sharedMaterials[j].globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                }
             }
         }
 
@@ -77,14 +106,38 @@ namespace EverScord.Effects
         {
             for (int i = 0; i < skinRenderers.Length; i++)
             {
-                Color targetColor = color;
-
-                for (int j = 0; j < skinRenderers[i].materials.Length; j++)
+                for (int j = 0; j < skinRenderers[i].sharedMaterials.Length; j++)
                 {
-                    if (isReset)
-                        targetColor = originalColors[i][j];
-                    
-                    skinRenderers[i].materials[j].color = targetColor;
+                    skinRenderers[i].GetPropertyBlock(mpb, j);
+
+                    if (skinRenderers[i].sharedMaterials[j].HasTexture(emissionMapID))
+                    {
+                        Texture texture = skinRenderers[i].sharedMaterials[j].GetTexture(emissionMapID);
+
+                        if (texture != null)
+                        {
+                            if (!emissionDict.ContainsKey((j, i)))
+                            {
+                                emissionDict[(j, i)] = (
+                                    skinRenderers[i].sharedMaterials[j].GetTexture(emissionMapID),
+                                    skinRenderers[i].sharedMaterials[j].GetColor(emissionColorID)
+                                );
+                            }
+
+                            if (isReset)
+                            {
+                                mpb.SetTexture(emissionMapID, emissionDict[(j, i)].Item1);
+                                mpb.SetColor(emissionColorID, emissionDict[(j, i)].Item2);
+                            }
+                            else
+                                mpb.SetTexture(emissionMapID, GetDefaultTexture());
+                        }
+                    }
+
+                    if (!isReset)
+                        mpb.SetColor(emissionColorID, color);
+
+                    skinRenderers[i].SetPropertyBlock(mpb, j);
                 }
             }
         }
@@ -96,12 +149,12 @@ namespace EverScord.Effects
             float intensity;
 
             while (leftTime >= 0)
-            {                
+            {
                 leftTime -= Time.deltaTime;
 
                 blinkProgress = Mathf.Clamp01(leftTime / blinkDuration);
-                intensity = (blinkProgress * blinkIntensity) + 1f;
-                
+                intensity = (blinkProgress * blinkIntensity);
+
                 SetMaterialColors(blinkColor * intensity);
                 yield return null;
             }
