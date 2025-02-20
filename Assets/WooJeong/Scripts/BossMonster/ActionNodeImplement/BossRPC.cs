@@ -12,7 +12,6 @@ public class BossRPC : MonoBehaviour, IEnemy
     
     [SerializeField] private BossData bossData;
     [SerializeField] private GameObject laserPoint;
-    private MonsterProjectileController projectileController;
     private PhotonView photonView;
     private Animator animator;
     private BoxCollider hitBox;
@@ -36,11 +35,6 @@ public class BossRPC : MonoBehaviour, IEnemy
             clipDict[clip.name] = clip.length;
         }
         SetProjectors();
-    }
-
-    private void Start()
-    {
-        projectileController = GameManager.Instance.ProjectileController;
     }
 
     private void SetProjectors()
@@ -135,13 +129,11 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
-        if (projectileController == null)
-            projectileController = GameManager.Instance.ProjectileController;
         int id;
         if (mp.ID == -1)
         {
-            id = projectileController.GetIDNum();
-            projectileController.AddDict(id, mp);
+            id = GameManager.Instance.ProjectileController.GetIDNum();
+            GameManager.Instance.ProjectileController.AddDict(id, mp);
         }
         else
             id = mp.ID;
@@ -155,9 +147,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile bp = go.GetComponent<MonsterProjectile>();
-        if (projectileController == null)
-            projectileController = GameManager.Instance.ProjectileController;
-        projectileController.AddDict(id, bp);
+        GameManager.Instance.ProjectileController.AddDict(id, bp);
         bp.Setup("BossProjectile", id, position, direction, projectileSpeed);
     }
 

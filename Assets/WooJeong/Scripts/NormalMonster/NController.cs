@@ -30,6 +30,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public string GUID { get; protected set; }
 
     private PhotonView photonView;
+    public PhotonView PhotonView => photonView;
 
     protected IState currentState;
     protected IState runState;

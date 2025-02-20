@@ -450,6 +450,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8639283115993248012}
+  - component: {fileID: 3696580638972855420}
   m_Layer: 0
   m_Name: Root
   m_TagString: Untagged
@@ -473,6 +474,27 @@ Transform:
   - {fileID: 6483184412599089469}
   m_Father: {fileID: 3499037047837336421}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &3696580638972855420
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228784299925509390}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 79fd7b13babf6c647bc4a147b4ae69da, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1314461034647348525
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,9 +784,9 @@ GameObject:
   - component: {fileID: 8652191733571401014}
   - component: {fileID: 4248813404833510390}
   - component: {fileID: -7845081267827603593}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NMM2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -854,7 +876,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1828136282514707933}
   m_Enabled: 1
   m_AgentTypeID: -334000983
-  m_Radius: 0.5
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -886,8 +908,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1848457938159626848
 GameObject:
   m_ObjectHideFlags: 0

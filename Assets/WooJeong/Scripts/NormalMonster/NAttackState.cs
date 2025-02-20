@@ -28,7 +28,7 @@ public abstract class NAttackState : MonoBehaviour, IState
         updating = StartCoroutine(Updating());
     }
 
-    protected IEnumerator Updating()
+    protected virtual IEnumerator Updating()
     {
         while(true)
         {
@@ -46,14 +46,14 @@ public abstract class NAttackState : MonoBehaviour, IState
 
             if (!isAttacking)
             {
-                if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
+                if (monsterController.CalcDistance() > monsterController.monsterData.StopDistance)
                 {
                     isAttacking = false;
                     ExitToRun();
                 }
 
                 monsterController.LookPlayer();
-                if (monsterController.IsLookPlayer(monsterController.monsterData.AttackRangeZ1))
+                if (monsterController.IsLookPlayer(monsterController.monsterData.StopDistance))
                 {
                     isAttacking = true;
                     attack = StartCoroutine(Attack());

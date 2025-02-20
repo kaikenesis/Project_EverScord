@@ -2,34 +2,56 @@ using EverScord.Monster;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class NMM2_AttackState1 : NAttackState
 {
     private CapsuleCollider capsuleCollider;
+    protected NavMeshAgent navMeshAgent;
 
     protected override IEnumerator Attack()
     {
+        yield return Run();
+        monsterController.PlayAnimation("Wait");
         yield return project = StartCoroutine(monsterController.ProjectAttackRange(1));
 
         monsterController.PlayAnimation("Attack1");
         float time = monsterController.clipDict["Attack1"];
 
-        monsterController.BoxCollider1.enabled = true;
+        capsuleCollider.enabled = true;
         yield return new WaitForSeconds(time);
-        monsterController.BoxCollider1.enabled = false;
+        capsuleCollider.enabled = false;
         StartCoroutine(monsterController.CoolDown1());
         attack = null;
         Exit();
     }
 
+    protected IEnumerator Run()
+    {
+        monsterController.PlayAnimation("Run");
+        navMeshAgent.stoppingDistance = monsterController.monsterData.AttackRangeZ1;
+        while (true)
+        {
+            navMeshAgent.destination = monsterController.player.transform.position;
+            if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
+            {
+                yield break;
+            }
+
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+    }
+
     protected override void Setup()
     {
+        monsterController = GetComponent<NMM2_Controller>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
         capsuleCollider = gameObject.AddComponent<CapsuleCollider>();
-
-        capsuleCollider.center = new Vector3(0, transform.position.y,
+        capsuleCollider.center = new Vector3(0, 0,
                                   monsterController.monsterData.AttackRangeZ1 / 2);
 
-        capsuleCollider.radius = monsterController.monsterData.AttackRangeZ1;
-        monsterController = GetComponent<NMM2_Controller>();
+        capsuleCollider.radius = monsterController.monsterData.AttackRangeZ1/2;
+        capsuleCollider.isTrigger = true;
+        capsuleCollider.enabled = false;
     }
 }
