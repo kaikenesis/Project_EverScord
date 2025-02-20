@@ -11,6 +11,7 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField] private float spawnTimer = 0f;
     private float curTime = 0;
     private int spawnCount = 0;
+    [SerializeField] private int maxSpawnCount = 5;
     private int allocateCompleteCount = 1;
 
     private int data;
@@ -32,7 +33,7 @@ public class MonsterSpawner : MonoBehaviour
         while(true)
         {
             curTime += Time.deltaTime;
-            if (curTime > spawnTimer && spawnCount <= 0)
+            if (curTime > spawnTimer && spawnCount <= maxSpawnCount)
             {
                 Debug.Log("½ºÆù");
                 mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);

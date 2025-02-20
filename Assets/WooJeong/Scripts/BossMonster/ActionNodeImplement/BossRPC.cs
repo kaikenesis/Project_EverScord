@@ -340,6 +340,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         }
         animator.speed = 1;
         ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
+        hitBox.enabled = true;
     }
 
     [PunRPC]
@@ -351,6 +352,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         yield return new WaitForSeconds(8f);
         animator.speed = 1;
         ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
+        hitBox.enabled = true;
     }
 
     public void TestDamage(GameObject sender, float value)
