@@ -8,6 +8,12 @@ public class BossShield : MonoBehaviour, IEnemy
 {
     public float HP {  get; private set; }
     private float maxHP = 100;
+    private BlinkEffect blinkEffect;
+
+    void Awake()
+    {
+        blinkEffect = BlinkEffect.Create(this);
+    }
 
     private void OnEnable()
     {
@@ -31,6 +37,6 @@ public class BossShield : MonoBehaviour, IEnemy
 
     public BlinkEffect GetBlinkEffect()
     {
-        throw new System.NotImplementedException();
+        return blinkEffect;
     }
 }

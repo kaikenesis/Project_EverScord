@@ -17,6 +17,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     private string effectAddressableKey;
     ParticleSystem effectParticle;
     PhotonView photonView;
+    private BlinkEffect blinkEffect;
 
     private void Awake()
     {
@@ -26,6 +27,8 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         boxCollider = gameObject.AddComponent<BoxCollider>();
         //capCollider.isTrigger = true;
         projector.renderingLayerMask = 2;
+
+        blinkEffect = BlinkEffect.Create(this);
     }
 
     public void Setup(float width, float projectTime, string effectAddressableKey, float attackDamage)
@@ -88,6 +91,6 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
 
     public BlinkEffect GetBlinkEffect()
     {
-        throw new System.NotImplementedException();
+        return blinkEffect;
     }
 }
