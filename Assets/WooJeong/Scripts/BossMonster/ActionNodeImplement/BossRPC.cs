@@ -9,10 +9,10 @@ using UnityEngine.Rendering.Universal;
 public class BossRPC : MonoBehaviour, IEnemy
 {
     public Dictionary<string, float> clipDict = new();
-    public BossProjectileController projectileController;
     
     [SerializeField] private BossData bossData;
     [SerializeField] private GameObject laserPoint;
+    private MonsterProjectileController projectileController;
     private PhotonView photonView;
     private Animator animator;
     private BoxCollider hitBox;
@@ -28,7 +28,6 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void Awake()
     {
-        projectileController = gameObject.AddComponent<BossProjectileController>();
         hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
@@ -37,6 +36,11 @@ public class BossRPC : MonoBehaviour, IEnemy
             clipDict[clip.name] = clip.length;
         }
         SetProjectors();
+    }
+
+    private void Start()
+    {
+        projectileController = GameManager.Instance.ProjectileController;
     }
 
     private void SetProjectors()
@@ -129,28 +133,32 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
     {
-        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
-        BossProjectile bp = go.GetComponent<BossProjectile>();
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
+        MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
+        if (projectileController == null)
+            projectileController = GameManager.Instance.ProjectileController;
         int id;
-        if (bp.ID == -1)
+        if (mp.ID == -1)
         {
             id = projectileController.GetIDNum();
-            projectileController.AddDict(id, bp);
+            projectileController.AddDict(id, mp);
         }
         else
-            id = bp.ID;
+            id = mp.ID;
 
-        bp.Setup(id, position, direction, projectileSpeed);
+        mp.Setup("BossProjectile", id, position, direction, projectileSpeed);
         photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, projectileSpeed);
     }
 
     [PunRPC]
     public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float projectileSpeed)
     {
-        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
-        BossProjectile bp = go.GetComponent<BossProjectile>();
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
+        MonsterProjectile bp = go.GetComponent<MonsterProjectile>();
+        if (projectileController == null)
+            projectileController = GameManager.Instance.ProjectileController;
         projectileController.AddDict(id, bp);
-        bp.Setup(id, position, direction, projectileSpeed);
+        bp.Setup("BossProjectile", id, position, direction, projectileSpeed);
     }
 
     public IEnumerator ProjectEnable(int patternNum, float projectTime)

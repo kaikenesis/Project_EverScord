@@ -24,6 +24,7 @@ namespace EverScord.Pool
             }
 
             _ = ResourceManager.Instance.CreatePool("BossProjectile", 63);
+            _ = ResourceManager.Instance.CreatePool("MonsterProjectile", 63);
             _ = ResourceManager.Instance.CreatePool("StoneUp", 9);
             _ = ResourceManager.Instance.CreatePool("MonsterAttack");
             _ = ResourceManager.Instance.CreatePool("BossMonsterStoneAttack");

@@ -1,22 +1,24 @@
+using EverScord;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossProjectileController : MonoBehaviour
+public class MonsterProjectileController : MonoBehaviour
 {
-    private Dictionary<int, BossProjectile> projectileDict = new Dictionary<int, BossProjectile>();
+    private Dictionary<int, MonsterProjectile> projectileDict = new Dictionary<int, MonsterProjectile>();
     private int idNum = 0;
     private PhotonView photonView;
 
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
+        GameManager.Instance.InitControl(this);
     }
 
     private void Update()
     {
-        if(!photonView.IsMine)
+        if(!PhotonNetwork.IsMasterClient)
             return;
 
         foreach(var projectile in projectileDict.Values)
@@ -28,7 +30,7 @@ public class BossProjectileController : MonoBehaviour
         }
     }
 
-    public void AddDict(int id, BossProjectile projectile)
+    public void AddDict(int id, MonsterProjectile projectile)
     {
         projectileDict[id] = projectile;
     }
@@ -38,7 +40,7 @@ public class BossProjectileController : MonoBehaviour
         return ++idNum;
     }
 
-    public BossProjectile GetProjectile(int id)
+    public MonsterProjectile GetProjectile(int id)
     {
         return projectileDict[id];
     }
@@ -56,7 +58,8 @@ public class BossProjectileController : MonoBehaviour
     [PunRPC]
     public void SyncProjectileReturn(int id)
     {
-        ResourceManager.Instance.ReturnToPool(projectileDict[id].gameObject, "BossProjectile");
         projectileDict[id].SetIsDestroyed(false);
+        ResourceManager.Instance.ReturnToPool(projectileDict[id].ProjectileEffect, projectileDict[id].ProjectileName);
+        ResourceManager.Instance.ReturnToPool(projectileDict[id].gameObject, "MonsterProjectile");
     }
 }

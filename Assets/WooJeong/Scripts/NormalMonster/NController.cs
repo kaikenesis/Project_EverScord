@@ -20,7 +20,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected float curCool1 = 0;
     protected float curCool2 = 0;
     protected RaycastHit hit;
-    [SerializeField] protected LayerMask playerLayer;
+    protected LayerMask playerLayer;
 
     public DecalProjector Projector1 { get; protected set; }
     public DecalProjector Projector2 { get; protected set; }
@@ -38,6 +38,8 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected IState waitState;
     protected IState stunState;
     protected IState deathState;
+
+    protected abstract void Setup();
 
     protected void Awake()
     {
@@ -69,6 +71,40 @@ public abstract class NController : MonoBehaviour, IEnemy
         SetNearestPlayer();
         
         Setup();
+    }
+    protected void ProjectorSetup()
+    {
+        Projector1.renderingLayerMask = 2;
+        Projector1.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
+        Projector2.renderingLayerMask = 2;
+        Projector2.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
+        Projector1.size = new Vector3(monsterData.AttackRangeX1,
+                                      monsterData.AttackRangeY1,
+                                      monsterData.AttackRangeZ1);
+
+        Projector1.pivot = new Vector3(0, transform.position.y,
+                                       monsterData.AttackRangeZ1 / 2);
+
+        Projector2.size = new Vector3(monsterData.AttackRangeX2,
+                                      monsterData.AttackRangeY2,
+                                      monsterData.AttackRangeZ2);
+
+        Projector2.pivot = new Vector3(0, transform.position.y,
+                                       monsterData.AttackRangeZ2 / 2);
+
+        BoxCollider1.center = new Vector3(0, transform.position.y,
+                                          monsterData.AttackRangeZ1 / 2);
+
+        BoxCollider1.size = new Vector3(monsterData.AttackRangeX1,
+                                        monsterData.AttackRangeY1,
+                                        monsterData.AttackRangeZ1);
+
+        BoxCollider2.center = new Vector3(0, transform.position.y,
+                                        monsterData.AttackRangeZ2 / 2);
+
+        BoxCollider2.size = new Vector3(monsterData.AttackRangeX2,
+                                        monsterData.AttackRangeY2,
+                                        monsterData.AttackRangeZ2);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -107,13 +143,16 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float hp)
     {
-        photonView.RPC("SyncMonsterHP", RpcTarget.All, hp);
+        HP -= hp;
+        if (HP <= 0)
+            isDead = true;
+        photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
     }
 
     [PunRPC]
     protected void SyncMonsterHP(float hp)
     {
-        HP -= hp;
+        HP = hp;
         if (HP <= 0)
             isDead = true;
     }
@@ -147,46 +186,10 @@ public abstract class NController : MonoBehaviour, IEnemy
         if (PhotonNetwork.IsMasterClient)
         {
             HP = monsterData.HP;
+            photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
             LastAttack = 0;
             WaitState();
         }
-    }
-
-    protected abstract void Setup();
-
-    protected void ProjectorSetup()
-    {
-        Projector1.renderingLayerMask = 2;
-        Projector1.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
-        Projector2.renderingLayerMask = 2;
-        Projector2.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
-        Projector1.size = new Vector3(monsterData.AttackRangeX1,
-                                      monsterData.AttackRangeY1,
-                                      monsterData.AttackRangeZ1);
-
-        Projector1.pivot = new Vector3(0, transform.position.y,
-                                       monsterData.AttackRangeZ1 / 2);
-
-        Projector2.size = new Vector3(monsterData.AttackRangeX2,
-                                      monsterData.AttackRangeY2,
-                                      monsterData.AttackRangeZ2);
-
-        Projector2.pivot = new Vector3(0, transform.position.y,
-                                       monsterData.AttackRangeZ2 / 2);
-
-        BoxCollider1.center = new Vector3(0, transform.position.y,
-                                          monsterData.AttackRangeZ1 / 2);
-
-        BoxCollider1.size = new Vector3(monsterData.AttackRangeX1,
-                                        monsterData.AttackRangeY1,
-                                        monsterData.AttackRangeZ1);
-
-        BoxCollider2.center = new Vector3(0, transform.position.y,
-                                        monsterData.AttackRangeZ2 / 2);
-
-        BoxCollider2.size = new Vector3(monsterData.AttackRangeX2,
-                                        monsterData.AttackRangeY2,
-                                        monsterData.AttackRangeZ2);
     }
 
     public void PlayAnimation(string animationName)

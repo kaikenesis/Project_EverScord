@@ -4,13 +4,16 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
-public class BossProjectile : MonoBehaviour
+public class MonsterProjectile : MonoBehaviour
 {
-    public int ID {  get; private set; }
+    public string ProjectileName { get; private set; }
+    public GameObject ProjectileEffect { get; private set; }
+    public int ID { get; private set; }
     private Vector3 direction;
     private float speed;
     private int lifeTime = 2;
     private float curTime = 0;
+    private Coroutine move;
 
     public bool IsDestroyed {  get; private set; }
 
@@ -25,19 +28,23 @@ public class BossProjectile : MonoBehaviour
         this.IsDestroyed = isDestroyed;
     }
 
-    public void Setup(int id, Vector3 position, Vector3 direction, float speed)
+    public void Setup(string projectileName, int id, Vector3 position, Vector3 direction, float speed)
     {
+        this.ProjectileName = projectileName;
         ID = id;
         IsDestroyed = false;
         transform.position = position;
         transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
         this.direction = direction;
         this.speed = speed;
-        StartCoroutine(Move());
+        curTime = 0;
+        move = StartCoroutine(Move());
     }
 
     private IEnumerator Move()
     {
+        ProjectileEffect = ResourceManager.Instance.GetFromPool(ProjectileName, transform.position, Quaternion.identity);
+        ProjectileEffect.transform.parent = transform;
         while (curTime < lifeTime)
         {
             transform.Translate(direction * speed * Time.deltaTime);
@@ -45,13 +52,14 @@ public class BossProjectile : MonoBehaviour
             yield return new WaitForSeconds(Time.deltaTime);
         }
         curTime = 0;
-        ResourceManager.Instance.ReturnToPool(gameObject, "BossProjectile");
+        ResourceManager.Instance.ReturnToPool(ProjectileEffect, ProjectileName);
+        ResourceManager.Instance.ReturnToPool(gameObject, "MonsterProjectile");
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (!PhotonNetwork.IsMasterClient)
-            //return;
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         if(other.gameObject.CompareTag("Projectile") || other.gameObject.CompareTag("Enemy"))
         {
             return;
@@ -61,6 +69,7 @@ public class BossProjectile : MonoBehaviour
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
         }
+        StopCoroutine(move);
         IsDestroyed = true;
     }
 }

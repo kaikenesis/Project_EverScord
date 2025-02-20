@@ -6,6 +6,8 @@ public class NMM2_Controller : NController
 {
     protected override void Setup()
     {
+        Projector1.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
+
         runState = gameObject.AddComponent<NMM2_RunState>();
         attackState1 = gameObject.AddComponent<NMM2_AttackState1>();
         attackState2 = gameObject.AddComponent<NMM2_AttackState2>();
