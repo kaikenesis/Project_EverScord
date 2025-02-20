@@ -1,18 +1,17 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using EverScord;
 
-public class NMM2_AttackState2 : NAttackState
+public class NMS2_AttackState2 : NAttackState
 {
+    NMS2_Controller controller;
+
     protected override IEnumerator Attack()
-    {
+    {        
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
-        yield return new WaitForSeconds(time/2);
-        monsterController.Fire("NMM2_Projectile");
-        yield return new WaitForSeconds(time/2);
-
+        controller.isUpgraded = true;
+        yield return new WaitForSeconds(time);
         StartCoroutine(monsterController.CoolDown2());
         attack = null;
         Exit();
@@ -20,6 +19,8 @@ public class NMM2_AttackState2 : NAttackState
 
     protected override void Setup()
     {
-        monsterController = GetComponent<NMM2_Controller>();
+        monsterController = GetComponent<NMS2_Controller>();
+        controller = monsterController as NMS2_Controller;
+
     }
 }

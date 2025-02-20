@@ -1,0 +1,18 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class NMS2_Controller : NController
+{
+    public bool isUpgraded = false;
+
+    protected override void Setup()
+    {
+        runState =      gameObject.AddComponent<NMS2_RunState>();
+        attackState1 =  gameObject.AddComponent<NMS2_AttackState1>();
+        attackState2 =  gameObject.AddComponent<NMS2_AttackState2>();
+        waitState =     gameObject.AddComponent<NMS2_WaitState>();
+        stunState =     gameObject.AddComponent<NMS2_StunState>();
+        deathState =    gameObject.AddComponent<NMS2_DeathState>();
+    }
+}

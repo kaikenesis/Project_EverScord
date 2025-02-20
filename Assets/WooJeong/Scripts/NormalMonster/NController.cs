@@ -246,6 +246,34 @@ public abstract class NController : MonoBehaviour, IEnemy
         else
             Projector2.enabled = false;
     }
+    public void Fire(string projectileName)
+    {
+        Vector3 position = transform.position + transform.forward * 2;
+        float projectileSpeed = 20;
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", position, Quaternion.identity);
+        MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
+
+        int id;
+        if (mp.ID == -1)
+        {
+            id = GameManager.Instance.ProjectileController.GetIDNum();
+            GameManager.Instance.ProjectileController.AddDict(id, mp);
+        }
+        else
+            id = mp.ID;
+
+        mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
+        photonView.RPC(projectileName, RpcTarget.Others, id, position, transform.forward, projectileSpeed);
+    }
+
+    [PunRPC]
+    protected void SyncProjectileNMM2(string projectileName, int id, Vector3 position, Vector3 direction, float projectileSpeed)
+    {
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", position, Quaternion.identity);
+        MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
+        GameManager.Instance.ProjectileController.AddDict(id, mp);
+        mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
+    }
 
     public void SetNearestPlayer()
     {
