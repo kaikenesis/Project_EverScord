@@ -30,7 +30,7 @@ public class BossData : ScriptableObject
     {
         Debug.Log("2페이즈 진입");
         Phase++;
-        HP = 50;
+        HP = 500;
     }
 
     public bool IsUnderHP(float hp)
