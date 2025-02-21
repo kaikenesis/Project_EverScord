@@ -25,7 +25,7 @@ namespace EverScord.Skill
         private bool isOutlineActivated = false;
         public override bool CanAttackWhileSkill
         {
-            get { return ejob == EJob.HEALER; }
+            get { return ejob == PlayerData.EJob.Healer; }
         }
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
