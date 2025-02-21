@@ -8,10 +8,11 @@ namespace EverScord.Effects
     {
         private const float DEFAULT_DURATION = 0.08f;
         private const float DEFAULT_INTENSITY = 0.7f;
+        private const int BLINK_REPEAT = 3;
 
-        [SerializeField, ColorUsage(true, true)] private Color blinkColor;
-        [SerializeField] private float blinkIntensity;
-        [SerializeField] private float blinkDuration;
+        public BlinkEffectInfo BlinkInfo => blinkInfo;
+        private BlinkEffectInfo blinkInfo;
+        private BlinkEffectInfo? changedBlinkInfo = null;
 
         private static Material whiteMat;
         private static Texture defaultTexture;
@@ -33,6 +34,11 @@ namespace EverScord.Effects
             blinkEffect.isParticle = true;
             blinkEffect.InitParticles(target);
             return blinkEffect;
+        }
+
+        public static BlinkEffect Create(Transform target, BlinkEffectInfo info)
+        {
+            return Create(target.transform, info.BlinkDuration, info.BlinkIntensity, info.BlinkColor);
         }
 
         public static BlinkEffect Create(GameObject target, float duration = DEFAULT_DURATION, float intensity = DEFAULT_INTENSITY, Color color = default)
@@ -90,7 +96,7 @@ namespace EverScord.Effects
         void Awake()
         {
             if (!blinkTarget)
-                Init(transform, blinkDuration, blinkIntensity, blinkColor);
+                Init(transform, blinkInfo.BlinkDuration, blinkInfo.BlinkIntensity, blinkInfo.BlinkColor);
         }
 
         void OnDisable()
@@ -101,9 +107,13 @@ namespace EverScord.Effects
         private void Init(Transform target, float duration, float intensity, Color color)
         {
             blinkTarget = target;
-            blinkDuration = duration;
-            blinkIntensity = intensity;
-            blinkColor = color;
+
+            blinkInfo = new BlinkEffectInfo()
+            {
+                BlinkDuration = duration,
+                BlinkIntensity = intensity,
+                BlinkColor = color
+            };
 
             renderers = target.GetComponentsInChildren<Renderer>();
             mpb = new MaterialPropertyBlock();
@@ -149,7 +159,7 @@ namespace EverScord.Effects
             if (!isParticle)
                 blinkCoroutine = StartCoroutine(StartBlink());
             else
-                blinkCoroutine = StartCoroutine(StartParticleBlink());
+                blinkCoroutine = StartCoroutine(StartBlinkRepeat());
         }
 
         private void SetMaterialSettings()
@@ -206,7 +216,9 @@ namespace EverScord.Effects
 
         private IEnumerator StartBlink()
         {
-            float leftTime = blinkDuration;
+            BlinkEffectInfo info = changedBlinkInfo != null ? (BlinkEffectInfo)changedBlinkInfo : blinkInfo;
+
+            float leftTime = info.BlinkDuration;
             float blinkProgress;
             float intensity;
 
@@ -214,20 +226,21 @@ namespace EverScord.Effects
             {
                 leftTime -= Time.deltaTime;
 
-                blinkProgress = Mathf.Clamp01(leftTime / blinkDuration);
-                intensity = (blinkProgress * blinkIntensity);
+                blinkProgress = Mathf.Clamp01(leftTime / info.BlinkDuration);
+                intensity = blinkProgress * info.BlinkIntensity;
 
-                SetMaterialColors(blinkColor * intensity);
+                SetMaterialColors(info.BlinkColor * intensity);
                 yield return null;
             }
 
             SetMaterialColors(default, true);
             blinkCoroutine = null;
+            changedBlinkInfo = null;
         }
 
-        private IEnumerator StartParticleBlink()
+        private IEnumerator StartBlinkRepeat()
         {
-            int blinkCount = 3;
+            int blinkCount = BLINK_REPEAT;
             WaitForSeconds waitblink = new WaitForSeconds(0.01f);
 
             for (int i = 0; i < blinkCount; i++)
@@ -243,5 +256,18 @@ namespace EverScord.Effects
                 yield return waitblink;
             }
         }
+
+        public void ChangeBlinkTemporarily(BlinkEffectInfo info)
+        {
+            changedBlinkInfo = info;
+        }
+    }
+
+    [System.Serializable]
+    public struct BlinkEffectInfo
+    {
+        [SerializeField, ColorUsage(true, true)] public Color BlinkColor;
+        [SerializeField] public float BlinkIntensity;
+        [SerializeField] public float BlinkDuration;
     }
 }

@@ -1,9 +1,11 @@
+using System.Collections;
+using UnityEngine.Rendering;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using Photon.Pun;
 using EverScord.Character;
-using System.Collections;
+using UnityEngine.Rendering.Universal;
 
 namespace EverScord.UI
 {
@@ -13,30 +15,41 @@ namespace EverScord.UI
         private const string BLOOD_SIZE = "_Mask_Size";
         private const float BLOOD_THRESHOLD = 0.5f;
         private const float BLOOD_SPEED = 1f;
-        public RectTransform CanvasRect { get; private set; }
+
+        private static Texture2D cursorIcon;
+        private static Material bloodMat;
+        private static ColorCurves colorCurves;
 
         [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText;
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
-        private static Texture2D cursorIcon;
-        private static Material bloodMat;
+
+        private PhotonView photonView;
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
         private bool isEnabled = false;
 
-        void Awake()
+        public void Init(PhotonView photonView, Transform cameraRoot)
         {
-            cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(ConstStrings.KEY_CROSSHAIR);
-            bloodMat = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_BLOOD_MAT);
+            this.photonView = photonView;
 
-            CanvasRect = transform.parent.GetComponent<RectTransform>();
+            if (!cursorIcon) cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(ConstStrings.KEY_CROSSHAIR);
+            if (!bloodMat)   bloodMat   = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_BLOOD_MAT);
+
             Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
             Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
+
+            Volume volume = cameraRoot.GetComponent<Volume>();
+            VolumeProfile profile = volume.sharedProfile;
+
+            if (profile.TryGet<ColorCurves>(out var curves))
+                colorCurves = curves;
         }
 
         void OnDisable()
         {
             bloodMat.SetFloat(BLOOD_SIZE, 1f);
             bloodMat.SetInt(BLOOD_ENABLED, 0);
+            SetGrayscaleScreen(false);
         }
 
         public void SetAmmoText(int count)
@@ -64,17 +77,21 @@ namespace EverScord.UI
             Cursor.visible = state;
         }
 
-        public void SetBloodyScreen(float currentHealth, float maxHealth)
+        public void SetBloodyScreen(float currentHealth, bool isLowHealth)
         {
-            SetBloodyScreen(currentHealth <= maxHealth * 0.1f);
-        }
+            if (!photonView.IsMine)
+                return;
 
-        private void SetBloodyScreen(bool isEnabled)
-        {
-            if (this.isEnabled == isEnabled)
+            if (currentHealth <= 0)
+            {
+                bloodMat.SetInt(BLOOD_ENABLED, 0);
+                return;
+            }
+
+            if (isEnabled == isLowHealth)
                 return;
             
-            this.isEnabled = isEnabled;
+            isEnabled = isLowHealth;
 
             if (bloodCoroutine != null)
                 StopCoroutine(bloodCoroutine);
@@ -113,6 +130,20 @@ namespace EverScord.UI
                 bloodMat.SetInt(BLOOD_ENABLED, 0);
 
             bloodCoroutine = null;
+        }
+
+        public void SetGrayscaleScreen(float currentHealth)
+        {
+            SetGrayscaleScreen(currentHealth <= 0);
+        }
+
+        private void SetGrayscaleScreen(bool state)
+        {
+            if (!photonView.IsMine)
+                return;
+
+            if (colorCurves)
+                colorCurves.active = state;
         }
     }
 }

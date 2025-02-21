@@ -4,6 +4,7 @@ using UnityEngine;
 using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
+using EverScord.Effects;
 
 namespace EverScord
 {
@@ -27,9 +28,12 @@ namespace EverScord
         public static LayerMask EnemyLayer => instance.enemyLayer;
         public static LayerMask PlayerLayer => instance.playerLayer;
         public static LayerMask OutlineLayer => instance.outlineLayer;
+        public static BlinkEffectInfo HurtBlinkInfo => instance.hurtBlinkInfo;
+        public static BlinkEffectInfo InvincibleBlinkInfo => instance.invincibleBlinkInfo;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
 
         [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer;
+        [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo;
 
         [SerializeField] private CostData costData;
         public CostData CostDatas

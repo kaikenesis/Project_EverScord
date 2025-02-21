@@ -5,6 +5,8 @@ namespace EverScord.Monster
 {
     public class EnemyHitControl : MonoBehaviour
     {
+        private const float BIG_DAMAGE = 15f;
+
         void Awake()
         {
             GameManager.Instance.InitControl(this);
@@ -16,8 +18,13 @@ namespace EverScord.Monster
 
             BlinkEffect blinkEffect = monster.GetBlinkEffect();
 
-            if (blinkEffect != null)
-                blinkEffect.Blink();
+            if (blinkEffect == null)
+                return;
+            
+            if (hp >= BIG_DAMAGE)
+                blinkEffect.ChangeBlinkTemporarily(GameManager.HurtBlinkInfo);
+
+            blinkEffect.Blink();
         }
     }
 }

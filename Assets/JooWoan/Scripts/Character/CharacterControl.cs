@@ -42,11 +42,6 @@ namespace EverScord.Character
         [Header("Rig")]
         [SerializeField] private CharacterRigControl rigLayerPrefab;
 
-        [Header("Blink Effect")]
-        [SerializeField, ColorUsage(true, true)] private Color hurtColor;
-        [SerializeField] private float hurtBlinkDuration;
-        [SerializeField] private float hurtBlinkIntensity;
-
         public PlayerUI PlayerUIControl                                 { get; private set; }
         public CharacterRigControl RigControl                           { get; private set; }
         public CharacterAnimation AnimationControl                      { get; private set; }
@@ -67,10 +62,10 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
+        private static Transform uiHub, cameraHub;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
-        private Transform uiHub, cameraHub;
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
         private Action onDecreaseHealth;
@@ -86,13 +81,22 @@ namespace EverScord.Character
 
                 // Change Health UI
 
-                if (photonView.IsMine)
-                    PlayerUIControl.SetBloodyScreen(currentHealth, maxHealth);
+                if (!HasState(CharState.DEAD) && currentHealth <= 0)
+                    SetState(SetCharState.ADD, CharState.DEAD);
+                
+                else if (HasState(CharState.DEAD) && currentHealth > 0)
+                    SetState(SetCharState.REMOVE, CharState.DEAD);
+
+                PlayerUIControl.SetGrayscaleScreen(currentHealth);
+                PlayerUIControl.SetBloodyScreen(currentHealth, IsLowHealth);
             }
         }
 
         void Awake()
         {
+            if (!uiHub)     uiHub     = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
+            if (!cameraHub) cameraHub = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
+
             photonView       = GetComponent<PhotonView>();
 
             PlayerTransform  = transform;
@@ -101,9 +105,6 @@ namespace EverScord.Character
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
             skinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
-
-            uiHub            = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
-            cameraHub        = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
             
             PlayerUIControl  = Instantiate(uiPrefab, uiHub);
             CameraControl    = Instantiate(cameraPrefab, cameraHub);
@@ -128,9 +129,12 @@ namespace EverScord.Character
                 PlayerUIControl.gameObject.SetActive(false);
                 CameraControl.gameObject.SetActive(false);
             }
+            else
+                PlayerUIControl.Init(photonView, cameraHub);
 
             CameraControl.Init(PlayerTransform);
-            blinkEffect = BlinkEffect.Create(this, hurtBlinkDuration, hurtBlinkIntensity, hurtColor);
+
+            blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
         }
 
         void Start()
@@ -372,16 +376,24 @@ namespace EverScord.Character
 
         public void DecreaseHP(float amount)
         {
-            onDecreaseHealth?.Invoke();
+            if (HasState(CharState.DEAD))
+                return;
             
-            if (HasState(CharState.INVINCIBLE))
+            onDecreaseHealth?.Invoke();
+            bool isInvincible = HasState(CharState.INVINCIBLE);
+
+            if (isInvincible)
+                blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
+
+            blinkEffect.Blink();
+            
+            if (isInvincible)
                 return;
             
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
-            blinkEffect.Blink();
             
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false, isInvincible);
         }
 
         public void IncreaseHP(float amount)
@@ -393,7 +405,7 @@ namespace EverScord.Character
             effect.transform.position = transform.position;
 
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true, false);
         }
 
         public void SetCharacterOutline(bool state)
@@ -433,6 +445,11 @@ namespace EverScord.Character
 
                 return false;
             }
+        }
+
+        public bool IsLowHealth
+        {
+            get { return currentHealth <= maxHealth * 0.1f; }
         }
 
         public bool IsAiming { get; private set; }
@@ -522,7 +539,7 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncHealth(float health, bool isIncreasing)
+        private void SyncHealth(float health, bool isIncreasing, bool isInvincible)
         {
             CurrentHealth = health;
 
@@ -534,6 +551,9 @@ namespace EverScord.Character
             }
             else
             {
+                if (isInvincible)
+                    blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
+
                 blinkEffect.Blink();
             }
         }
