@@ -89,8 +89,12 @@ namespace EverScord.Weapons
                 if (isWithinScreen)
                 {
                     Ray ray = sourceWeapon.ShooterCam.ScreenPointToRay(currentScreenPoint);
+                    //Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 3f);
 
                     if (!Physics.Raycast(ray, out hit, 50f, sourceWeapon.ShootableLayer))
+                        continue;
+
+                    if (hit.point.y < 0)
                         continue;
 
                     GameManager.Instance.BulletsControl.BulletHitEffect(hit.point, -direction);
