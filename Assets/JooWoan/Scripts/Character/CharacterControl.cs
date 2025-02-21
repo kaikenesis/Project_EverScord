@@ -63,6 +63,7 @@ namespace EverScord.Character
         public float CharacterSpeed => speed;
 
         private static Transform uiHub, cameraHub;
+        private static Material outlineMat;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
@@ -87,15 +88,23 @@ namespace EverScord.Character
                 else if (HasState(CharState.DEAD) && currentHealth > 0)
                     SetState(SetCharState.REMOVE, CharState.DEAD);
 
-                PlayerUIControl.SetGrayscaleScreen(currentHealth);
-                PlayerUIControl.SetBloodyScreen(currentHealth, IsLowHealth);
+                Color color = IsLowHealth ? Color.red : Color.white;
+                SetOutlineColor(color);
+                SetCharacterOutline(IsLowHealth);
+
+                if (photonView.IsMine)
+                {
+                    PlayerUIControl.SetGrayscaleScreen(currentHealth);
+                    PlayerUIControl.SetBloodyScreen(currentHealth, IsLowHealth);
+                }
             }
         }
 
         void Awake()
         {
-            if (!uiHub)     uiHub     = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
-            if (!cameraHub) cameraHub = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
+            if (!uiHub)      uiHub      = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
+            if (!cameraHub)  cameraHub  = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
+            if (!outlineMat) outlineMat = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_OUTLINE_MAT);
 
             photonView       = GetComponent<PhotonView>();
 
@@ -130,7 +139,7 @@ namespace EverScord.Character
                 CameraControl.gameObject.SetActive(false);
             }
             else
-                PlayerUIControl.Init(photonView, cameraHub);
+                PlayerUIControl.Init(cameraHub);
 
             CameraControl.Init(PlayerTransform);
 
@@ -143,11 +152,13 @@ namespace EverScord.Character
             SetJobAndSkills();
         }
 
+        void OnDisable()
+        {
+            SetOutlineColor(Color.white);
+        }
+
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-                CurrentHealth += 10f;
-
             if (!photonView.IsMine)
             {
                 LerpRemoteInfo();
@@ -408,8 +419,19 @@ namespace EverScord.Character
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true, false);
         }
 
+        public void SetOutlineColor(Color color)
+        {
+            outlineMat.color = color;
+        }
+
         public void SetCharacterOutline(bool state)
         {
+            if (!state && IsLowHealth)
+            {
+                state = true;
+                SetOutlineColor(Color.red);
+            }
+
             int OutlineLayerNumber = Mathf.RoundToInt(Mathf.Log(GameManager.OutlineLayer.value, 2));
 
             for (int i = 0; i < skinRenderers.Length; i++)
@@ -418,7 +440,7 @@ namespace EverScord.Character
                     skinRenderers[i].gameObject.layer = OutlineLayerNumber;
                 else
                     skinRenderers[i].gameObject.layer = originalSkinLayer;
-            }
+            }                
         }
 
         public bool IsGrounded
