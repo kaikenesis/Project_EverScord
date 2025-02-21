@@ -28,11 +28,11 @@ namespace EverScord
 
         private void Start()
         {
-            ECharacter curChar;
-            if (GameManager.Instance.userData != null)
-                curChar = GameManager.Instance.userData.character;
+            PlayerData.ECharacter curChar;
+            if (GameManager.Instance.PlayerData != null)
+                curChar = GameManager.Instance.PlayerData.character;
             else
-                curChar = ECharacter.NED;
+                curChar = PlayerData.ECharacter.Ned;
 
             Sprite skillSprite = GameManager.Instance.InGameUIData.CharacterDatas[(int)curChar].SkillSourceImg;
             Sprite hyperSprite = GameManager.Instance.InGameUIData.CharacterDatas[(int)curChar].HyperSourceImg;
@@ -42,10 +42,10 @@ namespace EverScord
                 switch (type[i])
                 {
                     case EType.Skill:
-                        slots[i].GetComponent<UISkill>().Initialize(skillSprite, inputSourceImg[i]);
+                        slots[i].GetComponent<UISkill>().Initialize((int)type[i], skillSprite, inputSourceImg[i]);
                         break;
                     case EType.Hyper:
-                        slots[i].GetComponent<UISkill>().Initialize(hyperSprite, inputSourceImg[i]);
+                        slots[i].GetComponent<UISkill>().Initialize((int)type[i], hyperSprite, inputSourceImg[i]);
                         break;
                 }
             }

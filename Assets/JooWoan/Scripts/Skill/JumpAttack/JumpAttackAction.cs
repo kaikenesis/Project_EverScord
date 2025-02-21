@@ -23,7 +23,7 @@ namespace EverScord.Skill
         private LayerMask targetLayer;
         private float calculatedImpact;
 
-        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             Skill       = skill as JumpAttackSkill;
             waitSkill   = new WaitForSeconds(Skill.Duration);
@@ -38,7 +38,7 @@ namespace EverScord.Skill
             GameObject marker   = ResourceManager.Instance.GetAsset<GameObject>(Skill.Marker.AssetGUID);
             stanceEffectPrefab  = ResourceManager.Instance.GetAsset<GameObject>(Skill.StanceEffect.AssetGUID);
             
-            if (ejob == EJob.DEALER)
+            if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
                 calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
@@ -202,7 +202,7 @@ namespace EverScord.Skill
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (ejob == EJob.DEALER)
+                if (ejob == PlayerData.EJob.Dealer)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);

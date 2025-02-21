@@ -10,17 +10,17 @@ namespace EverScord
 
         private void Start()
         {
-            ECharacter curChar;
-            EJob curJob;
-            if (GameManager.Instance.userData != null)
+            PlayerData.ECharacter curChar;
+            PlayerData.EJob curJob;
+            if (GameManager.Instance.PlayerData != null)
             {
-                curChar = GameManager.Instance.userData.character;
-                curJob = GameManager.Instance.userData.job;
+                curChar = GameManager.Instance.PlayerData.character;
+                curJob = GameManager.Instance.PlayerData.job;
             }
             else
             {
-                curChar = ECharacter.UNI;
-                curJob = EJob.HEALER;
+                curChar = PlayerData.ECharacter.Ned;
+                curJob = PlayerData.EJob.Dealer;
             }
 
             characterImg.sprite = GameManager.Instance.InGameUIData.CharacterDatas[(int)curChar].PortraitSourceImg;

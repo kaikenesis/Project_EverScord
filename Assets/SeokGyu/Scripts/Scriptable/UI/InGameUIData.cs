@@ -3,7 +3,7 @@ using UnityEngine;
 namespace EverScord
 {
     [SerializeField]
-    [CreateAssetMenu(menuName = "EverScord/Game/InGameUIData", fileName = "newInGameUIData")]
+    [CreateAssetMenu(menuName = "EverScord/Datas/InGameUIData", fileName = "newInGameUIData")]
     public class InGameUIData : ScriptableObject
     {
         [SerializeField] private CharacterData[] characterDatas;

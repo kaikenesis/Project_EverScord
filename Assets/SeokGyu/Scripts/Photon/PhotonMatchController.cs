@@ -60,12 +60,12 @@ namespace EverScord
             // 랜덤매칭할 경우 랜덤매칭 실패시 (조건에 맞는 방을 찾지 못했을 경우) 새로 Room을 만들고 RoomOptions를 변경하여 매칭으로 참여가능한 방으로 생성
             // 매치메이킹은 로비에서 진행되어야함
             if (PhotonNetwork.IsMasterClient == false) return;
-            EPhotonState state = GameManager.Instance.userData.curPhotonState;
-            if (state == EPhotonState.MATCH || state == EPhotonState.FOLLOW) return;
+            PhotonData.EState state = GameManager.Instance.PhotonData.state;
+            if (state == PhotonData.EState.MATCH || state == PhotonData.EState.FOLLOW) return;
 
             pv.RPC("SetMatchMaster", RpcTarget.All, PhotonNetwork.MasterClient);
-            pv.RPC("SetPhotonState", RpcTarget.Others, EPhotonState.FOLLOW);
-            GameManager.Instance.userData.curPhotonState = EPhotonState.MATCH;
+            pv.RPC("SetPhotonState", RpcTarget.Others, PhotonData.EState.FOLLOW);
+            GameManager.Instance.PhotonData.state = PhotonData.EState.MATCH;
             OnUpdateUI?.Invoke(false);
             OnStartTimer?.Invoke();
 
@@ -84,8 +84,8 @@ namespace EverScord
         private void HandleRequestStopMatch()
         {
             if (PhotonNetwork.InRoom == false) return;
-            if (GameManager.Instance.userData.curPhotonState == EPhotonState.NONE ||
-                GameManager.Instance.userData.curPhotonState == EPhotonState.STOPMATCH) return;
+            if (GameManager.Instance.PhotonData.state == PhotonData.EState.NONE ||
+                GameManager.Instance.PhotonData.state == PhotonData.EState.STOPMATCH) return;
 
             if(PhotonNetwork.LocalPlayer == matchMaster)
             {
@@ -99,15 +99,15 @@ namespace EverScord
 
         private void HandleStopMatch()
         {
-            GameManager.Instance.userData.curPhotonState = EPhotonState.STOPMATCH;
+            GameManager.Instance.PhotonData.state = PhotonData.EState.STOPMATCH;
             PhotonNetwork.LeaveRoom();
         }
 
         private void HandleLobbyJoined()
         {
-            switch(GameManager.Instance.userData.curPhotonState)
+            switch(GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.STOPMATCH:
+                case PhotonData.EState.STOPMATCH:
                     CreatePhotonMatchRoom();
                     break;
             }
@@ -115,9 +115,9 @@ namespace EverScord
 
         private void HandleCheckGame()
         {
-            switch(GameManager.Instance.userData.curPhotonState)
+            switch(GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.MATCH:
+                case PhotonData.EState.MATCH:
                     if(PhotonNetwork.IsMasterClient)
                     {
                         CheckMatch();
@@ -151,12 +151,12 @@ namespace EverScord
 
             int roomDealer = (int)room.CustomProperties["DEALER"];
             int roomHealer = (int)room.CustomProperties["HEALER"];
-            ELevel roomLevel = (ELevel)room.CustomProperties["LEVEL"];
+            PlayerData.EDifficulty roomLevel = (PlayerData.EDifficulty)room.CustomProperties["LEVEL"];
             Debug.Log($"roomInfo : {roomDealer}, {roomHealer}, {roomLevel}");
 
             int joinDealer = (int)expectedRoomProperties["DEALER"];
             int joinHealer = (int)expectedRoomProperties["HEALER"];
-            ELevel joinLevel = (ELevel)expectedRoomProperties["LEVEL"];
+            PlayerData.EDifficulty joinLevel = (PlayerData.EDifficulty)expectedRoomProperties["LEVEL"];
             Debug.Log($"roomInfo : {joinDealer}, {joinHealer}, {joinLevel}");
 
             if (room.IsVisible == false) return false;
@@ -221,18 +221,18 @@ namespace EverScord
 
         #region PunRPC Methods
         [PunRPC]
-        private void SetPhotonState(EPhotonState newState)
+        private void SetPhotonState(PhotonData.EState newState)
         {
-            GameManager.Instance.userData.curPhotonState = newState;
-            Debug.Log(GameManager.Instance.userData.curPhotonState);
+            GameManager.Instance.PhotonData.state = newState;
+            Debug.Log(GameManager.Instance.PhotonData.state);
             
-            switch(GameManager.Instance.userData.curPhotonState)
+            switch(GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.FOLLOW:
+                case PhotonData.EState.FOLLOW:
                     OnUpdateUI?.Invoke(false);
                     OnStartTimer?.Invoke();
                     break;
-                case EPhotonState.NONE:
+                case PhotonData.EState.NONE:
                     OnUpdateUI?.Invoke(true);
                     OnStopTimer?.Invoke();
                     break;
@@ -262,9 +262,9 @@ namespace EverScord
         // 변동사항이 있는 방만 넘어옴, 로비에서만 호출가능..
         public override void OnCreatedRoom()
         {
-            switch (GameManager.Instance.userData.curPhotonState)
+            switch (GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.STOPMATCH:
+                case PhotonData.EState.STOPMATCH:
                     PhotonNetwork.CurrentRoom.IsVisible = false;
                     Debug.Log("StopMatch and CreateRoom");
                     break;
@@ -273,22 +273,22 @@ namespace EverScord
 
         public override void OnJoinedRoom()
         {
-            switch (GameManager.Instance.userData.curPhotonState)
+            switch (GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.STOPMATCH:
+                case PhotonData.EState.STOPMATCH:
                     {
-                        GameManager.Instance.userData.curPhotonState = EPhotonState.NONE;
-                        Debug.Log(GameManager.Instance.userData.curPhotonState);
+                        GameManager.Instance.PhotonData.state = PhotonData.EState.NONE;
+                        Debug.Log(GameManager.Instance.PhotonData.state);
                         OnUpdateUI?.Invoke(true);
                         OnStopTimer?.Invoke();
                     }
                     break;
-                case EPhotonState.FOLLOW:
+                case PhotonData.EState.FOLLOW:
                     {
                         if(PhotonNetwork.CurrentRoom.IsVisible == false)
                         {
-                            GameManager.Instance.userData.curPhotonState = EPhotonState.NONE;
-                            Debug.Log(GameManager.Instance.userData.curPhotonState);
+                            GameManager.Instance.PhotonData.state = PhotonData.EState.NONE;
+                            Debug.Log(GameManager.Instance.PhotonData.state);
                             OnUpdateUI?.Invoke(true);
                             OnStopTimer?.Invoke();
                         }
@@ -300,9 +300,9 @@ namespace EverScord
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             Debug.Log("UpdateRoomList");
-            switch (GameManager.Instance.userData.curPhotonState)
+            switch (GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.MATCH:
+                case PhotonData.EState.MATCH:
                     foreach (RoomInfo room in roomList)
                     {
                         // 룸의 조건과 내 조건이 맞는지 확인

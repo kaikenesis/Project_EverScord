@@ -10,7 +10,7 @@ namespace EverScord.Skill
         protected CooldownTimer cooldownTimer;
         protected Coroutine skillCoroutine;
         protected PhotonView photonView;
-        protected EJob ejob;
+        protected PlayerData.EJob ejob;
         protected int skillIndex;
 
         public virtual bool CanAttackWhileSkill
@@ -23,7 +23,7 @@ namespace EverScord.Skill
             get { return skillCoroutine != null; }
         }
 
-        public virtual void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public virtual void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.activator  = activator;
             this.skillIndex = skillIndex;

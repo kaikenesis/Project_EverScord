@@ -9,17 +9,17 @@ namespace EverScord
 
         private void Awake()
         {
-            PlayerData.OnUpdateMoney += HandleUpdateMoney;
+            UIFactorSlot.OnDecreaseMoney += HandleUpdateMoney;
         }
 
         private void OnDestroy()
         {
-            PlayerData.OnUpdateMoney -= HandleUpdateMoney;
+            UIFactorSlot.OnDecreaseMoney -= HandleUpdateMoney;
         }
 
         private void OnEnable()
         {
-            HandleUpdateMoney(GameManager.Instance.userData.money);
+            HandleUpdateMoney(GameManager.Instance.PlayerData.money);
         }
 
         private void HandleUpdateMoney(int money)

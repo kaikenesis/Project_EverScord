@@ -75,8 +75,8 @@ namespace EverScord
             gameObject.SetActive(true);
             curWindowType = EType.Unlock;
             int money;
-            if (GameManager.Instance.userData != null)
-                money = GameManager.Instance.userData.money;
+            if (GameManager.Instance.PlayerData != null)
+                money = GameManager.Instance.PlayerData.money;
             else
                 money = -1;
 
@@ -100,8 +100,8 @@ namespace EverScord
             gameObject.SetActive(true);
             curWindowType = EType.Reroll;
             int money;
-            if (GameManager.Instance.userData != null)
-                money = GameManager.Instance.userData.money;
+            if (GameManager.Instance.PlayerData != null)
+                money = GameManager.Instance.PlayerData.money;
             else
                 money = -1;
 

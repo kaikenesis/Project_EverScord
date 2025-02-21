@@ -3,7 +3,7 @@ using UnityEngine;
 namespace EverScord
 {
     [SerializeField]
-    [CreateAssetMenu(menuName = "EverScord/Game/FactorData", fileName = "newFactorData")]
+    [CreateAssetMenu(menuName = "EverScord/Datas/FactorData", fileName = "newFactorData")]
     public class FactorData : ScriptableObject
     {
         [SerializeField] private OptionData[] optionDatas;

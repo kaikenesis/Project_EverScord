@@ -63,7 +63,7 @@ namespace EverScord.Skill
         [field: SerializeField] public CharacterSkill Skill { get; private set; }
         public SkillAction SkillAction { get; private set; }
 
-        public void Init(CharacterControl activator, int skillIndex, EJob characterJob)
+        public void Init(CharacterControl activator, int skillIndex, PlayerData.EJob characterJob)
         {
             if (Skill == null)
             {

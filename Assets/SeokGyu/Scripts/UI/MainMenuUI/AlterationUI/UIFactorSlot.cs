@@ -25,6 +25,7 @@ namespace EverScord
         public static Action<int> OnDisplayOptionList = delegate { };
         public static Action<string, float, string, float> OnRequestUpdateInfo = delegate { };
         public static Action<Color, string, float, string, float> OnRequestApplyOption = delegate { };
+        public static Action<int> OnDecreaseMoney = delegate { };
 
         private void Awake()
         {
@@ -49,7 +50,8 @@ namespace EverScord
             if (bLock == false || curTypeNum != typeNum || this.slotNum != slotNum) return;
 
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Unlock;
-            GameManager.Instance.userData.DecreaseMoney(cost);
+            GameManager.Instance.PlayerData.DecreaseMoney(cost);
+            OnDecreaseMoney?.Invoke(cost);
             bLock = false;
             lockImg.enabled = false;
         }
@@ -59,7 +61,8 @@ namespace EverScord
             if (bLock == true || curTypeNum != typeNum || this.slotNum != slotNum) return;
 
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
-            GameManager.Instance.userData.DecreaseMoney(cost);
+            GameManager.Instance.PlayerData.DecreaseMoney(cost);
+            OnDecreaseMoney?.Invoke(cost);
 
             FactorData datas = GameManager.Instance.FactorDatas[typeNum];
 

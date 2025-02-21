@@ -14,7 +14,7 @@ namespace EverScord
             // 보유 재화에 변화가 생길때도 UpdateInfo호출
             PhotonConnector.OnLogin += HandleLogin;
             UIChangeName.OnChangeName += HandleChangeName;
-            PlayerData.OnUpdateMoney += HandleUpdateMoney;
+            UIFactorSlot.OnDecreaseMoney += HandleUpdateMoney;
 
             gameObject.SetActive(false);
         }
@@ -23,7 +23,7 @@ namespace EverScord
         {
             PhotonConnector.OnLogin -= HandleLogin;
             UIChangeName.OnChangeName -= HandleChangeName;
-            PlayerData.OnUpdateMoney -= HandleUpdateMoney;
+            UIFactorSlot.OnDecreaseMoney -= HandleUpdateMoney;
         }
 
         #region Handle Methods

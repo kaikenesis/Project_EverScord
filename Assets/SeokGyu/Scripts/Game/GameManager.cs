@@ -11,7 +11,12 @@ namespace EverScord
     {
         private static GameManager instance;
 
-        public PlayerData userData;
+        [SerializeField] private PlayerData playerData;
+        public PlayerData PlayerData { get { return playerData; } }
+        //public PlayerData userData;
+
+        [SerializeField] private PhotonData photonData;
+        public PhotonData PhotonData { get { return photonData; } }
 
         public List<PhotonView> playerPhotonViews   { get; private set; }
         public BulletControl BulletsControl         { get; private set; }

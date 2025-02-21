@@ -9,7 +9,7 @@ namespace EverScord.Skill
         public GrenadeSkill Skill { get; private set; }
         private Vector3 grenadeImpactPosition;
         
-        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {            
             Skill = (GrenadeSkill)skill;
 

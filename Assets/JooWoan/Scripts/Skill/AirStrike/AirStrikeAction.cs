@@ -20,7 +20,7 @@ namespace EverScord.Skill
         private AircraftControl aircraft1, aircraft2, aircraft3;
         private float calculatedImpact;
 
-        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             Skill = (AirStrikeSkill)skill;
 
@@ -36,7 +36,7 @@ namespace EverScord.Skill
             aircraft2.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_2_SPEED, AIRCRAFT_2_DELAY);
             aircraft3.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_3_SPEED, AIRCRAFT_3_DELAY);
 
-            if (ejob == EJob.DEALER)
+            if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
                 calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
@@ -105,7 +105,7 @@ namespace EverScord.Skill
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (ejob == EJob.DEALER)
+                if (ejob == PlayerData.EJob.Dealer)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
@@ -128,7 +128,7 @@ namespace EverScord.Skill
             GameObject flameEffect = null;
             GameObject healEffect = null;
 
-            if (ejob == EJob.DEALER)
+            if (ejob == PlayerData.EJob.Dealer)
             {
                 flameEffect = Instantiate(flames, CharacterSkill.SkillRoot);
                 flameEffect.transform.position = dropPosition;
@@ -141,7 +141,7 @@ namespace EverScord.Skill
 
             if (photonView.IsMine)
             {
-                if (ejob == EJob.DEALER)
+                if (ejob == PlayerData.EJob.Dealer)
                 {
                     flameControl = flameEffect.GetComponent<FlameControl>();
 

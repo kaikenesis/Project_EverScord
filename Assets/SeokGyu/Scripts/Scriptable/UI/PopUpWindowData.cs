@@ -3,7 +3,7 @@ using UnityEngine;
 namespace EverScord
 {
     [SerializeField]
-    [CreateAssetMenu(menuName = "EverScord/Game/PopUpWindowData", fileName = "newPopUpWindowData")]
+    [CreateAssetMenu(menuName = "EverScord/Datas/PopUpWindowData", fileName = "newPopUpWindowData")]
     public class PopUpWindowData : ScriptableObject
     {
         [SerializeField] private Message[] message;

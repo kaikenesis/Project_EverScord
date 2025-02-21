@@ -38,7 +38,7 @@ namespace EverScord
 
             foreach (PhotonCharacterInfo info in photonCharacterInfoList)
             {
-                if (info.CharacterType != GameManager.Instance.userData.character)
+                if (info.CharacterType != GameManager.Instance.PlayerData.character)
                     continue;
 
                 if (!pool.ResourceCache.ContainsKey(info.PhotonPrefab.name))
@@ -53,7 +53,7 @@ namespace EverScord
     [System.Serializable]
     public class PhotonCharacterInfo
     {
-        public ECharacter CharacterType;
+        public PlayerData.ECharacter CharacterType;
         public GameObject PhotonPrefab;
     }
 }

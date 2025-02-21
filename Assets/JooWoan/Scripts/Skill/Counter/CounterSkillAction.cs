@@ -24,7 +24,7 @@ namespace EverScord.Skill
         private bool toggleLaser = false;
         private bool isOutlineActivated = false;
 
-        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.skill   = (CounterSkill)skill;
             activatorCam = activator.CameraControl.Cam;
@@ -53,7 +53,7 @@ namespace EverScord.Skill
 
             for (elapsedSkillTime = 0f; elapsedSkillTime <= skill.Duration; elapsedSkillTime += Time.deltaTime)
             {
-                if (ejob == EJob.DEALER)
+                if (ejob == PlayerData.EJob.Dealer)
                     OffensiveAction();
                 else
                     SupportAction();

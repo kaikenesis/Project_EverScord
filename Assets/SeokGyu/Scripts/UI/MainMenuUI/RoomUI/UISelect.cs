@@ -25,41 +25,41 @@ namespace EverScord
 
         public void SelectDealer()
         {
-            if (GameManager.Instance.userData.job == EJob.DEALER) return;
+            if (GameManager.Instance.PlayerData.job == PlayerData.EJob.Dealer) return;
 
-            GameManager.Instance.userData.job = EJob.DEALER;
+            GameManager.Instance.PlayerData.job = PlayerData.EJob.Dealer;
             OnChangeUserData?.Invoke();
         }
 
         public void SelectHealer()
         {
-            if (GameManager.Instance.userData.job == EJob.HEALER) return;
+            if (GameManager.Instance.PlayerData.job == PlayerData.EJob.Healer) return;
 
-            GameManager.Instance.userData.job = EJob.HEALER;
+            GameManager.Instance.PlayerData.job = PlayerData.EJob.Healer;
             OnChangeUserData?.Invoke();
         }
 
         public void SelectStoryMode()
         {
-            if (GameManager.Instance.userData.curLevel == ELevel.STORY) return;
+            if (GameManager.Instance.PlayerData.difficulty == PlayerData.EDifficulty.Story) return;
 
-            GameManager.Instance.userData.curLevel = ELevel.STORY;
+            GameManager.Instance.PlayerData.difficulty = PlayerData.EDifficulty.Story;
             OnChangeUserData?.Invoke();
         }
 
         public void SelectNormalMode()
         {
-            if (GameManager.Instance.userData.curLevel == ELevel.NORMAL) return;
+            if (GameManager.Instance.PlayerData.difficulty == PlayerData.EDifficulty.Normal) return;
 
-            GameManager.Instance.userData.curLevel = ELevel.NORMAL;
+            GameManager.Instance.PlayerData.difficulty = PlayerData.EDifficulty.Normal;
             OnChangeUserData?.Invoke();
         }
 
         public void SelectHardMode()
         {
-            if (GameManager.Instance.userData.curLevel == ELevel.HARD) return;
+            if (GameManager.Instance.PlayerData.difficulty == PlayerData.EDifficulty.Hard) return;
 
-            GameManager.Instance.userData.curLevel = ELevel.HARD;
+            GameManager.Instance.PlayerData.difficulty = PlayerData.EDifficulty.Hard;
             OnChangeUserData?.Invoke();
         }
     }

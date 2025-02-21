@@ -5,6 +5,7 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using WebSocketSharp;
+using static EverScord.PlayerData;
 
 namespace EverScord
 {
@@ -59,9 +60,9 @@ namespace EverScord
         private void HandleLobbyJoined()
         {
             SetPlayerRole();
-            switch(GameManager.Instance.userData.curPhotonState)
+            switch(GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.NONE:
+                case PhotonData.EState.NONE:
                     {
                         if (inviteRoomName.IsNullOrEmpty() == false)
                         {
@@ -74,7 +75,7 @@ namespace EverScord
                         }
                     }
                     break;
-                case EPhotonState.FOLLOW:
+                case PhotonData.EState.FOLLOW:
                     {
                         if (inviteRoomName.IsNullOrEmpty() == false)
                         {
@@ -91,7 +92,7 @@ namespace EverScord
             inviteRoomName = roomName;
             if (PhotonNetwork.InRoom)
             {
-                if(GameManager.Instance.userData.curPhotonState == EPhotonState.NONE)
+                if(GameManager.Instance.PhotonData.state == PhotonData.EState.NONE)
                     OnRoomLeft?.Invoke();
 
                 PhotonNetwork.LeaveRoom();
@@ -116,21 +117,21 @@ namespace EverScord
 
         private void HandleChangeUserData()
         {
-            pv.RPC("SetLevel", RpcTarget.Others, GameManager.Instance.userData.curLevel);
+            pv.RPC("SetLevel", RpcTarget.Others, GameManager.Instance.PlayerData.difficulty);
             SetPlayerRole();
-            Debug.Log($"nickName : {PhotonNetwork.NickName}, Job : {GameManager.Instance.userData.job}, Level : {GameManager.Instance.userData.curLevel}");
+            Debug.Log($"nickName : {PhotonNetwork.NickName}, Job : {GameManager.Instance.PlayerData.job}, Level : {GameManager.Instance.PlayerData.difficulty}");
         }
 
         private void HandleGameStart()
         {
-            switch(GameManager.Instance.userData.curLevel)
+            switch(GameManager.Instance.PlayerData.difficulty)
             {
-                case ELevel.STORY:
+                case PlayerData.EDifficulty.Story:
                     {
                         OnMatchSoloPlay?.Invoke();
                     }
                     break;
-                case ELevel.NORMAL:
+                case PlayerData.EDifficulty.Normal:
                     {
                         OnMatchMultiPlay?.Invoke();
                         //if (IsCanStart())
@@ -144,7 +145,7 @@ namespace EverScord
                         //}
                     }
                     break;
-                case ELevel.HARD:
+                case PlayerData.EDifficulty.Hard:
                     {
                         OnMatchMultiPlay?.Invoke();
                         //if (IsCanStart())
@@ -183,9 +184,9 @@ namespace EverScord
 
         #region PunRPC Methods
         [PunRPC]
-        private void SetLevel(ELevel newLevel)
+        private void SetLevel(PlayerData.EDifficulty newLevel)
         {
-            GameManager.Instance.userData.curLevel = newLevel;
+            GameManager.Instance.PlayerData.difficulty = newLevel;
         }
 
         [PunRPC]
@@ -210,7 +211,7 @@ namespace EverScord
             {
                 {"DEALER",0 },
                 {"HEALER",0 },
-                {"LEVEL", ELevel.NORMAL }
+                {"LEVEL", PlayerData.EDifficulty.Normal }
             };
 
             RoomOptions ro = new RoomOptions();
@@ -243,23 +244,23 @@ namespace EverScord
         }
         private void SetPlayerRole()
         {
-            PlayerData data = GameManager.Instance.userData;
+            PlayerData data = GameManager.Instance.PlayerData;
             switch(data.job)
             {
-                case EJob.DEALER:
+                case PlayerData.EJob.Dealer:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "DEALER" } });
                     break;
-                case EJob.HEALER:
+                case PlayerData.EJob.Healer:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "HEALER" } });
                     break;
             }
 
-            switch(data.curLevel)
+            switch(data.difficulty)
             {
-                case ELevel.NORMAL:
+                case PlayerData.EDifficulty.Normal:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "NORMAL" } });
                     break;
-                case ELevel.HARD:
+                case PlayerData.EDifficulty.Hard:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "HARD" } });
                     break;
             }
@@ -289,7 +290,7 @@ namespace EverScord
             }
             roomProperties["DEALER"] = curDealers;
             roomProperties["HEALER"] = curHealers;
-            roomProperties["LEVEL"] = GameManager.Instance.userData.curLevel;
+            roomProperties["LEVEL"] = GameManager.Instance.PlayerData.difficulty;
 
             PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
             
@@ -318,9 +319,9 @@ namespace EverScord
         {
             Debug.Log($"Joined Room Successful.\nPhoton RoomName : {PhotonNetwork.CurrentRoom.Name}");
 
-            switch(GameManager.Instance.userData.curPhotonState)
+            switch(GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.NONE:
+                case PhotonData.EState.NONE:
                     {
                         OnJoinRoom?.Invoke();
                         OnUpdateRoom?.Invoke();
@@ -343,9 +344,9 @@ namespace EverScord
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Room Failed {returnCode} : {message}");
-            switch(GameManager.Instance.userData.curPhotonState)
+            switch(GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.NONE:
+                case PhotonData.EState.NONE:
                     {
                         CreatePhotonRoom();
                     }
@@ -356,9 +357,9 @@ namespace EverScord
         {
             Debug.Log($"Another player has joined the room : {newPlayer.NickName}");
 
-            switch (GameManager.Instance.userData.curPhotonState)
+            switch (GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.NONE:
+                case PhotonData.EState.NONE:
                     {
                         DisplayRoomPlayers();
                         OnUpdateRoom?.Invoke();
@@ -372,9 +373,9 @@ namespace EverScord
             Debug.Log($"Player has left the room : {otherPlayer.NickName}");
 
             UpdateRoomCondition();
-            switch (GameManager.Instance.userData.curPhotonState)
+            switch (GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.NONE:
+                case PhotonData.EState.NONE:
                     {
                         DisplayRoomPlayers();
                         OnUpdateRoom?.Invoke();
@@ -388,9 +389,9 @@ namespace EverScord
             Debug.Log($"{targetPlayer} Properties Update");
             UpdateRoomCondition();
             OnCheckGame?.Invoke();
-            switch(GameManager.Instance.userData.curPhotonState)
+            switch(GameManager.Instance.PhotonData.state)
             {
-                case EPhotonState.NONE:
+                case PhotonData.EState.NONE:
                     {
                         // 현재 방 인원이 max일때 직업조건을 확인하고 플레이가 불가능하면 시스템메시지 출력 ( 일단은 반응x으로)
                     }
@@ -410,7 +411,7 @@ namespace EverScord
             {
                 if (GUI.Button(new Rect(400, 0, 150, 60), "Show Me The Money"))
                 {
-                    GameManager.Instance.userData.IncreaseMoney(10000);
+                    GameManager.Instance.PlayerData.IncreaseMoney(10000);
                 }
                 
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
@@ -442,7 +443,7 @@ namespace EverScord
 
             int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
             int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
-            ELevel level = (ELevel)PhotonNetwork.CurrentRoom.CustomProperties["LEVEL"];
+            PlayerData.EDifficulty level = (EDifficulty)PhotonNetwork.CurrentRoom.CustomProperties["LEVEL"];
 
             Debug.Log($"dealer : {curDealer}, healer : {curHealer}, level : ${level}");
         }
