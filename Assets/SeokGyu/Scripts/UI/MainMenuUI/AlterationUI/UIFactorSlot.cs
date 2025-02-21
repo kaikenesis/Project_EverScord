@@ -51,7 +51,7 @@ namespace EverScord
 
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Unlock;
             GameManager.Instance.PlayerData.DecreaseMoney(cost);
-            OnDecreaseMoney?.Invoke(cost);
+            OnDecreaseMoney?.Invoke(GameManager.Instance.PlayerData.money);
             bLock = false;
             lockImg.enabled = false;
         }
@@ -62,7 +62,7 @@ namespace EverScord
 
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
             GameManager.Instance.PlayerData.DecreaseMoney(cost);
-            OnDecreaseMoney?.Invoke(cost);
+            OnDecreaseMoney?.Invoke(GameManager.Instance.PlayerData.money);
 
             FactorData datas = GameManager.Instance.FactorDatas[typeNum];
 

@@ -92,6 +92,7 @@ namespace EverScord
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
             playerPhotonViews   = new();
+            playerData.Initialize();
         }
 
         public void UpdateUserName(string newName)

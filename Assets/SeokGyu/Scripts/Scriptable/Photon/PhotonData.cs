@@ -3,7 +3,7 @@ using UnityEngine;
 namespace EverScord
 {
     [CreateAssetMenu(menuName = "EverScord/Datas/PhotonData", fileName = "newPhotonData")]
-    public class PhotonData : MonoBehaviour
+    public class PhotonData : ScriptableObject
     {
         public enum EState
         {
