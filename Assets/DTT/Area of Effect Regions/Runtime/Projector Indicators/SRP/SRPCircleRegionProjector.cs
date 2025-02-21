@@ -157,7 +157,6 @@ namespace DTT.AreaOfEffectRegions
             if(_centerDotProjector == null)
                 _centerDotProjector = _centerDot.AddComponent<DecalProjector>();
             _centerDotProjector.material = _centerDotMat;
-            Start();
         }
         
         /// <summary>
@@ -165,6 +164,7 @@ namespace DTT.AreaOfEffectRegions
         /// </summary>
         private void Start()
         {
+            GenerateProjector();
             if (_centerDotProjector == null || _circleProjector == null)
             {
                 return;
@@ -254,7 +254,7 @@ namespace DTT.AreaOfEffectRegions
         private void UpdateProjectorPosition()
         {
             if (_regionTransform != null)
-                _regionTransform.localPosition = new Vector3(Offset.x, 0, Offset.y);
+                _regionTransform.localPosition = new Vector3(Offset.x, 1, Offset.y);
         }
 
         /// <summary>

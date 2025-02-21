@@ -108,7 +108,7 @@ namespace DTT.AreaOfEffectRegions
         [Range(0, 360)]
         [SerializeField]
         private float _arc;
-        
+
         /// <summary>
         /// Depth to project the object.
         /// </summary>
@@ -220,7 +220,8 @@ namespace DTT.AreaOfEffectRegions
             for (int i = 0; i < _regions.Length; i++)
             {
                 if (_regions.Length > 1)
-                    _regions[i].Angle = _arc / (_regions.Length - 1) * i - _arc / 2;
+                    //_regions[i].Angle = _arc / i;
+                    _regions[i].Angle = _arc / (_regions.Length - 1) * i;
                 else
                     _regions[i].Angle = 0;
 
