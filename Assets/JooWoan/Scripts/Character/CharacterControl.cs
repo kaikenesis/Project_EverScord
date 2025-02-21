@@ -47,7 +47,6 @@ namespace EverScord.Character
         [SerializeField] private float hurtBlinkDuration;
         [SerializeField] private float hurtBlinkIntensity;
 
-
         public PlayerUI PlayerUIControl                                 { get; private set; }
         public CharacterRigControl RigControl                           { get; private set; }
         public CharacterAnimation AnimationControl                      { get; private set; }
@@ -57,8 +56,8 @@ namespace EverScord.Character
         public SkillAction CurrentSkillAction                           { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
-        public PlayerData.EJob CharacterJob                         { get; private set; }
-        public CharState State                                     { get; private set; }
+        public PlayerData.EJob CharacterJob                             { get; private set; }
+        public CharState State                                          { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -75,7 +74,6 @@ namespace EverScord.Character
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
         private Action onDecreaseHealth;
-        
         private SkinnedMeshRenderer[] skinRenderers;
         private int originalSkinLayer;
 
@@ -85,8 +83,11 @@ namespace EverScord.Character
             set
             {
                 currentHealth = value;
-                blinkEffect.Blink();
-                // Change Helath UI
+
+                // Change Health UI
+
+                if (photonView.IsMine)
+                    PlayerUIControl.SetBloodyScreen(currentHealth, maxHealth);
             }
         }
 
@@ -140,6 +141,9 @@ namespace EverScord.Character
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Space))
+                CurrentHealth += 10f;
+
             if (!photonView.IsMine)
             {
                 LerpRemoteInfo();
@@ -374,6 +378,7 @@ namespace EverScord.Character
                 return;
             
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+            blinkEffect.Blink();
             
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
@@ -526,6 +531,10 @@ namespace EverScord.Character
                 GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
                 var effect = Instantiate(healEffect, transform);
                 effect.transform.position = transform.position;
+            }
+            else
+            {
+                blinkEffect.Blink();
             }
         }
 
