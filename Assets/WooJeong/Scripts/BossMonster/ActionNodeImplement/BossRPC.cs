@@ -1,3 +1,4 @@
+using DTT.AreaOfEffectRegions;
 using EverScord;
 using EverScord.Character;
 using EverScord.Effects;
@@ -13,11 +14,14 @@ public class BossRPC : MonoBehaviour, IEnemy
     
     [SerializeField] private BossData bossData;
     [SerializeField] private GameObject laserPoint;
+    [SerializeField] private GameObject projectorObj_Pattern4;
+    private SRPLineRegionProjector projectorPattern4;
+    [SerializeField] private GameObject projectorObj_Pattern5;
+    private SRPArcRegionProjector projectorPattern5;
+
     private PhotonView photonView;
     private Animator animator;
     private BoxCollider hitBox;
-    private DecalProjector projectorCharge;
-    private DecalProjector projectorQuater;
     private DecalProjector projectorP7_Danger;
     private DecalProjector projectorP7_Safe;
     private GameObject projectorQuaterPivot;
@@ -43,32 +47,20 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void SetProjectors()
     {
+        /*
         // projector for pattern4
-        projectorCharge = gameObject.AddComponent<DecalProjector>();
-        projectorCharge.size = new Vector3(2, 1, 10);
-        projectorCharge.pivot = new Vector3(0, 0f, 5f);
-        projectorCharge.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
-        projectorCharge.renderingLayerMask = 2;
-        projectorCharge.enabled = false;
+        projectorPattern4 = gameObject.AddComponent<DecalProjector>();
+        projectorPattern4.size = new Vector3(2, 1, 10);
+        projectorPattern4.pivot = new Vector3(0, 0f, 5f);
+        projectorPattern4.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
+        projectorPattern4.renderingLayerMask = 2;
+        projectorPattern4.enabled = false;
+        */
+        projectorPattern4 = projectorObj_Pattern4.GetComponent<SRPLineRegionProjector>();
+        projectorPattern5 = projectorObj_Pattern5.GetComponent<SRPArcRegionProjector>();
 
-        // projector for pattern5
-        projectorQuaterPivot = new GameObject();
-        projectorQuaterPivot.name = "ProjectorQuaterPivot";
-        projectorQuaterPivot.transform.parent = transform;
-        projectorQuaterPivot.transform.localPosition = Vector3.zero;
-
-        GameObject projectorObj = new GameObject();
-        projectorObj.name = "projectorQuater";
-        projectorObj.transform.parent = projectorQuaterPivot.transform;
-        projectorObj.transform.Rotate(new Vector3(90, 0, 0));
-        projectorObj.transform.localPosition = new Vector3(5, 0, attackRadius6 / 2);
-        projectorQuater = projectorObj.AddComponent<DecalProjector>();
-        projectorQuater.renderingLayerMask = 2;
-        projectorQuater.size = new Vector3(attackRadius6, attackRadius6, 1);
-        projectorQuater.material = ResourceManager.Instance.GetAsset<Material>("DecalRedQuater");
-        projectorQuater.enabled = false;
-
-        projectorQuaterPivot.transform.Rotate(new Vector3(0, -45, 0));
+        projectorObj_Pattern4.SetActive(false);
+        projectorObj_Pattern5.SetActive(false);
 
         // projector for pattern 7
         GameObject projectorForPatter7 = new GameObject();
@@ -155,26 +147,52 @@ public class BossRPC : MonoBehaviour, IEnemy
         bp.Setup("BossProjectile", id, position, direction, projectileSpeed);
     }
 
+    private IEnumerator FillAmountProjector(int projectorNum, float time)
+    {
+        float curTime = 0;
+
+        switch (projectorNum)
+        {
+            case 4:
+                {
+                    projectorPattern4.FillProgress = 0;
+                    while (true)
+                    {
+                        curTime += Time.deltaTime;
+                        projectorPattern4.FillProgress = curTime / time;
+                        if (curTime > time) 
+                            yield break;
+                    }
+                }
+            case 5:
+                {
+                    projectorObj_Pattern5.SetActive(true);
+                    break;
+                }
+        }
+    }
+
     public IEnumerator ProjectEnable(int patternNum, float projectTime)
     {
-        photonView.RPC("SyncProjectorEnable", RpcTarget.All, patternNum);
+        photonView.RPC("SyncProjectorEnable", RpcTarget.All, patternNum, projectTime);
         yield return new WaitForSeconds(projectTime);
         photonView.RPC("SyncProjectorDisable", RpcTarget.All, patternNum);
     }
 
     [PunRPC]
-    protected void SyncProjectorEnable(int patternNum)
+    protected void SyncProjectorEnable(int patternNum, float projectTime)
     {
         switch (patternNum)
         {
             case 4:
                 {
-                    projectorCharge.enabled = true;
+                    projectorObj_Pattern4.SetActive(true);
+                    StartCoroutine(FillAmountProjector(patternNum, projectTime));
                     break;
                 }
             case 5:
                 {
-                    projectorQuater.enabled = true;
+                    projectorObj_Pattern5.SetActive(true);
                     break ;
                 }
             case 7:
@@ -193,12 +211,12 @@ public class BossRPC : MonoBehaviour, IEnemy
         {
             case 4:
                 {
-                    projectorCharge.enabled = false;
+                    projectorObj_Pattern4.SetActive(true);
                     break;
                 }
             case 5:
                 {
-                    projectorQuater.enabled = false;
+                    projectorObj_Pattern5.SetActive(false);
                     break;
                 }
             case 7:
