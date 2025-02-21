@@ -224,7 +224,7 @@ namespace DTT.AreaOfEffectRegions
         /// border's round pivot based on its actual size. This value works for the currently used
         /// border textures and their projector size of 60% of that of the circle projector.
         /// </summary>
-        private const float Z_AXIS_DISPLACEMENT = 0.5665f;
+        private const float Z_AXIS_DISPLACEMENT = 0.52f;
 
         /// <summary>
         /// The size ration between the center dot to that of the circle projector.
@@ -328,7 +328,6 @@ namespace DTT.AreaOfEffectRegions
             if(_rightBorderProjector == null)
                 _rightBorderProjector = _rightBorder.AddComponent<DecalProjector>();
             _rightBorderProjector.material = _rightBorderMat;
-            Start();
         }
         
         /// <summary>
@@ -336,6 +335,7 @@ namespace DTT.AreaOfEffectRegions
         /// </summary>
         private void Start()
         {
+            GenerateProjector();
             if (_circleProjector == null ||
                 _circleDecorationProjector == null ||
                 _centerDotProjector ==null ||
@@ -398,8 +398,8 @@ namespace DTT.AreaOfEffectRegions
                 return;
 
             Vector3 currentSize = _circleProjector.size;
-            currentSize.x = _radius;
-            currentSize.y = _radius;
+            currentSize.x = _radius * 2;
+            currentSize.y = _radius * 2;
             currentSize.z = _depth;
             _circleProjector.pivot = new Vector3(0, 0, _depth/2);
             _circleProjector.size = currentSize;
@@ -423,8 +423,8 @@ namespace DTT.AreaOfEffectRegions
                 return;
 
             Vector3 currentSize = _circleDecorationProjector.size;
-            currentSize.x = _radius;
-            currentSize.y = _radius;
+            currentSize.x = _radius * 2;
+            currentSize.y = _radius * 2;
             currentSize.z = _depth;
             _circleDecorationProjector.pivot = new Vector3(0, 0, _depth/2);
             _circleDecorationProjector.size = currentSize;
@@ -471,8 +471,8 @@ namespace DTT.AreaOfEffectRegions
             _leftBorderProjector.transform.localPosition = new Vector3(0, Y_POSITION, Z_AXIS_DISPLACEMENT * _radius);
 
             Vector3 currentSize = _leftBorderProjector.size;
-            currentSize.x = _radius * BORDER_TO_CIRCLE_SIZE_RATIO;
-            currentSize.y = _radius * BORDER_TO_CIRCLE_SIZE_RATIO;
+            currentSize.x = _radius;
+            currentSize.y = _radius * 1.1f;
             currentSize.z = _depth;
             _leftBorderProjector.pivot = new Vector3(0, 0, _depth/2);
             _leftBorderProjector.size = currentSize;
@@ -492,8 +492,8 @@ namespace DTT.AreaOfEffectRegions
                 return;
 
             Vector3 currentSize = _rightBorderProjector.size;
-            currentSize.x = _radius * BORDER_TO_CIRCLE_SIZE_RATIO;
-            currentSize.y = _radius * BORDER_TO_CIRCLE_SIZE_RATIO;
+            currentSize.x = _radius;
+            currentSize.y = _radius * 1.1f;
             currentSize.z = _depth;
             _rightBorderProjector.size = currentSize;
             _rightBorderProjector.pivot = new Vector3(0, 0, _depth/2);

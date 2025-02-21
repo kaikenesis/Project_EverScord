@@ -23,7 +23,7 @@ namespace DTT.AreaOfEffectRegions
         /// The line body object.
         /// </summary>
         [SerializeField] private GameObject _body;
-        
+
         [Header("Materials")]
         /// <summary>
         /// The line head material.
@@ -34,9 +34,9 @@ namespace DTT.AreaOfEffectRegions
         /// <summary>
         /// The line body material.
         /// </summary>
-        [SerializeField] 
+        [SerializeField]
         private Material _bodyMat;
-        
+
         /// <summary>
         /// The line head projector.
         /// </summary>
@@ -109,31 +109,31 @@ namespace DTT.AreaOfEffectRegions
         /// <summary>
         /// The fade amount of the line.
         /// </summary>
-        [SerializeField] 
-        [Range(0, 1)] 
+        [SerializeField]
+        [Range(0, 1)]
         private float _fadeAmount;
 
         /// <summary>
         /// The angle of the line.
         /// </summary>
-        [SerializeField] 
-        [Range(0, 360)] 
+        [SerializeField]
+        [Range(0, 360)]
         private float _angle;
 
         /// <summary>
         /// The length of the line.
         /// </summary>
-        [SerializeField] 
-        [Min(0)] 
+        [SerializeField]
+        [Min(0)]
         private float _length = 1f;
 
         /// <summary>
         /// The width of the line.
         /// </summary>
-        [SerializeField] 
-        [Min(0)] 
+        [SerializeField]
+        [Min(0)]
         private float _width = 1f;
-        
+
         /// <summary>
         /// Depth to project the object.
         /// </summary>
@@ -207,22 +207,22 @@ namespace DTT.AreaOfEffectRegions
         public void GenerateProjector()
         {
             _headProjector = _head.GetComponent<DecalProjector>();
-            if(_headProjector == null)
+            if (_headProjector == null)
                 _headProjector = _head.AddComponent<DecalProjector>();
             _headProjector.material = _headMat;
 
             _bodyProjector = _body.GetComponent<DecalProjector>();
-            if(_bodyProjector == null)
+            if (_bodyProjector == null)
                 _bodyProjector = _body.AddComponent<DecalProjector>();
             _bodyProjector.material = _bodyMat;
-            Start();
         }
-        
+
         /// <summary>
         /// Reassigns all materials and updates all projectors.
         /// </summary>
         private void Start()
         {
+            GenerateProjector();
             if (_headProjector == null || _bodyProjector == null)
                 return;
             ReassignMaterials();
@@ -267,13 +267,13 @@ namespace DTT.AreaOfEffectRegions
                 return;
 
             Vector3 currentSize = _headProjector.size;
-            currentSize.x = _length + 1 + (_width - 1);
-            currentSize.y = _length + 1;
+            currentSize.x = _width;
+            currentSize.y = _length;
             currentSize.z = _depth;
-            _headProjector.pivot = new Vector3(0, 0,_depth / 2);
+            _headProjector.pivot = new Vector3(0, 0, _depth / 2);
             _headProjector.size = currentSize;
             _headProjector.transform.localPosition =
-                new Vector3(0, Y_POSITION, (_length + 1) * 0.5f * ARROW_Z_DISPLACEMENT);
+                new Vector3(0, Y_POSITION, (_length) * 0.5f * ARROW_Z_DISPLACEMENT);
 
             if (_headProjector.material == null)
                 return;
@@ -293,12 +293,12 @@ namespace DTT.AreaOfEffectRegions
                 return;
 
             Vector3 currentSize = _bodyProjector.size;
-            currentSize.x = _length + 1 + (_width - 1);
-            currentSize.y = _length + 1;
+            currentSize.x = _width;
+            currentSize.y = _length;
             currentSize.z = _depth;
-            _bodyProjector.pivot = new Vector3(0, 0,_depth / 2);
+            _bodyProjector.pivot = new Vector3(0, 0, _depth / 2);
             _bodyProjector.size = currentSize;
-            _bodyProjector.transform.localPosition = new Vector3(0, Y_POSITION, (_length + 1) * 0.5f);
+            _bodyProjector.transform.localPosition = new Vector3(0, Y_POSITION, (_length) * 0.5f);
 
             if (_bodyProjector.material == null)
                 return;

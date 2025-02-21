@@ -268,7 +268,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             id = mp.ID;
 
         mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
-        photonView.RPC(projectileName, RpcTarget.Others, id, position, transform.forward, projectileSpeed);
+        photonView.RPC("SyncProjectileNMM2", RpcTarget.Others, projectileName, id, position, transform.forward, projectileSpeed);
     }
 
     [PunRPC]
