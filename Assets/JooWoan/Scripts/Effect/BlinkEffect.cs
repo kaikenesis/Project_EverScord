@@ -1,6 +1,7 @@
-using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using static UnityEngine.GraphicsBuffer;
 using Unity.VisualScripting;
 
 namespace EverScord.Effects
@@ -14,17 +15,39 @@ namespace EverScord.Effects
         [SerializeField] private float blinkIntensity;
         [SerializeField] private float blinkDuration;
 
+        private static Material whiteMat;
         private static Texture defaultTexture;
         private static int emissionMapID, emissionColorID;
         private const string EMISSION_KEYWORD = "_EMISSION";
 
-        private MonoBehaviour blinkTarget;
+        private Transform blinkTarget;
         private Renderer[] renderers;
         private Coroutine blinkCoroutine;
         private MaterialPropertyBlock mpb;
         private IDictionary<(int, int), (Texture, Color)> emissionDict;
 
+        private bool isParticle = false;
+        List<Material> originalParticleMats;
+
+        public static BlinkEffect Create(ParticleSystem target)
+        {
+            BlinkEffect blinkEffect = target.transform.gameObject.AddComponent<BlinkEffect>();
+            blinkEffect.isParticle = true;
+            blinkEffect.InitParticles(target);
+            return blinkEffect;
+        }
+
+        public static BlinkEffect Create(GameObject target, float duration = DEFAULT_DURATION, float intensity = DEFAULT_INTENSITY, Color color = default)
+        {
+            return Create(target.transform, duration, intensity, color);
+        }
+
         public static BlinkEffect Create(MonoBehaviour target, float duration = DEFAULT_DURATION, float intensity = DEFAULT_INTENSITY, Color color = default)
+        {
+            return Create(target.transform, duration, intensity, color);
+        }
+
+        public static BlinkEffect Create(Transform target, float duration = DEFAULT_DURATION, float intensity = DEFAULT_INTENSITY, Color color = default)
         {
             if (!target)
             {
@@ -35,7 +58,7 @@ namespace EverScord.Effects
             if (color == default)
                 color = Color.white;
 
-            BlinkEffect blinkEffect = target.AddComponent<BlinkEffect>();
+            BlinkEffect blinkEffect = target.gameObject.AddComponent<BlinkEffect>();
             blinkEffect.Init(target, duration, intensity, color);
 
             return blinkEffect;
@@ -55,15 +78,21 @@ namespace EverScord.Effects
             }
 
             texture.Apply(true, true);
-            defaultTexture = texture;
+            return defaultTexture = texture;
+        }
 
-            return defaultTexture;
+        public static Material GetDefaultMat()
+        {
+            if (whiteMat != null)
+                return whiteMat;
+
+            return whiteMat = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_DEFAULT_WHITE_MAT);
         }
 
         void Awake()
         {
             if (!blinkTarget)
-                Init(this, blinkDuration, blinkIntensity, blinkColor);
+                Init(transform, blinkDuration, blinkIntensity, blinkColor);
         }
 
         void OnDisable()
@@ -71,7 +100,7 @@ namespace EverScord.Effects
             SetMaterialColors(default, true);
         }
 
-        private void Init(MonoBehaviour target, float duration, float intensity, Color color)
+        private void Init(Transform target, float duration, float intensity, Color color)
         {
             blinkTarget = target;
             blinkDuration = duration;
@@ -88,12 +117,41 @@ namespace EverScord.Effects
             SetMaterialSettings();
         }
 
+        private void InitParticles(ParticleSystem target)
+        {
+            blinkTarget = target.gameObject.transform;
+            ParticleSystemRenderer[] particleRenderers = blinkTarget.GetComponentsInChildren<ParticleSystemRenderer>();
+
+            List<Renderer> temp = new();
+            originalParticleMats = new();
+
+            foreach (var renderer in particleRenderers)
+            {
+                if (!renderer.enabled)
+                    continue;
+
+                if (renderer.renderMode != ParticleSystemRenderMode.Mesh)
+                    continue;
+
+                if (renderer.mesh == null)
+                    continue;
+
+                temp.Add(renderer);
+                originalParticleMats.Add(renderer.sharedMaterial);
+            }
+
+            renderers = temp.ToArray();
+        }
+
         public void Blink()
         {
             if (blinkCoroutine != null)
                 StopCoroutine(blinkCoroutine);
 
-            blinkCoroutine = StartCoroutine(StartBlink());
+            if (!isParticle)
+                blinkCoroutine = StartCoroutine(StartBlink());
+            else
+                blinkCoroutine = StartCoroutine(StartParticleBlink());
         }
 
         private void SetMaterialSettings()
@@ -167,6 +225,25 @@ namespace EverScord.Effects
 
             SetMaterialColors(default, true);
             blinkCoroutine = null;
+        }
+
+        private IEnumerator StartParticleBlink()
+        {
+            int blinkCount = 3;
+            WaitForSeconds waitblink = new WaitForSeconds(0.01f);
+
+            for (int i = 0; i < blinkCount; i++)
+            {
+                for (int j = 0; j < renderers.Length; j++)
+                    renderers[j].sharedMaterial = GetDefaultMat();
+
+                yield return waitblink;
+
+                for (int j = 0; j < renderers.Length; j++)
+                    renderers[j].sharedMaterial = originalParticleMats[j];
+
+                yield return waitblink;
+            }
         }
     }
 }

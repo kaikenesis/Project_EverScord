@@ -27,8 +27,6 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         boxCollider = gameObject.AddComponent<BoxCollider>();
         //capCollider.isTrigger = true;
         projector.renderingLayerMask = 2;
-
-        blinkEffect = BlinkEffect.Create(this);
     }
 
     public void Setup(float width, float projectTime, string effectAddressableKey, float attackDamage)
@@ -55,6 +53,10 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         boxCollider.enabled = true;
         effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
         effectParticle = effect.GetComponent<ParticleSystem>();
+
+        if (blinkEffect == null)
+            blinkEffect = BlinkEffect.Create(effectParticle);
+
         yield return new WaitForSeconds(1.0f);
         effectParticle = effect.GetComponent<ParticleSystem>();
         effectParticle.Pause();

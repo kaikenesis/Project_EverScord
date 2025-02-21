@@ -30,6 +30,7 @@ namespace EverScord
 
         // Addressable Keys
         public const string KEY_TRAJECTORYLINE_MAT = "TrajectoryLineMAT";
+        public const string KEY_DEFAULT_WHITE_MAT = "DefaultWhiteMAT";
         public const string KEY_HEAL_EFFECT = "HealEffect";
     }
 }
