@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 7816761892141423248}
   - component: {fileID: 3911551881826788805}
   - component: {fileID: 4377117679456604224}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NMS2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -58,6 +58,7 @@ MonoBehaviour:
   stunTime: 2
   isStun: 0
   isDead: 0
+  isUpgraded: 0
 --- !u!65 &-1500731102901984061
 BoxCollider:
   m_ObjectHideFlags: 0
