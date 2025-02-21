@@ -95,6 +95,7 @@ namespace EverScord
             playerDict          = new Dictionary<int, CharacterControl>();
             playerPhotonViews   = new();
             playerData.Initialize();
+            photonData.Initialize();
         }
 
         public void UpdateUserName(string newName)

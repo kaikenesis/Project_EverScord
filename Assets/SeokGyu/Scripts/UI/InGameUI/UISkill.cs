@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,10 +25,15 @@ namespace EverScord
             btnImg.sprite = btnSourceImg;
         }
 
-        public void ShowCooldown()
+        private void Update()
         {
-            // 1 -> 0 : 1 - curCooldown / maxCooldown
-            coverImg.fillAmount = 0;
+            
+        }
+
+        public void ShowCooldown(float duration)
+        {
+            coverImg.fillAmount = 1;
+            coverImg.DOFillAmount(0.0f, duration);
         }
 
         [System.Serializable]

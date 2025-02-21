@@ -63,17 +63,24 @@ namespace EverScord
             PhotonData.EState state = GameManager.Instance.PhotonData.state;
             if (state == PhotonData.EState.MATCH || state == PhotonData.EState.FOLLOW) return;
 
-            pv.RPC("SetMatchMaster", RpcTarget.All, PhotonNetwork.MasterClient);
-            pv.RPC("SetPhotonState", RpcTarget.Others, PhotonData.EState.FOLLOW);
+            pv.RPC(nameof(SetMatchMaster), RpcTarget.All, PhotonNetwork.MasterClient);
+            pv.RPC(nameof(SetPhotonState), RpcTarget.Others, PhotonData.EState.FOLLOW);
             GameManager.Instance.PhotonData.state = PhotonData.EState.MATCH;
             OnUpdateUI?.Invoke(false);
             OnStartTimer?.Invoke();
 
             if (PhotonNetwork.InRoom == true)
             {
-                matchPlayers = PhotonNetwork.CurrentRoom.Players;
-                expectedRoomProperties = GetCurrentRoomProperties();
-                PhotonNetwork.LeaveRoom();
+                if(PhotonNetwork.CurrentRoom.PlayerCount == (maxDealers + maxHealers))
+                {
+                    pv.RPC(nameof(MatchComplete), RpcTarget.All);
+                }
+                else
+                {
+                    matchPlayers = PhotonNetwork.CurrentRoom.Players;
+                    expectedRoomProperties = GetCurrentRoomProperties();
+                    PhotonNetwork.LeaveRoom();
+                }
             }
             else
             {
@@ -169,10 +176,12 @@ namespace EverScord
                 FollowRoom(room.Name);
             return PhotonNetwork.JoinRoom(room.Name);
         }
+
         private Hashtable GetCurrentRoomProperties()
         {
             return PhotonNetwork.CurrentRoom.CustomProperties;
         }
+
         private void FollowRoom(string roomName)
         {
             // 이미 로비로 나와 룸을 탐색했기 때문에 RPC는 활용하기 힘듬.
@@ -200,7 +209,7 @@ namespace EverScord
             if (curDealer < maxDealers) return;
             if (curHealer < maxHealers) return;
 
-            pv.RPC("MatchComplete", RpcTarget.All);
+            pv.RPC(nameof(MatchComplete), RpcTarget.All);
         }
         #endregion // Private Methods
 

@@ -36,6 +36,9 @@ namespace EverScord
 
         public void Initialize()
         {
+            character = ECharacter.Ned;
+            job = EJob.Dealer;
+            difficulty = EDifficulty.Normal;
             money = defaultMoney;
         }
 

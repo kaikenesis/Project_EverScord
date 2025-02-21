@@ -10,6 +10,7 @@ using EverScord.Effects;
 
 namespace EverScord.Character
 {
+
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         private const float SKIN_RATIO = 0.1f;
@@ -57,8 +58,9 @@ namespace EverScord.Character
         public SkillAction CurrentSkillAction                           { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
-        public PlayerData.EJob CharacterJob                         { get; private set; }
-        public CharState State                                     { get; private set; }
+        public PlayerData.ECharacter CharacterType                      { get; private set; }
+        public PlayerData.EJob CharacterJob                             { get; private set; }
+        public CharState State                                          { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -78,6 +80,8 @@ namespace EverScord.Character
         
         private SkinnedMeshRenderer[] skinRenderers;
         private int originalSkinLayer;
+
+        public static Action OnPhotonViewListUpdated = delegate { };
 
         public float CurrentHealth
         {
@@ -302,10 +306,12 @@ namespace EverScord.Character
             for (int i = 0; i < skillList.Count; i++)
             {
                 CharacterJob = GameManager.Instance.PlayerData.job;
+                CharacterType = GameManager.Instance.PlayerData.character;
+
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob);
+                    photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob, (int)CharacterType);
             }
         }
 
@@ -440,6 +446,8 @@ namespace EverScord.Character
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             GameManager.Instance.AddPlayerPhotonView(info.photonView);
+            if (PhotonNetwork.IsMasterClient && GameManager.Instance.playerPhotonViews.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                photonView.RPC(nameof(CreatePortrait), RpcTarget.All);
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -455,9 +463,10 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncJobAndSkills(int index, int characterJob)
+        private void SyncJobAndSkills(int index, int characterJob, int characterType)
         {
             CharacterJob = (PlayerData.EJob)characterJob;
+            CharacterType = (PlayerData.ECharacter)characterType;
             skillList[index].Init(this, index, (PlayerData.EJob)characterJob);
         }
 
@@ -527,6 +536,12 @@ namespace EverScord.Character
                 var effect = Instantiate(healEffect, transform);
                 effect.transform.position = transform.position;
             }
+        }
+
+        [PunRPC]
+        private void CreatePortrait()
+        {
+            OnPhotonViewListUpdated?.Invoke();
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
