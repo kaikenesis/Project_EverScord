@@ -15,7 +15,7 @@ namespace EverScord.Skill
         public ThrowSkill ThrowingSkill { get; private set; }
         private WaitForSeconds waitDelay = new WaitForSeconds(0.2f);
 
-        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             ThrowingSkill = (ThrowSkill)skill;
             predictor = new TrajectoryPredictor(activator, transform, ThrowingSkill);

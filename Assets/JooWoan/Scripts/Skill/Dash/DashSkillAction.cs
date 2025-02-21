@@ -26,7 +26,7 @@ namespace EverScord.Skill
             }
         }
 
-        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.skill = (DashSkill)skill;
             meshTrail  = new MeshTrail(activator.transform, this);

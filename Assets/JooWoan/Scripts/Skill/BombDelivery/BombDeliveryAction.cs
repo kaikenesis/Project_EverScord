@@ -12,7 +12,7 @@ namespace EverScord.Skill
         private BombDeliverySkill skill;
         private Transform closestTarget;
 
-        public override void Init(CharacterControl activator, CharacterSkill skill, EJob ejob, int skillIndex)
+        public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.skill = (BombDeliverySkill)skill;
 
@@ -30,7 +30,7 @@ namespace EverScord.Skill
 
         private IEnumerator ActivateSkill()
         {
-            if (ejob == EJob.DEALER)
+            if (ejob == PlayerData.EJob.Dealer)
                 OffensiveAction();
             else
                 SupportAction();

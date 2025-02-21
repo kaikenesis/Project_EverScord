@@ -37,7 +37,7 @@ namespace EverScord.Skill
             this.skillAction = skillAction;
             thrower = activator;
             
-            onSkillActivated = (thrower.CharacterJob == EJob.DEALER) ? skillAction.OffensiveAction : skillAction.SupportAction;
+            onSkillActivated = (thrower.CharacterJob == PlayerData.EJob.Dealer) ? skillAction.OffensiveAction : skillAction.SupportAction;
 
             timer = new CooldownTimer(info.EstimatedTime + ESTIMATED_TIME_DELAY);
             StartCoroutine(timer.RunTimer(true));

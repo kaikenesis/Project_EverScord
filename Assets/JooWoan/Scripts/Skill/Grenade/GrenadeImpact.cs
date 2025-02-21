@@ -11,7 +11,7 @@ namespace EverScord.Skill
             GrenadeSkillAction grenadeSkillAction = skillAction as GrenadeSkillAction;
             GrenadeSkill grenadeSkill = grenadeSkillAction.Skill;
 
-            if (thrower.CharacterJob == EJob.DEALER)
+            if (thrower.CharacterJob == PlayerData.EJob.Dealer)
                 explosionEffect = ResourceManager.Instance.GetAsset<GameObject>(grenadeSkill.DamageEffectReference.AssetGUID);
             else
                 explosionEffect = ResourceManager.Instance.GetAsset<GameObject>(grenadeSkill.HealEffectReference.AssetGUID);

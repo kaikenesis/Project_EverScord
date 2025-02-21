@@ -104,25 +104,25 @@ namespace EverScord.UI
 
         public void SetCharacterUni()
         {
-            if (GameManager.Instance.userData.character == ECharacter.UNI) return;
+            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Uni) return;
 
-            GameManager.Instance.userData.character = ECharacter.UNI;
+            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Uni;
             SwitchPlayer(CharacterType.UNI);
         }
 
         public void SetCharacterNed()
         {
-            if (GameManager.Instance.userData.character == ECharacter.NED) return;
+            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Ned) return;
 
-            GameManager.Instance.userData.character = ECharacter.NED;
+            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Ned;
             SwitchPlayer(CharacterType.NED);
         }
 
         public void SetCharacterUs()
         {
-            if (GameManager.Instance.userData.character == ECharacter.US) return;
+            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Us) return;
 
-            GameManager.Instance.userData.character = ECharacter.US;
+            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Us;
             SwitchPlayer(CharacterType.US);
         }
 

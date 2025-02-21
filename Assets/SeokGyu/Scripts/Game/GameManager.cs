@@ -11,7 +11,12 @@ namespace EverScord
     {
         private static GameManager instance;
 
-        public PlayerData userData;
+        [SerializeField] private PlayerData playerData;
+        public PlayerData PlayerData { get { return playerData; } }
+        //public PlayerData userData;
+
+        [SerializeField] private PhotonData photonData;
+        public PhotonData PhotonData { get { return photonData; } }
 
         public List<PhotonView> playerPhotonViews   { get; private set; }
         public BulletControl BulletsControl         { get; private set; }
@@ -33,11 +38,25 @@ namespace EverScord
             private set { costData = value; }
         }
 
-        [SerializeField] private FactorDatas[] factorDatas;
-        public FactorDatas[] FactorDatas
+        [SerializeField] private FactorData[] factorDatas;
+        public FactorData[] FactorDatas
         {
             get { return factorDatas; }
             private set { factorDatas = value; }
+        }
+
+        [SerializeField] private InGameUIData inGameUIData;
+        public InGameUIData InGameUIData
+        {
+            get { return inGameUIData; }
+            private set { inGameUIData = value; }
+        }
+
+        [SerializeField] private ArmorData armorData;
+        public ArmorData ArmorData
+        {
+            get { return armorData; }
+            private set { armorData = value; }
         }
 
         private IDictionary<int, CharacterControl> playerDict;
@@ -75,6 +94,7 @@ namespace EverScord
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
             playerPhotonViews   = new();
+            playerData.Initialize();
         }
 
         public void UpdateUserName(string newName)

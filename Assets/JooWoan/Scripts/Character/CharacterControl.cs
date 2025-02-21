@@ -57,7 +57,7 @@ namespace EverScord.Character
         public SkillAction CurrentSkillAction                           { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
-        public EJob CharacterJob                                        { get; private set; }
+        public PlayerData.EJob CharacterJob                         { get; private set; }
         public CharState State                                     { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
@@ -301,7 +301,7 @@ namespace EverScord.Character
 
             for (int i = 0; i < skillList.Count; i++)
             {
-                CharacterJob = GameManager.Instance.userData.job;
+                CharacterJob = GameManager.Instance.PlayerData.job;
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)
@@ -457,8 +457,8 @@ namespace EverScord.Character
         [PunRPC]
         private void SyncJobAndSkills(int index, int characterJob)
         {
-            CharacterJob = (EJob)characterJob;
-            skillList[index].Init(this, index, (EJob)characterJob);
+            CharacterJob = (PlayerData.EJob)characterJob;
+            skillList[index].Init(this, index, (PlayerData.EJob)characterJob);
         }
 
         [PunRPC]

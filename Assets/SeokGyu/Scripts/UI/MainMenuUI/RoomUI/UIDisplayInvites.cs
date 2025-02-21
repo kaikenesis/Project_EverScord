@@ -34,7 +34,7 @@ namespace EverScord
 
         private void HandleRoomInvite(string friend, string room)
         {
-            if (GameManager.Instance.userData.curPhotonState != EPhotonState.NONE) return;
+            if (GameManager.Instance.PhotonData.state != PhotonData.EState.NONE) return;
 
             Debug.Log($"Room invite for {friend} to room {room}");
             UIInvite uiInvite = Instantiate(uiInvitePrefab, inviteContainer);
