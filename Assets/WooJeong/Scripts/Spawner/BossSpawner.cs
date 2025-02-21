@@ -61,7 +61,7 @@ public class BossSpawner : MonoBehaviour
             return;
 
         mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
-        PhotonView view = mo.GetPhotonView();
+        PhotonView view = mo.GetComponent<PhotonView>();
         view.ViewID = viewID;
         Debug.Log("[client] ∏ÛΩ∫≈Õ viewID = " + view.ViewID);
     }
