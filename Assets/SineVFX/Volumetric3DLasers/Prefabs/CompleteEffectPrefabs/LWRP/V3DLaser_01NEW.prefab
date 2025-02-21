@@ -9633,7 +9633,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: e865e4e337741444ca58ba098791bdc5, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9766,7 +9765,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   impactCurve:
     serializedVersion: 2
     m_Curve:
@@ -9790,7 +9789,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   finalColor: {r: 0, g: 0.4627451, b: 1, a: 1}
 --- !u!1 &451232241
 GameObject:
@@ -9865,6 +9864,7 @@ GameObject:
   m_Component:
   - component: {fileID: 451911534}
   - component: {fileID: 451911535}
+  - component: {fileID: 383164399177260164}
   m_Layer: 0
   m_Name: PointLight_EP_01
   m_TagString: Untagged
@@ -9949,6 +9949,29 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &383164399177260164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451911533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &569943066
 GameObject:
   m_ObjectHideFlags: 0
@@ -14656,7 +14679,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: e5f86a614cf2a3246842e8646f1b9a6c, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -24392,7 +24414,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   shaderImpactCurve:
     serializedVersion: 2
     m_Curve:
@@ -24416,11 +24438,12 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   moveHitToSource: 0
   particleMeshLength: 2
   scalingWithSize: 1
   finalSize: 1
+  bIgnoreHit: 0
 --- !u!199 &657265876
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -24443,7 +24466,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 830f98f817c6ecc44b42dc9cbff5d5bb, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -29463,7 +29485,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
 --- !u!1 &933150261
 GameObject:
   m_ObjectHideFlags: 0
@@ -34232,7 +34254,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: e5f86a614cf2a3246842e8646f1b9a6c, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -34481,7 +34502,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   shaderImpactCurve:
     serializedVersion: 2
     m_Curve:
@@ -34505,13 +34526,12 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   moveHitToSource: 0.5
   distanceBetweenLights: 1
   scalingWithSize: 1
   finalSize: 1
-  lightPrefab: {fileID: 108881923985623346, guid: a0e1fc97a1944cb69091bd26f2038868,
-    type: 3}
+  lightPrefab: {fileID: 108881923985623346, guid: a0e1fc97a1944cb69091bd26f2038868, type: 3}
   lightRange: 3.5
   lightIntensity: 1
   finalColor: {r: 0, g: 0.4627451, b: 1, a: 1}
@@ -39321,7 +39341,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   shaderImpactCurve:
     serializedVersion: 2
     m_Curve:
@@ -39345,11 +39365,12 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   moveHitToSource: 0
   particleMeshLength: 2
   scalingWithSize: 1
   finalSize: 1
+  bIgnoreHit: 0
 --- !u!199 &1097736640
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -39372,7 +39393,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: c9eae9731b4f04840a692316546f71b0, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -63732,7 +63752,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: a8e95fa0f5c080b48bc21d3e85af0712, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -63795,6 +63814,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1528171766}
   - component: {fileID: 1528171767}
+  - component: {fileID: 2797655836747592373}
   m_Layer: 0
   m_Name: PointLight_SP_01
   m_TagString: Untagged
@@ -63879,6 +63899,29 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &2797655836747592373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528171765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &1597530971
 GameObject:
   m_ObjectHideFlags: 0
@@ -73595,7 +73638,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 9cc98b59593a3a14fa7d1c56d475b732, type: 2}
-  - {fileID: 2100000, guid: 9cc98b59593a3a14fa7d1c56d475b732, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -73809,7 +73851,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   impactCurve:
     serializedVersion: 2
     m_Curve:
@@ -73833,7 +73875,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   getEndPointPositionFrom: {fileID: 657265875}
   emittingParticleSystems:
   - {fileID: 1597530974}
@@ -78680,7 +78722,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   shaderImpactCurve:
     serializedVersion: 2
     m_Curve:
@@ -78704,11 +78746,12 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   moveHitToSource: 0
   particleMeshLength: 2
   scalingWithSize: 1
   finalSize: 1
+  bIgnoreHit: 0
 --- !u!199 &2093491025
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -78731,7 +78774,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 0908698180584f24bb6d91e5458da29b, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

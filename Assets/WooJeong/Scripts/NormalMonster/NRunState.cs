@@ -30,7 +30,7 @@ public abstract class NRunState : MonoBehaviour, IState
         StartCoroutine(Updating());
     }
 
-    protected IEnumerator Updating()
+    protected virtual IEnumerator Updating()
     {
         while (true)
         {

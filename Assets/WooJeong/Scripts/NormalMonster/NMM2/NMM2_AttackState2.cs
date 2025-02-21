@@ -1,18 +1,25 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using EverScord;
 
-public class NMM2_AttackState2 : MonoBehaviour
+public class NMM2_AttackState2 : NAttackState
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override IEnumerator Attack()
     {
-        
+        monsterController.PlayAnimation("Attack2");
+        float time = monsterController.clipDict["Attack2"];
+        yield return new WaitForSeconds(time/2);
+        monsterController.Fire("NMM2_Projectile");
+        yield return new WaitForSeconds(time/2);
+
+        StartCoroutine(monsterController.CoolDown2());
+        attack = null;
+        Exit();
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void Setup()
     {
-        
+        monsterController = GetComponent<NMM2_Controller>();
     }
 }

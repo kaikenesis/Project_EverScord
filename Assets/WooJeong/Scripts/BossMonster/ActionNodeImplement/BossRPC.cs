@@ -10,7 +10,6 @@ using UnityEngine.Rendering.Universal;
 public class BossRPC : MonoBehaviour, IEnemy
 {
     public Dictionary<string, float> clipDict = new();
-    public BossProjectileController projectileController;
     
     [SerializeField] private BossData bossData;
     [SerializeField] private GameObject laserPoint;
@@ -31,7 +30,6 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void Awake()
     {
-        projectileController = gameObject.AddComponent<BossProjectileController>();
         hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
@@ -102,6 +100,11 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void PlayAnimation(string animationName)
     {
         photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName);
+    }    
+    
+    public void PlayAnimation(string animationName, float transitionDuration)
+    {
+        photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName, transitionDuration);
     }
 
     [PunRPC]
@@ -112,33 +115,44 @@ public class BossRPC : MonoBehaviour, IEnemy
             photonView = GetComponent<PhotonView>();
             animator = GetComponent<Animator>();
         }
-        animator.CrossFade(animationName, 0.3f, -1, 0);
+        animator.CrossFade(animationName, 0.25f, -1, 0);
+    }
+
+    [PunRPC]
+    public void SyncBossAnimation(string animationName, float transitionDuration)
+    {
+        if (animator == null || photonView == null)
+        {
+            photonView = GetComponent<PhotonView>();
+            animator = GetComponent<Animator>();
+        }
+        animator.CrossFade(animationName, transitionDuration, -1, 0);
     }
 
     public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
     {
-        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
-        BossProjectile bp = go.GetComponent<BossProjectile>();
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
+        MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
         int id;
-        if (bp.ID == -1)
+        if (mp.ID == -1)
         {
-            id = projectileController.GetIDNum();
-            projectileController.AddDict(id, bp);
+            id = GameManager.Instance.ProjectileController.GetIDNum();
+            GameManager.Instance.ProjectileController.AddDict(id, mp);
         }
         else
-            id = bp.ID;
+            id = mp.ID;
 
-        bp.Setup(id, position, direction, projectileSpeed);
+        mp.Setup("BossProjectile", id, position, direction, projectileSpeed);
         photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, projectileSpeed);
     }
 
     [PunRPC]
     public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float projectileSpeed)
     {
-        GameObject go = ResourceManager.Instance.GetFromPool("BossProjectile", direction, Quaternion.identity);
-        BossProjectile bp = go.GetComponent<BossProjectile>();
-        projectileController.AddDict(id, bp);
-        bp.Setup(id, position, direction, projectileSpeed);
+        GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
+        MonsterProjectile bp = go.GetComponent<MonsterProjectile>();
+        GameManager.Instance.ProjectileController.AddDict(id, bp);
+        bp.Setup("BossProjectile", id, position, direction, projectileSpeed);
     }
 
     public IEnumerator ProjectEnable(int patternNum, float projectTime)

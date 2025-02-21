@@ -42,6 +42,8 @@ namespace EverScord
 
         private IDictionary<int, CharacterControl> playerDict;
 
+        public MonsterProjectileController ProjectileController { get; private set; }
+
         public static GameManager Instance
         {
             get
@@ -102,6 +104,10 @@ namespace EverScord
 
                 case CharacterControl character:
                     playerDict[character.CharacterPhotonView.ViewID] = character;
+                    break;
+
+                case MonsterProjectileController projectileController:
+                    ProjectileController = projectileController;
                     break;
             }
         }
