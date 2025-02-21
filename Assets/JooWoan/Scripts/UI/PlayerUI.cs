@@ -23,15 +23,12 @@ namespace EverScord.UI
         [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText;
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
 
-        private PhotonView photonView;
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
         private bool isEnabled = false;
 
-        public void Init(PhotonView photonView, Transform cameraRoot)
+        public void Init(Transform cameraRoot)
         {
-            this.photonView = photonView;
-
             if (!cursorIcon) cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(ConstStrings.KEY_CROSSHAIR);
             if (!bloodMat)   bloodMat   = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_BLOOD_MAT);
 
@@ -79,9 +76,6 @@ namespace EverScord.UI
 
         public void SetBloodyScreen(float currentHealth, bool isLowHealth)
         {
-            if (!photonView.IsMine)
-                return;
-
             if (currentHealth <= 0)
             {
                 bloodMat.SetInt(BLOOD_ENABLED, 0);
@@ -139,9 +133,6 @@ namespace EverScord.UI
 
         private void SetGrayscaleScreen(bool state)
         {
-            if (!photonView.IsMine)
-                return;
-
             if (colorCurves)
                 colorCurves.active = state;
         }
