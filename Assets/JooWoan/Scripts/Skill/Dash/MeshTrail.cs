@@ -107,9 +107,8 @@ namespace EverScord.Skill
             while (valueToAnimate > 0)
             {
                 valueToAnimate -= SHADER_VAR_FADE;
-                matArr[0].SetFloat(SHADER_VAR_REF, valueToAnimate);
 
-                for (int i = 1; i < matArr.Length; i++)
+                for (int i = 0; i < matArr.Length; i++)
                     matArr[i].SetFloat(SHADER_VAR_REF, valueToAnimate);
 
                 yield return fadeWait;

@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using static UnityEngine.GraphicsBuffer;
-using Unity.VisualScripting;
 
 namespace EverScord.Effects
 {
