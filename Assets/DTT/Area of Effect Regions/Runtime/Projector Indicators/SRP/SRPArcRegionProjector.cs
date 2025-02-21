@@ -224,7 +224,7 @@ namespace DTT.AreaOfEffectRegions
         /// border's round pivot based on its actual size. This value works for the currently used
         /// border textures and their projector size of 60% of that of the circle projector.
         /// </summary>
-        private const float Z_AXIS_DISPLACEMENT = 0.5665f;
+        private const float Z_AXIS_DISPLACEMENT = 0.5665f * 0.5f;
 
         /// <summary>
         /// The size ration between the center dot to that of the circle projector.
@@ -328,7 +328,6 @@ namespace DTT.AreaOfEffectRegions
             if(_rightBorderProjector == null)
                 _rightBorderProjector = _rightBorder.AddComponent<DecalProjector>();
             _rightBorderProjector.material = _rightBorderMat;
-            Start();
         }
         
         /// <summary>
@@ -336,6 +335,7 @@ namespace DTT.AreaOfEffectRegions
         /// </summary>
         private void Start()
         {
+            GenerateProjector();
             if (_circleProjector == null ||
                 _circleDecorationProjector == null ||
                 _centerDotProjector ==null ||
