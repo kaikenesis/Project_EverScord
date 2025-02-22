@@ -14,9 +14,12 @@ namespace EverScord.Character
         public AnimationInfo AnimInfo => info;
         private PhotonView photonView;
 
+        private int upperMaskLayerIndex;
+
         public void Init(PhotonView photonView)
         {
             this.photonView = photonView;
+            upperMaskLayerIndex = anim.GetLayerIndex(ConstStrings.ANIMLAYER_UPPERMASK);
         }
 
         public void AnimateMovement(CharacterControl character, Vector3 moveDir)
@@ -54,6 +57,12 @@ namespace EverScord.Character
                 return;
 
             photonView.RPC(nameof(SyncSetBool), RpcTarget.Others, name, state);
+        }
+
+        public void SetUpperMask(bool state)
+        {
+            int value = state ? 1 : 0;
+            anim.SetLayerWeight(upperMaskLayerIndex, value);
         }
 
         public void CrossFade(AnimationParam param)

@@ -35,5 +35,8 @@ namespace EverScord
         public const string KEY_OUTLINE_MAT = "OutlineMAT";
         public const string KEY_CROSSHAIR = "CrosshairIcon";
         public const string KEY_HEAL_EFFECT = "HealEffect";
+
+        // Animation Layers
+        public const string ANIMLAYER_UPPERMASK = "UpperMask";
     }
 }

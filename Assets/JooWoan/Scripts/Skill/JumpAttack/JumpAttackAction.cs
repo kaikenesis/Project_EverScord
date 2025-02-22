@@ -89,6 +89,9 @@ namespace EverScord.Skill
             stanceEffect = Instantiate(stanceEffectPrefab, CharacterSkill.SkillRoot);
             stanceEffect.transform.position = activator.transform.position;
 
+            activator.RigControl.SetAimWeight(false);
+            animControl.SetUpperMask(false);
+
             animControl.CrossFade(new AnimationParam(animInfo.CounterStance.name, 0.1f));
             activator.SetCharacterOutline(true, GameManager.OutlineLayer);
 
@@ -100,6 +103,9 @@ namespace EverScord.Skill
                 skillMarker.Set(true);
                 CharacterSkill.SetEffectParticles(markerParticles, true);
             }
+
+            animControl.Play(animInfo.Howl);
+            Invoke(nameof(ExitHowlAnimation), animInfo.Howl.length);
 
             jumpCoroutine = StartCoroutine(JumpStance());
         }
@@ -140,6 +146,7 @@ namespace EverScord.Skill
             skillMarker.Stamp(stampTime);
             CharacterSkill.SetEffectParticles(stanceEffect, false);
 
+            CancelInvoke(nameof(ExitHowlAnimation));
             animControl.Play(animInfo.Jump.name);
             yield return new WaitForSeconds(animInfo.Jump.length);
 
@@ -161,6 +168,8 @@ namespace EverScord.Skill
 
         private void ExitSkill(bool hasAttacked = false)
         {
+            animControl.SetUpperMask(true);
+
             activator.SetCharacterOutline(false, GameManager.OutlineLayer);
             SetJumpMode(false);
 
@@ -191,6 +200,11 @@ namespace EverScord.Skill
 
             activator.SetState(SetCharState.REMOVE, CharState.SKILL_STANCE);
             activator.SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
+        }
+
+        private void ExitHowlAnimation()
+        {
+            animControl.CrossFade(new AnimationParam(animInfo.CounterStance.name, 0.1f));
         }
 
         private void CollisionCheck(Vector3 landingPosition)
