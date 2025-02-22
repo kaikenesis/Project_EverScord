@@ -104,7 +104,7 @@ namespace EverScord.Weapons
                         float calculatedDamage = DamageCalculator.GetBulletDamage(ViewID, sourceWeapon);
 
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
-                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
+                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster, false);
                     }
 
                     SetTracerEffectPosition(currentPoint);

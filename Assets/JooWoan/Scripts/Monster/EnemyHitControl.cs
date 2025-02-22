@@ -12,7 +12,7 @@ namespace EverScord.Monster
             GameManager.Instance.InitControl(this);
         }
 
-        public void ApplyDamageToEnemy(float hp, IEnemy monster)
+        public void ApplyDamageToEnemy(float hp, IEnemy monster, bool isSkillDamage = true)
         {
             monster?.DecreaseHP(hp);
 
@@ -21,7 +21,7 @@ namespace EverScord.Monster
             if (blinkEffect == null)
                 return;
             
-            if (hp >= BIG_DAMAGE)
+            if (isSkillDamage)
                 blinkEffect.ChangeBlinkTemporarily(GameManager.HurtBlinkInfo);
 
             blinkEffect.Blink();

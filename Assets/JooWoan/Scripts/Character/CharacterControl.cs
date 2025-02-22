@@ -70,8 +70,8 @@ namespace EverScord.Character
         private Vector3 remoteMouseRayHitPos;
         private Action onDecreaseHealth;
         private SkinnedMeshRenderer[] skinRenderers;
-        private int originalSkinLayer;
-        private Stack<int> layerStack = new();
+        private LayerMask originalSkinLayer;
+        private LayerMask currentSkinLayer;
 
         public float CurrentHealth
         {
@@ -124,7 +124,10 @@ namespace EverScord.Character
             controller.skinWidth = controller.radius * SKIN_RATIO;
             
             if (skinRenderers.Length > 0)
-                originalSkinLayer = skinRenderers[0].gameObject.layer;
+            {
+                originalSkinLayer = 1 << skinRenderers[0].gameObject.layer;
+                currentSkinLayer = originalSkinLayer;
+            }
 
             currentHealth = maxHealth;
 
@@ -419,26 +422,18 @@ namespace EverScord.Character
 
         public void SetCharacterOutline(bool state, LayerMask layerMask)
         {
-            int layerNumber = originalSkinLayer;
+            if (currentSkinLayer == GameManager.OutlineLayer && layerMask == GameManager.RedOutlineLayer)
+                return;
 
-            if (!state && layerStack.Count > 0)
-            {
-                layerStack.Pop();
+            if (state)
+                currentSkinLayer = layerMask;
+            else
+                currentSkinLayer = IsLowHealth ? GameManager.RedOutlineLayer : originalSkinLayer;
 
-                if (layerStack.Count > 0)
-                    layerNumber = layerStack.Peek();
-            }
-
-            else if (state)
-            {
-                layerNumber = Mathf.RoundToInt(Mathf.Log(layerMask.value, 2));
-                layerStack.Push(layerNumber);
-            }
+            int layerNumber = Mathf.RoundToInt(Mathf.Log(currentSkinLayer.value, 2));
 
             for (int i = 0; i < skinRenderers.Length; i++)
                 skinRenderers[i].gameObject.layer = layerNumber;
-
-            Debug.Log(layerStack.Count);
         }
 
         public bool IsGrounded

@@ -6,13 +6,13 @@ namespace EverScord.Skill
 {
     public class FlameControl : MonoBehaviour
     {
-        private Action<float, IEnemy> onEnemyHurt;
+        private Action<float, IEnemy, bool> onEnemyHurt;
         private LayerMask targetLayer;
         private IDictionary<IEnemy, CooldownTimer> hurtTimerDict;
         private float hurtInterval;
         private float flameBaseDamage;
 
-        public void Init(Action<float, IEnemy> onEnemyHurt, float hurtInterval, float flameBaseDamage, LayerMask targetLayer)
+        public void Init(Action<float, IEnemy, bool> onEnemyHurt, float hurtInterval, float flameBaseDamage, LayerMask targetLayer)
         {
             this.onEnemyHurt = onEnemyHurt;
             this.hurtInterval = hurtInterval;
@@ -44,7 +44,7 @@ namespace EverScord.Skill
             // Calculate flame total damage based on character stats
             float totalFlameDamage = flameBaseDamage;
             
-            onEnemyHurt.Invoke(totalFlameDamage, enemy);
+            onEnemyHurt.Invoke(totalFlameDamage, enemy, true);
             hurtTimerDict[enemy].ResetElapsedTime();
         }
     }

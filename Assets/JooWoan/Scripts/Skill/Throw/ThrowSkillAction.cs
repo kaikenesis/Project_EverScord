@@ -15,10 +15,16 @@ namespace EverScord.Skill
         public ThrowSkill ThrowingSkill { get; private set; }
         private WaitForSeconds waitDelay = new WaitForSeconds(0.2f);
 
+        private AnimationParam throwReadyParam, throwParam, idleParam;
+
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             ThrowingSkill = (ThrowSkill)skill;
             predictor = new TrajectoryPredictor(activator, transform, ThrowingSkill);
+
+            throwReadyParam = new AnimationParam(activator.AnimationControl.AnimInfo.ThrowReady.name, 0.1f);
+            throwParam = new AnimationParam(activator.AnimationControl.AnimInfo.Throw.name, 0.1f);
+            idleParam = new AnimationParam(activator.AnimationControl.AnimInfo.Idle.name, 0.1f, 1);
 
             base.Init(activator, skill, ejob, skillIndex);
         }
@@ -38,10 +44,14 @@ namespace EverScord.Skill
 
             if (!hasActivated)
             {
+                activator.AnimationControl.CrossFade(idleParam);
+
                 ExitSkill();
                 return false;
             }
 
+            activator.RigControl.SetAimWeight(false);
+            activator.AnimationControl.CrossFade(throwReadyParam);
             skillCoroutine = StartCoroutine(ActivateSkill());
             return true;
         }
@@ -55,6 +65,8 @@ namespace EverScord.Skill
                 if (activator.PlayerInputInfo.pressedLeftMouseButton)
                 {
                     activator.SetMouseButtonDown(false);
+                    activator.AnimationControl.CrossFade(throwParam);
+
                     cooldownTimer.ResetElapsedTime();
 
                     TrajectoryInfo info = predictor.GetTrajectoryInfo();
