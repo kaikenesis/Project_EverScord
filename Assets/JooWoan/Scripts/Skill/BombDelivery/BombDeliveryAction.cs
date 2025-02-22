@@ -75,7 +75,7 @@ namespace EverScord.Skill
             // Start Coroutine and increase hp for 3 seconds, set particle to loop
 
             if (activator.CharacterPhotonView.IsMine)
-                targetPlayer.IncreaseHP(skill.HealAmount);
+                targetPlayer.IncreaseHP(skill.HealAmount, true);
         }
 
         private void TeleportPlayer()

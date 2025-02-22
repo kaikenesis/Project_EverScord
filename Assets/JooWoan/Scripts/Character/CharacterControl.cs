@@ -71,13 +71,18 @@ namespace EverScord.Character
         private Action onDecreaseHealth;
         private SkinnedMeshRenderer[] skinRenderers;
         private int originalSkinLayer;
+        private Stack<int> layerStack = new();
 
         public float CurrentHealth
         {
             get { return currentHealth; }
             set
             {
+                bool previousIsLowHealth = IsLowHealth;
+
                 currentHealth = value;
+
+                bool afterIsLowHealth = IsLowHealth;
 
                 // Change Health UI
 
@@ -87,10 +92,13 @@ namespace EverScord.Character
                 else if (HasState(CharState.DEAD) && currentHealth > 0)
                     SetState(SetCharState.REMOVE, CharState.DEAD);
 
+                if (previousIsLowHealth != afterIsLowHealth)
+                    SetCharacterOutline(afterIsLowHealth, GameManager.RedOutlineLayer);
+
                 if (photonView.IsMine)
                 {
                     PlayerUIControl.SetGrayscaleScreen(currentHealth);
-                    PlayerUIControl.SetBloodyScreen(currentHealth, IsLowHealth);
+                    PlayerUIControl.SetBloodyScreen(currentHealth, afterIsLowHealth);
                 }
             }
         }
@@ -149,7 +157,7 @@ namespace EverScord.Character
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))
-                CurrentHealth += 10;
+                IncreaseHP(10);
 
             if (!photonView.IsMine)
             {
@@ -381,7 +389,7 @@ namespace EverScord.Character
         {
             if (HasState(CharState.DEAD))
                 return;
-            
+
             onDecreaseHealth?.Invoke();
             bool isInvincible = HasState(CharState.INVINCIBLE);
 
@@ -397,7 +405,7 @@ namespace EverScord.Character
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false, isInvincible);
         }
 
-        public void IncreaseHP(float amount)
+        public void IncreaseHP(float amount, bool isExternalHeal = false)
         {
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
 
@@ -405,21 +413,32 @@ namespace EverScord.Character
             var effect = Instantiate(healEffect, transform);
             effect.transform.position = transform.position;
 
-            if (PhotonNetwork.IsConnected)
+            if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true, false);
         }
 
-        public void SetCharacterOutline(bool state)
+        public void SetCharacterOutline(bool state, LayerMask layerMask)
         {
-            int OutlineLayerNumber = Mathf.RoundToInt(Mathf.Log(GameManager.OutlineLayer.value, 2));
+            int layerNumber = originalSkinLayer;
+
+            if (!state && layerStack.Count > 0)
+            {
+                layerStack.Pop();
+
+                if (layerStack.Count > 0)
+                    layerNumber = layerStack.Peek();
+            }
+
+            else if (state)
+            {
+                layerNumber = Mathf.RoundToInt(Mathf.Log(layerMask.value, 2));
+                layerStack.Push(layerNumber);
+            }
 
             for (int i = 0; i < skinRenderers.Length; i++)
-            {
-                if (state)
-                    skinRenderers[i].gameObject.layer = OutlineLayerNumber;
-                else
-                    skinRenderers[i].gameObject.layer = originalSkinLayer;
-            }                
+                skinRenderers[i].gameObject.layer = layerNumber;
+
+            Debug.Log(layerStack.Count);
         }
 
         public bool IsGrounded
@@ -553,6 +572,8 @@ namespace EverScord.Character
             }
             else
             {
+                onDecreaseHealth?.Invoke();
+
                 if (isInvincible)
                     blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
 

@@ -113,7 +113,7 @@ namespace EverScord.Skill
                 else if (colliders[i].transform.root != activator.transform)
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                    player.IncreaseHP(calculatedImpact);
+                    player.IncreaseHP(calculatedImpact, true);
                 }
             }
         }

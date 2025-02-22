@@ -51,7 +51,7 @@ namespace EverScord.Skill
                     continue;
 
                 CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                player.IncreaseHP(calculatedHeal);
+                player.IncreaseHP(calculatedHeal, true);
             }
         }
 

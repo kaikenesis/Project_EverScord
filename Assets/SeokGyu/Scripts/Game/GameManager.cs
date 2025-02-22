@@ -28,11 +28,12 @@ namespace EverScord
         public static LayerMask EnemyLayer => instance.enemyLayer;
         public static LayerMask PlayerLayer => instance.playerLayer;
         public static LayerMask OutlineLayer => instance.outlineLayer;
+        public static LayerMask RedOutlineLayer => instance.redOutlineLayer;
         public static BlinkEffectInfo HurtBlinkInfo => instance.hurtBlinkInfo;
         public static BlinkEffectInfo InvincibleBlinkInfo => instance.invincibleBlinkInfo;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
 
-        [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer;
+        [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer, redOutlineLayer;
         [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo;
 
         [SerializeField] private CostData costData;

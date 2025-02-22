@@ -243,12 +243,12 @@ namespace EverScord.Skill
             {
                 isOutlineActivated = true;
                 cachedTarget = hit.collider.GetComponent<CharacterControl>();
-                cachedTarget.SetCharacterOutline(true);
+                cachedTarget.SetCharacterOutline(true, GameManager.OutlineLayer);
             }
             else if (isOutlineActivated)
             {
                 isOutlineActivated = false;
-                cachedTarget.SetCharacterOutline(false);
+                cachedTarget.SetCharacterOutline(false, GameManager.OutlineLayer);
             }
         }
     }

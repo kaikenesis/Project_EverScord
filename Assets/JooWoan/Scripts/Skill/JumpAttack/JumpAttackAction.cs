@@ -90,7 +90,7 @@ namespace EverScord.Skill
             stanceEffect.transform.position = activator.transform.position;
 
             animControl.CrossFade(new AnimationParam(animInfo.CounterStance.name, 0.1f));
-            activator.SetCharacterOutline(true);
+            activator.SetCharacterOutline(true, GameManager.OutlineLayer);
 
             while (!CanJump)
                 yield return null;
@@ -161,7 +161,7 @@ namespace EverScord.Skill
 
         private void ExitSkill(bool hasAttacked = false)
         {
-            activator.SetCharacterOutline(false);
+            activator.SetCharacterOutline(false, GameManager.OutlineLayer);
             SetJumpMode(false);
 
             CharacterSkill.SetEffectParticles(stanceEffect, false);
@@ -210,7 +210,7 @@ namespace EverScord.Skill
                 else if (colliders[i].transform.root != activator.transform)
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                    player.IncreaseHP(calculatedImpact);
+                    player.IncreaseHP(calculatedImpact, true);
                 }
             }
         }

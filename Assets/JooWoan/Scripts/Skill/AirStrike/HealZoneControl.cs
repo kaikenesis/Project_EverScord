@@ -44,7 +44,7 @@ namespace EverScord.Skill
             // Calculate total heal based on character stats
             float totalHealAmount = healBaseAmount;
 
-            player.IncreaseHP(totalHealAmount);            
+            player.IncreaseHP(totalHealAmount, true);            
             healTimerDict[player].ResetElapsedTime();
         }
     }
