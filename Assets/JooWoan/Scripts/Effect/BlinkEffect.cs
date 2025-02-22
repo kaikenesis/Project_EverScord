@@ -154,10 +154,7 @@ namespace EverScord.Effects
         public void Blink()
         {
             if (blinkCoroutine != null)
-            {
                 StopCoroutine(blinkCoroutine);
-                // changedBlinkInfo = null;
-            }
 
             if (!isParticle)
                 blinkCoroutine = StartCoroutine(StartBlink());
