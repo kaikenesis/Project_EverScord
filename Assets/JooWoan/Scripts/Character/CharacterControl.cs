@@ -63,7 +63,6 @@ namespace EverScord.Character
         public float CharacterSpeed => speed;
 
         private static Transform uiHub, cameraHub;
-        private static Material outlineMat;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
@@ -88,10 +87,6 @@ namespace EverScord.Character
                 else if (HasState(CharState.DEAD) && currentHealth > 0)
                     SetState(SetCharState.REMOVE, CharState.DEAD);
 
-                Color color = IsLowHealth ? Color.red : Color.white;
-                SetOutlineColor(color);
-                SetCharacterOutline(IsLowHealth);
-
                 if (photonView.IsMine)
                 {
                     PlayerUIControl.SetGrayscaleScreen(currentHealth);
@@ -104,7 +99,6 @@ namespace EverScord.Character
         {
             if (!uiHub)      uiHub      = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
             if (!cameraHub)  cameraHub  = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
-            if (!outlineMat) outlineMat = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_OUTLINE_MAT);
 
             photonView       = GetComponent<PhotonView>();
 
@@ -152,13 +146,11 @@ namespace EverScord.Character
             SetJobAndSkills();
         }
 
-        void OnDisable()
-        {
-            SetOutlineColor(Color.white);
-        }
-
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Space))
+                CurrentHealth += 10;
+
             if (!photonView.IsMine)
             {
                 LerpRemoteInfo();
@@ -398,10 +390,8 @@ namespace EverScord.Character
 
             blinkEffect.Blink();
             
-            if (isInvincible)
-                return;
-            
-            CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+            if (!isInvincible)
+                CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false, isInvincible);
@@ -419,19 +409,8 @@ namespace EverScord.Character
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true, false);
         }
 
-        public void SetOutlineColor(Color color)
-        {
-            outlineMat.color = color;
-        }
-
         public void SetCharacterOutline(bool state)
         {
-            if (!state && IsLowHealth)
-            {
-                state = true;
-                SetOutlineColor(Color.red);
-            }
-
             int OutlineLayerNumber = Mathf.RoundToInt(Mathf.Log(GameManager.OutlineLayer.value, 2));
 
             for (int i = 0; i < skinRenderers.Length; i++)
@@ -563,7 +542,8 @@ namespace EverScord.Character
         [PunRPC]
         private void SyncHealth(float health, bool isIncreasing, bool isInvincible)
         {
-            CurrentHealth = health;
+            if (CurrentHealth != health)
+                CurrentHealth = health;
 
             if (isIncreasing)
             {
