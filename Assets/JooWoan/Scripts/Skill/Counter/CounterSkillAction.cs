@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using EverScord.Character;
 using Photon.Pun;
+using EverScord.Character;
+using EverScord.UI;
 
 namespace EverScord.Skill
 {
@@ -243,12 +244,12 @@ namespace EverScord.Skill
             {
                 isOutlineActivated = true;
                 cachedTarget = hit.collider.GetComponent<CharacterControl>();
-                cachedTarget.SetCharacterOutline(true, GameManager.OutlineLayer);
+                OutlineControl.SetCharacterOutline(cachedTarget, true);
             }
             else if (isOutlineActivated)
             {
                 isOutlineActivated = false;
-                cachedTarget.SetCharacterOutline(false, GameManager.OutlineLayer);
+                OutlineControl.SetCharacterOutline(cachedTarget, false);
             }
         }
     }

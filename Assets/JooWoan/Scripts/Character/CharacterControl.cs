@@ -48,9 +48,11 @@ namespace EverScord.Character
         public CharacterPhysics PhysicsControl                          { get; private set; }
         public CharacterCamera CameraControl                            { get; private set; }
         public Transform PlayerTransform                                { get; private set; }
-        public SkillAction CurrentSkillAction                           { get; private set; }
+        public SkinnedMeshRenderer[] SkinRenderers                      { get; private set; }
+        public LayerMask OriginalSkinLayer                              { get; private set; }
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
+        public SkillAction CurrentSkillAction                           { get; private set; }
         public PlayerData.EJob CharacterJob                             { get; private set; }
         public CharState State                                          { get; private set; }
 
@@ -69,9 +71,7 @@ namespace EverScord.Character
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
         private Action onDecreaseHealth;
-        private SkinnedMeshRenderer[] skinRenderers;
-        private LayerMask originalSkinLayer;
-        private LayerMask currentSkinLayer;
+        private LayerMask groundAndEnemyLayer;
 
         public float CurrentHealth
         {
@@ -93,7 +93,7 @@ namespace EverScord.Character
                     SetState(SetCharState.REMOVE, CharState.DEAD);
 
                 if (previousIsLowHealth != afterIsLowHealth)
-                    SetCharacterOutline(afterIsLowHealth, GameManager.RedOutlineLayer);
+                    ; //
 
                 if (photonView.IsMine)
                 {
@@ -115,7 +115,7 @@ namespace EverScord.Character
 
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
-            skinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
+            SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
             
             PlayerUIControl  = Instantiate(uiPrefab, uiHub);
             CameraControl    = Instantiate(cameraPrefab, cameraHub);
@@ -123,11 +123,8 @@ namespace EverScord.Character
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
             
-            if (skinRenderers.Length > 0)
-            {
-                originalSkinLayer = 1 << skinRenderers[0].gameObject.layer;
-                currentSkinLayer = originalSkinLayer;
-            }
+            if (SkinRenderers.Length > 0)
+                OriginalSkinLayer = 1 << SkinRenderers[0].gameObject.layer;
 
             currentHealth = maxHealth;
 
@@ -149,6 +146,7 @@ namespace EverScord.Character
             CameraControl.Init(PlayerTransform);
 
             blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
+            groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
         }
 
         void Start()
@@ -229,14 +227,45 @@ namespace EverScord.Character
             controller.Move(velocity * Time.deltaTime);
         }
 
+        private bool ProcessMouseRaycast(out Ray ray, out RaycastHit hit)
+        {
+            ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, groundAndEnemyLayer);
+
+            hit = default;
+            bool groundFlag = false;
+            bool enemyFlag = false;
+
+            for (int i = 0; i < hits.Length; i++)
+            {
+                LayerMask hitLayerMask = 1 << hits[i].collider.gameObject.layer;
+
+                if ((GameManager.EnemyLayer & hitLayerMask) != 0)
+                {
+                    IEnemy enemy = hits[i].transform.GetComponent<IEnemy>();
+                    OutlineControl.EnableEnemyOutline(photonView, enemy);
+                    enemyFlag = true;
+                }
+                else if ((GameManager.GroundLayer & hitLayerMask) != 0)
+                {
+                    hit = hits[i];
+                    groundFlag = true;
+                    break;
+                }
+            }
+
+            if (!enemyFlag)
+                OutlineControl.DisableEnemyOutline(photonView);
+
+            return groundFlag;
+        }
+
         public void TrackAim()
         {
             if (HasState(CharState.RIGID_ANIMATING))
                 return;
             
-            Ray ray = CameraControl.Cam.ScreenPointToRay(playerInputInfo.mousePosition);
-
-            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GameManager.GroundLayer))
+            if (!ProcessMouseRaycast(out Ray ray, out RaycastHit hit))
                 return;
 
             MouseRayHitPos = hit.point;
@@ -418,22 +447,6 @@ namespace EverScord.Character
 
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true, false);
-        }
-
-        public void SetCharacterOutline(bool state, LayerMask layerMask)
-        {
-            if (currentSkinLayer == GameManager.OutlineLayer && layerMask == GameManager.RedOutlineLayer)
-                return;
-
-            if (state)
-                currentSkinLayer = layerMask;
-            else
-                currentSkinLayer = IsLowHealth ? GameManager.RedOutlineLayer : originalSkinLayer;
-
-            int layerNumber = Mathf.RoundToInt(Mathf.Log(currentSkinLayer.value, 2));
-
-            for (int i = 0; i < skinRenderers.Length; i++)
-                skinRenderers[i].gameObject.layer = layerNumber;
         }
 
         public bool IsGrounded

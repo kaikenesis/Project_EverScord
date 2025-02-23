@@ -4,6 +4,7 @@ using EverScord.Character;
 using Photon.Pun;
 
 using AnimationInfo = EverScord.Character.AnimationInfo;
+using EverScord.UI;
 
 namespace EverScord.Skill
 {
@@ -93,7 +94,7 @@ namespace EverScord.Skill
             animControl.SetUpperMask(false);
 
             animControl.CrossFade(new AnimationParam(animInfo.CounterStance.name, 0.1f));
-            activator.SetCharacterOutline(true, GameManager.OutlineLayer);
+            OutlineControl.SetCharacterOutline(activator, true);
 
             while (!CanJump)
                 yield return null;
@@ -170,7 +171,7 @@ namespace EverScord.Skill
         {
             animControl.SetUpperMask(true);
 
-            activator.SetCharacterOutline(false, GameManager.OutlineLayer);
+            OutlineControl.SetCharacterOutline(activator, false);
             SetJumpMode(false);
 
             CharacterSkill.SetEffectParticles(stanceEffect, false);
