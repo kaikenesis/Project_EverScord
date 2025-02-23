@@ -147,11 +147,11 @@ namespace EverScord.UI
                 colorCurves.active = state;
         }
 
-        public void InitReviveCircle(Transform uiOwner)
+        public void InitReviveCircle(Transform uiOwner, int viewID)
         {
             var circlePrefab = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_REVIVECIRCLE);
             reviveCircle = Instantiate(circlePrefab, uiOwner).GetComponent<ReviveCircle>();
-            reviveCircle.Init(uiOwner);
+            reviveCircle.Init(uiOwner, viewID);
             reviveCircle.transform.SetParent(Root.parent);
             reviveCircle.gameObject.SetActive(false);
         }

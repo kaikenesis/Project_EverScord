@@ -27,6 +27,8 @@ namespace EverScord
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
         public const string TWEEN_AMMORELOAD = "AmmoReload";
+        public const string TWEEN_HIDE_REVIVECIRCLE = "HideReviveCircle";
+        public const string TWEEN_SHOW_REVIVECIRCLE = "ShowReviveCircle";
 
         // Addressable Keys
         public const string KEY_TRAJECTORYLINE_MAT = "TrajectoryLineMAT";
@@ -35,6 +37,8 @@ namespace EverScord
         public const string KEY_OUTLINE_MAT = "OutlineMAT";
         public const string KEY_CROSSHAIR = "CrosshairIcon";
         public const string KEY_HEAL_EFFECT = "HealEffect";
+        public const string KEY_DEATH_EFFECT = "DeathEffect";
+        public const string KEY_REVIVE_EFFECT = "ReviveEffect";
         public const string KEY_REVIVECIRCLE = "ReviveCircle";
 
         // Animation Layers

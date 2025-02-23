@@ -8,6 +8,8 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
+using Unity.Mathematics;
+using UnityEngine.UI;
 
 namespace EverScord.Character
 {
@@ -65,6 +67,7 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
+        private static GameObject deathEffect, healEffect, reviveEffect;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
@@ -89,9 +92,6 @@ namespace EverScord.Character
                 if (!IsDead && currentHealth <= 0)
                     StartCoroutine(HandleDeath());
                 
-                else if (IsDead && currentHealth > 0)
-                    StartCoroutine(HandleRevival());
-
                 if (previousIsLowHealth != afterIsLowHealth)
                     blinkEffect.LoopBlink(IsLowHealth);
 
@@ -151,16 +151,22 @@ namespace EverScord.Character
 
         void Start()
         {
-            GameManager.Instance.InitControl(this);
             SetJobAndSkills();
 
             foreach (var kv in GameManager.Instance.PlayerDict)
-                kv.Value.PlayerUIControl.InitReviveCircle(kv.Value.PlayerTransform);
+            {
+                CharacterControl player = kv.Value;
+                player.PlayerUIControl.InitReviveCircle(player.PlayerTransform, player.CharacterPhotonView.ViewID);
+            }
+
+            healEffect  = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
+            deathEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_DEATH_EFFECT);
+            reviveEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_REVIVE_EFFECT);
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F1))
+            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
                 IncreaseHP(10);
 
             if (!photonView.IsMine)
@@ -446,9 +452,11 @@ namespace EverScord.Character
 
         public void IncreaseHP(float amount, bool isExternalHeal = false)
         {
+            if (IsDead)
+                return;
+            
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
 
-            GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
             var effect = Instantiate(healEffect, transform);
             effect.transform.position = transform.position;
 
@@ -460,6 +468,7 @@ namespace EverScord.Character
         {
             SetState(SetCharState.ADD, CharState.DEATH);
 
+            Instantiate(deathEffect, transform.position, Quaternion.identity);
             blinkEffect.LoopBlink(false);
             
             RigControl.SetAimWeight(false);
@@ -468,22 +477,40 @@ namespace EverScord.Character
             AnimationControl.SetUpperMask(false);
             AnimationControl.Play(AnimationControl.AnimInfo.Death);
 
+            OutlineControl.SetCharacterOutline(this, true);
+
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
             PlayerUIControl.SetReviveCircle(true);
+            
+            if (PhotonNetwork.IsConnected && photonView.IsMine)
+                photonView.RPC(nameof(SyncReviveCircle), RpcTarget.Others, true);
         }
 
-        IEnumerator HandleRevival()
+        public IEnumerator HandleRevival()
         {
+            Instantiate(reviveEffect, transform.position, Quaternion.identity);
+            Instantiate(healEffect, transform.position, Quaternion.identity);
+
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);
             PlayerUIControl.SetReviveCircle(false);
 
+            OutlineControl.SetCharacterOutline(this, false);
+            
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Revive.length);
 
             RigControl.SetMainRigWeight(true);
+            AnimationControl.CrossFade(new AnimationParam(AnimationControl.AnimInfo.Idle.name, 0.25f));
+
+            for (float t = 0; t < 0.25f; t += Time.deltaTime)
+            {
+                AnimationControl.SetUpperMask(t);
+                yield return null;
+            }
+
             AnimationControl.SetUpperMask(true);
-            AnimationControl.Play(AnimationControl.AnimInfo.Idle);
             
+            CurrentHealth = maxHealth;
             SetState(SetCharState.REMOVE, CharState.DEATH);
         }
 
@@ -533,6 +560,7 @@ namespace EverScord.Character
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             GameManager.Instance.AddPlayerPhotonView(info.photonView);
+            GameManager.Instance.InitControl(this);
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -630,6 +658,12 @@ namespace EverScord.Character
 
                 blinkEffect.Blink();
             }
+        }
+
+        [PunRPC]
+        private void SyncReviveCircle(bool state)
+        {
+            PlayerUIControl.SetReviveCircle(state);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

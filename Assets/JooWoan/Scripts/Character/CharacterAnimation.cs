@@ -65,6 +65,12 @@ namespace EverScord.Character
             anim.SetLayerWeight(upperMaskLayerIndex, value);
         }
 
+        public void SetUpperMask(float weight)
+        {
+            weight = Mathf.Clamp(weight, 0f, 1f);
+            anim.SetLayerWeight(upperMaskLayerIndex, weight);
+        }
+
         public void CrossFade(AnimationParam param)
         {
             anim.CrossFade(param.ClipName, param.Transition, param.Layer, param.NormalizedTimeOffset, param.NormalizedTransitionTime);
