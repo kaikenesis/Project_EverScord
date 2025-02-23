@@ -28,6 +28,7 @@ namespace EverScord.UI
         {
             buttonImg.transform.localPosition = initialButtonPos;
             reviveBar.color = decreaseColor;
+            buttonImg.color = decreaseColor;
             progress = 0f;
             reviveBar.fillAmount = 0f;
         }
