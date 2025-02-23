@@ -21,17 +21,16 @@ namespace EverScord.Effects
 
         private Transform blinkTarget;
         private Renderer[] renderers;
-        private Coroutine blinkCoroutine;
+        private Coroutine blinkCoroutine, blinkLoopCoroutine;
         private MaterialPropertyBlock mpb;
-        private IDictionary<(int, int), (Texture, Color)> emissionDict;
+        private IDictionary<(int, int), Texture> textureDict;
+        private IDictionary<(int, int), Color> colorDict;
 
-        private bool isParticle = false;
         List<Material> originalParticleMats;
 
         public static BlinkEffect Create(ParticleSystem target)
         {
             BlinkEffect blinkEffect = target.transform.gameObject.AddComponent<BlinkEffect>();
-            blinkEffect.isParticle = true;
             blinkEffect.InitParticles(target);
             return blinkEffect;
         }
@@ -101,7 +100,8 @@ namespace EverScord.Effects
 
         void OnDisable()
         {
-            SetMaterialColors(default, true);
+            if (!IsParticle(renderers))
+                SetMaterialColors(default, true);
         }
 
         private void Init(Transform target, float duration, float intensity, Color color)
@@ -117,7 +117,9 @@ namespace EverScord.Effects
 
             renderers = target.GetComponentsInChildren<Renderer>();
             mpb = new MaterialPropertyBlock();
-            emissionDict = new Dictionary<(int, int), (Texture, Color)>();
+
+            textureDict = new Dictionary<(int, int), Texture>();
+            colorDict = new Dictionary<(int, int), Color>();
 
             emissionMapID = Shader.PropertyToID("_EmissionMap");
             emissionColorID = Shader.PropertyToID("_EmissionColor");
@@ -156,10 +158,24 @@ namespace EverScord.Effects
             if (blinkCoroutine != null)
                 StopCoroutine(blinkCoroutine);
 
-            if (!isParticle)
+            if (!IsParticle(renderers))
                 blinkCoroutine = StartCoroutine(StartBlink());
             else
                 blinkCoroutine = StartCoroutine(StartBlinkRepeat());
+        }
+        
+        public void LoopBlink(bool state)
+        {
+            if (blinkLoopCoroutine != null)
+                StopCoroutine(blinkLoopCoroutine);
+
+            if (!state)
+            {
+                SetMaterialColors(default, true);
+                return;
+            }
+
+            blinkLoopCoroutine = StartCoroutine(StartBlink(true));
         }
 
         private void SetMaterialSettings()
@@ -188,25 +204,22 @@ namespace EverScord.Effects
 
                         if (texture != null)
                         {
-                            if (!emissionDict.ContainsKey((j, i)))
-                            {
-                                emissionDict[(j, i)] = (
-                                    renderers[i].sharedMaterials[j].GetTexture(emissionMapID),
-                                    renderers[i].sharedMaterials[j].GetColor(emissionColorID)
-                                );
-                            }
+                            if (!textureDict.ContainsKey((j, i)))
+                                textureDict[(j, i)] = renderers[i].sharedMaterials[j].GetTexture(emissionMapID);
 
                             if (isReset)
-                            {
-                                mpb.SetTexture(emissionMapID, emissionDict[(j, i)].Item1);
-                                mpb.SetColor(emissionColorID, emissionDict[(j, i)].Item2);
-                            }
+                                mpb.SetTexture(emissionMapID, textureDict[(j, i)]);
                             else
                                 mpb.SetTexture(emissionMapID, GetDefaultTexture());
                         }
                     }
 
-                    if (!isReset)
+                    if (!colorDict.ContainsKey((j, i)))
+                        colorDict[(j, i)] = renderers[i].sharedMaterials[j].GetColor(emissionColorID);
+                    
+                    if (isReset)
+                        mpb.SetColor(emissionColorID, colorDict[(j, i)]);
+                    else
                         mpb.SetColor(emissionColorID, color);
 
                     renderers[i].SetPropertyBlock(mpb, j);
@@ -214,24 +227,27 @@ namespace EverScord.Effects
             }
         }
 
-        private IEnumerator StartBlink()
+        private IEnumerator StartBlink(bool isLoop = false)
         {
             BlinkEffectInfo info = changedBlinkInfo != null ? (BlinkEffectInfo)changedBlinkInfo : blinkInfo;
 
-            float leftTime = info.BlinkDuration;
-            float blinkProgress;
-            float intensity;
-
-            while (leftTime >= 0)
+            do
             {
-                leftTime -= Time.deltaTime;
+                float leftTime = info.BlinkDuration;
+                float blinkProgress;
+                float intensity;
 
-                blinkProgress = Mathf.Clamp01(leftTime / info.BlinkDuration);
-                intensity = blinkProgress * info.BlinkIntensity;
+                while (leftTime >= 0)
+                {
+                    leftTime -= Time.deltaTime;
 
-                SetMaterialColors(info.BlinkColor * intensity);
-                yield return null;
-            }
+                    blinkProgress = Mathf.Clamp01(leftTime / info.BlinkDuration);
+                    intensity = blinkProgress * info.BlinkIntensity;
+
+                    SetMaterialColors(info.BlinkColor * intensity);
+                    yield return null;
+                }
+            } while(isLoop);
 
             SetMaterialColors(default, true);
             blinkCoroutine = null;
@@ -260,6 +276,17 @@ namespace EverScord.Effects
         public void ChangeBlinkTemporarily(BlinkEffectInfo info)
         {
             changedBlinkInfo = info;
+        }
+
+        private bool IsParticle(Renderer[] inputRenderers)
+        {
+            if (inputRenderers.Length == 0)
+                return false;
+
+            if (inputRenderers[0] == null)
+                return false;
+
+            return !inputRenderers[0].sharedMaterial.HasProperty(emissionColorID);
         }
     }
 

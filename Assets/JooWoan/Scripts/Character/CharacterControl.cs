@@ -93,7 +93,7 @@ namespace EverScord.Character
                     SetState(SetCharState.REMOVE, CharState.DEAD);
 
                 if (previousIsLowHealth != afterIsLowHealth)
-                    ; //
+                    blinkEffect.LoopBlink(IsLowHealth);
 
                 if (photonView.IsMine)
                 {

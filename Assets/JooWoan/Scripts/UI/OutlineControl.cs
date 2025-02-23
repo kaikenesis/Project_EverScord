@@ -7,12 +7,12 @@ namespace EverScord.UI
 {
     public static class OutlineControl
     {
-        private static IDictionary<IEnemy, SkinnedMeshRenderer[]> enemySkinDict = new Dictionary<IEnemy, SkinnedMeshRenderer[]>();
+        private static IDictionary<IEnemy, Renderer[]> enemySkinDict = new Dictionary<IEnemy, Renderer[]>();
         private static LayerMask? originalEnemySkinLayer = null;
         private static IEnemy currentOutlinedEnemy = null;
         public static IEnemy CurrentOutlinedEnemy => currentOutlinedEnemy;
 
-        private static void SetTargetOutline(SkinnedMeshRenderer[] renderers, LayerMask disabledLayer, LayerMask enabledLayer, bool state)
+        private static void SetTargetOutline(Renderer[] renderers, LayerMask disabledLayer, LayerMask enabledLayer, bool state)
         {
             LayerMask layerMask = state ? enabledLayer : disabledLayer;
             int layerNumber = Mathf.RoundToInt(Mathf.Log(layerMask.value, 2));
@@ -43,7 +43,7 @@ namespace EverScord.UI
                 if (!enemyMono)
                     return;
 
-                SkinnedMeshRenderer[] renderers = enemyMono.transform.GetComponentsInChildren<SkinnedMeshRenderer>();
+                Renderer[] renderers = enemyMono.transform.GetComponentsInChildren<Renderer>();
                 enemySkinDict[enemy] = renderers;
 
                 if (renderers.Length > 0 && originalEnemySkinLayer == null)

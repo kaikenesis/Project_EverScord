@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using EverScord.Character;
-using System;
 using Photon.Pun;
 
 namespace EverScord.UI
