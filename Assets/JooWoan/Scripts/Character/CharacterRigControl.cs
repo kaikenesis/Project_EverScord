@@ -11,9 +11,12 @@ namespace EverScord.Character
         [field: SerializeField] public MultiAimConstraint Aim           { get; private set; }
         [field: SerializeField] public TwoBoneIKConstraint LeftHandIK   { get; private set; }
         public RigBuilder Builder                                       { get; private set; }
+        private Rig mainRig;
 
         public void Init(Transform root, Animator anim, Weapon weapon)
         {
+            mainRig = GetComponent<Rig>();
+
             Builder = root.GetComponent<RigBuilder>();
             Builder.layers.Clear();
             Builder.layers.Add(new RigLayer(GetComponent<Rig>(), true));
@@ -47,11 +50,17 @@ namespace EverScord.Character
             Builder.Build();
         }
 
-        public void SetAimWeight(bool forceRig)
+        public void SetAimWeight(bool state)
         {
-            float result = forceRig ? 1f : 0f;
+            float result = state ? 1f : 0f;
             Aim.weight = result;
             LeftHandIK.weight = result;
+        }
+
+        public void SetMainRigWeight(bool state)
+        {
+            float result = state ? 1f : 0f;
+            mainRig.weight = result;
         }
     }
 }

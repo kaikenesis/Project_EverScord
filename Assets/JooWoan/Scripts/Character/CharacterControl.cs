@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using System;
 using UnityEngine;
 using Photon.Pun;
@@ -64,7 +65,6 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
-        private static Transform uiHub, cameraHub;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
@@ -86,11 +86,11 @@ namespace EverScord.Character
 
                 // Change Health UI
 
-                if (!HasState(CharState.DEAD) && currentHealth <= 0)
-                    SetState(SetCharState.ADD, CharState.DEAD);
+                if (!IsDead && currentHealth <= 0)
+                    StartCoroutine(HandleDeath());
                 
-                else if (HasState(CharState.DEAD) && currentHealth > 0)
-                    SetState(SetCharState.REMOVE, CharState.DEAD);
+                else if (IsDead && currentHealth > 0)
+                    StartCoroutine(HandleRevival());
 
                 if (previousIsLowHealth != afterIsLowHealth)
                     blinkEffect.LoopBlink(IsLowHealth);
@@ -105,8 +105,8 @@ namespace EverScord.Character
 
         void Awake()
         {
-            if (!uiHub)      uiHub      = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
-            if (!cameraHub)  cameraHub  = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
+            PlayerUI.SetUIRoot();
+            CharacterCamera.SetCameraRoot();
 
             photonView       = GetComponent<PhotonView>();
 
@@ -117,8 +117,8 @@ namespace EverScord.Character
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
             
-            PlayerUIControl  = Instantiate(uiPrefab, uiHub);
-            CameraControl    = Instantiate(cameraPrefab, cameraHub);
+            PlayerUIControl  = Instantiate(uiPrefab, PlayerUI.Root);
+            CameraControl    = Instantiate(cameraPrefab, CharacterCamera.Root);
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
@@ -141,9 +141,9 @@ namespace EverScord.Character
                 CameraControl.gameObject.SetActive(false);
             }
             else
-                PlayerUIControl.Init(cameraHub);
+                PlayerUIControl.Init();
 
-            CameraControl.Init(PlayerTransform);
+            CameraControl.Init(PlayerTransform, photonView.IsMine);
 
             blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
             groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
@@ -153,11 +153,14 @@ namespace EverScord.Character
         {
             GameManager.Instance.InitControl(this);
             SetJobAndSkills();
+
+            foreach (var kv in GameManager.Instance.PlayerDict)
+                kv.Value.PlayerUIControl.InitReviveCircle(kv.Value.PlayerTransform);
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.F1))
                 IncreaseHP(10);
 
             if (!photonView.IsMine)
@@ -167,6 +170,10 @@ namespace EverScord.Character
             }
 
             SetInput();
+
+            if (IsDead)
+                return;
+
             SetMovingDirection();
 
             PhysicsControl.ApplyGravity(this);
@@ -419,7 +426,7 @@ namespace EverScord.Character
 
         public void DecreaseHP(float amount)
         {
-            if (HasState(CharState.DEAD))
+            if (IsDead)
                 return;
 
             onDecreaseHealth?.Invoke();
@@ -447,6 +454,37 @@ namespace EverScord.Character
 
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true, false);
+        }
+
+        private IEnumerator HandleDeath()
+        {
+            SetState(SetCharState.ADD, CharState.DEATH);
+
+            blinkEffect.LoopBlink(false);
+            
+            RigControl.SetAimWeight(false);
+            RigControl.SetMainRigWeight(false);
+
+            AnimationControl.SetUpperMask(false);
+            AnimationControl.Play(AnimationControl.AnimInfo.Death);
+
+            yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
+
+            PlayerUIControl.SetReviveCircle(true);
+        }
+
+        IEnumerator HandleRevival()
+        {
+            AnimationControl.Play(AnimationControl.AnimInfo.Revive);
+            PlayerUIControl.SetReviveCircle(false);
+
+            yield return new WaitForSeconds(AnimationControl.AnimInfo.Revive.length);
+
+            RigControl.SetMainRigWeight(true);
+            AnimationControl.SetUpperMask(true);
+            AnimationControl.Play(AnimationControl.AnimInfo.Idle);
+            
+            SetState(SetCharState.REMOVE, CharState.DEATH);
         }
 
         public bool IsGrounded
@@ -478,6 +516,11 @@ namespace EverScord.Character
         public bool IsLowHealth
         {
             get { return currentHealth <= maxHealth * 0.1f; }
+        }
+
+        public bool IsDead
+        {
+            get { return HasState(CharState.DEATH); }
         }
 
         public bool IsAiming { get; private set; }

@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine.Rendering;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using TMPro;
 using DG.Tweening;
 using Photon.Pun;
 using EverScord.Character;
-using UnityEngine.Rendering.Universal;
+using EverScord.GameCamera;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.UI
 {
@@ -16,6 +18,7 @@ namespace EverScord.UI
         private const float BLOOD_THRESHOLD = 0.5f;
         private const float BLOOD_SPEED = 1f;
 
+        public static Transform Root { get; private set; }
         private static Texture2D cursorIcon;
         private static Material bloodMat;
         private static ColorCurves colorCurves;
@@ -23,11 +26,12 @@ namespace EverScord.UI
         [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText;
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
 
+        private ReviveCircle reviveCircle;
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
         private bool isEnabled = false;
 
-        public void Init(Transform cameraRoot)
+        public void Init()
         {
             if (!cursorIcon) cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(ConstStrings.KEY_CROSSHAIR);
             if (!bloodMat)   bloodMat   = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_BLOOD_MAT);
@@ -35,7 +39,7 @@ namespace EverScord.UI
             Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
             Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
 
-            Volume volume = cameraRoot.GetComponent<Volume>();
+            Volume volume = CharacterCamera.Root.GetComponent<Volume>();
             VolumeProfile profile = volume.sharedProfile;
 
             if (profile.TryGet<ColorCurves>(out var curves))
@@ -47,6 +51,12 @@ namespace EverScord.UI
             bloodMat.SetFloat(BLOOD_SIZE, 1f);
             bloodMat.SetInt(BLOOD_ENABLED, 0);
             SetGrayscaleScreen(false);
+        }
+
+        public static void SetUIRoot()
+        {
+            if (Root == null)
+                Root = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
         }
 
         public void SetAmmoText(int count)
@@ -135,6 +145,20 @@ namespace EverScord.UI
         {
             if (colorCurves)
                 colorCurves.active = state;
+        }
+
+        public void InitReviveCircle(Transform uiOwner)
+        {
+            var circlePrefab = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_REVIVECIRCLE);
+            reviveCircle = Instantiate(circlePrefab, uiOwner).GetComponent<ReviveCircle>();
+            reviveCircle.Init(uiOwner);
+            reviveCircle.transform.SetParent(Root.parent);
+            reviveCircle.gameObject.SetActive(false);
+        }
+
+        public void SetReviveCircle(bool state)
+        {
+            reviveCircle.gameObject.SetActive(state);
         }
     }
 }
