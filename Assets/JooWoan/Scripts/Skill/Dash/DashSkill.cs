@@ -14,7 +14,6 @@ namespace EverScord.Skill
         [field: SerializeField] public GameObject DashTornado                       { get; private set; }
         [field: SerializeField] public GameObject DashSpark                         { get; private set; }
         [field: SerializeField] public Material TrailMAT                            { get; private set; }
-        [field: SerializeField] public AssetReferenceGameObject DummyAssetReference { get; private set; }
     }
 }
 

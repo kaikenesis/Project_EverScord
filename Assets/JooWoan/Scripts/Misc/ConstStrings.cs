@@ -30,19 +30,6 @@ namespace EverScord
         public const string TWEEN_HIDE_REVIVECIRCLE = "HideReviveCircle";
         public const string TWEEN_SHOW_REVIVECIRCLE = "ShowReviveCircle";
 
-        // Addressable Keys
-        public const string KEY_TRAJECTORYLINE_MAT = "TrajectoryLineMAT";
-        public const string KEY_DEFAULT_WHITE_MAT = "DefaultWhiteMAT";
-        public const string KEY_BLOOD_MAT = "BloodMAT";
-        public const string KEY_OUTLINE_MAT = "OutlineMAT";
-        public const string KEY_CROSSHAIR = "CrosshairIcon";
-        public const string KEY_HIT_EFFECT = "HitEffect20";
-        public const string KEY_HIT_EFFECT2 = "HitEffect21";
-        public const string KEY_HEAL_EFFECT = "HealEffect";
-        public const string KEY_DEATH_EFFECT = "DeathEffect";
-        public const string KEY_REVIVE_EFFECT = "ReviveEffect";
-        public const string KEY_REVIVECIRCLE = "ReviveCircle";
-
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";
     }

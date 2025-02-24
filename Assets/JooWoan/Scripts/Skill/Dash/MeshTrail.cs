@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using EverScord.Effects;
 using EverScord.Pool;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -26,7 +27,7 @@ namespace EverScord.Skill
             trailMat                = skillAction.Skill.TrailMAT;
 
             trailDestroyDelay       = (1f / SHADER_VAR_FADE * fadeRate) + 0.01f;
-            DUMMY_ASSET_GUID        = skillAction.Skill.DummyAssetReference.AssetGUID;
+            DUMMY_ASSET_GUID        = AssetReferenceManager.MeshTrailDummy_ID;
 
             fadeWait                = new WaitForSeconds(fadeRate);
             trailRefreshWait        = new WaitForSeconds(trailRefreshRate);

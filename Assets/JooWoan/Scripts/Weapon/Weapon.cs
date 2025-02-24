@@ -19,8 +19,6 @@ namespace EverScord.Weapons
         [SerializeField] private BulletInfo bulletInfo;
         [SerializeField] public float bulletSpeed;
 
-        [field: SerializeField] public AssetReferenceGameObject BulletAssetReference    { get; private set; }
-        [field: SerializeField] public AssetReferenceGameObject SmokeAssetReference     { get; private set; }
         [field: SerializeField] public Transform GunPoint                               { get; private set; }
         [field: SerializeField] public Transform WeaponTransform                        { get; private set; }
         [field: SerializeField] public Transform LeftTarget                             { get; private set; }
@@ -169,8 +167,8 @@ namespace EverScord.Weapons
             Vector3 gunpointPos   = GunPoint.position;
             Vector3 bulletVector  = GunPoint.forward * bulletSpeed;
 
-            Bullet bullet         = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
-            SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID)  as SmokeTrail;
+            Bullet bullet         = ResourceManager.Instance.GetFromPool(AssetReferenceManager.Bullet_ID) as Bullet;
+            SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(AssetReferenceManager.BulletSmoke_ID) as SmokeTrail;
 
             if (!bullet)
                 return;
@@ -261,8 +259,8 @@ namespace EverScord.Weapons
         {
             shotEffect.Emit(1);
 
-            Bullet bullet         = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
-            SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID) as SmokeTrail;
+            Bullet bullet         = ResourceManager.Instance.GetFromPool(AssetReferenceManager.Bullet_ID) as Bullet;
+            SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(AssetReferenceManager.BulletSmoke_ID) as SmokeTrail;
 
             if (smokeTrail)
             {

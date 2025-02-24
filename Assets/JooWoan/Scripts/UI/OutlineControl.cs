@@ -18,7 +18,10 @@ namespace EverScord.UI
             int layerNumber = Mathf.RoundToInt(Mathf.Log(layerMask.value, 2));
 
             for (int i = 0; i < renderers.Length; i++)
-                renderers[i].gameObject.layer = layerNumber;
+            {
+                if (renderers[i])
+                    renderers[i].gameObject.layer = layerNumber;
+            }
         }
 
         public static void SetCharacterOutline(CharacterControl character, bool state)
@@ -31,6 +34,12 @@ namespace EverScord.UI
             if (!photonView.IsMine)
                 return;
             
+            if (enemy == null && enemySkinDict.ContainsKey(enemy))
+            {
+                enemySkinDict.Remove(enemy);
+                return;
+            }
+
             if (enemy == currentOutlinedEnemy)
                 return;
             

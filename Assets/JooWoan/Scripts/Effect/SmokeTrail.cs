@@ -40,7 +40,7 @@ namespace EverScord.Effects
             yield return new WaitForSeconds(smokeFadeTime);
             
             Weapon weapon = GameManager.Instance.PlayerDict[bullet.ViewID].PlayerWeapon;
-            ResourceManager.Instance.ReturnToPool(this, weapon.SmokeAssetReference.AssetGUID);
+            ResourceManager.Instance.ReturnToPool(this, AssetReferenceManager.BulletSmoke_ID);
         }
 
         public void SetGameObject(bool state)

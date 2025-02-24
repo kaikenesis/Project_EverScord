@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using Unity.VisualScripting;
+using EverScord.Effects;
 
 namespace EverScord.Skill
 {
@@ -44,7 +45,7 @@ namespace EverScord.Skill
             GRAVITY         = throwSkill.Gravity;
 
             Material lineMat = ResourceManager.Instance
-                .GetAsset<Material>(ConstStrings.KEY_TRAJECTORYLINE_MAT);
+                .GetAsset<Material>(AssetReferenceManager.TrajectoryLineMat_ID);
 
             trajectoryLine               = skillTransform.AddComponent<LineRenderer>();
             trajectoryLine.textureMode   = LineTextureMode.Stretch;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using EverScord.Effects;
 
 namespace EverScord.Weapons
 {
@@ -77,7 +78,7 @@ namespace EverScord.Weapons
                     bullet.SetIsDestroyed(true);
                     bullets.Remove(currentNode);
 
-                    ResourceManager.Instance.ReturnToPool(bullet, weapon.BulletAssetReference.AssetGUID);
+                    ResourceManager.Instance.ReturnToPool(bullet, AssetReferenceManager.Bullet_ID);
 
                     currentNode = nextNode;
 

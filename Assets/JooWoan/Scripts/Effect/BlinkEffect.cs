@@ -89,7 +89,7 @@ namespace EverScord.Effects
             if (whiteMat != null)
                 return whiteMat;
 
-            return whiteMat = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_DEFAULT_WHITE_MAT);
+            return whiteMat = ResourceManager.Instance.GetAsset<Material>(AssetReferenceManager.BlinkWhiteMat_ID);
         }
 
         void Awake()

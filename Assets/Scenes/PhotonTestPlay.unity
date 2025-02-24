@@ -185,6 +185,18 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 1
     PoolSize: 10
+  - Reference:
+      m_AssetGUID: 8fd4d0d4804ac3241a035906a125643b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 5
+  - Reference:
+      m_AssetGUID: 4493426f7e1b590429c72a94387157ec
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 5
 --- !u!1 &66857358
 GameObject:
   m_ObjectHideFlags: 0
@@ -10384,6 +10396,115 @@ MonoBehaviour:
   sceneViewId: 3
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!1 &412965513
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 412965515}
+  - component: {fileID: 412965514}
+  m_Layer: 0
+  m_Name: AssetReferenceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &412965514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412965513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31d95405e65e5b449bf4b0187cde041a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Bullet>k__BackingField:
+    m_AssetGUID: 8586dc5aeaebe804385f9e529eb9a69c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <BulletSmoke>k__BackingField:
+    m_AssetGUID: db97ba35f680c914480ecc075d752dbf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
+  <MeshTrailDummy>k__BackingField:
+    m_AssetGUID: d37f449475111c14b887d21209cd87ff
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <ReviveCircle>k__BackingField:
+    m_AssetGUID: eda6605fc6124844484429a3ddf8c83f
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <TrajectoryLineMat>k__BackingField:
+    m_AssetGUID: e8f4c73687ea2224c850eb3e6c772124
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <BlinkWhiteMat>k__BackingField:
+    m_AssetGUID: fffe8473c5d236b46865ea90823d7b30
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <BloodMat>k__BackingField:
+    m_AssetGUID: dec27e3fe0b68a3408d416786e660f26
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <CrosshairIcon>k__BackingField:
+    m_AssetGUID: 6ce58e4cb11fb704cb1a438a440b11d6
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <HealEffect>k__BackingField:
+    m_AssetGUID: 2900d1807ba4af04687b8e58bf0f0f85
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <DeathEffect>k__BackingField:
+    m_AssetGUID: de19d5825900c9c4089b227e1261ac5e
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <ReviveEffect>k__BackingField:
+    m_AssetGUID: 69cc50712c06ada4ba8098583857e74e
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <HitEffect1>k__BackingField:
+    m_AssetGUID: 8fd4d0d4804ac3241a035906a125643b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <HitEffect2>k__BackingField:
+    m_AssetGUID: 4493426f7e1b590429c72a94387157ec
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+--- !u!4 &412965515
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412965513}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.326237, y: 1.9767627, z: -7.275345}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &609376676
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -20914,4 +21035,5 @@ SceneRoots:
   - {fileID: 334059875}
   - {fileID: 1301569086}
   - {fileID: 1473005203}
+  - {fileID: 412965515}
   - {fileID: 192499121}

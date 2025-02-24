@@ -8,6 +8,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.GameCamera;
 using ExitGames.Client.Photon.StructWrapping;
+using EverScord.Effects;
 
 namespace EverScord.UI
 {
@@ -33,8 +34,8 @@ namespace EverScord.UI
 
         public void Init()
         {
-            if (!cursorIcon) cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(ConstStrings.KEY_CROSSHAIR);
-            if (!bloodMat)   bloodMat   = ResourceManager.Instance.GetAsset<Material>(ConstStrings.KEY_BLOOD_MAT);
+            if (!cursorIcon) cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(AssetReferenceManager.CrosshairIcon_ID);
+            if (!bloodMat)   bloodMat   = ResourceManager.Instance.GetAsset<Material>(AssetReferenceManager.BloodMat_ID);
 
             Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
             Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
@@ -149,8 +150,9 @@ namespace EverScord.UI
 
         public void InitReviveCircle(Transform uiOwner, int viewID)
         {
-            var circlePrefab = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_REVIVECIRCLE);
+            var circlePrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveCircle_ID);
             reviveCircle = Instantiate(circlePrefab, uiOwner).GetComponent<ReviveCircle>();
+
             reviveCircle.Init(uiOwner, viewID);
             reviveCircle.transform.SetParent(Root.parent);
             reviveCircle.gameObject.SetActive(false);
