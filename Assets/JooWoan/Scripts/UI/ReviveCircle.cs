@@ -135,6 +135,7 @@ namespace EverScord.UI
             progress = 0f;
             reviveBar.fillAmount = 0f;
             canvasGroup.alpha = 0f;
+            revivingPeople = 0;
 
             reviveCollider.isTrigger = true;
         }
