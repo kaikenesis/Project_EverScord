@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2418299719582962756}
   - component: {fileID: 6332463779292676520}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Uni_H_002_eyeShadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 843092064231442460}
   - component: {fileID: 2655142741789270332}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Uni_H_002_Eyeball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -531,7 +531,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7468326098210962964}
   - component: {fileID: 7766062668554077189}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Uni_body_Morph
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12901,7 +12901,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7025324094335956652}
   - component: {fileID: 4914948804050041893}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Uni_H_002_Part01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13526,7 +13526,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4395197795623431917}
   - component: {fileID: 4771866579625391082}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Uni_H_002_Hair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13821,6 +13821,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
       propertyPath: m_Name
       value: 1301004_Rig
+      objectReference: {fileID: 0}
+    - target: {fileID: 1520151876424074105, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8774393205301558919, guid: b84171ead753b86499ea1d956b4d840a, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
