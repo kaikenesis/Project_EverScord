@@ -36,6 +36,8 @@ namespace EverScord
         public const string KEY_BLOOD_MAT = "BloodMAT";
         public const string KEY_OUTLINE_MAT = "OutlineMAT";
         public const string KEY_CROSSHAIR = "CrosshairIcon";
+        public const string KEY_HIT_EFFECT = "HitEffect20";
+        public const string KEY_HIT_EFFECT2 = "HitEffect21";
         public const string KEY_HEAL_EFFECT = "HealEffect";
         public const string KEY_DEATH_EFFECT = "DeathEffect";
         public const string KEY_REVIVE_EFFECT = "ReviveEffect";

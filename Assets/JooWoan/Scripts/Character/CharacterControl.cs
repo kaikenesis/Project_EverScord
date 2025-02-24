@@ -15,6 +15,7 @@ namespace EverScord.Character
     {
         private const float SKIN_RATIO = 0.1f;
         private const float REMOTE_LERP_VALUE = 10f;
+        private const float BODY_CENTER = 2f;
 
         [Header("Character")]
         [SerializeField] private float speed;
@@ -65,7 +66,7 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
-        private static GameObject deathEffect, healEffect, reviveEffect;
+        private static GameObject deathEffect, healEffect, reviveEffect, hitEffect1, hitEffect2;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
@@ -157,8 +158,10 @@ namespace EverScord.Character
                 player.PlayerUIControl.InitReviveCircle(player.PlayerTransform, player.CharacterPhotonView.ViewID);
             }
 
-            healEffect  = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
-            deathEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_DEATH_EFFECT);
+            hitEffect1   = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HIT_EFFECT);
+            hitEffect2   = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HIT_EFFECT2);
+            healEffect   = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_HEAL_EFFECT);
+            deathEffect  = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_DEATH_EFFECT);
             reviveEffect = ResourceManager.Instance.GetAsset<GameObject>(ConstStrings.KEY_REVIVE_EFFECT);
         }
 
@@ -440,7 +443,14 @@ namespace EverScord.Character
                 blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
 
             blinkEffect.Blink();
-            
+
+            var effect1 = Instantiate(hitEffect1);
+            var effect2 = Instantiate(hitEffect2);
+
+            Vector3 hitPos = new Vector3(transform.position.x, BODY_CENTER, transform.position.z);
+            effect1.transform.position = hitPos;
+            effect2.transform.position = hitPos;
+
             if (!isInvincible)
                 CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             
@@ -487,8 +497,12 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
+            SetState(SetCharState.ADD, CharState.INVINCIBLE);
+            SetState(SetCharState.REMOVE, CharState.DEATH);
+
             Instantiate(reviveEffect, transform.position, Quaternion.identity);
             Instantiate(healEffect, transform.position, Quaternion.identity);
+            CurrentHealth = maxHealth;
 
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);
             PlayerUIControl.SetReviveCircle(false);
@@ -507,9 +521,7 @@ namespace EverScord.Character
             }
 
             AnimationControl.SetUpperMask(true);
-            
-            CurrentHealth = maxHealth;
-            SetState(SetCharState.REMOVE, CharState.DEATH);
+            SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
         }
 
         public bool IsGrounded
