@@ -172,7 +172,9 @@ namespace EverScord.Weapons
             Bullet bullet         = ResourceManager.Instance.GetFromPool(BulletAssetReference.AssetGUID) as Bullet;
             SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(SmokeAssetReference.AssetGUID)  as SmokeTrail;
 
-            if (bullet)
+            if (!bullet)
+                return;
+            else
             {
                 bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
                 GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);

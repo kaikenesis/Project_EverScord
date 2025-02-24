@@ -18,7 +18,7 @@ namespace EverScord.Skill
         private WaitForSeconds waitSkill;
         private Coroutine counterCoroutine, jumpCoroutine, attackCoroutine;
         private SkillMarker skillMarker;
-        private GameObject stanceEffect, stanceEffectPrefab, landingEffectPrefab;
+        private GameObject stanceEffect, stanceEffectPrefab, landingEffectPrefab, shockwavePrefab;
         private ParticleSystem[] markerParticles;
         private Vector3 landingPosition;
         private LayerMask targetLayer;
@@ -38,7 +38,8 @@ namespace EverScord.Skill
         {
             GameObject marker   = ResourceManager.Instance.GetAsset<GameObject>(Skill.Marker.AssetGUID);
             stanceEffectPrefab  = ResourceManager.Instance.GetAsset<GameObject>(Skill.StanceEffect.AssetGUID);
-            
+            shockwavePrefab     = ResourceManager.Instance.GetAsset<GameObject>(Skill.ShockwaveEffect.AssetGUID);
+
             if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
@@ -108,6 +109,9 @@ namespace EverScord.Skill
             animControl.Play(animInfo.Howl);
             Invoke(nameof(ExitHowlAnimation), animInfo.Howl.length);
 
+            var shockwave = Instantiate(shockwavePrefab, CharacterSkill.SkillRoot);
+            shockwave.transform.position = new Vector3(activator.transform.position.x, shockwave.transform.position.y, activator.transform.position.z);
+
             jumpCoroutine = StartCoroutine(JumpStance());
         }
 
@@ -169,13 +173,15 @@ namespace EverScord.Skill
 
         private void ExitSkill(bool hasAttacked = false)
         {
-            animControl.SetUpperMask(true);
+            CancelInvoke(nameof(ExitHowlAnimation));
 
             OutlineControl.SetCharacterOutline(activator, false);
-            SetJumpMode(false);
 
             CharacterSkill.SetEffectParticles(stanceEffect, false);
             CharacterSkill.SetEffectParticles(markerParticles, false);
+
+            SetJumpMode(false);
+            activator.UnsubscribeOnDecreaseHealth(OnDecreaseHealth);
 
             if (!hasAttacked)
             {
