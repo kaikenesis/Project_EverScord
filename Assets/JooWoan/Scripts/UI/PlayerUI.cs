@@ -20,6 +20,7 @@ namespace EverScord.UI
         private const float BLOOD_SPEED = 1f;
 
         public static Transform Root { get; private set; }
+        public ReviveCircle ReviveCircleControl => reviveCircle;
         private static Texture2D cursorIcon;
         private static Material bloodMat;
         private static ColorCurves colorCurves;

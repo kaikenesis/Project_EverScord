@@ -69,7 +69,7 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
-        private static GameObject deathEffect, healEffect, reviveEffect;
+        private static GameObject deathEffect, healEffect, reviveEffect, beamEffect;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
@@ -164,6 +164,7 @@ namespace EverScord.Character
             healEffect   = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HealEffect_ID);
             deathEffect  = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.DeathEffect_ID);
             reviveEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveEffect_ID);
+            beamEffect   = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveBeam_ID);
         }
 
         void Update()
@@ -434,32 +435,27 @@ namespace EverScord.Character
 
         public void DecreaseHP(float amount)
         {
-            if (IsDead)
-                return;
-
-            onDecreaseHealth?.Invoke();
             bool isInvincible = HasState(CharState.INVINCIBLE);
 
             if (isInvincible)
                 blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
+            
             blinkEffect.Blink();
+            CreateHitEffects();
 
-            PooledParticle effect1 = ResourceManager.Instance.GetFromPool(AssetReferenceManager.HitEffect1_ID) as PooledParticle;
-            PooledParticle effect2 = ResourceManager.Instance.GetFromPool(AssetReferenceManager.HitEffect2_ID) as PooledParticle;
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, false, isInvincible);
 
-            effect1.Init(AssetReferenceManager.HitEffect1_ID);
-            effect2.Init(AssetReferenceManager.HitEffect2_ID);
-
-            Vector3 hitPos = new Vector3(transform.position.x, BODY_CENTER, transform.position.z);
-
-            effect1.transform.position = hitPos;
-            effect2.transform.position = hitPos;
+            if (IsDead)
+                return;
 
             if (!isInvincible)
                 CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
-            
+
+            onDecreaseHealth?.Invoke();
+
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false, isInvincible);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
         }
 
         public void IncreaseHP(float amount, bool isExternalHeal = false)
@@ -467,13 +463,16 @@ namespace EverScord.Character
             if (IsDead)
                 return;
             
-            CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
-
             var effect = Instantiate(healEffect, transform);
             effect.transform.position = transform.position;
 
+            CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true, false);
+            {
+                photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true);
+            }
         }
 
         private IEnumerator HandleDeath()
@@ -502,10 +501,11 @@ namespace EverScord.Character
         public IEnumerator HandleRevival()
         {
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
-            SetState(SetCharState.REMOVE, CharState.DEATH);
 
             Instantiate(reviveEffect, transform.position, Quaternion.identity);
             Instantiate(healEffect, transform.position, Quaternion.identity);
+            Instantiate(beamEffect, transform.position, Quaternion.identity);
+
             CurrentHealth = maxHealth;
 
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);
@@ -518,14 +518,25 @@ namespace EverScord.Character
             RigControl.SetMainRigWeight(true);
             AnimationControl.CrossFade(new AnimationParam(AnimationControl.AnimInfo.Idle.name, 0.25f));
 
-            for (float t = 0; t < 0.25f; t += Time.deltaTime)
-            {
-                AnimationControl.SetUpperMask(t);
+            for (float t = 0; t < 0.5f; t += Time.deltaTime)
                 yield return null;
-            }
 
-            AnimationControl.SetUpperMask(true);
             SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
+            SetState(SetCharState.REMOVE, CharState.DEATH);
+        }
+
+        private void CreateHitEffects()
+        {
+            PooledParticle effect1 = ResourceManager.Instance.GetFromPool(AssetReferenceManager.HitEffect1_ID) as PooledParticle;
+            PooledParticle effect2 = ResourceManager.Instance.GetFromPool(AssetReferenceManager.HitEffect2_ID) as PooledParticle;
+
+            effect1.Init(AssetReferenceManager.HitEffect1_ID);
+            effect2.Init(AssetReferenceManager.HitEffect2_ID);
+
+            Vector3 hitPos = new Vector3(PlayerTransform.position.x, BODY_CENTER, PlayerTransform.position.z);
+
+            effect1.transform.position = hitPos;
+            effect2.transform.position = hitPos;
         }
 
         public bool IsGrounded
@@ -652,11 +663,17 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncHealth(float health, bool isIncreasing, bool isInvincible)
+        private void SyncHealth(float health, bool isIncreasing)
         {
-            if (CurrentHealth != health)
-                CurrentHealth = health;
+            CurrentHealth = health;
 
+            if (!isIncreasing)
+                onDecreaseHealth?.Invoke();
+        }
+
+        [PunRPC]
+        private void SyncHitEffects(bool isIncreasing, bool isInvincible)
+        {
             if (isIncreasing)
             {
                 GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HealEffect_ID);
@@ -665,12 +682,11 @@ namespace EverScord.Character
             }
             else
             {
-                onDecreaseHealth?.Invoke();
-
                 if (isInvincible)
                     blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
 
                 blinkEffect.Blink();
+                CreateHitEffects();
             }
         }
 
@@ -678,6 +694,13 @@ namespace EverScord.Character
         private void SyncReviveCircle(bool state)
         {
             PlayerUIControl.SetReviveCircle(state);
+        }
+
+        
+        [PunRPC]
+        public void SyncExitCircle()
+        {
+            PlayerUIControl.ReviveCircleControl.SyncExitCircle();
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

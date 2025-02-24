@@ -17,6 +17,7 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference HealEffect                { get; private set; }
         [field: SerializeField] public AssetReference DeathEffect               { get; private set; }
         [field: SerializeField] public AssetReference ReviveEffect              { get; private set; }
+        [field: SerializeField] public AssetReference ReviveBeam                { get; private set; }
         [field: SerializeField] public AssetReference HitEffect1                { get; private set; }
         [field: SerializeField] public AssetReference HitEffect2                { get; private set; }
 
@@ -41,6 +42,7 @@ namespace EverScord.Effects
         public static string HealEffect_ID              => Instance.HealEffect.AssetGUID;
         public static string DeathEffect_ID             => Instance.DeathEffect.AssetGUID;
         public static string ReviveEffect_ID            => Instance.ReviveEffect.AssetGUID;
+        public static string ReviveBeam_ID              => Instance.ReviveBeam.AssetGUID;
         public static string HitEffect1_ID              => Instance.HitEffect1.AssetGUID;
         public static string HitEffect2_ID              => Instance.HitEffect2.AssetGUID;
 

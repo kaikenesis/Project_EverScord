@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using EverScord.GameCamera;
 using EverScord.Character;
 using DG.Tweening;
+using Photon.Pun;
 
 namespace EverScord.UI
 {
@@ -15,22 +16,23 @@ namespace EverScord.UI
         [SerializeField] private Collider reviveCollider;
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private float increaseSpeed, decreaseSpeed;
+
+        private Quaternion initialRotation;
         private Camera cam;
         private Transform circleOwner;
-        private Vector3 initialButtonPos;
-        private int viewID;
+        private CharacterControl reviveTarget;
         private float progress; 
         private int revivingPeople = 0;
 
         void Awake()
         {
-            initialButtonPos = buttonImg.transform.localPosition;
+            initialRotation = transform.localRotation;
         }
 
         public void Init(Transform circleOwner, int viewID)
         {
             this.circleOwner = circleOwner;
-            this.viewID = viewID;
+            reviveTarget = GameManager.Instance.PlayerDict[viewID];
 
             cam = CharacterCamera.CurrentClientCam;
             canvas.worldCamera = cam;
@@ -55,12 +57,13 @@ namespace EverScord.UI
                 return;
             
             FollowPlayer();
-            TrackProgress();
 
             if (revivingPeople > 0)
                 IncreaseProgress(increaseSpeed * Time.deltaTime);
             else
                 DecreaseProgress(decreaseSpeed * Time.deltaTime);
+            
+            TrackProgress();
         }
 
         void OnTriggerEnter(Collider other)
@@ -101,13 +104,13 @@ namespace EverScord.UI
 
             if (progress >= 100f)
             {
-                reviveCollider.isTrigger = false;
+                ExitCircle();
 
-                DOTween.Rewind(ConstStrings.TWEEN_HIDE_REVIVECIRCLE);
-                DOTween.Play(ConstStrings.TWEEN_HIDE_REVIVECIRCLE);
-
-                CharacterControl revived = GameManager.Instance.PlayerDict[viewID];
-                revived.StartCoroutine(revived.HandleRevival());
+                if (PhotonNetwork.IsConnected)
+                {
+                    PhotonView photonView = reviveTarget.CharacterPhotonView;
+                    photonView.RPC(nameof(reviveTarget.SyncExitCircle), RpcTarget.Others);
+                }
             }
         }
 
@@ -129,15 +132,37 @@ namespace EverScord.UI
             return true;
         }
 
+        private void ExitCircle()
+        {
+            revivingPeople = 0;
+            reviveCollider.isTrigger = false;
+
+            DOTween.Rewind(ConstStrings.TWEEN_HIDE_REVIVECIRCLE);
+            DOTween.Play(ConstStrings.TWEEN_HIDE_REVIVECIRCLE);
+
+            reviveTarget.StartCoroutine(reviveTarget.HandleRevival());
+        }
+
         private void ResetCircle()
         {
-            buttonImg.transform.localPosition = initialButtonPos;
+            transform.localRotation = initialRotation;
+            button.localRotation = Quaternion.identity;
+
             progress = 0f;
             reviveBar.fillAmount = 0f;
             canvasGroup.alpha = 0f;
             revivingPeople = 0;
 
             reviveCollider.isTrigger = true;
+        }
+
+        public void SyncExitCircle()
+        {
+            // If exit circle already happened on this client (before the rpc), don execute logic
+            if (revivingPeople == 0)
+                return;
+            
+            ExitCircle();
         }
     }
 }
