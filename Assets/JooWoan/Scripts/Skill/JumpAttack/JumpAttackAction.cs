@@ -91,7 +91,7 @@ namespace EverScord.Skill
             stanceEffect.transform.position = activator.transform.position;
 
             activator.RigControl.SetAimWeight(false);
-            animControl.SetUpperMask(false);
+            animControl.SetUpperMask(false, true);
 
             animControl.CrossFade(new AnimationParam(animInfo.CounterStance.name, 0.1f));
             OutlineControl.SetCharacterOutline(activator, true);

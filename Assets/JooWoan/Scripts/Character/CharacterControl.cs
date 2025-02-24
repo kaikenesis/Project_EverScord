@@ -8,8 +8,6 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
-using Unity.Mathematics;
-using UnityEngine.UI;
 
 namespace EverScord.Character
 {
@@ -474,7 +472,7 @@ namespace EverScord.Character
             RigControl.SetAimWeight(false);
             RigControl.SetMainRigWeight(false);
 
-            AnimationControl.SetUpperMask(false);
+            AnimationControl.SetUpperMask(false, true);
             AnimationControl.Play(AnimationControl.AnimInfo.Death);
 
             OutlineControl.SetCharacterOutline(this, true);

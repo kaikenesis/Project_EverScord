@@ -51,6 +51,7 @@ namespace EverScord.Skill
             }
 
             activator.RigControl.SetAimWeight(false);
+            activator.AnimationControl.SetUpperMask(true);
             activator.AnimationControl.CrossFade(throwReadyParam);
             skillCoroutine = StartCoroutine(ActivateSkill());
             return true;
@@ -87,6 +88,8 @@ namespace EverScord.Skill
         {
             hasActivated = false;
             predictor.Exit();
+
+            activator.AnimationControl.SetUpperMask(false);
 
             if (predictionCoroutine != null)
             {

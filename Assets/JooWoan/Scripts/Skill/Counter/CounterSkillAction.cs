@@ -171,7 +171,7 @@ namespace EverScord.Skill
             if (!laserControl)
                 return;
 
-            activator.PlayerWeapon.SetShootingStance(activator, false);
+            activator.PlayerWeapon.SetShootingStance(activator, false, true);
             laserControl.DisablePrepare();
 
             int totalChildCount = laserControl.transform.childCount;

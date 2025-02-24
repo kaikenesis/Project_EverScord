@@ -138,6 +138,7 @@ namespace EverScord.Weapons
             CharacterAnimation animControl = shooter.AnimationControl;
 
             shooter.RigControl.SetAimWeight(false);
+            shooter.AnimationControl.SetUpperMask(true);
             shooter.PlayerUIControl.SetReloadText();
 
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, true);
@@ -189,10 +190,11 @@ namespace EverScord.Weapons
             photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);
         }
 
-        public void SetShootingStance(CharacterControl shooter, bool state)
+        public void SetShootingStance(CharacterControl shooter, bool state, bool isImmediate = false)
         {
             shooter.SetIsAiming(state);
             shooter.RigControl.SetAimWeight(state);
+            shooter.AnimationControl.SetUpperMask(state, isImmediate);
 
             AnimationClip clip = state ? animControl.AnimInfo.Shoot : animControl.AnimInfo.ShootEnd;
             animControl.Play(clip);

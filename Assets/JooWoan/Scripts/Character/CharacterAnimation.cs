@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using System.Collections;
 
 namespace EverScord.Character
 {
@@ -8,11 +9,13 @@ namespace EverScord.Character
         [SerializeField] private Animator anim;
         [SerializeField] private AnimationInfo info;
         [SerializeField] private float transitionDampTime;
+        [SerializeField] private float lerpMaskSpeed = 1f;
         [field: SerializeField] public float ShootStanceDuration { get; private set; }
 
         public Animator Anim => anim;
         public AnimationInfo AnimInfo => info;
         private PhotonView photonView;
+        private Coroutine lerpMaskCoroutine;
 
         private int upperMaskLayerIndex;
 
@@ -20,6 +23,7 @@ namespace EverScord.Character
         {
             this.photonView = photonView;
             upperMaskLayerIndex = anim.GetLayerIndex(ConstStrings.ANIMLAYER_UPPERMASK);
+            SetUpperMask(false, true);
         }
 
         public void AnimateMovement(CharacterControl character, Vector3 moveDir)
@@ -59,16 +63,38 @@ namespace EverScord.Character
             photonView.RPC(nameof(SyncSetBool), RpcTarget.Others, name, state);
         }
 
-        public void SetUpperMask(bool state)
+        public void SetUpperMask(bool state, bool isImmediate = false)
         {
-            int value = state ? 1 : 0;
-            anim.SetLayerWeight(upperMaskLayerIndex, value);
+            if (lerpMaskCoroutine != null)
+                StopCoroutine(lerpMaskCoroutine);
+
+            if (state)
+                anim.SetLayerWeight(upperMaskLayerIndex, 1f);
+
+            else if (!isImmediate)
+                lerpMaskCoroutine = StartCoroutine(LerpOutUpperMask());
+
+            else
+                anim.SetLayerWeight(upperMaskLayerIndex, 0f);
         }
 
         public void SetUpperMask(float weight)
         {
             weight = Mathf.Clamp(weight, 0f, 1f);
             anim.SetLayerWeight(upperMaskLayerIndex, weight);
+        }
+
+        private IEnumerator LerpOutUpperMask()
+        {
+            anim.SetLayerWeight(upperMaskLayerIndex, 1f);
+
+            for (float t = 1f; anim.GetLayerWeight(upperMaskLayerIndex) >= 0f; t -= Time.deltaTime * lerpMaskSpeed)
+            {
+                anim.SetLayerWeight(upperMaskLayerIndex, t);
+                yield return null;
+            }
+
+            anim.SetLayerWeight(upperMaskLayerIndex, 0f);
         }
 
         public void CrossFade(AnimationParam param)
