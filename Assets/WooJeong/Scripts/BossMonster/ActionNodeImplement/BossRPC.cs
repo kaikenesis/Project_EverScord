@@ -47,15 +47,6 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void SetProjectors()
     {
-        /*
-        // projector for pattern4
-        projectorPattern4 = gameObject.AddComponent<DecalProjector>();
-        projectorPattern4.size = new Vector3(2, 1, 10);
-        projectorPattern4.pivot = new Vector3(0, 0f, 5f);
-        projectorPattern4.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
-        projectorPattern4.renderingLayerMask = 2;
-        projectorPattern4.enabled = false;
-        */
         projectorPattern4 = projectorObj_Pattern4.GetComponent<SRPLineRegionProjector>();
         projectorPattern5 = projectorObj_Pattern5.GetComponent<SRPArcRegionProjector>();
 
@@ -156,18 +147,36 @@ public class BossRPC : MonoBehaviour, IEnemy
             case 4:
                 {
                     projectorPattern4.FillProgress = 0;
+                    float timeOffset = time - 0.2f;
                     while (true)
                     {
                         curTime += Time.deltaTime;
-                        projectorPattern4.FillProgress = curTime / time;
-                        if (curTime > time) 
+                        projectorPattern4.FillProgress = curTime / timeOffset;
+                        projectorPattern4.UpdateProjectors();
+                        yield return new WaitForSeconds(Time.deltaTime);
+                        if (curTime > timeOffset)
+                        {
+                            //projectorObj_Pattern4.SetActive(false);
                             yield break;
+                        }
                     }
                 }
             case 5:
                 {
-                    projectorObj_Pattern5.SetActive(true);
-                    break;
+                    projectorPattern5.FillProgress = 0;
+                    float timeOffset = time - 0.2f;
+                    while (true)
+                    {
+                        curTime += Time.deltaTime;
+                        projectorPattern5.FillProgress = curTime / timeOffset;
+                        projectorPattern5.UpdateProjectors();
+                        yield return new WaitForSeconds(Time.deltaTime);
+                        if (curTime > timeOffset)
+                        {
+                            //projectorObj_Pattern5.SetActive(false);
+                            yield break;
+                        }
+                    }
                 }
         }
     }
@@ -175,7 +184,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public IEnumerator ProjectEnable(int patternNum, float projectTime)
     {
         photonView.RPC("SyncProjectorEnable", RpcTarget.All, patternNum, projectTime);
-        yield return new WaitForSeconds(projectTime);
+        yield return new WaitForSeconds(projectTime + 0.5f);
         photonView.RPC("SyncProjectorDisable", RpcTarget.All, patternNum);
     }
 
@@ -193,7 +202,8 @@ public class BossRPC : MonoBehaviour, IEnemy
             case 5:
                 {
                     projectorObj_Pattern5.SetActive(true);
-                    break ;
+                    StartCoroutine(FillAmountProjector(patternNum, projectTime));
+                    break;
                 }
             case 7:
                 {
@@ -211,7 +221,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         {
             case 4:
                 {
-                    projectorObj_Pattern4.SetActive(true);
+                    projectorObj_Pattern4.SetActive(false);
                     break;
                 }
             case 5:
