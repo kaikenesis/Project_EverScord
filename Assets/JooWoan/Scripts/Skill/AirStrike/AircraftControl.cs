@@ -86,14 +86,14 @@ namespace EverScord.Skill
 
         private IEnumerator MoveAircraft(Vector3 moveDir, Vector3 wayPoint, float startDelay = 0f)
         {
-            yield return new WaitForSeconds(startDelay);
-
             float halfDistance = totalTravelDistance * 0.5f;
 
             Vector3 startPoint = wayPoint - moveDir * halfDistance;
             Vector3 endPoint = wayPoint + moveDir * halfDistance;
 
             transform.position = startPoint;
+
+            yield return new WaitForSeconds(startDelay);
 
             while (Vector3.Distance(transform.position, endPoint) > 1f)
             {

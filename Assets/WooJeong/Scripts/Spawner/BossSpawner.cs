@@ -23,7 +23,10 @@ public class BossSpawner : MonoBehaviour
         GameObject bossPrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.Boss_ID);
         mo = Instantiate(bossPrefab, transform.position, Quaternion.identity);
         mo.SetActive(false);
+    }
 
+    void Start()
+    {
         StartCoroutine(Spawn());
     }
 

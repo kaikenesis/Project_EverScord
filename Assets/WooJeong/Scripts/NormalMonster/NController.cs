@@ -177,7 +177,8 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void Death()
     {
-        photonView.RPC("SyncMonsterDeath", RpcTarget.All);
+        photonView.RPC("SyncMonsterDeath", RpcTarget.Others);
+        GameManager.Instance.LevelController.IncreaseProgress();
     }
 
     [PunRPC]
@@ -185,6 +186,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         isDead = false;
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
+        GameManager.Instance.LevelController.IncreaseProgress();
     }
 
     public void StartFSM()

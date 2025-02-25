@@ -149,6 +149,8 @@ namespace EverScord.Character
 
             blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
             groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
+
+            DontDestroyOnLoad(gameObject);
         }
 
         void Start()

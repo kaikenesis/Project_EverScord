@@ -1,6 +1,8 @@
-using Photon.Pun;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Photon.Pun;
 using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
@@ -11,6 +13,8 @@ namespace EverScord
     public class GameManager : MonoBehaviour
     {
         private static GameManager instance;
+        public const float GROUND_HEIGHT = 0f;
+        private const float LOADSCREEN_DELAY = 1f;
 
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
@@ -19,12 +23,14 @@ namespace EverScord
         [SerializeField] private PhotonData photonData;
         public PhotonData PhotonData { get { return photonData; } }
 
-        public List<PhotonView> playerPhotonViews   { get; private set; }
-        public BulletControl BulletsControl         { get; private set; }
-        public EnemyHitControl EnemyHitsControl     { get; private set; }
-        public static int EnemyLayerNumber          { get; private set; }
-        public static int PlayerLayerNumber         { get; private set; }
-        public const float GROUND_HEIGHT = 0f;
+        public List<PhotonView> playerPhotonViews               { get; private set; }
+        public BulletControl BulletsControl                     { get; private set; }
+        public EnemyHitControl EnemyHitsControl                 { get; private set; }
+        public MonsterProjectileController ProjectileController { get; private set; }
+        public LevelControl LevelController                     { get; private set; }
+        public static int EnemyLayerNumber                      { get; private set; }
+        public static int PlayerLayerNumber                     { get; private set; }
+        public static int CurrentStageIndex                     { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
@@ -37,8 +43,9 @@ namespace EverScord
 
         [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer, redOutlineLayer;
         [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo;
-
+        [SerializeField] private List<StageInfo> stageInfos;
         [SerializeField] private CostData costData;
+
         public CostData CostDatas
         {
             get { return costData; }
@@ -67,8 +74,7 @@ namespace EverScord
         }
 
         private IDictionary<int, CharacterControl> playerDict;
-
-        public MonsterProjectileController ProjectileController { get; private set; }
+        private WaitForSeconds waitLoadScreen;
 
         public static GameManager Instance
         {
@@ -101,8 +107,11 @@ namespace EverScord
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
+            waitLoadScreen      = new WaitForSeconds(LOADSCREEN_DELAY);
             playerPhotonViews   = new();
             playerData.Initialize();
+
+            CurrentStageIndex = 0; // -1
         }
 
         public void UpdateUserName(string newName)
@@ -137,7 +146,52 @@ namespace EverScord
                 case MonsterProjectileController projectileController:
                     ProjectileController = projectileController;
                     break;
+
+                case LevelControl levelControl:
+                    LevelController = levelControl;
+                    break;
             }
         }
+
+        public static void LoadNextStage()
+        {
+            ++CurrentStageIndex;
+
+            if (CurrentStageIndex >= Instance.stageInfos.Count)
+            {
+                Debug.LogWarning($"Invalid stage index : {CurrentStageIndex}");
+                return;
+            }
+
+            // hide screen
+
+            Instance.StartCoroutine(LoadStage());
+        }
+
+        private static IEnumerator LoadStage()
+        {
+            var asyncLoadStage = SceneManager.LoadSceneAsync(Instance.stageInfos[CurrentStageIndex].stageName, LoadSceneMode.Single);
+            
+            while (asyncLoadStage.progress < 0.9f)
+            {
+                yield return null;
+            }
+
+            Instance.StartCoroutine(ExitLoadingScreen());
+        }
+
+        private static IEnumerator ExitLoadingScreen()
+        {
+            yield return Instance.waitLoadScreen;
+
+            // show showscreen
+        }
     }
+}
+
+[System.Serializable]
+public class StageInfo
+{
+    public string stageName;
+    public AudioClip loopBgm;
 }

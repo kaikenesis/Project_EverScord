@@ -29,6 +29,7 @@ namespace EverScord
         public const string TWEEN_AMMORELOAD = "AmmoReload";
         public const string TWEEN_HIDE_REVIVECIRCLE = "HideReviveCircle";
         public const string TWEEN_SHOW_REVIVECIRCLE = "ShowReviveCircle";
+        public const string TWEEN_OPEN_PORTAL = "OpenPortal";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";

@@ -11,6 +11,7 @@ namespace EverScord.Weapons
         void Awake()
         {
             photonView = GetComponent<PhotonView>();
+            DontDestroyOnLoad(gameObject);
         }
     }
 }
