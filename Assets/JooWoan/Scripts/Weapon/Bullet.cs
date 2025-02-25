@@ -1,6 +1,7 @@
 using UnityEngine;
 using EverScord.Pool;
 using EverScord.Skill;
+using EverScord.Character;
 
 namespace EverScord.Weapons
 {
@@ -73,7 +74,9 @@ namespace EverScord.Weapons
 
         public void CheckCollision(Weapon sourceWeapon, Vector3 startPoint, Vector3 endPoint)
         {
+            CharacterControl shooter = GameManager.Instance.PlayerDict[ViewID];
             RaycastHit hit = new RaycastHit();
+            
             Vector3 direction = endPoint - startPoint;
             float totalDistance = direction.magnitude;
 
@@ -94,7 +97,10 @@ namespace EverScord.Weapons
                     if (!Physics.Raycast(ray, out hit, 50f, sourceWeapon.ShootableLayer))
                         continue;
 
-                    if (hit.point.y < 0)
+                    if (hit.point.y < GameManager.GROUND_HEIGHT)
+                        continue;
+
+                    if (hit.transform.root == shooter.PlayerTransform)
                         continue;
 
                     GameManager.Instance.BulletsControl.BulletHitEffect(hit.point, -direction);
@@ -105,6 +111,14 @@ namespace EverScord.Weapons
 
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster, false);
+                    }
+                    else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber && shooter.CharacterJob == PlayerData.EJob.Healer)
+                    {
+                        // Calculate total heal
+                        float calculatedHeal = sourceWeapon.Heal;
+
+                        CharacterControl character = hit.transform.GetComponent<CharacterControl>();
+                        character.IncreaseHP(calculatedHeal, true);
                     }
 
                     SetTracerEffectPosition(currentPoint);

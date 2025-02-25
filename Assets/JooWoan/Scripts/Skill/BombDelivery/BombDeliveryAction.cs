@@ -86,17 +86,17 @@ namespace EverScord.Skill
             Vector3 effectScale = effect1.transform.localScale;
             effect1.transform.localScale = new Vector3(effectScale.x * 0.5f, effectScale.y * 0.5f, effectScale.z * 0.5f);
 
-            effect1.transform.position   = activator.transform.position;
+            effect1.transform.position   = activator.PlayerTransform.position;
             activator.transform.position = GetSafeTeleportPosition(closestTarget.position);
-            effect2.transform.position   = activator.transform.position;
+            effect2.transform.position   = activator.PlayerTransform.position;
         }
 
         private bool SetClosestTarget(LayerMask layerMask)
         {
-            Collider[] colliders = Physics.OverlapSphere(activator.transform.position, skill.DetectRadius, layerMask);
+            Collider[] colliders = Physics.OverlapSphere(activator.PlayerTransform.position, skill.DetectRadius, layerMask);
 
-            var electricEffect = Instantiate(skill.TeleportElectric, activator.transform);
-            electricEffect.transform.position = activator.transform.position;
+            var electricEffect = Instantiate(skill.TeleportElectric, activator.PlayerTransform);
+            electricEffect.transform.position = activator.PlayerTransform.position;
 
             if (colliders.Length <= 0)
                 return false;
@@ -108,12 +108,12 @@ namespace EverScord.Skill
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                float distance = Vector3.Distance(activator.transform.position, colliders[i].transform.position);
+                float distance = Vector3.Distance(activator.PlayerTransform.position, colliders[i].transform.position);
 
                 if (!closestTarget || (closestDistance > distance))
                 {
                     // Exclude myself
-                    if (isPlayerLayer && colliders[i].transform.root == activator.transform)
+                    if (isPlayerLayer && colliders[i].transform.root == activator.PlayerTransform)
                         continue;
                     
                     closestDistance = distance;
@@ -126,7 +126,7 @@ namespace EverScord.Skill
 
         private Vector3 GetSafeTeleportPosition(Vector3 targetPos)
         {
-            Vector3 playerToTargetDir = (targetPos - activator.transform.position).normalized;
+            Vector3 playerToTargetDir = (targetPos - activator.PlayerTransform.position).normalized;
 
             Vector3 teleportPos = targetPos;
             float checkRadius = activator.Controller.radius;
@@ -150,7 +150,7 @@ namespace EverScord.Skill
         {
             if (!Application.isPlaying) return;
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(activator.transform.position, skill.DetectRadius);
+            Gizmos.DrawWireSphere(activator.PlayerTransform.position, skill.DetectRadius);
         }
         #endregion
     }

@@ -110,7 +110,7 @@ namespace EverScord.Skill
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
                 }
-                else if (colliders[i].transform.root != activator.transform)
+                else
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
                     player.IncreaseHP(calculatedImpact, true);

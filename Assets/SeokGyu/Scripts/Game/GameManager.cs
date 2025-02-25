@@ -23,6 +23,8 @@ namespace EverScord
         public BulletControl BulletsControl         { get; private set; }
         public EnemyHitControl EnemyHitsControl     { get; private set; }
         public static int EnemyLayerNumber          { get; private set; }
+        public static int PlayerLayerNumber         { get; private set; }
+        public const float GROUND_HEIGHT = 0f;
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
@@ -97,6 +99,7 @@ namespace EverScord
         private void Init()
         {
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
+            PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
             playerPhotonViews   = new();
             playerData.Initialize();

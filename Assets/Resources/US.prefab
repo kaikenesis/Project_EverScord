@@ -12451,7 +12451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3b267cb4e50854098e08fe884b09c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimPointPrefab: {fileID: 2486873113881566926, guid: 83c72aa1d3ebcff46a65b33c992959aa, type: 3}
   shotEffect: {fileID: 676337203743035591}
   bulletInfo: {fileID: 11400000, guid: d27f6f0aba4279142980a570113aa782, type: 2}
   bulletSpeed: 100
@@ -12461,8 +12460,9 @@ MonoBehaviour:
   <LeftHint>k__BackingField: {fileID: 0}
   <ShootableLayer>k__BackingField:
     serializedVersion: 2
-    m_Bits: 1280
+    m_Bits: 1792
   <Damage>k__BackingField: 5
+  <Heal>k__BackingField: 5
   <AimSensitivity>k__BackingField: 1
   <Cooldown>k__BackingField: 0.15
   <ReloadTime>k__BackingField: 3

@@ -29,7 +29,7 @@ namespace EverScord.Skill
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.skill = (DashSkill)skill;
-            meshTrail  = new MeshTrail(activator.transform, this);
+            meshTrail  = new MeshTrail(activator.PlayerTransform, this);
             
             base.Init(activator, skill, ejob, skillIndex);
         }
@@ -57,11 +57,11 @@ namespace EverScord.Skill
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
             activator.PhysicsControl.AddImpact(activator.LookDir, skill.DashForce);
 
-            GameObject tornadoEffect = Instantiate(skill.DashTornado, activator.transform);
-            GameObject sparkEffect   = Instantiate(skill.DashSpark, activator.transform);
+            GameObject tornadoEffect = Instantiate(skill.DashTornado, activator.PlayerTransform);
+            GameObject sparkEffect   = Instantiate(skill.DashSpark, activator.PlayerTransform);
 
-            tornadoEffect.transform.position = activator.transform.position;
-            sparkEffect.transform.position   = activator.transform.position;
+            tornadoEffect.transform.position = activator.PlayerTransform.position;
+            sparkEffect.transform.position   = activator.PlayerTransform.position;
 
             for (float i = 0f; i < skill.Duration; i += Time.deltaTime)
             {

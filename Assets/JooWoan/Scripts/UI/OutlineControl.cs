@@ -26,6 +26,9 @@ namespace EverScord.UI
 
         public static void SetCharacterOutline(CharacterControl character, bool state)
         {
+            if (character == null)
+                return;
+            
             SetTargetOutline(character.SkinRenderers, character.OriginalSkinLayer, GameManager.OutlineLayer, state);
         }
 

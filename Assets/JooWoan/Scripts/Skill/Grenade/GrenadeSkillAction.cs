@@ -47,9 +47,6 @@ namespace EverScord.Skill
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (colliders[i].transform.root == activator.transform)
-                    continue;
-
                 CharacterControl player = colliders[i].GetComponent<CharacterControl>();
                 player.IncreaseHP(calculatedHeal, true);
             }

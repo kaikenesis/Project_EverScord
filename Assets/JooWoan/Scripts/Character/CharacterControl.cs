@@ -8,9 +8,6 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
-using UnityEngine.AddressableAssets;
-using static UnityEditor.PlayerSettings;
-using EverScord.Pool;
 
 namespace EverScord.Character
 {
@@ -19,6 +16,7 @@ namespace EverScord.Character
         private const float SKIN_RATIO = 0.1f;
         private const float REMOTE_LERP_VALUE = 10f;
         private const float BODY_CENTER = 2f;
+        private const float BODY_ROTATESTART_ANGLE = 2f;
 
         [Header("Character")]
         [SerializeField] private float speed;
@@ -69,7 +67,9 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
-        private static GameObject deathEffect, healEffect, reviveEffect, beamEffect;
+        private static GameObject deathEffect, reviveEffect, beamEffect;
+        private static ParticleSystem hitEffect1, hitEffect2;
+        private ParticleSystem healEffect;
         private BlinkEffect blinkEffect;
         private PhotonView photonView;
         private CharacterController controller;
@@ -154,17 +154,8 @@ namespace EverScord.Character
         void Start()
         {
             SetJobAndSkills();
-
-            foreach (var kv in GameManager.Instance.PlayerDict)
-            {
-                CharacterControl player = kv.Value;
-                player.PlayerUIControl.InitReviveCircle(player.PlayerTransform, player.CharacterPhotonView.ViewID);
-            }
-
-            healEffect   = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HealEffect_ID);
-            deathEffect  = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.DeathEffect_ID);
-            reviveEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveEffect_ID);
-            beamEffect   = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveBeam_ID);
+            SetReviveCircle();
+            SetEffects();
         }
 
         void Update()
@@ -320,7 +311,7 @@ namespace EverScord.Character
             
             float angle = Vector3.Angle(lookDir, PlayerTransform.forward);
 
-            if (angle > 2f)
+            if (angle > BODY_ROTATESTART_ANGLE)
             {
                 AnimationControl.Rotate(!IsMoving);
                 Quaternion lookRotation = Quaternion.LookRotation(lookDir);
@@ -374,6 +365,38 @@ namespace EverScord.Character
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob);
             }
+        }
+
+        private void SetReviveCircle()
+        {
+            foreach (var kv in GameManager.Instance.PlayerDict)
+            {
+                CharacterControl player = kv.Value;
+                player.PlayerUIControl.InitReviveCircle(player.PlayerTransform, player.CharacterPhotonView.ViewID);
+            }
+        }
+
+        private void SetEffects()
+        {
+            deathEffect  = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.DeathEffect_ID);
+            reviveEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveEffect_ID);
+            beamEffect   = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveBeam_ID);
+
+            if (!hitEffect1)
+            {
+                var effect1 = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HitEffect1_ID);
+                var effect2 = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HitEffect2_ID);
+
+                hitEffect1 = Instantiate(effect1, CharacterSkill.SkillRoot).GetComponent<ParticleSystem>();
+                hitEffect2 = Instantiate(effect2, CharacterSkill.SkillRoot).GetComponent<ParticleSystem>();
+
+                hitEffect1.gameObject.SetActive(false);
+                hitEffect2.gameObject.SetActive(false);
+            }
+
+            var effect3 = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HealEffect_ID);
+            healEffect = Instantiate(effect3, PlayerTransform).GetComponent<ParticleSystem>();
+            healEffect.gameObject.SetActive(false);
         }
 
         public void SetSpeed(float speed)
@@ -441,7 +464,7 @@ namespace EverScord.Character
                 blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
             
             blinkEffect.Blink();
-            CreateHitEffects();
+            PlayHitEffects();
 
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, false, isInvincible);
@@ -463,8 +486,7 @@ namespace EverScord.Character
             if (IsDead)
                 return;
             
-            var effect = Instantiate(healEffect, transform);
-            effect.transform.position = transform.position;
+            PlayHealEffects();
 
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
 
@@ -502,9 +524,10 @@ namespace EverScord.Character
         {
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
-            Instantiate(reviveEffect, transform.position, Quaternion.identity);
-            Instantiate(healEffect, transform.position, Quaternion.identity);
-            Instantiate(beamEffect, transform.position, Quaternion.identity);
+            Instantiate(reviveEffect, PlayerTransform.position, Quaternion.identity);
+            Instantiate(beamEffect, PlayerTransform.position, Quaternion.identity);
+
+            PlayHealEffects();
 
             CurrentHealth = maxHealth;
 
@@ -525,18 +548,31 @@ namespace EverScord.Character
             SetState(SetCharState.REMOVE, CharState.DEATH);
         }
 
-        private void CreateHitEffects()
+        private void PlayHitEffects()
         {
-            PooledParticle effect1 = ResourceManager.Instance.GetFromPool(AssetReferenceManager.HitEffect1_ID) as PooledParticle;
-            PooledParticle effect2 = ResourceManager.Instance.GetFromPool(AssetReferenceManager.HitEffect2_ID) as PooledParticle;
-
-            effect1.Init(AssetReferenceManager.HitEffect1_ID);
-            effect2.Init(AssetReferenceManager.HitEffect2_ID);
-
             Vector3 hitPos = new Vector3(PlayerTransform.position.x, BODY_CENTER, PlayerTransform.position.z);
 
-            effect1.transform.position = hitPos;
-            effect2.transform.position = hitPos;
+            hitEffect1.transform.position = hitPos;
+            hitEffect2.transform.position = hitPos;
+
+            if (!hitEffect1.gameObject.activeSelf)
+                hitEffect1.gameObject.SetActive(true);
+
+            if (!hitEffect2.gameObject.activeSelf)
+                hitEffect2.gameObject.SetActive(true);
+
+            hitEffect1.Emit(1);
+            hitEffect2.Emit(1);
+        }
+
+        private void PlayHealEffects()
+        {
+            healEffect.transform.position = PlayerTransform.position;
+
+            if (!healEffect.gameObject.activeSelf)
+                healEffect.gameObject.SetActive(true);
+            
+            healEffect.Emit(1);
         }
 
         public bool IsGrounded
@@ -675,18 +711,14 @@ namespace EverScord.Character
         private void SyncHitEffects(bool isIncreasing, bool isInvincible)
         {
             if (isIncreasing)
-            {
-                GameObject healEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HealEffect_ID);
-                var effect = Instantiate(healEffect, transform);
-                effect.transform.position = transform.position;
-            }
+                PlayHealEffects();
             else
             {
                 if (isInvincible)
                     blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
 
                 blinkEffect.Blink();
-                CreateHitEffects();
+                PlayHitEffects();
             }
         }
 

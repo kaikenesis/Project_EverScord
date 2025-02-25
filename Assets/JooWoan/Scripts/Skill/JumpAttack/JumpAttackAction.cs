@@ -89,7 +89,7 @@ namespace EverScord.Skill
         private IEnumerator CounterStance()
         {
             stanceEffect = Instantiate(stanceEffectPrefab, CharacterSkill.SkillRoot);
-            stanceEffect.transform.position = activator.transform.position;
+            stanceEffect.transform.position = activator.PlayerTransform.position;
 
             activator.RigControl.SetAimWeight(false);
             animControl.SetUpperMask(false, true);
@@ -110,7 +110,7 @@ namespace EverScord.Skill
             Invoke(nameof(ExitHowlAnimation), animInfo.Howl.length);
 
             var shockwave = Instantiate(shockwavePrefab, CharacterSkill.SkillRoot);
-            shockwave.transform.position = new Vector3(activator.transform.position.x, shockwave.transform.position.y, activator.transform.position.z);
+            shockwave.transform.position = new Vector3(activator.PlayerTransform.position.x, shockwave.transform.position.y, activator.PlayerTransform.position.z);
 
             jumpCoroutine = StartCoroutine(JumpStance());
         }
@@ -228,7 +228,7 @@ namespace EverScord.Skill
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
                 }
-                else if (colliders[i].transform.root != activator.transform)
+                else
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
                     player.IncreaseHP(calculatedImpact, true);
