@@ -1,8 +1,6 @@
 using EverScord.Character;
 using Photon.Pun;
-using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace EverScord
@@ -26,12 +24,16 @@ namespace EverScord
             List<PhotonView> list = GameManager.Instance.playerPhotonViews;
             Debug.Log(list.Count);
 
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 1; i < list.Count; i++)
             {
-                Instantiate(portrait, transform);
+                GameObject obj = Instantiate(portrait, transform);
                 Debug.Log($"{list[i].gameObject} : {list[i].ViewID}");
-                //if (list[i].ViewID == )
-                //    continue;
+                CharacterControl characterControl = list[i].gameObject.GetComponent<CharacterControl>();
+
+                Debug.Log($"{characterControl.CharacterType} , {characterControl.CharacterJob}");
+                obj.GetComponent<UIPortrait>().Initialize(characterControl.CharacterType);
+                obj.GetComponentInChildren<UIJobIcon>().Initialize(characterControl.CharacterJob);
+                
             }
         }
     }

@@ -1,21 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
     public class UIPortrait : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        [SerializeField] private Image characterImg;
+        private int photonViewNum;
 
+        private void Awake()
+        {
+            if (GameManager.Instance.PlayerData != null)
+            {
+                Initialize(GameManager.Instance.PlayerData.character, 0);
+            }
         }
 
-        // Update is called once per frame
-        void Update()
+        public void Initialize(PlayerData.ECharacter character, int photonViewNum)
         {
-
+            characterImg.sprite = GameManager.Instance.InGameUIData.CharacterDatas[(int)character].PortraitSourceImg;
+            this.photonViewNum = photonViewNum;
         }
     }
 }
