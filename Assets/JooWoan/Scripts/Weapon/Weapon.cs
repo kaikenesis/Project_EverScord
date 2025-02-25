@@ -14,7 +14,6 @@ namespace EverScord.Weapons
     {
         private const float ANIM_TRANSITION = 0.25f;
 
-        [SerializeField] private GameObject aimPointPrefab;
         [SerializeField] private ParticleSystem shotEffect;
         [SerializeField] private BulletInfo bulletInfo;
         [SerializeField] public float bulletSpeed;
@@ -83,10 +82,9 @@ namespace EverScord.Weapons
                     continue;
                 
                 AimPoint = aimpoints[i].transform;
+                AimPoint.transform.position = GunPoint.transform.position + GunPoint.forward * WeaponRange;
                 return;
             }
-
-            AimPoint = Instantiate(aimPointPrefab).transform;
         }
 
         public void Shoot(CharacterControl shooter)
