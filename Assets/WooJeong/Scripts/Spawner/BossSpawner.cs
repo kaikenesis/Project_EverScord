@@ -1,10 +1,7 @@
-using ExitGames.Client.Photon;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+using EverScord.Effects;
 
 public class BossSpawner : MonoBehaviour
 {
@@ -18,10 +15,15 @@ public class BossSpawner : MonoBehaviour
     private GameObject mo;
     private PhotonView photonView;
 
-    private async void Awake()
+    private void Awake()
     {
         photonView = GetComponent<PhotonView>();
-        await ResourceManager.Instance.CreatePool(assetName, 1);
+        // await ResourceManager.Instance.CreatePool(assetName, 1);
+
+        GameObject bossPrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.Boss_ID);
+        mo = Instantiate(bossPrefab, transform.position, Quaternion.identity);
+        mo.SetActive(false);
+
         StartCoroutine(Spawn());
     }
 
@@ -36,7 +38,9 @@ public class BossSpawner : MonoBehaviour
             if (curTime > spawnTimer && spawnCount <= 0)
             {
                 Debug.Log("스폰");
-                mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
+
+                // mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
+                mo.SetActive(true);
 
                 PhotonView view = mo.GetComponent<PhotonView>();
 
@@ -60,7 +64,9 @@ public class BossSpawner : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
             return;
 
-        mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
+        // mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
+        mo.SetActive(true);
+
         PhotonView view = mo.GetComponent<PhotonView>();
         view.ViewID = viewID;
         Debug.Log("[client] 몬스터 viewID = " + view.ViewID);
