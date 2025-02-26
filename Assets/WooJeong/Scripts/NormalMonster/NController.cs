@@ -201,6 +201,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void Death()
     {
         photonView.RPC("SyncMonsterDeath", RpcTarget.Others);
+        ResourceManager.Instance.ReturnToPool(gameObject, GUID);
         GameManager.Instance.LevelController.IncreaseProgress();
     }
 
