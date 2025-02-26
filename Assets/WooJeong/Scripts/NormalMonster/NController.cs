@@ -34,6 +34,8 @@ public abstract class NController : MonoBehaviour, IEnemy
     
     public PhotonView PhotonView => photonView;
     private PhotonView photonView;
+    protected MonsterHealthBar monsterHealthBar;
+    protected GameObject healthBarObject;
 
     protected IState currentState;
     protected IState runState;
@@ -113,6 +115,25 @@ public abstract class NController : MonoBehaviour, IEnemy
                                         monsterData.AttackRangeZ2);
     }
 
+    private void Start()
+    {
+        SetHealthBar();
+    }
+
+    protected virtual void SetHealthBar()
+    {
+        if (healthBarObject != null)
+            return;
+
+        // 풀에서 체력바 얻기
+        healthBarObject = ResourceManager.Instance.GetFromPool("MonsterHealthBar", Vector3.zero, Quaternion.identity);
+        Transform canvas = GameObject.FindGameObjectWithTag("MonsterUI").transform;
+        healthBarObject.transform.parent = canvas;
+
+        monsterHealthBar = healthBarObject.GetComponent<MonsterHealthBar>();
+        monsterHealthBar.SetTarget(transform);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -152,6 +173,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         HP -= hp;
         if (HP <= 0)
             isDead = true;
+        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
         photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
     }
 
@@ -161,6 +183,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         HP = hp;
         if (HP <= 0)
             isDead = true;
+        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
     }
 
     public void StunMonster(float stunTime)
@@ -184,7 +207,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncMonsterDeath()
     {
-        isDead = false;
+        healthBarObject.SetActive(false);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
         GameManager.Instance.LevelController.IncreaseProgress();
     }
@@ -193,7 +216,11 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            isDead = false;
             HP = monsterData.HP;
+            if (monsterHealthBar == null)
+                SetHealthBar();
+            monsterHealthBar.UpdateHealth(HP, monsterData.HP);
             photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
             LastAttack = 0;
             WaitState();

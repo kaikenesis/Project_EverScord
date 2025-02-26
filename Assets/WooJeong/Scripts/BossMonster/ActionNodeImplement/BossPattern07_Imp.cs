@@ -10,8 +10,9 @@ public class BossPattern07_Imp : ActionNodeImplement
     //private float attackRadius = 100;
     private float attackLifeTime = 4;
     private float safeRange = 7.5f;
+    private float safeScale = 0.7f;
     private float curTime = 0;
-    private float attackSpan = 1f;
+    private float attackSpan = 0.1f;
     private Vector3 safePos = Vector3.zero;
     private float safeStartDistance = 4;
     private float randomRange = 10;
@@ -21,14 +22,15 @@ public class BossPattern07_Imp : ActionNodeImplement
         Debug.Log("Attack7 start");
         bossRPC.PlayAnimation("StandingAttack");
         safePos = transform.position + transform.forward * safeStartDistance;
+        bossRPC.SetPositionScaleP7_SafeZone(safePos, safeScale);
+        bossRPC.SetActivePattern7(true);
         yield return new WaitForSeconds(1f);
-        bossRPC.SetScaleProjectorP7_Safe(safeRange);
-        StartCoroutine(bossRPC.ProjectEnable(7, attackLifeTime));
         StartCoroutine(MoveSafePos(attackLifeTime));   
         StartCoroutine(Attack(attackLifeTime));
         yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1f);
         bossRPC.PlayAnimation("Idle");
         yield return new WaitForSeconds(4f);
+        bossRPC.SetActivePattern7(false);
         Debug.Log("Attack7 end");
         curTime = 0;
         isEnd = true;
@@ -59,7 +61,7 @@ public class BossPattern07_Imp : ActionNodeImplement
                     Debug.Log("p7 hit");
                 }
             }
-            bossRPC.ScalingProjectorP7_Danger();
+            //bossRPC.ScalingProjectorP7_Danger();
             yield return new WaitForSeconds(attackSpan);
         }
     }
@@ -73,7 +75,7 @@ public class BossPattern07_Imp : ActionNodeImplement
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             safePos = Vector3.Lerp(startPoint, endPoint, t / duration);
-            bossRPC.MoveProjectorP7_Safe(safePos);
+            bossRPC.MoveP7_SafeZone(safePos);
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }
