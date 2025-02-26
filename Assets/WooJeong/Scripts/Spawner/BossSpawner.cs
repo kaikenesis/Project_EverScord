@@ -7,7 +7,6 @@ public class BossSpawner : MonoBehaviour
 {
     [SerializeField] private float spawnTimer = 0f;
 
-    private string assetName = "Boss";
     private float curTime = 0;
     private int spawnCount = 0;
 
@@ -18,7 +17,6 @@ public class BossSpawner : MonoBehaviour
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
-        // await ResourceManager.Instance.CreatePool(assetName, 1);
 
         GameObject bossPrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.Boss_ID);
         mo = Instantiate(bossPrefab, transform.position, Quaternion.identity);

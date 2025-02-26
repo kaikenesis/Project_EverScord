@@ -9,8 +9,8 @@ public class BossPattern07_Imp : ActionNodeImplement
     private float attackDamage = 1;
     //private float attackRadius = 100;
     private float attackLifeTime = 4;
-    private float safeRange = 7.5f;
-    private float safeScale = 0.7f;
+    protected float safeRange = 7.5f;
+    protected float safeScale = 0.7f;
     private float curTime = 0;
     private float attackSpan = 0.1f;
     private Vector3 safePos = Vector3.zero;
@@ -53,7 +53,6 @@ public class BossPattern07_Imp : ActionNodeImplement
             {
                 float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
                 float distanceToSafe = Vector3.Distance(player.transform.position, safePos);
-                Debug.Log(distanceToSafe);
                 if (distanceToSafe > safeRange/2)
                 {
                     CharacterControl control = player.GetComponent<CharacterControl>();

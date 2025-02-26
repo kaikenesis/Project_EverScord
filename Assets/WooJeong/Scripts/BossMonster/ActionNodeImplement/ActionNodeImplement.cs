@@ -44,9 +44,12 @@ public abstract class ActionNodeImplement : MonoBehaviour
 
     public void LookPlayer()
     {
-        Vector3 dir = player.transform.position - transform.position;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 20);
-        transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
+        if (player != null)
+        {
+            Vector3 dir = player.transform.position - transform.position;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 20);
+            transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
+        }
     }
 
     public bool IsLookPlayer(float distance)

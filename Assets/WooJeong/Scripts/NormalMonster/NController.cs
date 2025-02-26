@@ -11,7 +11,8 @@ public abstract class NController : MonoBehaviour, IEnemy
 {
     [SerializeField] public NMonsterData monsterData;
 
-    public float HP = 0;
+    public float HP {  get; private set; }
+
     [HideInInspector] public Dictionary<string, float> clipDict = new();
     [HideInInspector] public int LastAttack = 0;
     [HideInInspector] public GameObject player;
@@ -170,20 +171,20 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float hp)
     {
-        HP -= hp;
-        if (HP <= 0)
+        this.HP -= hp;
+        if (this.HP <= 0)
             isDead = true;
-        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
-        photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
+        monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
+        photonView.RPC("SyncMonsterHP", RpcTarget.Others, this.HP);
     }
 
     [PunRPC]
     protected void SyncMonsterHP(float hp)
     {
-        HP = hp;
-        if (HP <= 0)
+        this.HP = hp;
+        if (this.HP <= 0)
             isDead = true;
-        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
+        monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
     }
 
     public void StunMonster(float stunTime)
@@ -232,14 +233,14 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void PlayAnimation(string animationName)
     {
-        Animator.CrossFade(animationName, 0.3f, -1, 0); // ���ÿ��� �ִϸ��̼� ����
-        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName); // �ٸ� Ŭ���̾�Ʈ���� �ִϸ��̼� ���� ��û
+        Animator.CrossFade(animationName, 0.3f, -1, 0);
+        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName);
     }
 
     [PunRPC]
     protected void SyncAnimation(string animationName)
     {
-        Animator.CrossFade(animationName, 0.3f, -1, 0); // ���� Ŭ���̾�Ʈ���� ������ �ִϸ��̼� ����
+        Animator.CrossFade(animationName, 0.3f, -1, 0);
     }
 
     public virtual IEnumerator ProjectAttackRange(int attackNum)

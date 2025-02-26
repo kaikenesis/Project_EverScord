@@ -47,7 +47,13 @@ public class BossMove_Imp : ActionNodeImplement
         navMeshAgent.enabled = true;
         while (true)
         {
-            navMeshAgent.destination = player.transform.position;
+            if (player != null)
+            {
+                navMeshAgent.destination = player.transform.position;
+            }
+            else
+                SetNearestPlayer();
+
             float distance = CalcDistance();
             LookPlayer();
             if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance))
@@ -80,16 +86,20 @@ public class BossMove_Imp : ActionNodeImplement
                 nearPlayer = player.gameObject;
             }
         }
-        player = nearPlayer;
+        if (nearPlayer != null) 
+            player = nearPlayer;
+        //else
     }
 
     private float CalcDistance()
     {
-        if (player == null)
-            Debug.Log("player null");
-        Vector3 heading = player.transform.position - transform.position;
-        float distance = heading.magnitude;
+        if (player != null)
+        {
+            Vector3 heading = player.transform.position - transform.position;
+            float distance = heading.magnitude;
+            return distance;
+        }
 
-        return distance;
+        return 0;
     }
 }

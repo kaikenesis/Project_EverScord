@@ -22,17 +22,12 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     [SerializeField] private GameObject fogPlane;
     [SerializeField] private GameObject safeZone;
+    private GameObject jumpEffectObject;
+    private ParticleSystem jumpEffect;
 
     private PhotonView photonView;
     private Animator animator;
     private BoxCollider hitBox;
-    //private DecalProjector projectorP7_Danger;
-    //private DecalProjector projectorP7_Safe;
-    //private GameObject projectorQuaterPivot;
-    //private GameObject projectorP7_GObject;
-    private float attackRadius6 = 10;
-    private float attackRadius7 = 80;
-    private float safeRadius7 = 7.5f;
 
     private BlinkEffect blinkEffect;
 
@@ -88,6 +83,24 @@ public class BossRPC : MonoBehaviour, IEnemy
             animator = GetComponent<Animator>();
         }
         animator.CrossFade(animationName, transitionDuration, -1, 0);
+    }
+
+    public void PlayJumpEffect()
+    {
+        photonView.RPC("SyncJumpEffect", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void SyncJumpEffect()
+    {
+        if (jumpEffect == null)
+        {
+            GameObject go = ResourceManager.Instance.GetAsset<GameObject>("BossJumpEffect");
+            jumpEffectObject = Instantiate(go);
+            jumpEffect = jumpEffectObject.GetComponent<ParticleSystem>();
+        }
+        jumpEffectObject.transform.position = transform.position;
+        jumpEffect.Play();
     }
 
     public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
@@ -247,26 +260,6 @@ public class BossRPC : MonoBehaviour, IEnemy
         safeZone.transform.position = pos;
     }
 
-    public void ScalingProjectorP7_Danger()
-    {
-        photonView.RPC("SyncScaleProjectorP7_Danger", RpcTarget.All);
-    }
-
-    [PunRPC]
-    private IEnumerator SyncScaleProjectorP7_Danger()
-    {        
-        //projectorP7_Danger.enabled = true;
-        Vector3 startSize = new Vector3(0, 0, 1);
-        Vector3 endSize = new Vector3(attackRadius7, attackRadius7, 1);
-
-        for (float t = 0f; t < 0.5f; t += Time.deltaTime)
-        {
-            //projectorP7_Danger.size = Vector3.Lerp(startSize, endSize, t / 0.5f);
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        //projectorP7_Danger.enabled = false;
-    }
-
     public void DecreaseHP(float hp)
     {
         Debug.Log("Boss Hit");
@@ -358,13 +351,14 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         hitBox.enabled = false;
         animator.speed = 0;
-        GameObject shield = ResourceManager.Instance.GetFromPool("P15_Effect", transform.position, Quaternion.identity);
+        GameObject go = ResourceManager.Instance.GetAsset<GameObject>("P15_Shield");
+        GameObject shield = Instantiate(go);
+        shield.transform.position = transform.position;
         photonView.RPC("SyncShield", RpcTarget.Others);
         yield return new WaitForSeconds(8f);
         BossShield bossShield = shield.GetComponent<BossShield>();
         if (bossShield.HP > 0)
         {
-            ScalingProjectorP7_Danger();
             foreach (var player in GameManager.Instance.playerPhotonViews)
             {
                 CharacterControl control = player.GetComponent<CharacterControl>();
@@ -372,7 +366,7 @@ public class BossRPC : MonoBehaviour, IEnemy
             }
         }
         animator.speed = 1;
-        ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
+        Destroy(shield);
         hitBox.enabled = true;
     }
 
@@ -381,10 +375,12 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         hitBox.enabled = false;
         animator.speed = 0;
-        GameObject shield = ResourceManager.Instance.GetFromPool("P15_Effect", transform.position, Quaternion.identity);
+        GameObject go = ResourceManager.Instance.GetAsset<GameObject>("P15_Shield");
+        GameObject shield = Instantiate(go);
+        shield.transform.position = transform.position;
         yield return new WaitForSeconds(8f);
         animator.speed = 1;
-        ResourceManager.Instance.ReturnToPool(shield, "P15_Effect");
+        Destroy(shield);
         hitBox.enabled = true;
     }
 
