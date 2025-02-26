@@ -46,11 +46,13 @@ public class BossSpawner : MonoBehaviour
                 mo.SetActive(true);
 
                 PhotonView view = mo.GetComponent<PhotonView>();
-
-                if (PhotonNetwork.AllocateViewID(view))
+                if(view.ViewID == 0)
                 {
-                    data = view.ViewID;
-                    photonView.RPC("SyncSpawn", RpcTarget.Others, data);
+                    if (PhotonNetwork.AllocateViewID(view))
+                    {
+                        data = view.ViewID;
+                        photonView.RPC("SyncSpawn", RpcTarget.Others, data);
+                    }
                 }
 
                 spawnCount++;

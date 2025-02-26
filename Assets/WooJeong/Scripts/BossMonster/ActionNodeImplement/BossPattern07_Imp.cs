@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BossPattern07_Imp : ActionNodeImplement
 {
-    private float attackDamage = 10;
+    private float attackDamage = 1;
     //private float attackRadius = 100;
     private float attackLifeTime = 4;
     private float safeRange = 7.5f;
@@ -61,7 +61,6 @@ public class BossPattern07_Imp : ActionNodeImplement
                     Debug.Log("p7 hit");
                 }
             }
-            //bossRPC.ScalingProjectorP7_Danger();
             yield return new WaitForSeconds(attackSpan);
         }
     }

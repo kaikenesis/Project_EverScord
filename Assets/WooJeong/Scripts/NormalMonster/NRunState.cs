@@ -46,7 +46,11 @@ public abstract class NRunState : MonoBehaviour, IState
                 yield break;
             }
 
-            navMeshAgent.destination = monsterController.player.transform.position;
+            if (monsterController.player != null)
+                navMeshAgent.destination = monsterController.player.transform.position;
+            else
+                monsterController.SetNearestPlayer();
+
             if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
             {
                 Exit();

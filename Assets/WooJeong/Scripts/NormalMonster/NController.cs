@@ -222,6 +222,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             HP = monsterData.HP;
             if (monsterHealthBar == null)
                 SetHealthBar();
+            healthBarObject.SetActive(true);
             monsterHealthBar.UpdateHealth(HP, monsterData.HP);
             photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
             LastAttack = 0;
@@ -330,14 +331,21 @@ public abstract class NController : MonoBehaviour, IEnemy
                 nearPlayer = player.gameObject;
             }
         }
-        player = nearPlayer;
+
+        if (nearPlayer != null)
+            player = nearPlayer;
+        //else
+            //isDead = true;
     }
 
     public void LookPlayer()
     {
-        Vector3 dir = player.transform.position - transform.position;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * monsterData.SmoothAngleSpeed);
-        transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
+        if (player != null)
+        {
+            Vector3 dir = player.transform.position - transform.position;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * monsterData.SmoothAngleSpeed);
+            transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
+        }
     }
 
     public bool IsLookPlayer(float distance)
@@ -383,12 +391,13 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public float CalcDistance()
     {
-        if (player == null)
-            Debug.Log("player null");
-        Vector3 heading = player.transform.position - transform.position;
-        float distance = heading.magnitude;
-
-        return distance;
+        if (player != null)
+        {
+            Vector3 heading = player.transform.position - transform.position;
+            float distance = heading.magnitude;
+            return distance;
+        }
+        return 0;
     }
 
     public IEnumerator CoolDown1()

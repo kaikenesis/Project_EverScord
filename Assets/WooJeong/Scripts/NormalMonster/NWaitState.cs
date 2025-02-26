@@ -39,6 +39,9 @@ public abstract class NWaitState : MonoBehaviour, IState
             return;
         }
 
+        if (monsterController.player == null)
+            monsterController.SetNearestPlayer();
+
         monsterController.LookPlayer();
     }
 

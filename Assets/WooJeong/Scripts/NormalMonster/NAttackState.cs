@@ -46,6 +46,9 @@ public abstract class NAttackState : MonoBehaviour, IState
 
             if (!isAttacking)
             {
+                if (monsterController.player == null)
+                    monsterController.SetNearestPlayer();
+
                 if (monsterController.CalcDistance() > monsterController.monsterData.StopDistance)
                 {
                     isAttacking = false;
