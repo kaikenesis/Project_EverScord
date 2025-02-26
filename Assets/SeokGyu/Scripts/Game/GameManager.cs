@@ -14,7 +14,7 @@ namespace EverScord
     {
         private static GameManager instance;
         public const float GROUND_HEIGHT = 0f;
-        private const float LOADSCREEN_DELAY = 1f;
+        private const float LOADSCREEN_DELAY = 3f;
 
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
@@ -32,6 +32,7 @@ namespace EverScord
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
         public static int CurrentStageIndex                     { get; private set; }
+        public static bool IsLoadingLevel                       { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
@@ -181,22 +182,25 @@ namespace EverScord
 
         private IEnumerator LoadLevelAsync()
         {
-            // Instance.LoadScreen.CoverScreen();
+            IsLoadingLevel = true;
 
-            // yield return new WaitForSeconds(2f);
+            LoadScreen.CoverScreen();
+            yield return new WaitForSeconds(1f);
 
-            // Camera.main.enabled = false;
-            // LoadScreen.Camera.enabled = true;
-            // LoadScreen.ImagesHub.SetActive(true);
-            // LoadScreen.ShowScreen();
+            Camera.main.enabled = false;
+
+            LoadScreen.ImageHub.SetActive(true);
+            LoadScreen.ShowScreen();
 
             PhotonNetwork.LoadLevel(Instance.stageInfos[CurrentStageIndex].stageName);
 
-            while (PhotonNetwork.LevelLoadingProgress < 0.95f)
+            while (PhotonNetwork.LevelLoadingProgress < 0.98f)
             {
-                //Debug.Log($"Loading: {(int)(PhotonNetwork.LevelLoadingProgress * 100)}%");
+                LoadScreen.SetProgress(PhotonNetwork.LevelLoadingProgress);
                 yield return null;
             }
+
+            LoadScreen.SetProgress(1f);
 
             Instance.StartCoroutine(ExitLoadingScreen());
         }
@@ -205,12 +209,13 @@ namespace EverScord
         {
             yield return waitLoadScreen;
 
-            // LoadScreen.CoverScreen();
-            // yield return new WaitForSeconds(3f);
+            LoadScreen.CoverScreen();
+            yield return new WaitForSeconds(3f);
 
-            // LoadScreen.ShowScreen();
-            // LoadScreen.Camera.enabled = false;
-            // LoadScreen.ImagesHub.SetActive(false);
+            LoadScreen.ShowScreen();
+            LoadScreen.ImageHub.SetActive(false);
+
+            IsLoadingLevel = false;
         }
     }
 }

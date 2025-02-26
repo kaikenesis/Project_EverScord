@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using EverScord.Character;
 using Photon.Pun;
 
@@ -8,20 +7,18 @@ namespace EverScord.UI
 {
     public class CharacterPodium : MonoBehaviour
     {
+        [SerializeField] private GameObject characterHub;
         [SerializeField] private LayerMask playerLayer;
-        [SerializeField] private Camera playerCam;
         [SerializeField] private float rotationSpeed;
         [field: SerializeField] public List<CharacterInfo> CharacterList { get; private set; }
 
         private Transform currentCharacter;
-        private Camera mainCam;
         private InputInfo playerInput;
 
         void Start()
         {
-            SetupMainCam();
             SetCharacterTransform();
-
+            HideCharacters();
             UIDisplayRoom.OnVisibleObject += HandleVisibleObject;
         }
 
@@ -32,7 +29,7 @@ namespace EverScord.UI
 
         private void HandleVisibleObject()
         {
-            SetPlayerCam(false);
+            ShowCharacters();
         }
 
         void Update()
@@ -44,17 +41,6 @@ namespace EverScord.UI
             RotatePlayer();
         }
 
-        private void SetupMainCam()
-        {
-            playerCam.enabled = false;
-
-            mainCam = Camera.main;
-            mainCam.cullingMask &= ~playerLayer;
-
-            var cameraData = mainCam.GetUniversalAdditionalCameraData();
-            cameraData.cameraStack.Add(playerCam);
-        }
-
         private void SetCharacterTransform()
         {
             if (CharacterList.Count == 0)
@@ -63,9 +49,14 @@ namespace EverScord.UI
             currentCharacter = CharacterList[0].Character;
         }
 
-        private void SetPlayerCam(bool state)
+        private void ShowCharacters()
         {
-            playerCam.enabled = !state;
+            characterHub.SetActive(true);
+        }
+
+        private void HideCharacters()
+        {
+            characterHub.SetActive(false);
         }
 
         private void RotatePlayer()

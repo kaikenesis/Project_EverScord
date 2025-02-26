@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections;
 using System;
 using UnityEngine;
 using Photon.Pun;
@@ -12,7 +11,6 @@ using EverScord.Effects;
 
 namespace EverScord.Character
 {
-
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         private const float SKIN_RATIO = 0.1f;
