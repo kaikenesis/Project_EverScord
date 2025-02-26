@@ -238,7 +238,13 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private void SyncFog(bool tf)
     {
-        fogPlane.SetActive(tf);
+        if(!tf)
+        {
+            fogPlane.GetComponent<FogPlane>().DownFog();
+        }
+        else
+            fogPlane.SetActive(tf);
+        
         safeZone.SetActive(tf);
         if (tf) 
             safeZone.GetComponent<ParticleSystem>().Play();
