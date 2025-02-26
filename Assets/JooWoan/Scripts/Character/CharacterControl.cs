@@ -260,6 +260,7 @@ namespace EverScord.Character
             for (int i = 0; i < hits.Length; i++)
             {
                 LayerMask hitLayerMask = 1 << hits[i].collider.gameObject.layer;
+                Debug.Log(hits[i].collider.gameObject.name);
 
                 if ((GameManager.EnemyLayer & hitLayerMask) != 0)
                 {
@@ -271,7 +272,6 @@ namespace EverScord.Character
                 {
                     hit = hits[i];
                     groundFlag = true;
-                    break;
                 }
             }
 
@@ -378,6 +378,13 @@ namespace EverScord.Character
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob, (int)CharacterType);
             }
+        }
+
+        private void SetPortraits()
+        {
+            // Debug.Log($"SetPortraits, {GameManager.Instance.playerPhotonViews.Count}");
+            if (PhotonNetwork.IsMasterClient && GameManager.Instance.playerPhotonViews.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                photonView.RPC(nameof(CreatePortrait), RpcTarget.All);
         }
 
         private void SetReviveCircle()
@@ -639,13 +646,6 @@ namespace EverScord.Character
         {
             GameManager.Instance.AddPlayerPhotonView(info.photonView);
             GameManager.Instance.InitControl(this);
-        }
-
-        private void SetPortraits()
-        {
-            Debug.Log($"SetPortraits, {GameManager.Instance.playerPhotonViews.Count}");
-            if (PhotonNetwork.IsMasterClient && GameManager.Instance.playerPhotonViews.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
-                photonView.RPC(nameof(CreatePortrait), RpcTarget.All);
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

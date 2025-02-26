@@ -181,14 +181,14 @@ namespace EverScord
 
         private IEnumerator LoadLevelAsync()
         {
-            Instance.LoadScreen.CoverScreen();
+            // Instance.LoadScreen.CoverScreen();
 
-            yield return new WaitForSeconds(2f);
+            // yield return new WaitForSeconds(2f);
 
-            Camera.main.enabled = false;
-            LoadScreen.Camera.enabled = true;
-            LoadScreen.ImagesHub.SetActive(true);
-            LoadScreen.ShowScreen();
+            // Camera.main.enabled = false;
+            // LoadScreen.Camera.enabled = true;
+            // LoadScreen.ImagesHub.SetActive(true);
+            // LoadScreen.ShowScreen();
 
             PhotonNetwork.LoadLevel(Instance.stageInfos[CurrentStageIndex].stageName);
 
@@ -205,12 +205,12 @@ namespace EverScord
         {
             yield return waitLoadScreen;
 
-            LoadScreen.CoverScreen();
-            yield return new WaitForSeconds(3f);
+            // LoadScreen.CoverScreen();
+            // yield return new WaitForSeconds(3f);
 
-            LoadScreen.ShowScreen();
-            LoadScreen.Camera.enabled = false;
-            LoadScreen.ImagesHub.SetActive(false);
+            // LoadScreen.ShowScreen();
+            // LoadScreen.Camera.enabled = false;
+            // LoadScreen.ImagesHub.SetActive(false);
         }
     }
 }
