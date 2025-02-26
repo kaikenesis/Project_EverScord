@@ -755,6 +755,7 @@ namespace EverScord.Character
             PlayerUIControl.ReviveCircleControl.SyncExitCircle();
         }
 
+        [PunRPC]
         private void CreatePortrait()
         {
             OnPhotonViewListUpdated?.Invoke();
