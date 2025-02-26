@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
@@ -131,6 +132,11 @@ namespace EverScord.Character
                 PlayerUIControl.gameObject.SetActive(false);
                 CameraControl.gameObject.SetActive(false);
             }
+            else
+            {
+                CharacterJob = GameManager.Instance.PlayerData.job;
+                CharacterType = GameManager.Instance.PlayerData.character;
+            }
 
             CameraControl.Init(PlayerTransform);
             blinkEffect = BlinkEffect.Create(this, hurtBlinkDuration, hurtBlinkIntensity, hurtColor);
@@ -140,6 +146,7 @@ namespace EverScord.Character
         {
             GameManager.Instance.InitControl(this);
             SetJobAndSkills();
+            SetPortraits();
         }
 
         void Update()
@@ -305,9 +312,6 @@ namespace EverScord.Character
 
             for (int i = 0; i < skillList.Count; i++)
             {
-                CharacterJob = GameManager.Instance.PlayerData.job;
-                CharacterType = GameManager.Instance.PlayerData.character;
-
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)
@@ -446,6 +450,11 @@ namespace EverScord.Character
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             GameManager.Instance.AddPlayerPhotonView(info.photonView);
+        }
+
+        private void SetPortraits()
+        {
+            Debug.Log($"SetPortraits, {GameManager.Instance.playerPhotonViews.Count}");
             if (PhotonNetwork.IsMasterClient && GameManager.Instance.playerPhotonViews.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
                 photonView.RPC(nameof(CreatePortrait), RpcTarget.All);
         }

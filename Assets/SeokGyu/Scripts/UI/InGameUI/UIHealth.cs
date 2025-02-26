@@ -14,6 +14,10 @@ namespace EverScord
                 UpdateFillAmount(value);
             }
         }
+
+        private void UpdateProgress(float value)
+        {
+            UpdateFillAmount(value);
+        }
     }
 }
-

@@ -6,7 +6,7 @@ namespace EverScord
     public class UIPortrait : MonoBehaviour
     {
         [SerializeField] private Image characterImg;
-        private int photonViewNum;
+        private int photonViewID;
 
         private void Awake()
         {
@@ -16,10 +16,25 @@ namespace EverScord
             }
         }
 
-        public void Initialize(PlayerData.ECharacter character, int photonViewNum)
+        public void Initialize(PlayerData.ECharacter character, int photonViewID)
         {
             characterImg.sprite = GameManager.Instance.InGameUIData.CharacterDatas[(int)character].PortraitSourceImg;
-            this.photonViewNum = photonViewNum;
+            this.photonViewID = photonViewID;
+        }
+
+        private void PortraitUpdated(int pvID, bool isDead)
+        {
+            if (photonViewID != pvID)
+                return;
+
+            if(isDead)
+            {
+                characterImg.color = new Color(0.4f, 0.4f, 0.4f, 1.0f);
+            }
+            else
+            {
+                characterImg.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            }
         }
     }
 }

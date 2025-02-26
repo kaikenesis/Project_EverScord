@@ -1,4 +1,4 @@
-using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,28 +12,58 @@ namespace EverScord
         [SerializeField] private Image panelImg;
         [SerializeField] private Image coverImg;
         [SerializeField] private Slot[] slotSources;
+        private int typeNum;
+        private bool bCooldown;
 
         public void Initialize(int type, Sprite skillSourceImg, Sprite btnSourceImg)
         {
+            typeNum = type;
             frameImg.gameObject.GetComponent<RectTransform>().sizeDelta = slotSources[type].ImgSize;
             frameImg.color = slotSources[type].FrameColor;
             frameImg.sprite = slotSources[type].FrameSourceImg;
             panelImg.sprite = slotSources[type].CoverSourceImg;
             coverImg.sprite = slotSources[type].CoverSourceImg;
+            coverImg.fillAmount = 0f;
 
             skillImg.sprite = skillSourceImg;
             btnImg.sprite = btnSourceImg;
         }
 
-        private void Update()
+        public void Update()
         {
-            
+            if(Input.GetKeyDown(KeyCode.Q) && typeNum == 0)
+            {
+                ShowCooldown(3f);
+            }
+            if(Input.GetKeyDown(KeyCode.R) && typeNum == 1)
+            {
+                ShowCooldown(7f);
+            }
         }
 
         public void ShowCooldown(float duration)
         {
-            coverImg.fillAmount = 1;
-            coverImg.DOFillAmount(0.0f, duration);
+            if (bCooldown == true)
+                return;
+
+            coverImg.fillAmount = 1f;
+            bCooldown = true;
+            StartCoroutine(UpdateCooldown(duration));
+        }
+
+        private IEnumerator UpdateCooldown(float duration)
+        {
+            float time = coverImg.fillAmount * duration;
+            while(bCooldown)
+            {
+                time -= Time.deltaTime;
+                coverImg.fillAmount = time / duration;
+                if (time <= 0.0f)
+                    bCooldown = false;
+
+                Debug.Log(time);
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
         }
 
         [System.Serializable]

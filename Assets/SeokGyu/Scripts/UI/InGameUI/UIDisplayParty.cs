@@ -8,6 +8,7 @@ namespace EverScord
     public class UIDisplayParty : MonoBehaviour
     {
         [SerializeField] private GameObject portrait;
+        private List<GameObject> portraits = new List<GameObject>();
 
         private void Awake()
         {
@@ -26,14 +27,19 @@ namespace EverScord
 
             for (int i = 1; i < list.Count; i++)
             {
-                GameObject obj = Instantiate(portrait, transform);
                 Debug.Log($"{list[i].gameObject} : {list[i].ViewID}");
-                CharacterControl characterControl = list[i].gameObject.GetComponent<CharacterControl>();
 
-                Debug.Log($"{characterControl.CharacterType} , {characterControl.CharacterJob}");
-                obj.GetComponent<UIPortrait>().Initialize(characterControl.CharacterType);
-                obj.GetComponentInChildren<UIJobIcon>().Initialize(characterControl.CharacterJob);
-                
+                if (portraits.Count < list.Count - 1)
+                {
+                    GameObject obj = Instantiate(portrait, transform);
+                    portraits.Add(obj);
+
+                    CharacterControl characterControl = list[i].gameObject.GetComponent<CharacterControl>();
+                    Debug.Log($"{characterControl.CharacterType} , {characterControl.CharacterJob}");
+
+                    obj.GetComponent<UIPortrait>().Initialize(characterControl.CharacterType, list[i].ViewID);
+                    obj.GetComponentInChildren<UIJobIcon>().Initialize(characterControl.CharacterJob, list[i].ViewID);
+                }
             }
         }
     }
