@@ -926,6 +926,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1648633784}
     - target: {fileID: 788549286250761825, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: gameSettingButtons.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 788549286250761825, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
       propertyPath: masterOnlyButtons.Array.data[0]
       value: 
       objectReference: {fileID: 1605833605}
@@ -961,6 +965,10 @@ PrefabInstance:
       propertyPath: gameSettingButtons.Array.data[4]
       value: 
       objectReference: {fileID: 635771395}
+    - target: {fileID: 788549286250761825, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: gameSettingButtons.Array.data[5]
+      value: 
+      objectReference: {fileID: 1763400907957976792}
     - target: {fileID: 4377079610928716414, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3618,6 +3626,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f284786c3c6acc741834f6817f3bc87b, type: 3}
+--- !u!114 &1763400907957976792 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3439812989404162162, guid: f284786c3c6acc741834f6817f3bc87b, type: 3}
+  m_PrefabInstance: {fileID: 1763400907957976791}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1821011985741101928
 PrefabInstance:
   m_ObjectHideFlags: 0
