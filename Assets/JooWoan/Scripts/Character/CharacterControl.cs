@@ -122,7 +122,6 @@ namespace EverScord.Character
             RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
             RigControl.SetAimWeight(false);
 
-            CameraControl.Cam.tag = "MainCamera";
             if (!photonView.IsMine)
             {
                 PlayerUIControl.gameObject.SetActive(false);

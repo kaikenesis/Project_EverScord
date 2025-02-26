@@ -22,7 +22,7 @@ public class BossPattern13_Imp : ActionNodeImplement
         bossRPC.PlayAnimation("StandingAttack");
         safePos = transform.position + transform.forward * safeStartDistance;
         yield return new WaitForSeconds(1f);
-        bossRPC.SetScaleProjectorP7_Safe(safeRange);
+        //bossRPC.SetPositionScaleP7_SafeZone(safeRange);
         StartCoroutine(bossRPC.ProjectEnable(7, attackLifeTime));
         StartCoroutine(MoveSafePos(attackLifeTime));
         StartCoroutine(Attack(attackLifeTime));
@@ -73,7 +73,7 @@ public class BossPattern13_Imp : ActionNodeImplement
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             safePos = Vector3.Lerp(startPoint, endPoint, t / duration);
-            bossRPC.MoveProjectorP7_Safe(safePos);
+            bossRPC.MoveP7_SafeZone(safePos);
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }

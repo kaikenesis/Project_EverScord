@@ -35,6 +35,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public PhotonView PhotonView => photonView;
     private PhotonView photonView;
     protected MonsterHealthBar monsterHealthBar;
+    protected GameObject healthBarObject;
 
     protected IState currentState;
     protected IState runState;
@@ -121,15 +122,15 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     protected virtual void SetHealthBar()
     {
-        if (monsterHealthBar != null)
+        if (healthBarObject != null)
             return;
 
         // 풀에서 체력바 얻기
-        GameObject mhb = ResourceManager.Instance.GetFromPool("MonsterHealthBar", Vector3.zero, Quaternion.identity);
+        healthBarObject = ResourceManager.Instance.GetFromPool("MonsterHealthBar", Vector3.zero, Quaternion.identity);
         Transform canvas = GameObject.FindGameObjectWithTag("MonsterUI").transform;
-        mhb.transform.parent = canvas;
+        healthBarObject.transform.parent = canvas;
 
-        monsterHealthBar = mhb.GetComponent<MonsterHealthBar>();
+        monsterHealthBar = healthBarObject.GetComponent<MonsterHealthBar>();
         monsterHealthBar.SetTarget(transform);
     }
 
@@ -180,6 +181,8 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void SyncMonsterHP(float hp)
     {
         HP = hp;
+        if (HP <= 0)
+            isDead = true;
         monsterHealthBar.UpdateHealth(HP, monsterData.HP);
     }
 
@@ -203,6 +206,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncMonsterDeath()
     {
+        healthBarObject.SetActive(false);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 

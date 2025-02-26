@@ -14,7 +14,8 @@ public class MonsterHealthBar : MonoBehaviour
     {
         if (!target) return;
         transform.position = target.position + offset;
-        transform.rotation = Camera.main.transform.rotation;
+        if (Camera.main != null)
+            transform.rotation = Camera.main.transform.rotation;
     }
 
     public void SetTarget(Transform newTarget)

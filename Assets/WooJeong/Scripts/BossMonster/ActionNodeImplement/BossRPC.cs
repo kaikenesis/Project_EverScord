@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static UnityEditor.PlayerSettings;
 
 public class BossRPC : MonoBehaviour, IEnemy
 {
@@ -19,13 +20,16 @@ public class BossRPC : MonoBehaviour, IEnemy
     [SerializeField] private GameObject projectorObj_Pattern5;
     private SRPArcRegionProjector projectorPattern5;
 
+    [SerializeField] private GameObject fogPlane;
+    [SerializeField] private GameObject safeZone;
+
     private PhotonView photonView;
     private Animator animator;
     private BoxCollider hitBox;
-    private DecalProjector projectorP7_Danger;
-    private DecalProjector projectorP7_Safe;
-    private GameObject projectorQuaterPivot;
-    private GameObject projectorP7_GObject;
+    //private DecalProjector projectorP7_Danger;
+    //private DecalProjector projectorP7_Safe;
+    //private GameObject projectorQuaterPivot;
+    //private GameObject projectorP7_GObject;
     private float attackRadius6 = 10;
     private float attackRadius7 = 80;
     private float safeRadius7 = 7.5f;
@@ -54,30 +58,30 @@ public class BossRPC : MonoBehaviour, IEnemy
         projectorObj_Pattern5.SetActive(false);
 
         // projector for pattern 7
-        GameObject projectorForPatter7 = new GameObject();
-        projectorForPatter7.transform.parent = transform;
-        projectorForPatter7.transform.localPosition = Vector3.zero;
-        projectorForPatter7.name = "projectorForPatter7";
+        //GameObject projectorForPatter7 = new GameObject();
+        //projectorForPatter7.transform.parent = transform;
+        //projectorForPatter7.transform.localPosition = Vector3.zero;
+        //projectorForPatter7.name = "projectorForPatter7";
 
-        projectorP7_GObject = new GameObject();
-        projectorP7_GObject.transform.parent = projectorForPatter7.transform;
-        projectorP7_GObject.transform.localPosition = Vector3.zero;
-        projectorP7_GObject.name = "projectorP7_SafeGObject";
+        //projectorP7_GObject = new GameObject();
+        //projectorP7_GObject.transform.parent = projectorForPatter7.transform;
+        //projectorP7_GObject.transform.localPosition = Vector3.zero;
+        //projectorP7_GObject.name = "projectorP7_SafeGObject";
 
-        projectorP7_Danger = projectorForPatter7.AddComponent<DecalProjector>();
-        projectorP7_Danger.renderingLayerMask = 2;
-        projectorP7_Danger.size = new Vector3(0, 0, 1);
-        projectorP7_Danger.pivot = new Vector3(0, 0, 0);
-        projectorP7_Danger.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
-        projectorP7_Danger.enabled = false;
+        //projectorP7_Danger = projectorForPatter7.AddComponent<DecalProjector>();
+        //projectorP7_Danger.renderingLayerMask = 2;
+        //projectorP7_Danger.size = new Vector3(0, 0, 1);
+        //projectorP7_Danger.pivot = new Vector3(0, 0, 0);
+        //projectorP7_Danger.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
+        //projectorP7_Danger.enabled = false;
 
-        projectorP7_Safe = projectorP7_GObject.AddComponent<DecalProjector>();
-        projectorP7_Safe.renderingLayerMask = 2;
-        projectorP7_Safe.size = new Vector3(safeRadius7, safeRadius7, 1);
-        projectorP7_Safe.material = ResourceManager.Instance.GetAsset<Material>("DecalGreenCircle");
-        projectorP7_Safe.enabled = false;
+        //projectorP7_Safe = projectorP7_GObject.AddComponent<DecalProjector>();
+        //projectorP7_Safe.renderingLayerMask = 2;
+        //projectorP7_Safe.size = new Vector3(safeRadius7, safeRadius7, 1);
+        //projectorP7_Safe.material = ResourceManager.Instance.GetAsset<Material>("DecalGreenCircle");
+        //projectorP7_Safe.enabled = false;
 
-        projectorForPatter7.transform.Rotate(new Vector3(90, 0, 0));
+        //projectorForPatter7.transform.Rotate(new Vector3(90, 0, 0));
     }
 
     public void PlayAnimation(string animationName)
@@ -205,12 +209,6 @@ public class BossRPC : MonoBehaviour, IEnemy
                     StartCoroutine(FillAmountProjector(patternNum, projectTime));
                     break;
                 }
-            case 7:
-                {
-                    projectorP7_Danger.enabled = true;
-                    projectorP7_Safe.enabled = true;
-                    break;
-                }
         }
     }
 
@@ -229,35 +227,44 @@ public class BossRPC : MonoBehaviour, IEnemy
                     projectorObj_Pattern5.SetActive(false);
                     break;
                 }
-            case 7:
-                {
-                    projectorP7_Danger.enabled = false;
-                    projectorP7_Safe.enabled = false;
-                    break;
-                }
         }
     }
 
-    public void SetScaleProjectorP7_Safe(float size)
+    public void SetActivePattern7(bool tf)
     {
-        photonView.RPC("SyncScaleProjectorP7_Safe", RpcTarget.All, size);
+        photonView.RPC("SyncFog", RpcTarget.All, tf);
     }
 
     [PunRPC]
-    private void SyncScaleProjectorP7_Safe(float size)
+    private void SyncFog(bool tf)
     {
-        projectorP7_Safe.size = new Vector3(size, size, 1);
+        fogPlane.SetActive(tf);
+        safeZone.SetActive(tf);
+        if (tf) 
+            safeZone.GetComponent<ParticleSystem>().Play();
     }
 
-    public void MoveProjectorP7_Safe(Vector3 pos)
+    public void SetPositionScaleP7_SafeZone(Vector3 pos, float size)
     {
-        photonView.RPC("SyncProjectorP7_SafePosition", RpcTarget.All, pos);
+        photonView.RPC("SyncPositionScaleP7_SafeZone", RpcTarget.All, pos, size);
     }
 
     [PunRPC]
-    private void SyncProjectorP7_SafePosition(Vector3 pos)
+    private void SyncPositionScaleP7_SafeZone(Vector3 pos, float size)
     {
-        projectorP7_Safe.transform.position = pos;
+        safeZone.transform.position = pos;
+        safeZone.transform.localScale = new Vector3(size, 1, size);
+    }
+
+    public void MoveP7_SafeZone(Vector3 pos)
+    {
+        photonView.RPC("SyncP7_SafePosition", RpcTarget.All, pos);
+    }
+
+    [PunRPC]
+    private void SyncP7_SafePosition(Vector3 pos)
+    {
+        safeZone.transform.position = pos;
     }
 
     public void ScalingProjectorP7_Danger()
@@ -268,16 +275,16 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private IEnumerator SyncScaleProjectorP7_Danger()
     {        
-        projectorP7_Danger.enabled = true;
+        //projectorP7_Danger.enabled = true;
         Vector3 startSize = new Vector3(0, 0, 1);
         Vector3 endSize = new Vector3(attackRadius7, attackRadius7, 1);
 
         for (float t = 0f; t < 0.5f; t += Time.deltaTime)
         {
-            projectorP7_Danger.size = Vector3.Lerp(startSize, endSize, t / 0.5f);
+            //projectorP7_Danger.size = Vector3.Lerp(startSize, endSize, t / 0.5f);
             yield return new WaitForSeconds(Time.deltaTime);
         }
-        projectorP7_Danger.enabled = false;
+        //projectorP7_Danger.enabled = false;
     }
 
     public void DecreaseHP(float hp)
