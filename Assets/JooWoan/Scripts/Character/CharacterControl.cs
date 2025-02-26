@@ -82,6 +82,8 @@ namespace EverScord.Character
         private LayerMask groundAndEnemyLayer;
 
         public static Action OnPhotonViewListUpdated = delegate { };
+        public static Action<int, bool> OnCheckAlive = delegate { };
+        public static Action<float> OnHealthUpdated = delegate { };
 
         public float CurrentHealth
         {
@@ -170,6 +172,8 @@ namespace EverScord.Character
             SetReviveCircle();
             SetEffects();
             SetPortraits();
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
+            OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
         }
 
         void Update()
@@ -525,6 +529,8 @@ namespace EverScord.Character
 
             OutlineControl.SetCharacterOutline(this, true);
 
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
+
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
             PlayerUIControl.SetReviveCircle(true);
@@ -559,6 +565,10 @@ namespace EverScord.Character
 
             SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
             SetState(SetCharState.REMOVE, CharState.DEATH);
+
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
+            if(photonView.IsMine)
+                OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
         }
 
         private void PlayHitEffects()
@@ -723,6 +733,9 @@ namespace EverScord.Character
         private void SyncHealth(float health, bool isIncreasing)
         {
             CurrentHealth = health;
+
+            if (photonView.IsMine)
+                OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
 
             if (!isIncreasing)
                 onDecreaseHealth?.Invoke();

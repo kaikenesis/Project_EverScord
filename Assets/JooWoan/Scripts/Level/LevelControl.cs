@@ -36,7 +36,12 @@ namespace EverScord
 
             maxProgress = DEFAULT_MAX_PROGRESS;
         }
-        
+
+        private void Start()
+        {
+            OnProgressUpdated?.Invoke(progress / maxProgress);
+        }
+
         void Update()
         {
             if (countdownCoroutine == null)

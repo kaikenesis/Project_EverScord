@@ -13,12 +13,12 @@ namespace EverScord
 
         private void Awake()
         {
-            bStop = true;
-            StartCoroutine(UpdateTimer());
+            StartTimer();
         }
 
         private void StartTimer()
         {
+            bStop = true;
             StartCoroutine(UpdateTimer());
         }
 

@@ -176,6 +176,7 @@ namespace EverScord
 
         private static IEnumerator LoadLevelAsync()
         {
+            Debug.Log("LoadLevelAsync _ Test");
             PhotonNetwork.LoadLevel(Instance.stageInfos[CurrentStageIndex].stageName);
 
             while (PhotonNetwork.LevelLoadingProgress < 0.95f)
