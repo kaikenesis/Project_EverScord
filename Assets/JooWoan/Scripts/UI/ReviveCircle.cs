@@ -29,10 +29,10 @@ namespace EverScord.UI
             initialRotation = transform.localRotation;
         }
 
-        public void Init(Transform circleOwner, int viewID)
+        public void Init(int viewID)
         {
-            this.circleOwner = circleOwner;
             reviveTarget = GameManager.Instance.PlayerDict[viewID];
+            circleOwner = reviveTarget.PlayerTransform;
 
             cam = CharacterCamera.CurrentClientCam;
             canvas.worldCamera = cam;
@@ -41,9 +41,7 @@ namespace EverScord.UI
         void OnEnable()
         {
             ResetCircle();
-
-            DOTween.Rewind(ConstStrings.TWEEN_SHOW_REVIVECIRCLE);
-            DOTween.Play(ConstStrings.TWEEN_SHOW_REVIVECIRCLE);
+            FadeIn();
         }
 
         void OnDisable()
@@ -82,6 +80,21 @@ namespace EverScord.UI
             revivingPeople--;
         }
 
+        private void FadeIn()
+        {
+            canvasGroup.DOFade(1f, 1f)
+                .SetDelay(0f)
+                .SetEase(Ease.OutQuad);
+        }
+
+        private void FadeOut()
+        {
+            canvasGroup.DOFade(0f, 1f)
+                .SetDelay(0f)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() => gameObject.SetActive(false));
+        }
+
         private void FollowPlayer()
         {
             transform.position = new Vector3(circleOwner.transform.position.x, transform.position.y, circleOwner.transform.position.z);
@@ -109,7 +122,7 @@ namespace EverScord.UI
                 if (PhotonNetwork.IsConnected)
                 {
                     PhotonView photonView = reviveTarget.CharacterPhotonView;
-                    photonView.RPC(nameof(reviveTarget.SyncExitCircle), RpcTarget.Others);
+                    photonView.RPC(nameof(reviveTarget.SyncExitCircle), RpcTarget.Others, photonView.ViewID);
                 }
             }
         }
@@ -137,8 +150,7 @@ namespace EverScord.UI
             revivingPeople = 0;
             reviveCollider.isTrigger = false;
 
-            DOTween.Rewind(ConstStrings.TWEEN_HIDE_REVIVECIRCLE);
-            DOTween.Play(ConstStrings.TWEEN_HIDE_REVIVECIRCLE);
+            FadeOut();
 
             reviveTarget.StartCoroutine(reviveTarget.HandleRevival());
         }

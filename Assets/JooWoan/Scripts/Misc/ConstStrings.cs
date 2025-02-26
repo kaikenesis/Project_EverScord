@@ -27,8 +27,6 @@ namespace EverScord
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
         public const string TWEEN_AMMORELOAD = "AmmoReload";
-        public const string TWEEN_HIDE_REVIVECIRCLE = "HideReviveCircle";
-        public const string TWEEN_SHOW_REVIVECIRCLE = "ShowReviveCircle";
         public const string TWEEN_OPEN_PORTAL = "OpenPortal";
         public const string TWEEN_SHOW_SCREEN = "ShowScreen";
         public const string TWEEN_COVER_SCREEN = "CoverScreen";

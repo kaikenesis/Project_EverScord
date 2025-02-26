@@ -260,7 +260,6 @@ namespace EverScord.Character
             for (int i = 0; i < hits.Length; i++)
             {
                 LayerMask hitLayerMask = 1 << hits[i].collider.gameObject.layer;
-                Debug.Log(hits[i].collider.gameObject.name);
 
                 if ((GameManager.EnemyLayer & hitLayerMask) != 0)
                 {
@@ -389,11 +388,13 @@ namespace EverScord.Character
 
         private void SetReviveCircle()
         {
-            foreach (var kv in GameManager.Instance.PlayerDict)
-            {
-                CharacterControl player = kv.Value;
-                player.PlayerUIControl.InitReviveCircle(player.PlayerTransform, player.CharacterPhotonView.ViewID);
-            }
+            if (!photonView.IsMine)
+                return;
+            
+            PlayerUIControl.InitReviveCircle(CharacterPhotonView.ViewID);
+
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncInitReviveCircle), RpcTarget.Others, CharacterPhotonView.ViewID);
         }
 
         private void SetEffects()
@@ -536,7 +537,7 @@ namespace EverScord.Character
 
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
-            PlayerUIControl.SetReviveCircle(true);
+            PlayerUIControl.EnableReviveCircle(true);
             
             if (PhotonNetwork.IsConnected && photonView.IsMine)
                 photonView.RPC(nameof(SyncReviveCircle), RpcTarget.Others, true);
@@ -554,7 +555,7 @@ namespace EverScord.Character
             CurrentHealth = maxHealth;
 
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);
-            PlayerUIControl.SetReviveCircle(false);
+            PlayerUIControl.EnableReviveCircle(false);
 
             OutlineControl.SetCharacterOutline(this, false);
             
@@ -748,14 +749,26 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncReviveCircle(bool state)
+        private void SyncInitReviveCircle(int viewID)
         {
-            PlayerUIControl.SetReviveCircle(state);
+            if (photonView.ViewID != viewID)
+                return;
+
+            PlayerUIControl.InitReviveCircle(CharacterPhotonView.ViewID);
         }
 
         [PunRPC]
-        public void SyncExitCircle()
+        private void SyncReviveCircle(bool state)
         {
+            PlayerUIControl.EnableReviveCircle(state);
+        }
+
+        [PunRPC]
+        public void SyncExitCircle(int viewID)
+        {
+            if (photonView.ViewID != viewID)
+                return;
+            
             PlayerUIControl.ReviveCircleControl.SyncExitCircle();
         }
 
