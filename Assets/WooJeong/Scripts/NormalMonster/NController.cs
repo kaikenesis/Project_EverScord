@@ -315,9 +315,14 @@ public abstract class NController : MonoBehaviour, IEnemy
         float nearest = Mathf.Infinity;
         GameObject nearPlayer = null;
 
-        foreach (var player in GameManager.Instance.playerPhotonViews)
+        foreach (var kv in GameManager.Instance.PlayerDict)
         {
-            float cur = (player.transform.position - transform.position).magnitude;
+            CharacterControl player = kv.Value;
+
+            if(player.IsDead)
+                continue;
+
+            float cur = (player.PlayerTransform.position - transform.position).magnitude;
             if (cur < nearest)
             {
                 nearest = cur;

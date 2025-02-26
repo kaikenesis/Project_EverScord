@@ -1,4 +1,5 @@
 using EverScord;
+using EverScord.Character;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -65,14 +66,14 @@ public class BossMove_Imp : ActionNodeImplement
         float nearest = Mathf.Infinity;
         GameObject nearPlayer = null;
 
-        if(GameManager.Instance.playerPhotonViews.Count == 0)
+        foreach (var kv in GameManager.Instance.PlayerDict)
         {
-            player = null;
-            return;
-        }
-        foreach (var player in GameManager.Instance.playerPhotonViews)
-        {
-            float cur = (player.transform.position - transform.position).magnitude;
+            CharacterControl player = kv.Value;
+
+            if (player.IsDead)
+                continue;
+
+            float cur = (player.PlayerTransform.position - transform.position).magnitude;
             if (cur < nearest)
             {
                 nearest = cur;
