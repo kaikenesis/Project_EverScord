@@ -117,7 +117,7 @@ namespace EverScord
 
         private void HandleChangeUserData()
         {
-            pv.RPC("SetLevel", RpcTarget.Others, GameManager.Instance.PlayerData.difficulty);
+            pv.RPC(nameof(SetLevel), RpcTarget.Others, GameManager.Instance.PlayerData.difficulty);
             SetPlayerRole();
             Debug.Log($"nickName : {PhotonNetwork.NickName}, Job : {GameManager.Instance.PlayerData.job}, Level : {GameManager.Instance.PlayerData.difficulty}");
         }
@@ -126,37 +126,35 @@ namespace EverScord
         {
             switch(GameManager.Instance.PlayerData.difficulty)
             {
-                case PlayerData.EDifficulty.Story:
+                case EDifficulty.Story:
                     {
                         OnMatchSoloPlay?.Invoke();
                     }
                     break;
-                case PlayerData.EDifficulty.Normal:
+                case EDifficulty.Normal:
                     {
-                        OnMatchMultiPlay?.Invoke();
-                        //if (IsCanStart())
-                        //{
-                        //    Debug.Log("You Can Start Game");
-                            
-                        //}
-                        //else
-                        //{
-                        //    Debug.Log("Cannot Start Game");
-                        //}
+                        if (IsCanStart())
+                        {
+                            Debug.Log("You Can Start Game");
+                            OnMatchMultiPlay?.Invoke();
+                        }
+                        else
+                        {
+                            Debug.Log("Cannot Start Game");
+                        }
                     }
                     break;
-                case PlayerData.EDifficulty.Hard:
+                case EDifficulty.Hard:
                     {
-                        OnMatchMultiPlay?.Invoke();
-                        //if (IsCanStart())
-                        //{
-                        //    Debug.Log("You Can Start Game");
-                            
-                        //}
-                        //else
-                        //{
-                        //    Debug.Log("Cannot Start Game");
-                        //}
+                        if (IsCanStart())
+                        {
+                            Debug.Log("You Can Start Game");
+                            OnMatchMultiPlay?.Invoke();
+                        }
+                        else
+                        {
+                            Debug.Log("Cannot Start Game");
+                        }
                     }
                     break;
             }
@@ -178,7 +176,7 @@ namespace EverScord
         {
             PhotonNetwork.NickName = name;
 
-            pv.RPC("UpdateRoom", RpcTarget.All);
+            pv.RPC(nameof(UpdateRoom), RpcTarget.All);
         }
         #endregion // Handle Methods
 
@@ -211,7 +209,7 @@ namespace EverScord
             {
                 {"DEALER",0 },
                 {"HEALER",0 },
-                {"LEVEL", PlayerData.EDifficulty.Normal }
+                {"LEVEL", EDifficulty.Normal }
             };
 
             RoomOptions ro = new RoomOptions();
@@ -247,20 +245,20 @@ namespace EverScord
             PlayerData data = GameManager.Instance.PlayerData;
             switch(data.job)
             {
-                case PlayerData.EJob.Dealer:
+                case EJob.Dealer:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "DEALER" } });
                     break;
-                case PlayerData.EJob.Healer:
+                case EJob.Healer:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "HEALER" } });
                     break;
             }
 
             switch(data.difficulty)
             {
-                case PlayerData.EDifficulty.Normal:
+                case EDifficulty.Normal:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "NORMAL" } });
                     break;
-                case PlayerData.EDifficulty.Hard:
+                case EDifficulty.Hard:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "HARD" } });
                     break;
             }
@@ -444,9 +442,9 @@ namespace EverScord
 
             int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
             int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
-            PlayerData.EDifficulty level = (EDifficulty)PhotonNetwork.CurrentRoom.CustomProperties["LEVEL"];
+            EDifficulty difficulty = (EDifficulty)PhotonNetwork.CurrentRoom.CustomProperties["LEVEL"];
 
-            Debug.Log($"dealer : {curDealer}, healer : {curHealer}, level : ${level}");
+            Debug.Log($"dealer : {curDealer}, healer : {curHealer}, level : ${difficulty}");
         }
         #endregion
     }

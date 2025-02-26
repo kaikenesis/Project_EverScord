@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections;
 using System;
@@ -11,6 +12,7 @@ using EverScord.Effects;
 
 namespace EverScord.Character
 {
+
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         private const float SKIN_RATIO = 0.1f;
@@ -56,6 +58,7 @@ namespace EverScord.Character
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
         public SkillAction CurrentSkillAction                           { get; private set; }
+        public PlayerData.ECharacter CharacterType                      { get; private set; }
         public PlayerData.EJob CharacterJob                             { get; private set; }
         public CharState State                                          { get; private set; }
 
@@ -77,6 +80,8 @@ namespace EverScord.Character
         private Vector3 remoteMouseRayHitPos;
         private Action onDecreaseHealth;
         private LayerMask groundAndEnemyLayer;
+
+        public static Action OnPhotonViewListUpdated = delegate { };
 
         public float CurrentHealth
         {
@@ -143,7 +148,11 @@ namespace EverScord.Character
                 CameraControl.gameObject.SetActive(false);
             }
             else
+            {
                 PlayerUIControl.Init();
+                CharacterJob = GameManager.Instance.PlayerData.job;
+                CharacterType = GameManager.Instance.PlayerData.character;
+            }
 
             CameraControl.Init(PlayerTransform, photonView.IsMine);
 
@@ -160,6 +169,7 @@ namespace EverScord.Character
             SetJobAndSkills();
             SetReviveCircle();
             SetEffects();
+            SetPortraits();
         }
 
         void Update()
@@ -366,7 +376,7 @@ namespace EverScord.Character
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)
-                    photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob);
+                    photonView.RPC(nameof(SyncJobAndSkills), RpcTarget.Others, i, (int)CharacterJob, (int)CharacterType);
             }
         }
 
@@ -627,6 +637,13 @@ namespace EverScord.Character
             GameManager.Instance.InitControl(this);
         }
 
+        private void SetPortraits()
+        {
+            Debug.Log($"SetPortraits, {GameManager.Instance.playerPhotonViews.Count}");
+            if (PhotonNetwork.IsMasterClient && GameManager.Instance.playerPhotonViews.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                photonView.RPC(nameof(CreatePortrait), RpcTarget.All);
+        }
+
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             if (stream.IsWriting)
@@ -640,9 +657,10 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncJobAndSkills(int index, int characterJob)
+        private void SyncJobAndSkills(int index, int characterJob, int characterType)
         {
             CharacterJob = (PlayerData.EJob)characterJob;
+            CharacterType = (PlayerData.ECharacter)characterType;
             skillList[index].Init(this, index, (PlayerData.EJob)characterJob);
         }
 
@@ -731,11 +749,15 @@ namespace EverScord.Character
             PlayerUIControl.SetReviveCircle(state);
         }
 
-        
         [PunRPC]
         public void SyncExitCircle()
         {
             PlayerUIControl.ReviveCircleControl.SyncExitCircle();
+        }
+
+        private void CreatePortrait()
+        {
+            OnPhotonViewListUpdated?.Invoke();
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

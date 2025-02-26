@@ -114,6 +114,7 @@ namespace EverScord
 
             CurrentStageIndex = -1;
             PhotonNetwork.AutomaticallySyncScene = true;
+            photonData.Initialize();
         }
 
         public void UpdateUserName(string newName)

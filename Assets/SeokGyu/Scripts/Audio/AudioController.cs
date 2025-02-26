@@ -10,38 +10,12 @@ namespace EverScord
         SFX
     }
 
-    public class AudioManager : MonoBehaviour
+    public class AudioController : MonoBehaviour
     {
-        private static AudioManager instance;
-        public static AudioManager Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new AudioManager();
-                }
-                return instance;
-            }
-        }
-
         [SerializeField] private AudioMixer audioMixer;
         
         private bool[] isMute = new bool[3];
         private float[] audioVolumes = new float[3];
-
-        private void Awake()
-        {
-            if (instance == null)
-            {
-                instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
-        }
 
         private void SetAudioVolume(EAudioMixerType audioMixerType, float volume)
         {
@@ -67,7 +41,7 @@ namespace EverScord
 
         public void ChangeMasterVolume(float volume)
         {
-            instance.SetAudioVolume(EAudioMixerType.Master, volume);
+            SetAudioVolume(EAudioMixerType.Master, volume);
         }
     }
 }

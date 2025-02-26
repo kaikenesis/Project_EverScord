@@ -15,6 +15,11 @@ namespace EverScord
         }
 
         public EState state = EState.NONE;
+
+        public void Initialize()
+        {
+            state = EState.NONE;
+        }
     }
 }
     

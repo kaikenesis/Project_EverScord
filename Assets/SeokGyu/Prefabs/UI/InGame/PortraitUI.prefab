@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2516750409831087378}
   - component: {fileID: 463905616207379408}
+  - component: {fileID: 9093811397752545703}
   m_Layer: 5
   m_Name: PortraitUI
   m_TagString: Untagged
@@ -45,6 +46,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 849901582093575233}
   m_CullTransparentMesh: 1
+--- !u!114 &9093811397752545703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849901582093575233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9204920da54b24ead23b9283203ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterImg: {fileID: 5954648991603309977}
 --- !u!1 &5204788395489917524
 GameObject:
   m_ObjectHideFlags: 0

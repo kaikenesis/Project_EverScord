@@ -85,6 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2609778567794490237}
   - component: {fileID: 6375337992643166507}
+  - component: {fileID: 7657247927845977248}
   m_Layer: 5
   m_Name: JobUI
   m_TagString: Untagged
@@ -120,6 +121,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5509564533262309749}
   m_CullTransparentMesh: 1
+--- !u!114 &7657247927845977248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5509564533262309749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e63958e69c912e459b9b7b2081d5c65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jobImg: {fileID: 1667720299882661193}
 --- !u!1 &5548383950730510783
 GameObject:
   m_ObjectHideFlags: 0
