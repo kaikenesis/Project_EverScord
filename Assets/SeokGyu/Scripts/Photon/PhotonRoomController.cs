@@ -416,7 +416,8 @@ namespace EverScord
                 
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
                 {
-                    PhotonNetwork.LoadLevel("PhotonTestPlay");
+                    //PhotonNetwork.LoadLevel("PhotonTestPlay");
+                    GameManager.LoadLevel();
                 }
             }
         }

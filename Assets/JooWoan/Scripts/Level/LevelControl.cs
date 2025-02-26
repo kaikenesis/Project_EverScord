@@ -8,7 +8,7 @@ namespace EverScord
 {
     public class LevelControl : MonoBehaviour
     {
-        private const float MAX_PROGRESS = 100f;
+        private const float DEFAULT_MAX_PROGRESS = 100f;
 
         [SerializeField] private GameObject portal;
         [SerializeField] private Collider portalCollider;
@@ -18,8 +18,10 @@ namespace EverScord
 
         private CooldownTimer portalTimer;
         private Coroutine countdownCoroutine;
-        private float progress;
+        private float progress, maxProgress;
         private bool isPortalOpened = false;
+
+        public static Action<float> OnProgressUpdated = delegate { };
 
         void Awake()
         {
@@ -31,6 +33,8 @@ namespace EverScord
 
             portalTimer = new CooldownTimer(countdown);
             portal.transform.localScale = initialPortalScale;
+
+            maxProgress = DEFAULT_MAX_PROGRESS;
         }
         
         void Update()
@@ -70,7 +74,11 @@ namespace EverScord
 
         public void IncreaseProgress()
         {
-            progress = Mathf.Min(progress + increaseAmount, MAX_PROGRESS);
+            progress = Mathf.Min(progress + increaseAmount, maxProgress);
+            float currentProgress = progress / maxProgress;
+
+            OnProgressUpdated?.Invoke(currentProgress);
+
             TryOpenPortal();
 
             Debug.Log($"Current Level Progress: {progress}");
@@ -78,7 +86,7 @@ namespace EverScord
 
         private void TryOpenPortal()
         {
-            if (progress < MAX_PROGRESS)
+            if (progress < maxProgress)
                 return;
 
             if (countdownCoroutine != null)
@@ -118,7 +126,7 @@ namespace EverScord
 
                 // make player invisible
 
-                GameManager.LoadNextStage();
+                GameManager.LoadLevel();
             }
         }
     }

@@ -150,6 +150,8 @@ namespace EverScord.Character
             blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
             groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
 
+            CharacterJob = GameManager.Instance.PlayerData.job;
+
             DontDestroyOnLoad(gameObject);
         }
 
@@ -361,7 +363,6 @@ namespace EverScord.Character
 
             for (int i = 0; i < skillList.Count; i++)
             {
-                CharacterJob = GameManager.Instance.PlayerData.job;
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)

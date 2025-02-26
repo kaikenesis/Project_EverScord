@@ -7,6 +7,7 @@ using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
 using EverScord.Effects;
+using UnityEngine.UIElements;
 
 namespace EverScord
 {
@@ -111,7 +112,8 @@ namespace EverScord
             playerPhotonViews   = new();
             playerData.Initialize();
 
-            CurrentStageIndex = 0; // -1
+            CurrentStageIndex = -1;
+            PhotonNetwork.AutomaticallySyncScene = true;
         }
 
         public void UpdateUserName(string newName)
@@ -153,8 +155,11 @@ namespace EverScord
             }
         }
 
-        public static void LoadNextStage()
+        public static void LoadLevel()
         {
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
+                return;
+
             ++CurrentStageIndex;
 
             if (CurrentStageIndex >= Instance.stageInfos.Count)
@@ -165,15 +170,16 @@ namespace EverScord
 
             // hide screen
 
-            Instance.StartCoroutine(LoadStage());
+            Instance.StartCoroutine(LoadLevelAsync());
         }
 
-        private static IEnumerator LoadStage()
+        private static IEnumerator LoadLevelAsync()
         {
-            var asyncLoadStage = SceneManager.LoadSceneAsync(Instance.stageInfos[CurrentStageIndex].stageName, LoadSceneMode.Single);
-            
-            while (asyncLoadStage.progress < 0.9f)
+            PhotonNetwork.LoadLevel(Instance.stageInfos[CurrentStageIndex].stageName);
+
+            while (PhotonNetwork.LevelLoadingProgress < 0.95f)
             {
+                //Debug.Log($"Loading: {(int)(PhotonNetwork.LevelLoadingProgress * 100)}%");
                 yield return null;
             }
 
