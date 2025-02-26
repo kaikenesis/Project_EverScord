@@ -514,6 +514,8 @@ namespace EverScord.Character
         {
             SetState(SetCharState.ADD, CharState.DEATH);
 
+            controller.enabled = false;
+
             Instantiate(deathEffect, transform.position, Quaternion.identity);
             blinkEffect.LoopBlink(false);
             
@@ -556,6 +558,8 @@ namespace EverScord.Character
 
             for (float t = 0; t < 0.5f; t += Time.deltaTime)
                 yield return null;
+
+            controller.enabled = true;
 
             SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
             SetState(SetCharState.REMOVE, CharState.DEATH);

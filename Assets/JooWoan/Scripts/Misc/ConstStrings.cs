@@ -30,6 +30,8 @@ namespace EverScord
         public const string TWEEN_HIDE_REVIVECIRCLE = "HideReviveCircle";
         public const string TWEEN_SHOW_REVIVECIRCLE = "ShowReviveCircle";
         public const string TWEEN_OPEN_PORTAL = "OpenPortal";
+        public const string TWEEN_SHOW_SCREEN = "ShowScreen";
+        public const string TWEEN_COVER_SCREEN = "CoverScreen";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";
