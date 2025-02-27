@@ -1,3 +1,4 @@
+using System;
 using EverScord.Character;
 using UnityEngine;
 using Photon.Pun;
@@ -12,6 +13,9 @@ namespace EverScord.Skill
         protected PhotonView photonView;
         protected PlayerData.EJob ejob;
         protected int skillIndex;
+
+        // int: skill index, float: cooldown duration
+        public Action<int, float> OnUsedSkill = delegate { };
 
         public virtual bool CanAttackWhileSkill
         {
@@ -39,6 +43,7 @@ namespace EverScord.Skill
             if (cooldownTimer.IsCooldown)
                 return false;
 
+            OnUsedSkill?.Invoke(skillIndex, cooldownTimer.Cooldown);
             cooldownTimer.ResetElapsedTime();
             return true;
         }

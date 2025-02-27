@@ -128,6 +128,8 @@ namespace EverScord.Skill
 
                 if (CanJump && activator.PlayerInputInfo.pressedLeftMouseButton)
                 {
+                    base.Activate();
+
                     SetJumpMode(false);
                     activator.SetMouseButtonDown(false);
 
@@ -143,7 +145,6 @@ namespace EverScord.Skill
         public IEnumerator JumpAttack()
         {
             activator.SetState(SetCharState.ADD, CharState.RIGID_ANIMATING);
-            cooldownTimer.ResetElapsedTime();
 
             float stampTime = animInfo.Jump.length + Skill.LandingDuration;
 

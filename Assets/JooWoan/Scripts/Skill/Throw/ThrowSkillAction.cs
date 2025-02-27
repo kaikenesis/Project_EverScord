@@ -65,10 +65,10 @@ namespace EverScord.Skill
             {
                 if (activator.PlayerInputInfo.pressedLeftMouseButton)
                 {
+                    base.Activate();
+
                     activator.SetMouseButtonDown(false);
                     activator.AnimationControl.CrossFade(throwParam);
-
-                    cooldownTimer.ResetElapsedTime();
 
                     TrajectoryInfo info = predictor.GetTrajectoryInfo();
                     StartCoroutine(ThrowObject(info));

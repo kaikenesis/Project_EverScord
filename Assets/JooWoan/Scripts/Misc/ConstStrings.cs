@@ -23,6 +23,7 @@ namespace EverScord
         public const string TAG_BULLETCONTROL = "BulletControl";
         public const string TAG_AIMPOINT = "AimPoint";
         public const string TAG_MAINLIGHT = "MainLight";
+        public const string TAG_PARTICLE_BLINKABLE = "ParticleBlinkable";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";

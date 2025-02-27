@@ -10,6 +10,7 @@ namespace EverScord.Skill
         private bool shouldStopTimer = false;
 
         public bool IsCooldown => elapsedTime < cooldown;
+        public float Cooldown => cooldown;
         public float ElapsedTime => elapsedTime;
         public float CooldownProgress
         {

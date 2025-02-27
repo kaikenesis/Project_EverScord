@@ -7,8 +7,7 @@ namespace EverScord.UI
 {
     public static class OutlineControl
     {
-        private static IDictionary<IEnemy, Renderer[]> enemySkinDict = new Dictionary<IEnemy, Renderer[]>();
-        private static LayerMask? originalEnemySkinLayer = null;
+        private static IDictionary<IEnemy, EnemyOutlineInfo> enemySkinDict = new Dictionary<IEnemy, EnemyOutlineInfo>();
         private static IEnemy currentOutlinedEnemy = null;
 
         public static void ResetSkinDictionary()
@@ -54,25 +53,30 @@ namespace EverScord.UI
 
             if (!enemySkinDict.ContainsKey(enemy))
             {
+                enemySkinDict[enemy] = null;
+
                 MonoBehaviour enemyMono = enemy as MonoBehaviour;
 
                 if (!enemyMono)
                     return;
 
                 Renderer[] renderers = enemyMono.transform.GetComponentsInChildren<Renderer>();
-                enemySkinDict[enemy] = renderers;
 
-                if (renderers.Length > 0 && originalEnemySkinLayer == null)
-                    originalEnemySkinLayer = 1 << renderers[0].gameObject.layer;
+                if (renderers.Length > 0)
+                {
+                    LayerMask enemySkinLayer = 1 << renderers[0].gameObject.layer;
+                    EnemyOutlineInfo info = new EnemyOutlineInfo(renderers, enemySkinLayer);
+                    enemySkinDict[enemy] = info;
+                }
             }
 
-            if (enemySkinDict[enemy].Length == 0)
+            if (enemySkinDict[enemy] == null)
                 return;
 
-            if (originalEnemySkinLayer == null)
+            if (enemySkinDict[enemy].Renderers.Length == 0)
                 return;
 
-            SetTargetOutline(enemySkinDict[enemy], (LayerMask)originalEnemySkinLayer, GameManager.RedOutlineLayer, true);
+            SetTargetOutline(enemySkinDict[enemy].Renderers, enemySkinDict[enemy].SkinLayer, GameManager.RedOutlineLayer, true);
             currentOutlinedEnemy = enemy;
         }
 
@@ -81,14 +85,32 @@ namespace EverScord.UI
             if (!photonView.IsMine)
                 return;
             
-            if (currentOutlinedEnemy == null || !enemySkinDict.ContainsKey(currentOutlinedEnemy))
+            if (currentOutlinedEnemy == null)
                 return;
 
-            if (originalEnemySkinLayer == null)
+            if (!enemySkinDict.ContainsKey(currentOutlinedEnemy))
                 return;
-            
-            SetTargetOutline(enemySkinDict[currentOutlinedEnemy], (LayerMask)originalEnemySkinLayer, GameManager.RedOutlineLayer, false);
+
+            if (enemySkinDict[currentOutlinedEnemy] == null)
+                return;
+
+            if (enemySkinDict[currentOutlinedEnemy].Renderers.Length == 0)
+                return;
+
+            SetTargetOutline(enemySkinDict[currentOutlinedEnemy].Renderers, enemySkinDict[currentOutlinedEnemy].SkinLayer, GameManager.RedOutlineLayer, false);
             currentOutlinedEnemy = null;
+        }
+    }
+
+    public class EnemyOutlineInfo
+    {
+        public Renderer[] Renderers;
+        public LayerMask SkinLayer;
+
+        public EnemyOutlineInfo(Renderer[] renderers, LayerMask skinLayer)
+        {
+            Renderers = renderers;
+            SkinLayer = skinLayer;
         }
     }
 }

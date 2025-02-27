@@ -156,6 +156,9 @@ namespace EverScord.Effects
                 if (renderer.mesh == null)
                     continue;
 
+                if (renderer.tag != ConstStrings.TAG_PARTICLE_BLINKABLE)
+                    continue;
+
                 temp.Add(renderer);
                 originalParticleMats.Add(new Material(renderer.sharedMaterial));
             }
