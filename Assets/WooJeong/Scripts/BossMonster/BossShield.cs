@@ -12,7 +12,8 @@ public class BossShield : MonoBehaviour, IEnemy
 
     void Awake()
     {
-        blinkEffect = BlinkEffect.Create(this);
+        var particle = GetComponent<ParticleSystem>();
+        blinkEffect = BlinkEffect.Create(particle);
     }
 
     private void OnEnable()

@@ -10,7 +10,11 @@ namespace EverScord.UI
         private static IDictionary<IEnemy, Renderer[]> enemySkinDict = new Dictionary<IEnemy, Renderer[]>();
         private static LayerMask? originalEnemySkinLayer = null;
         private static IEnemy currentOutlinedEnemy = null;
-        public static IEnemy CurrentOutlinedEnemy => currentOutlinedEnemy;
+
+        public static void ResetSkinDictionary()
+        {
+            enemySkinDict.Clear();
+        }
 
         private static void SetTargetOutline(Renderer[] renderers, LayerMask disabledLayer, LayerMask enabledLayer, bool state)
         {
@@ -62,6 +66,12 @@ namespace EverScord.UI
                     originalEnemySkinLayer = 1 << renderers[0].gameObject.layer;
             }
 
+            if (enemySkinDict[enemy].Length == 0)
+                return;
+
+            if (originalEnemySkinLayer == null)
+                return;
+
             SetTargetOutline(enemySkinDict[enemy], (LayerMask)originalEnemySkinLayer, GameManager.RedOutlineLayer, true);
             currentOutlinedEnemy = enemy;
         }
@@ -72,6 +82,9 @@ namespace EverScord.UI
                 return;
             
             if (currentOutlinedEnemy == null || !enemySkinDict.ContainsKey(currentOutlinedEnemy))
+                return;
+
+            if (originalEnemySkinLayer == null)
                 return;
             
             SetTargetOutline(enemySkinDict[currentOutlinedEnemy], (LayerMask)originalEnemySkinLayer, GameManager.RedOutlineLayer, false);

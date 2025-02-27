@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
 using EverScord.Effects;
-using UnityEngine.UIElements;
+using DG.Tweening;
 
 namespace EverScord
 {
@@ -15,7 +14,7 @@ namespace EverScord
     {
         private static GameManager instance;
         public const float GROUND_HEIGHT = 0f;
-        private const float LOADSCREEN_DELAY = 1f;
+        private const float LOADSCREEN_DELAY = 3f;
 
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
@@ -29,9 +28,11 @@ namespace EverScord
         public EnemyHitControl EnemyHitsControl                 { get; private set; }
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
+        public LoadingScreen LoadScreen                         { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
         public static int CurrentStageIndex                     { get; private set; }
+        public static bool IsLoadingLevel                       { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
@@ -153,6 +154,13 @@ namespace EverScord
                 case LevelControl levelControl:
                     LevelController = levelControl;
                     break;
+
+                case LoadingScreen loadScreen:
+                    LoadScreen = loadScreen;
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -169,29 +177,45 @@ namespace EverScord
                 return;
             }
 
-            // hide screen
-
-            Instance.StartCoroutine(LoadLevelAsync());
+            Instance.StartCoroutine(Instance.LoadLevelAsync());
         }
 
-        private static IEnumerator LoadLevelAsync()
+        private IEnumerator LoadLevelAsync()
         {
+            IsLoadingLevel = true;
+
+            LoadScreen.CoverScreen();
+            yield return new WaitForSeconds(1f);
+
+            Camera.main.enabled = false;
+
+            LoadScreen.ImageHub.SetActive(true);
+            LoadScreen.ShowScreen();
+
             PhotonNetwork.LoadLevel(Instance.stageInfos[CurrentStageIndex].stageName);
 
-            while (PhotonNetwork.LevelLoadingProgress < 0.95f)
+            while (PhotonNetwork.LevelLoadingProgress < 0.98f)
             {
-                //Debug.Log($"Loading: {(int)(PhotonNetwork.LevelLoadingProgress * 100)}%");
+                LoadScreen.SetProgress(PhotonNetwork.LevelLoadingProgress);
                 yield return null;
             }
+
+            LoadScreen.SetProgress(1f);
 
             Instance.StartCoroutine(ExitLoadingScreen());
         }
 
-        private static IEnumerator ExitLoadingScreen()
+        private IEnumerator ExitLoadingScreen()
         {
-            yield return Instance.waitLoadScreen;
+            yield return waitLoadScreen;
 
-            // show showscreen
+            LoadScreen.CoverScreen();
+            yield return new WaitForSeconds(3f);
+
+            LoadScreen.ShowScreen();
+            LoadScreen.ImageHub.SetActive(false);
+
+            IsLoadingLevel = false;
         }
     }
 }

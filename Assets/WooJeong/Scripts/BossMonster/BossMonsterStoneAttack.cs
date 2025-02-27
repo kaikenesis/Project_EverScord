@@ -56,6 +56,8 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
 
         if (blinkEffect == null)
             blinkEffect = BlinkEffect.Create(effectParticle);
+        
+        blinkEffect.InitParticles(effectParticle);
 
         yield return new WaitForSeconds(1.0f);
         effectParticle = effect.GetComponent<ParticleSystem>();

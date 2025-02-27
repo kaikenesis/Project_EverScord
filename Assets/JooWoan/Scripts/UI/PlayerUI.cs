@@ -7,7 +7,6 @@ using DG.Tweening;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.GameCamera;
-using ExitGames.Client.Photon.StructWrapping;
 using EverScord.Effects;
 
 namespace EverScord.UI
@@ -149,18 +148,21 @@ namespace EverScord.UI
                 colorCurves.active = state;
         }
 
-        public void InitReviveCircle(Transform uiOwner, int viewID)
+        public void InitReviveCircle(int viewID)
         {
+            Transform uiOwner = GameManager.Instance.PlayerDict[viewID].PlayerTransform;
+
             var circlePrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveCircle_ID);
             reviveCircle = Instantiate(circlePrefab, uiOwner).GetComponent<ReviveCircle>();
 
-            reviveCircle.Init(uiOwner, viewID);
+            reviveCircle.Init(viewID);
             reviveCircle.transform.SetParent(Root.parent);
             reviveCircle.gameObject.SetActive(false);
         }
 
-        public void SetReviveCircle(bool state)
+        public void EnableReviveCircle(bool state)
         {
+            Debug.Log($"Whyy {state}");
             reviveCircle.gameObject.SetActive(state);
         }
     }

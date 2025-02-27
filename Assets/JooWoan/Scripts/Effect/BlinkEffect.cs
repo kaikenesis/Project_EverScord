@@ -26,12 +26,14 @@ namespace EverScord.Effects
         private IDictionary<(int, int), Texture> textureDict;
         private IDictionary<(int, int), Color> colorDict;
 
-        List<Material> originalParticleMats;
+        private List<Material> originalParticleMats;
+        private bool isParticle = false;
 
         public static BlinkEffect Create(ParticleSystem target)
         {
             BlinkEffect blinkEffect = target.transform.gameObject.AddComponent<BlinkEffect>();
-            blinkEffect.InitParticles(target);
+            blinkEffect.isParticle = true;
+
             return blinkEffect;
         }
 
@@ -52,6 +54,12 @@ namespace EverScord.Effects
 
         public static BlinkEffect Create(Transform target, float duration = DEFAULT_DURATION, float intensity = DEFAULT_INTENSITY, Color color = default)
         {
+            if (target.TryGetComponent(out ParticleSystem particle))
+            {
+                Debug.Log($"Wrong Create Method for BlinkEffect, this contains a ParticleSystem: {target.name}");
+                return Create(particle);
+            }
+
             if (!target)
             {
                 Debug.LogWarning($"Blink Effect: Failed to find target.");
@@ -100,8 +108,10 @@ namespace EverScord.Effects
 
         void OnDisable()
         {
-            if (!IsParticle(renderers))
+            if (!isParticle)
                 SetMaterialColors(default, true);
+            else
+                ClearParticleBlink();
         }
 
         private void Init(Transform target, float duration, float intensity, Color color)
@@ -127,7 +137,7 @@ namespace EverScord.Effects
             SetMaterialSettings();
         }
 
-        private void InitParticles(ParticleSystem target)
+        public void InitParticles(ParticleSystem target)
         {
             blinkTarget = target.gameObject.transform;
             ParticleSystemRenderer[] particleRenderers = blinkTarget.GetComponentsInChildren<ParticleSystemRenderer>();
@@ -147,7 +157,7 @@ namespace EverScord.Effects
                     continue;
 
                 temp.Add(renderer);
-                originalParticleMats.Add(renderer.sharedMaterial);
+                originalParticleMats.Add(new Material(renderer.sharedMaterial));
             }
 
             renderers = temp.ToArray();
@@ -155,13 +165,19 @@ namespace EverScord.Effects
 
         public void Blink()
         {
+            if (!gameObject.activeSelf)
+                return;
+
             if (blinkCoroutine != null)
                 StopCoroutine(blinkCoroutine);
 
-            if (!IsParticle(renderers))
+            if (!isParticle)
                 blinkCoroutine = StartCoroutine(StartBlink());
-            else
-                blinkCoroutine = StartCoroutine(StartBlinkRepeat());
+            else 
+            {
+                ClearParticleBlink();
+                blinkCoroutine = StartCoroutine(StartParticleBlink());
+            }
         }
         
         public void LoopBlink(bool state)
@@ -174,6 +190,9 @@ namespace EverScord.Effects
                 SetMaterialColors(default, true);
                 return;
             }
+
+            if (!gameObject.activeSelf)
+                return;
 
             blinkLoopCoroutine = StartCoroutine(StartBlink(true));
         }
@@ -254,7 +273,7 @@ namespace EverScord.Effects
             changedBlinkInfo = null;
         }
 
-        private IEnumerator StartBlinkRepeat()
+        private IEnumerator StartParticleBlink()
         {
             int blinkCount = BLINK_REPEAT;
             WaitForSeconds waitblink = new WaitForSeconds(0.01f);
@@ -273,20 +292,18 @@ namespace EverScord.Effects
             }
         }
 
+        private void ClearParticleBlink()
+        {
+            if (originalParticleMats == null || originalParticleMats.Count == 0)
+                return;
+            
+            for (int j = 0; j < renderers.Length; j++)
+                renderers[j].sharedMaterial = originalParticleMats[j];
+        }
+
         public void ChangeBlinkTemporarily(BlinkEffectInfo info)
         {
             changedBlinkInfo = info;
-        }
-
-        private bool IsParticle(Renderer[] inputRenderers)
-        {
-            if (inputRenderers.Length == 0)
-                return false;
-
-            if (inputRenderers[0] == null)
-                return false;
-
-            return !inputRenderers[0].sharedMaterial.HasProperty(emissionColorID);
         }
     }
 
