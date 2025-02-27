@@ -9,6 +9,7 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
+using Photon.Pun.Demo.SlotRacer;
 
 namespace EverScord.Character
 {
@@ -152,6 +153,8 @@ namespace EverScord.Character
             else
             {
                 PlayerUIControl.Init();
+                PlayerUIControl.transform.localPosition = new Vector3(170f, -80f, 0f);
+                PlayerUIControl.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
                 CharacterJob = GameManager.Instance.PlayerData.job;
                 CharacterType = GameManager.Instance.PlayerData.character;
             }
@@ -495,7 +498,7 @@ namespace EverScord.Character
             onDecreaseHealth?.Invoke();
 
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, false);
         }
 
         public void IncreaseHP(float amount, bool isExternalHeal = false)
@@ -510,7 +513,7 @@ namespace EverScord.Character
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
             {
                 photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, true);
             }
         }
 

@@ -41,6 +41,14 @@ namespace EverScord
             }
         }
 
+        private void HandleUsedSkill(int skillIndex, float skillCooldown)
+        {
+            if(typeNum == skillIndex)
+            {
+                ShowCooldown(skillCooldown);
+            }
+        }
+
         public void ShowCooldown(float duration)
         {
             if (bCooldown == true)

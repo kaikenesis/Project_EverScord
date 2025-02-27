@@ -11,6 +11,8 @@ namespace EverScord
 
         private void Awake()
         {
+            Initialize();
+
             CharacterControl.OnHealthUpdated += HandleHealthUpdated;
             LevelControl.OnProgressUpdated += HandleStageProgressUpdated;
         }
@@ -19,6 +21,14 @@ namespace EverScord
         {
             CharacterControl.OnHealthUpdated -= HandleHealthUpdated;
             LevelControl.OnProgressUpdated -= HandleStageProgressUpdated;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha0))
+            {
+                UpdateFillAmount(value);
+            }
         }
 
         private void HandleHealthUpdated(float curHP)
@@ -36,15 +46,19 @@ namespace EverScord
 
             UpdateProgress(value);
         }
-
-        private void Update()
+        
+        private void Initialize()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha0))
+            if(type != EType.BossHealth)
             {
-                UpdateFillAmount(value);
+                UpdateProgress(0f);
+            }
+            else
+            {
+                UpdateProgress(1f);
             }
         }
-        
+
         private void UpdateProgress(float value)
         {
             this.value = value;
