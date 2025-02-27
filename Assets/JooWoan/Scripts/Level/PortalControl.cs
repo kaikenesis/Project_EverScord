@@ -75,7 +75,7 @@ namespace EverScord
             DOTween.Rewind(ConstStrings.TWEEN_OPEN_PORTAL);
             DOTween.Play(ConstStrings.TWEEN_OPEN_PORTAL);
 
-            // Tween callback: SetPortal(true)
+            // Tween callback: SetPortalCollider(true)
         }
 
         public void Init(float countdown, Action callback)
