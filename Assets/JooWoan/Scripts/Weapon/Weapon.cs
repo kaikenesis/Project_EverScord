@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
@@ -31,7 +30,6 @@ namespace EverScord.Weapons
         [field: SerializeField] public float WeaponRange                                { get; private set; }
         [field: SerializeField] public int MaxAmmo                                      { get; private set; }
         public Transform AimPoint                                                       { get; private set; }
-        public Camera ShooterCam                                                        { get; private set; }
 
         private PhotonView photonView;
         private OnShotFired onShotFired;
@@ -45,7 +43,6 @@ namespace EverScord.Weapons
         public void Init(CharacterControl shooter)
         {
             photonView  = shooter.CharacterPhotonView;
-            ShooterCam  = shooter.CameraControl.Cam;
             animControl = shooter.AnimationControl;
             currentAmmo = MaxAmmo;
 

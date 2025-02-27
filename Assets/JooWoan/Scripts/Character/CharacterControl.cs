@@ -9,6 +9,7 @@ using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
 using Photon.Pun.Demo.SlotRacer;
+using Photon.Realtime;
 
 namespace EverScord.Character
 {
@@ -69,20 +70,22 @@ namespace EverScord.Character
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
 
-        private static GameObject deathEffect, reviveEffect, beamEffect;
-        private static ParticleSystem hitEffect1, hitEffect2;
-        private ParticleSystem healEffect;
-        private BlinkEffect blinkEffect;
-        private PhotonView photonView;
-        private CharacterController controller;
-        private Vector3 movement, lookDir, moveInput, moveDir;
-        private Vector3 remoteMouseRayHitPos;
-        private Action onDecreaseHealth;
-        private LayerMask groundAndEnemyLayer;
-
         public static Action OnPhotonViewListUpdated = delegate { };
         public static Action<int, bool> OnCheckAlive = delegate { };
         public static Action<float> OnHealthUpdated = delegate { };
+
+        private static GameObject deathEffect, reviveEffect, beamEffect;
+        private static ParticleSystem hitEffect1, hitEffect2;
+
+        private PhotonView photonView;
+        private ParticleSystem healEffect;
+        private ReviveCircle reviveCircle;
+        private BlinkEffect blinkEffect;
+        private CharacterController controller;
+        private Vector3 movement, lookDir, moveInput, moveDir;
+        private Vector3 remoteMouseRayHitPos;
+        private LayerMask groundAndEnemyLayer;
+        private Action onDecreaseHealth;
 
         public float CurrentHealth
         {
@@ -116,17 +119,13 @@ namespace EverScord.Character
             PlayerUI.SetUIRoot();
             CharacterCamera.SetCameraRoot();
 
-            photonView       = GetComponent<PhotonView>();
-
             PlayerTransform  = transform;
             PhysicsControl   = new CharacterPhysics(gravity, mass);
 
+            photonView       = GetComponent<PhotonView>();
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
-
-            CameraControl    = Instantiate(cameraPrefab, CharacterCamera.Root);
-            PlayerUIControl  = Instantiate(uiPrefab, PlayerUI.Root);
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
@@ -145,19 +144,17 @@ namespace EverScord.Character
 
             if (photonView.IsMine)
             {
-                PlayerUIControl.Init();
+                PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
                 PlayerUIControl.transform.localPosition = new Vector3(170f, -80f, 0f);
                 PlayerUIControl.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
+                PlayerUIControl.Init();
+
+                CameraControl = Instantiate(cameraPrefab, CharacterCamera.Root);
+                CameraControl.Init(PlayerTransform, photonView.IsMine);
+
                 CharacterJob = GameManager.Instance.PlayerData.job;
                 CharacterType = GameManager.Instance.PlayerData.character;
             }
-            else
-            {
-                PlayerUIControl.gameObject.SetActive(false);
-                CameraControl.gameObject.SetActive(false);
-            }
-
-            CameraControl.Init(PlayerTransform, photonView.IsMine);
 
             blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
             groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
@@ -395,11 +392,9 @@ namespace EverScord.Character
         {
             if (!photonView.IsMine)
                 return;
-            
-            PlayerUIControl.InitReviveCircle(CharacterPhotonView.ViewID);
 
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncInitReviveCircle), RpcTarget.Others, CharacterPhotonView.ViewID);
+                photonView.RPC(nameof(SyncInitReviveCircle), RpcTarget.All, photonView.ViewID);
         }
 
         private void SetEffects()
@@ -544,7 +539,7 @@ namespace EverScord.Character
 
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
-            PlayerUIControl.EnableReviveCircle(true);
+            EnableReviveCircle(true);
             
             if (PhotonNetwork.IsConnected && photonView.IsMine)
                 photonView.RPC(nameof(SyncReviveCircle), RpcTarget.Others, true);
@@ -562,7 +557,7 @@ namespace EverScord.Character
             CurrentHealth = maxHealth;
 
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);
-            PlayerUIControl.EnableReviveCircle(false);
+            EnableReviveCircle(false);
 
             OutlineControl.SetCharacterOutline(this, false);
             
@@ -609,6 +604,11 @@ namespace EverScord.Character
                 healEffect.gameObject.SetActive(true);
             
             healEffect.Emit(1);
+        }
+
+        public void EnableReviveCircle(bool state)
+        {
+            reviveCircle.gameObject.SetActive(state);
         }
 
         public bool IsGrounded
@@ -768,13 +768,18 @@ namespace EverScord.Character
             if (photonView.ViewID != viewID)
                 return;
 
-            PlayerUIControl.InitReviveCircle(CharacterPhotonView.ViewID);
+            var circlePrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveCircle_ID);
+            reviveCircle = Instantiate(circlePrefab, PlayerTransform).GetComponent<ReviveCircle>();
+
+            reviveCircle.Init(photonView.ViewID);
+            reviveCircle.transform.SetParent(PlayerUI.Root.parent);
+            reviveCircle.gameObject.SetActive(false);
         }
 
         [PunRPC]
         private void SyncReviveCircle(bool state)
         {
-            PlayerUIControl.EnableReviveCircle(state);
+            EnableReviveCircle(state);
         }
 
         [PunRPC]
@@ -782,8 +787,8 @@ namespace EverScord.Character
         {
             if (photonView.ViewID != viewID)
                 return;
-            
-            PlayerUIControl.ReviveCircleControl.SyncExitCircle();
+
+            reviveCircle.SyncExitCircle();
         }
 
         [PunRPC]

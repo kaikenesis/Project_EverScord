@@ -19,7 +19,6 @@ namespace EverScord.UI
         private const float BLOOD_SPEED = 1f;
 
         public static Transform Root { get; private set; }
-        public ReviveCircle ReviveCircleControl => reviveCircle;
         private static Texture2D cursorIcon;
         private static Material bloodMat;
         private static ColorCurves colorCurves;
@@ -27,7 +26,6 @@ namespace EverScord.UI
         [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText;
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
 
-        private ReviveCircle reviveCircle;
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
         private bool isEnabled = false;
@@ -146,23 +144,6 @@ namespace EverScord.UI
         {
             if (colorCurves)
                 colorCurves.active = state;
-        }
-
-        public void InitReviveCircle(int viewID)
-        {
-            Transform uiOwner = GameManager.Instance.PlayerDict[viewID].PlayerTransform;
-
-            var circlePrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.ReviveCircle_ID);
-            reviveCircle = Instantiate(circlePrefab, uiOwner).GetComponent<ReviveCircle>();
-
-            reviveCircle.Init(viewID);
-            reviveCircle.transform.SetParent(Root.parent);
-            reviveCircle.gameObject.SetActive(false);
-        }
-
-        public void EnableReviveCircle(bool state)
-        {
-            reviveCircle.gameObject.SetActive(state);
         }
     }
 }
