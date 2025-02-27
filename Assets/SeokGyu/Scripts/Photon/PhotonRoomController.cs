@@ -135,8 +135,8 @@ namespace EverScord
                     {
                         if (IsCanStart())
                         {
-                            Debug.Log("You Can Start Game");
                             OnMatchMultiPlay?.Invoke();
+                            Debug.Log("You Can Start Game");
                         }
                         else
                         {
@@ -148,8 +148,8 @@ namespace EverScord
                     {
                         if (IsCanStart())
                         {
-                            Debug.Log("You Can Start Game");
                             OnMatchMultiPlay?.Invoke();
+                            Debug.Log("You Can Start Game");
                         }
                         else
                         {
@@ -301,8 +301,8 @@ namespace EverScord
             int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
             int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
 
-            if (curDealer < maxDealers) return false;
-            if (curHealer < maxHealers) return false;
+            if (curDealer > maxDealers) return false;
+            if (curHealer > maxHealers) return false;
 
             return true;
         }

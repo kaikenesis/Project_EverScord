@@ -8,6 +8,7 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
+using Photon.Pun.Demo.SlotRacer;
 
 namespace EverScord.Character
 {
@@ -80,6 +81,8 @@ namespace EverScord.Character
         private LayerMask groundAndEnemyLayer;
 
         public static Action OnPhotonViewListUpdated = delegate { };
+        public static Action<int, bool> OnCheckAlive = delegate { };
+        public static Action<float> OnHealthUpdated = delegate { };
 
         public float CurrentHealth
         {
@@ -148,6 +151,8 @@ namespace EverScord.Character
             else
             {
                 PlayerUIControl.Init();
+                PlayerUIControl.transform.localPosition = new Vector3(170f, -80f, 0f);
+                PlayerUIControl.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
                 CharacterJob = GameManager.Instance.PlayerData.job;
                 CharacterType = GameManager.Instance.PlayerData.character;
             }
@@ -168,6 +173,8 @@ namespace EverScord.Character
             SetReviveCircle();
             SetEffects();
             SetPortraits();
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
+            OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
         }
 
         void Update()
@@ -497,7 +504,7 @@ namespace EverScord.Character
             onDecreaseHealth?.Invoke();
 
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, false);
         }
 
         public void IncreaseHP(float amount, bool isExternalHeal = false)
@@ -512,7 +519,7 @@ namespace EverScord.Character
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
             {
                 photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, true);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, true);
             }
         }
 
@@ -532,6 +539,8 @@ namespace EverScord.Character
             AnimationControl.Play(AnimationControl.AnimInfo.Death);
 
             OutlineControl.SetCharacterOutline(this, true);
+
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
 
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
@@ -569,6 +578,10 @@ namespace EverScord.Character
 
             SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
             SetState(SetCharState.REMOVE, CharState.DEATH);
+
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
+            if(photonView.IsMine)
+                OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
         }
 
         private void PlayHitEffects()
@@ -726,6 +739,9 @@ namespace EverScord.Character
         private void SyncHealth(float health, bool isIncreasing)
         {
             CurrentHealth = health;
+
+            if (photonView.IsMine)
+                OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
 
             if (!isIncreasing)
                 onDecreaseHealth?.Invoke();

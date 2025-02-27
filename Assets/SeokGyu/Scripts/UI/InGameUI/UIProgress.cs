@@ -6,9 +6,18 @@ namespace EverScord
 {
     public class UIProgress : MonoBehaviour
     {
+        protected enum EType
+        {
+            None,
+            PlayerHealth,
+            BossHealth,
+            StageProgress
+        }
+
         [SerializeField] private Image image;
         [SerializeField] private Slider slider;
         [SerializeField] private float duration = 1.0f;
+        [SerializeField] protected EType type = EType.None;
 
         public void UpdateFillAmount(float value)
         {

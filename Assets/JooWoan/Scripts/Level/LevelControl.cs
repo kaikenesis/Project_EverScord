@@ -36,7 +36,7 @@ namespace EverScord
 
             maxProgress = DEFAULT_MAX_PROGRESS;
         }
-        
+
         void Update()
         {
             if (countdownCoroutine == null)

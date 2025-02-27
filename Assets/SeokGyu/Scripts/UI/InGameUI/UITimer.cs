@@ -7,24 +7,30 @@ namespace EverScord
     public class UITimer : MonoBehaviour
     {
         [SerializeField] private TMP_Text timerText;
-        private bool bStop = false;
+        private bool bStop = true;
         private int min = 0;
         private int sec = 0;
 
         private void Awake()
         {
-            bStop = true;
-            StartCoroutine(UpdateTimer());
+            StartTimer();
         }
 
         private void StartTimer()
         {
+            bStop = false;
             StartCoroutine(UpdateTimer());
+        }
+
+        private void ResetTimer()
+        {
+            bStop = true;
+            StopCoroutine(UpdateTimer());
         }
 
         private IEnumerator UpdateTimer()
         {
-            while(bStop)
+            while(!bStop)
             {
                 timerText.text = string.Format("진행시간 [{0}:{1:D2}]", min, sec);
                 sec++;

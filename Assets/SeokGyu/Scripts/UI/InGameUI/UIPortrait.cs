@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ namespace EverScord
     {
         [SerializeField] private Image characterImg;
         private int photonViewID;
+        bool isDead = false;
 
         private void Awake()
         {
@@ -22,17 +24,19 @@ namespace EverScord
             this.photonViewID = photonViewID;
         }
 
-        private void PortraitUpdated(int pvID, bool isDead)
+        public void UpdatePortrait(int pvID, bool bDead)
         {
-            if (photonViewID != pvID)
+            if (photonViewID != pvID || isDead == bDead)
                 return;
 
-            if(isDead)
+            if(bDead)
             {
+                isDead = true;
                 characterImg.color = new Color(0.4f, 0.4f, 0.4f, 1.0f);
             }
             else
             {
+                isDead = false;
                 characterImg.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             }
         }
