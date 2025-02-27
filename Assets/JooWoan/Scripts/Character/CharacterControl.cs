@@ -124,9 +124,7 @@ namespace EverScord.Character
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
-            
-            PlayerUIControl  = Instantiate(uiPrefab, PlayerUI.Root);
-            CameraControl    = Instantiate(cameraPrefab, CharacterCamera.Root);
+
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
@@ -143,13 +141,11 @@ namespace EverScord.Character
             RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
             RigControl.SetAimWeight(false);
 
-            if (!photonView.IsMine)
+            if (photonView.IsMine)
             {
-                PlayerUIControl.gameObject.SetActive(false);
-                CameraControl.gameObject.SetActive(false);
-            }
-            else
-            {
+                PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
+                CameraControl = Instantiate(cameraPrefab, CharacterCamera.Root);
+
                 PlayerUIControl.Init();
                 PlayerUIControl.transform.localPosition = new Vector3(170f, -80f, 0f);
                 PlayerUIControl.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
