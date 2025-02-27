@@ -23,7 +23,7 @@ namespace EverScord
         [SerializeField] private float countdown;
         [SerializeField] private List<LevelInfo> levelList;
 
-        private static PhotonView photonView;
+        private PhotonView photonView;
         private static WaitForSeconds waitLoadScreen;
         private float progress, maxProgress;
 
@@ -31,7 +31,6 @@ namespace EverScord
         {
             GameManager.Instance.InitControl(this);
 
-            photonView = GetComponent<PhotonView>();
             waitLoadScreen = new WaitForSeconds(LOADSCREEN_DELAY);
 
             portalControl.gameObject.SetActive(false);
@@ -43,6 +42,11 @@ namespace EverScord
 
             OnProgressUpdated -= portalControl.TryOpenPortal;
             OnProgressUpdated += portalControl.TryOpenPortal;
+        }
+
+        void Start()
+        {
+            photonView = GameManager.Instance.LoadScreen.View;
         }
 
         void OnDisable()
@@ -107,11 +111,16 @@ namespace EverScord
 
         public static void LoadGameLevel()
         {            
-            if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncLoadGameLevel), RpcTarget.All);
+            if (!PhotonNetwork.IsConnected)
+                return;
+            
+            GameManager.Instance.LoadScreen.View.RPC(
+                nameof(GameManager.Instance.LoadScreen.SyncLoadGameLevel),
+                RpcTarget.All
+            );
         }
 
-        private static IEnumerator LoadLevelAsync(string levelName)
+        public static IEnumerator LoadLevelAsync(string levelName)
         {
             IsLoadingLevel = true;
 
@@ -145,16 +154,6 @@ namespace EverScord
             GameManager.Instance.LoadScreen.ImageHub.SetActive(false);
 
             IsLoadingLevel = false;
-        }
-
-        [PunRPC]
-        private void SyncLoadGameLevel()
-        {
-            if (!photonView.IsMine)
-                return;
-
-            GameManager.SetLevelIndex(0);
-            GameManager.Instance.StartCoroutine(LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
         }
     }
 }
