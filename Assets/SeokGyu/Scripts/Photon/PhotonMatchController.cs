@@ -225,7 +225,7 @@ namespace EverScord
             yield return new WaitForSeconds(3.0f);
 
             //PhotonNetwork.LoadLevel("PhotonTestPlay");
-            GameManager.LoadLevel();
+            LevelControl.LoadGameLevel();
         }
         #endregion // Coroutine Methods
 

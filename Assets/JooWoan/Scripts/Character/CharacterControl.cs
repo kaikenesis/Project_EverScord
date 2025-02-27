@@ -160,8 +160,6 @@ namespace EverScord.Character
             groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
 
             CharacterJob = GameManager.Instance.PlayerData.job;
-
-            DontDestroyOnLoad(gameObject);
         }
 
         void Start()

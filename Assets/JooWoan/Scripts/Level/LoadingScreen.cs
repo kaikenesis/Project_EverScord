@@ -40,7 +40,7 @@ namespace EverScord
 
         void Update()
         {
-            if (!GameManager.IsLoadingLevel)
+            if (!LevelControl.IsLoadingLevel)
                 return;
             
             UpdateProgress();
@@ -100,6 +100,12 @@ namespace EverScord
         {   
             DOTween.Rewind(ConstStrings.TWEEN_SHOW_SCREEN);
             DOTween.Play(ConstStrings.TWEEN_SHOW_SCREEN);
+        }
+
+        public void SetMainCamera(bool state)
+        {
+            if (Camera.main)
+                Camera.main.enabled = state;
         }
 
         public void SetProgress(float amount)

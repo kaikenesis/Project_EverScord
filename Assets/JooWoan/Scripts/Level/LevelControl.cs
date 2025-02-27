@@ -3,73 +3,53 @@ using UnityEngine;
 using DG.Tweening;
 using EverScord.Skill;
 using EverScord.Character;
+using System.Collections.Generic;
+using Photon.Pun;
+using System.Collections;
 
 namespace EverScord
 {
     public class LevelControl : MonoBehaviour
     {
         private const float DEFAULT_MAX_PROGRESS = 100f;
-
-        [SerializeField] private GameObject portal;
-        [SerializeField] private Collider portalCollider;
-        [SerializeField] private Vector3 initialPortalScale;
-        [SerializeField] private float increaseAmount;
-        [SerializeField] private float countdown;
-
-        private CooldownTimer portalTimer;
-        private Coroutine countdownCoroutine;
-        private float progress, maxProgress;
-        private bool isPortalOpened = false;
+        private const float LOADSCREEN_DELAY = 3f;
 
         public static Action<float> OnProgressUpdated = delegate { };
+        public static bool IsLoadingLevel { get; private set; }
+
+        [SerializeField] private PortalControl portalControl;
+        [SerializeField] private GameObject portal, groundCollider;
+        [SerializeField] private float increaseAmount;
+        [SerializeField] private float countdown;
+        [SerializeField] private List<LevelInfo> levelList;
+
+        private static WaitForSeconds waitLoadScreen;
+        private float progress, maxProgress;
 
         void Awake()
         {
             GameManager.Instance.InitControl(this);
+            waitLoadScreen = new WaitForSeconds(LOADSCREEN_DELAY);
 
-            isPortalOpened = false;
-            portal.gameObject.SetActive(false);
-            SetPortal(false);
+            portalControl.gameObject.SetActive(false);
+            portalControl.SetIsPortalOpened(false);
+            portalControl.SetPortalCollider(false);
+            portalControl.Init(countdown, TeleportPlayers);
 
-            portalTimer = new CooldownTimer(countdown);
-            portal.transform.localScale = initialPortalScale;
+            SetMaxProgress(DEFAULT_MAX_PROGRESS);
 
-            maxProgress = DEFAULT_MAX_PROGRESS;
+            OnProgressUpdated -= portalControl.TryOpenPortal;
+            OnProgressUpdated += portalControl.TryOpenPortal;
         }
 
-        void Update()
+        void OnDisable()
         {
-            if (countdownCoroutine == null)
-                return;
-
-            if (!portalTimer.IsCooldown)
-            {
-                StopCoroutine(countdownCoroutine);
-                countdownCoroutine = null;
-
-                portalTimer.ResetElapsedTime();
-                
-                TeleportPlayers();
-            }
-
-            Debug.Log($"Teleport countdown: {countdown - portalTimer.ElapsedTime:F0}");
+            OnProgressUpdated -= portalControl.TryOpenPortal;
         }
 
-        void OnTriggerEnter(Collider other)
+        public void SetMaxProgress(float amount)
         {
-            if (countdownCoroutine != null)
-                return;
-
-            if (((1 << other.gameObject.layer) & GameManager.PlayerLayer) == 0)
-                return;
-
-            ActivateCountdown();
-            SetPortal(false);
-        }
-
-        private void ActivateCountdown()
-        {            
-            countdownCoroutine = StartCoroutine(portalTimer.RunTimer(true));
+            maxProgress = amount;
         }
 
         public void IncreaseProgress()
@@ -79,39 +59,7 @@ namespace EverScord
 
             OnProgressUpdated?.Invoke(currentProgress);
 
-            TryOpenPortal();
-
             Debug.Log($"Current Level Progress: {progress}");
-        }
-
-        private void TryOpenPortal()
-        {
-            if (progress < maxProgress)
-                return;
-
-            if (countdownCoroutine != null)
-                return;
-
-            if (isPortalOpened)
-                return;
-            
-            OpenPortal();
-        }
-
-        private void OpenPortal()
-        {
-            isPortalOpened = true;
-            portal.gameObject.SetActive(true);
-
-            DOTween.Rewind(ConstStrings.TWEEN_OPEN_PORTAL);
-            DOTween.Play(ConstStrings.TWEEN_OPEN_PORTAL);
-
-            // Tween callback: SetPortal(true)
-        }
-
-        public void SetPortal(bool state)
-        {
-            portalCollider.enabled = state;
         }
 
         private void TeleportPlayers()
@@ -126,8 +74,79 @@ namespace EverScord
 
                 // make player invisible
 
-                GameManager.LoadLevel();
+                PrepareNextLevel();
             }
         }
+
+        private void PrepareNextLevel()
+        {
+            foreach (PhotonView view in GameManager.Instance.playerPhotonViews)
+                view.gameObject.SetActive(false);
+
+            levelList[GameManager.CurrentLevelIndex].Level.SetActive(false);
+            GameManager.SetLevelIndex(GameManager.CurrentLevelIndex + 1);
+
+            GameObject nextLevel = levelList[GameManager.CurrentLevelIndex].Level;
+            nextLevel.SetActive(true);
+
+            groundCollider.transform.position = nextLevel.transform.position;
+
+            foreach (PhotonView view in GameManager.Instance.playerPhotonViews)
+            {
+                view.transform.position = nextLevel.transform.position;
+                view.gameObject.SetActive(true);
+            }
+        }
+
+        public static void LoadGameLevel()
+        {
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
+                return;
+
+            GameManager.SetLevelIndex(0);
+            GameManager.Instance.StartCoroutine(LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
+        }
+
+        private static IEnumerator LoadLevelAsync(string levelName)
+        {
+            IsLoadingLevel = true;
+
+            GameManager.Instance.LoadScreen.CoverScreen();
+            yield return new WaitForSeconds(1f);
+
+            GameManager.Instance.LoadScreen.ImageHub.SetActive(true);
+            GameManager.Instance.LoadScreen.ShowScreen();
+
+            PhotonNetwork.LoadLevel(levelName);
+
+            while (PhotonNetwork.LevelLoadingProgress < 0.98f)
+            {
+                GameManager.Instance.LoadScreen.SetProgress(PhotonNetwork.LevelLoadingProgress);
+                yield return null;
+            }
+
+            GameManager.Instance.LoadScreen.SetProgress(1f);
+            GameManager.Instance.StartCoroutine(ExitLoadingScreen());
+        }
+
+        private static IEnumerator ExitLoadingScreen()
+        {
+            yield return waitLoadScreen;
+
+            GameManager.Instance.LoadScreen.CoverScreen();
+            yield return new WaitForSeconds(3f);
+
+            GameManager.Instance.LoadScreen.ShowScreen();
+            GameManager.Instance.LoadScreen.ImageHub.SetActive(false);
+
+            IsLoadingLevel = false;
+        }
     }
+}
+
+[System.Serializable]
+public class LevelInfo
+{
+    public GameObject Level;
+    public AudioClip LoopBgm;
 }
