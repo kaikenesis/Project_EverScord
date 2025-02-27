@@ -7,7 +7,6 @@ public class BossSpawner : MonoBehaviour
 {
     [SerializeField] private float spawnTimer = 0f;
 
-    private string assetName = "Boss";
     private float curTime = 0;
     private int spawnCount = 0;
 
@@ -18,7 +17,6 @@ public class BossSpawner : MonoBehaviour
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
-        // await ResourceManager.Instance.CreatePool(assetName, 1);
 
         GameObject bossPrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.Boss_ID);
         mo = Instantiate(bossPrefab, transform.position, Quaternion.identity);
@@ -46,11 +44,13 @@ public class BossSpawner : MonoBehaviour
                 mo.SetActive(true);
 
                 PhotonView view = mo.GetComponent<PhotonView>();
-
-                if (PhotonNetwork.AllocateViewID(view))
+                if(view.ViewID == 0)
                 {
-                    data = view.ViewID;
-                    photonView.RPC("SyncSpawn", RpcTarget.Others, data);
+                    if (PhotonNetwork.AllocateViewID(view))
+                    {
+                        data = view.ViewID;
+                        photonView.RPC("SyncSpawn", RpcTarget.Others, data);
+                    }
                 }
 
                 spawnCount++;

@@ -15,10 +15,13 @@ public class BossPattern15_Imp : ActionNodeImplement
     {
         Debug.Log("Attack15 start");
         bossRPC.PlayAnimation("TakeOff");
+        bossRPC.PlayJumpEffect();
         yield return new WaitForSeconds(bossRPC.clipDict["TakeOff"]);
         transform.position = center;
         bossRPC.PlayAnimation("Landing");
-        yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 2);
+        yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 4);
+        bossRPC.PlayJumpEffect();
+        yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 4);
 
         yield return bossRPC.EnableShield();
 

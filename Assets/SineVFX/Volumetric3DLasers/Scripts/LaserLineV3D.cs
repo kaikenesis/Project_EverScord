@@ -44,20 +44,20 @@ public class LaserLineV3D : MonoBehaviour
     // Initialize Laser Line
     void LaserCastRay()
     {
-        RaycastHit hit;
-        if (!bIgnoreHit && Physics.Raycast(transform.position, transform.forward, out hit, maxLength))
-        {
-            HitLength = hit.distance;
-            positionForExplosion = Vector3.MoveTowards(hit.point, transform.position, moveHitToSource);
-            positionArrayLength = Mathf.RoundToInt(hit.distance / (particleMeshLength * finalSize));
-            if (positionArrayLength < hit.distance)
-            {
-                positionArrayLength += 1;
-            }
-            particleSpawnPositions = new Vector3[positionArrayLength];
-            endPoint = hit.point;
-        }
-        else
+        //RaycastHit hit;
+        //if (!bIgnoreHit && Physics.Raycast(transform.position, transform.forward, out hit, maxLength))
+        //{
+        //    HitLength = hit.distance;
+        //    positionForExplosion = Vector3.MoveTowards(hit.point, transform.position, moveHitToSource);
+        //    positionArrayLength = Mathf.RoundToInt(hit.distance / (particleMeshLength * finalSize));
+        //    if (positionArrayLength < hit.distance)
+        //    {
+        //        positionArrayLength += 1;
+        //    }
+        //    particleSpawnPositions = new Vector3[positionArrayLength];
+        //    endPoint = hit.point;
+        //}
+        //else
         {
             HitLength = maxLength;
             positionArrayLength = Mathf.RoundToInt(maxLength / (particleMeshLength * finalSize));

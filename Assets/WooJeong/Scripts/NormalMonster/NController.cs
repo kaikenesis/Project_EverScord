@@ -11,7 +11,8 @@ public abstract class NController : MonoBehaviour, IEnemy
 {
     [SerializeField] public NMonsterData monsterData;
 
-    public float HP = 0;
+    public float HP {  get; private set; }
+
     [HideInInspector] public Dictionary<string, float> clipDict = new();
     [HideInInspector] public int LastAttack = 0;
     [HideInInspector] public GameObject player;
@@ -170,20 +171,20 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float hp)
     {
-        HP -= hp;
-        if (HP <= 0)
+        this.HP -= hp;
+        if (this.HP <= 0)
             isDead = true;
-        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
-        photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
+        monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
+        photonView.RPC("SyncMonsterHP", RpcTarget.Others, this.HP);
     }
 
     [PunRPC]
     protected void SyncMonsterHP(float hp)
     {
-        HP = hp;
-        if (HP <= 0)
+        this.HP = hp;
+        if (this.HP <= 0)
             isDead = true;
-        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
+        monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
     }
 
     public void StunMonster(float stunTime)
@@ -201,6 +202,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void Death()
     {
         photonView.RPC("SyncMonsterDeath", RpcTarget.Others);
+        healthBarObject.SetActive(false);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
         GameManager.Instance.LevelController.IncreaseProgress();
     }
@@ -221,6 +223,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             HP = monsterData.HP;
             if (monsterHealthBar == null)
                 SetHealthBar();
+            healthBarObject.SetActive(true);
             monsterHealthBar.UpdateHealth(HP, monsterData.HP);
             photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
             LastAttack = 0;
@@ -230,14 +233,14 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void PlayAnimation(string animationName)
     {
-        Animator.CrossFade(animationName, 0.3f, -1, 0); // ���ÿ��� �ִϸ��̼� ����
-        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName); // �ٸ� Ŭ���̾�Ʈ���� �ִϸ��̼� ���� ��û
+        Animator.CrossFade(animationName, 0.3f, -1, 0);
+        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName);
     }
 
     [PunRPC]
     protected void SyncAnimation(string animationName)
     {
-        Animator.CrossFade(animationName, 0.3f, -1, 0); // ���� Ŭ���̾�Ʈ���� ������ �ִϸ��̼� ����
+        Animator.CrossFade(animationName, 0.3f, -1, 0);
     }
 
     public virtual IEnumerator ProjectAttackRange(int attackNum)
@@ -315,23 +318,35 @@ public abstract class NController : MonoBehaviour, IEnemy
         float nearest = Mathf.Infinity;
         GameObject nearPlayer = null;
 
-        foreach (var player in GameManager.Instance.playerPhotonViews)
+        foreach (var kv in GameManager.Instance.PlayerDict)
         {
-            float cur = (player.transform.position - transform.position).magnitude;
+            CharacterControl player = kv.Value;
+
+            if(player.IsDead)
+                continue;
+
+            float cur = (player.PlayerTransform.position - transform.position).magnitude;
             if (cur < nearest)
             {
                 nearest = cur;
                 nearPlayer = player.gameObject;
             }
         }
-        player = nearPlayer;
+
+        if (nearPlayer != null)
+            player = nearPlayer;
+        //else
+            //isDead = true;
     }
 
     public void LookPlayer()
     {
-        Vector3 dir = player.transform.position - transform.position;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * monsterData.SmoothAngleSpeed);
-        transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
+        if (player != null)
+        {
+            Vector3 dir = player.transform.position - transform.position;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * monsterData.SmoothAngleSpeed);
+            transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
+        }
     }
 
     public bool IsLookPlayer(float distance)
@@ -377,12 +392,13 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public float CalcDistance()
     {
-        if (player == null)
-            Debug.Log("player null");
-        Vector3 heading = player.transform.position - transform.position;
-        float distance = heading.magnitude;
-
-        return distance;
+        if (player != null)
+        {
+            Vector3 heading = player.transform.position - transform.position;
+            float distance = heading.magnitude;
+            return distance;
+        }
+        return 0;
     }
 
     public IEnumerator CoolDown1()

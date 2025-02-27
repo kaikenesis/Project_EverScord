@@ -1,4 +1,5 @@
 using EverScord;
+using EverScord.Character;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -46,10 +47,16 @@ public class BossMove_Imp : ActionNodeImplement
         navMeshAgent.enabled = true;
         while (true)
         {
-            navMeshAgent.destination = player.transform.position;
+            if (player != null)
+            {
+                navMeshAgent.destination = player.transform.position;
+            }
+            else
+                SetNearestPlayer();
+
             float distance = CalcDistance();
             LookPlayer();
-            if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance))
+            if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance + 1))
             {
                 navMeshAgent.enabled = false;
                 isEnd = true;
@@ -65,30 +72,34 @@ public class BossMove_Imp : ActionNodeImplement
         float nearest = Mathf.Infinity;
         GameObject nearPlayer = null;
 
-        if(GameManager.Instance.playerPhotonViews.Count == 0)
+        foreach (var kv in GameManager.Instance.PlayerDict)
         {
-            player = null;
-            return;
-        }
-        foreach (var player in GameManager.Instance.playerPhotonViews)
-        {
-            float cur = (player.transform.position - transform.position).magnitude;
+            CharacterControl player = kv.Value;
+
+            if (player.IsDead)
+                continue;
+
+            float cur = (player.PlayerTransform.position - transform.position).magnitude;
             if (cur < nearest)
             {
                 nearest = cur;
                 nearPlayer = player.gameObject;
             }
         }
-        player = nearPlayer;
+        if (nearPlayer != null) 
+            player = nearPlayer;
+        //else
     }
 
     private float CalcDistance()
     {
-        if (player == null)
-            Debug.Log("player null");
-        Vector3 heading = player.transform.position - transform.position;
-        float distance = heading.magnitude;
+        if (player != null)
+        {
+            Vector3 heading = player.transform.position - transform.position;
+            float distance = heading.magnitude;
+            return distance;
+        }
 
-        return distance;
+        return 0;
     }
 }

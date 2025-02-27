@@ -21,7 +21,7 @@ public class MonsterSpawner : MonoBehaviour
     private async void Awake()
     {
         photonView = GetComponent<PhotonView>();
-        await ResourceManager.Instance.CreatePool(monster.AssetGUID);
+        await ResourceManager.Instance.CreatePool(monster.AssetGUID, 1);
         StartCoroutine(Spawn());
     }
 
@@ -39,11 +39,13 @@ public class MonsterSpawner : MonoBehaviour
                 mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
 
                 PhotonView view = mo.GetComponent<PhotonView>();
-
-                if (PhotonNetwork.AllocateViewID(view))
+                if (view.ViewID == 0)
                 {
-                    data = view.ViewID;
-                    photonView.RPC("SyncSpawn", RpcTarget.Others, data);
+                    if (PhotonNetwork.AllocateViewID(view))
+                    {
+                        data = view.ViewID;
+                        photonView.RPC("SyncSpawn", RpcTarget.Others, data);
+                    }
                 }
 
                 NController nController = mo.GetComponent<NController>();

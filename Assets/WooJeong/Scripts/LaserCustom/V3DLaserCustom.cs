@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class V3DLaserCustom : MonoBehaviour
 {
-    private float laserDamage = 200;
+    private float laserDamage = 20;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,7 +15,7 @@ public class V3DLaserCustom : MonoBehaviour
         
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("hit");
+            Debug.Log("Laser hit");
             CharacterControl control = other.GetComponent<CharacterControl>();
             control.DecreaseHP(laserDamage);
         }

@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class V3DLaserProgressCustom : MonoBehaviour
 {
-
     public bool changeAllMaxLength = true;
     public float maxLength = 32f;
     public float globalProgressSpeed = 1f;

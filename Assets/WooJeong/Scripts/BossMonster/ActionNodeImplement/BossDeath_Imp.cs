@@ -11,7 +11,7 @@ public class BossDeath_Imp : ActionNodeImplement
         yield return new WaitForSeconds(2f);
         isEnd = true;
         action = null;
-        ResourceManager.Instance.ReturnToPool(gameObject, "Boss");
+        //ResourceManager.Instance.ReturnToPool(gameObject, "Boss");
         Debug.Log("Death end");
     }
 }
