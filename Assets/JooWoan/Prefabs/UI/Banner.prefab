@@ -84,6 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5331389262610566839}
+  - component: {fileID: 124439516424524012}
   m_Layer: 0
   m_Name: Banner
   m_TagString: Untagged
@@ -111,3 +112,11 @@ RectTransform:
   m_AnchoredPosition: {x: 1322.5627, y: -0.0009918213}
   m_SizeDelta: {x: 682.18, y: 754.32}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &124439516424524012
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8913109293792231356}
+  m_CullTransparentMesh: 1

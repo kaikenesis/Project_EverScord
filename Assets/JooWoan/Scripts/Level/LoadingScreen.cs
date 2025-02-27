@@ -72,7 +72,7 @@ namespace EverScord
             bannerRectWidth = banner.rect.width;
             float initialBannerPosX = banner.anchoredPosition.x;
 
-            finalBannerPosX = initialBannerPosX - bannerRectWidth * (MAX_BANNER_COUNT - 1);
+            finalBannerPosX = initialBannerPosX - bannerRectWidth * MAX_BANNER_COUNT;
 
             for (int i = 1; i < MAX_BANNER_COUNT; i++)
             {

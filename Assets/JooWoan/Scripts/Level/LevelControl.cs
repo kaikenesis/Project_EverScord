@@ -23,12 +23,15 @@ namespace EverScord
         [SerializeField] private float countdown;
         [SerializeField] private List<LevelInfo> levelList;
 
+        private static PhotonView photonView;
         private static WaitForSeconds waitLoadScreen;
         private float progress, maxProgress;
 
         void Awake()
         {
             GameManager.Instance.InitControl(this);
+
+            photonView = GetComponent<PhotonView>();
             waitLoadScreen = new WaitForSeconds(LOADSCREEN_DELAY);
 
             portalControl.gameObject.SetActive(false);
@@ -64,6 +67,9 @@ namespace EverScord
 
         private void TeleportPlayers()
         {
+            if (!photonView.IsMine)
+                return;
+            
             Debug.Log("Teleporting all players.");
 
             foreach (var kv in GameManager.Instance.PlayerDict)
@@ -74,12 +80,13 @@ namespace EverScord
 
                 // make player invisible
 
-                PrepareNextLevel();
             }
+
+            PrepareNextLevel();
         }
 
         private void PrepareNextLevel()
-        {
+        {            
             foreach (PhotonView view in GameManager.Instance.playerPhotonViews)
                 view.gameObject.SetActive(false);
 
@@ -99,12 +106,9 @@ namespace EverScord
         }
 
         public static void LoadGameLevel()
-        {
-            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
-                return;
-
-            GameManager.SetLevelIndex(0);
-            GameManager.Instance.StartCoroutine(LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
+        {            
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncLoadGameLevel), RpcTarget.All);
         }
 
         private static IEnumerator LoadLevelAsync(string levelName)
@@ -117,7 +121,8 @@ namespace EverScord
             GameManager.Instance.LoadScreen.ImageHub.SetActive(true);
             GameManager.Instance.LoadScreen.ShowScreen();
 
-            PhotonNetwork.LoadLevel(levelName);
+            if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
+                PhotonNetwork.LoadLevel(levelName);
 
             while (PhotonNetwork.LevelLoadingProgress < 0.98f)
             {
@@ -140,6 +145,16 @@ namespace EverScord
             GameManager.Instance.LoadScreen.ImageHub.SetActive(false);
 
             IsLoadingLevel = false;
+        }
+
+        [PunRPC]
+        private void SyncLoadGameLevel()
+        {
+            if (!photonView.IsMine)
+                return;
+
+            GameManager.SetLevelIndex(0);
+            GameManager.Instance.StartCoroutine(LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
         }
     }
 }
