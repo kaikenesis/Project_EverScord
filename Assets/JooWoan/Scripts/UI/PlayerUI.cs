@@ -162,7 +162,6 @@ namespace EverScord.UI
 
         public void EnableReviveCircle(bool state)
         {
-            Debug.Log($"Whyy {state}");
             reviveCircle.gameObject.SetActive(state);
         }
     }
