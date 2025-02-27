@@ -56,7 +56,7 @@ public class BossMove_Imp : ActionNodeImplement
 
             float distance = CalcDistance();
             LookPlayer();
-            if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance))
+            if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance + 1))
             {
                 navMeshAgent.enabled = false;
                 isEnd = true;
