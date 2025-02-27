@@ -6,7 +6,6 @@ using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
 using EverScord.Effects;
-using DG.Tweening;
 
 namespace EverScord
 {
@@ -16,6 +15,7 @@ namespace EverScord
         public const float GROUND_HEIGHT = 0f;
         private const float LOADSCREEN_DELAY = 3f;
 
+        [SerializeField] private bool debugMode = false;
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
         //public PlayerData userData;
@@ -169,7 +169,7 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
 
-            ++CurrentStageIndex;
+            CurrentStageIndex = 0;
 
             if (CurrentStageIndex >= Instance.stageInfos.Count)
             {
@@ -216,6 +216,29 @@ namespace EverScord
             LoadScreen.ImageHub.SetActive(false);
 
             IsLoadingLevel = false;
+        }
+
+        private void OnGUI()
+        {
+            if (debugMode == true)
+            {
+                if (GUI.Button(new Rect(400, 0, 150, 60), "Show Me The Money"))
+                {
+                    playerData.IncreaseMoney(10000);
+                }
+
+                if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
+                {
+                    //PhotonNetwork.LoadLevel("PhotonTestPlay");
+                    LoadLevel();
+                }
+
+                if (GUI.Button(new Rect(800, 0, 150, 60), "Go To LobbyScene"))
+                {
+                    if(PhotonNetwork.IsMasterClient)
+                        PhotonNetwork.LoadLevel("PhotonTestLobby");
+                }
+            }
         }
     }
 }

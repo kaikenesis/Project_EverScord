@@ -14,6 +14,7 @@ namespace EverScord
 
         private void Awake()
         {
+
         }
 
         public void LoginPhoton()

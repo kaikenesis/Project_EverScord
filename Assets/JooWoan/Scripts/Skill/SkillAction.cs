@@ -15,7 +15,7 @@ namespace EverScord.Skill
         protected int skillIndex;
 
         // int: skill index, float: cooldown duration
-        public Action<int, float> OnUsedSkill = delegate { };
+        public static Action<int, float> OnUsedSkill = delegate { };
 
         public virtual bool CanAttackWhileSkill
         {
@@ -25,6 +25,11 @@ namespace EverScord.Skill
         public virtual bool IsUsingSkill
         {
             get { return skillCoroutine != null; }
+        }
+
+        private void Update()
+        {
+            UpdateCooldownProgress();
         }
 
         public virtual void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
@@ -43,12 +48,19 @@ namespace EverScord.Skill
             if (cooldownTimer.IsCooldown)
                 return false;
 
-            OnUsedSkill?.Invoke(skillIndex, cooldownTimer.Cooldown);
             cooldownTimer.ResetElapsedTime();
             return true;
         }
 
         public abstract void OffensiveAction();
         public abstract void SupportAction();
+
+        private void UpdateCooldownProgress()
+        {
+            if (!photonView.IsMine || !cooldownTimer.IsCooldown)
+                return;
+
+            OnUsedSkill?.Invoke(skillIndex, cooldownTimer.CooldownProgress);
+        }
     }
 }
