@@ -374,10 +374,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         BossShield bossShield = shield.GetComponent<BossShield>();
         if (bossShield.HP > 0)
         {
-            foreach (var player in GameManager.Instance.playerPhotonViews)
+            foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                CharacterControl control = player.GetComponent<CharacterControl>();
-                control.DecreaseHP(50);
+                player.DecreaseHP(50);
             }
         }
         animator.speed = 1;

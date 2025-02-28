@@ -26,14 +26,17 @@ namespace EverScord
 
         private void HandlePhotonViewListUpdated()
         {
-            List<PhotonView> list = GameManager.Instance.playerPhotonViews;
-            Debug.Log(list.Count);
+            int playerCount = GameManager.Instance.PlayerDict.Count;
+            int i = 0;
 
-            for (int i = 0; i < list.Count; i++)
+            Debug.Log(GameManager.Instance.PlayerDict.Count);
+
+            foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                Debug.Log($"{list[i].gameObject} : {list[i].ViewID}");
+                int viewID = player.CharacterPhotonView.ViewID;
+                Debug.Log($"{player.gameObject} : {viewID}");
 
-                if (portraits.Count < list.Count)
+                if (portraits.Count < playerCount)
                 {
                     GameObject obj;
                     if (i != 0)
@@ -45,14 +48,14 @@ namespace EverScord
                         obj = Instantiate(portrait, myPortrait);
                         obj.transform.localPosition = Vector3.zero;
                     }
+                    
                     portraits.Add(obj);
+                    Debug.Log($"{player.CharacterType} , {player.CharacterJob}");
 
-                    CharacterControl characterControl = list[i].gameObject.GetComponent<CharacterControl>();
-                    Debug.Log($"{characterControl.CharacterType} , {characterControl.CharacterJob}");
-
-                    obj.GetComponent<UIPortrait>().Initialize(characterControl.CharacterType, list[i].ViewID);
-                    obj.GetComponentInChildren<UIJobIcon>().Initialize(characterControl.CharacterJob, list[i].ViewID);
+                    obj.GetComponent<UIPortrait>().Initialize(player.CharacterType, viewID);
+                    obj.GetComponentInChildren<UIJobIcon>().Initialize(player.CharacterJob, viewID);
                 }
+                ++i;
             }
         }
 

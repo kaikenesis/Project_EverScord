@@ -24,6 +24,14 @@ public class ResourceManager : Singleton<ResourceManager>
     // 풀 크기 설정
     private const int DEFAULT_POOL_SIZE = 10;
 
+    public static void ClearAllPools()
+    {
+        Instance.poolDictionary.Clear();
+        Instance.iPoolableDictionary.Clear();
+        Instance.prefabDictionary.Clear();
+        Instance.objectDictionary.Clear();
+    }
+
     public T GetAsset<T>(string addressableKey) where T : class
     {
         if (!objectDictionary.ContainsKey(addressableKey))

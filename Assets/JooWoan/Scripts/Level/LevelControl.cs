@@ -72,9 +72,9 @@ namespace EverScord
         }
 
         public void PrepareNextLevel()
-        {            
-            foreach (PhotonView view in GameManager.Instance.playerPhotonViews)
-                view.gameObject.SetActive(false);
+        {
+            foreach (var kv in GameManager.Instance.PlayerDict)
+                kv.Value.gameObject.SetActive(false);
 
             levelList[GameManager.CurrentLevelIndex].Level.SetActive(false);
             GameManager.SetLevelIndex(GameManager.CurrentLevelIndex + 1);
@@ -84,10 +84,10 @@ namespace EverScord
 
             groundCollider.transform.position = nextLevel.transform.position;
 
-            foreach (PhotonView view in GameManager.Instance.playerPhotonViews)
+            foreach (var kv in GameManager.Instance.PlayerDict)
             {
-                view.transform.position = nextLevel.transform.position;
-                view.gameObject.SetActive(true);
+                kv.Value.transform.position = nextLevel.transform.position;
+                kv.Value.gameObject.SetActive(true);
             }
         }
 

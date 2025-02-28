@@ -1,7 +1,6 @@
 using EverScord;
-using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
+using EverScord.Character;
 using UnityEngine;
 
 public class NML2_AttackState1 : NAttackState
@@ -29,9 +28,9 @@ public class NML2_AttackState1 : NAttackState
     private void Fire()
     {
         GameObject player2 = null;
-        foreach (var player in GameManager.Instance.playerPhotonViews)
+        foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
         {
-            if((player.transform.position - transform.position).magnitude <= monsterController.monsterData.AttackRangeX1
+            if((player.PlayerTransform.position - transform.position).magnitude <= monsterController.monsterData.AttackRangeX1
                 && player.gameObject != monsterController.player)
             {
                 player2 = player.gameObject;

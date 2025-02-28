@@ -382,7 +382,7 @@ namespace EverScord.Character
         private void SetPortraits()
         {
             // Debug.Log($"SetPortraits, {GameManager.Instance.playerPhotonViews.Count}");
-            if (PhotonNetwork.IsMasterClient && GameManager.Instance.playerPhotonViews.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+            if (PhotonNetwork.IsMasterClient && GameManager.Instance.PlayerDict.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
                 photonView.RPC(nameof(CreatePortrait), RpcTarget.All);
         }
 
@@ -654,7 +654,6 @@ namespace EverScord.Character
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            GameManager.Instance.AddPlayerPhotonView(info.photonView);
             GameManager.Instance.InitControl(this);
         }
 

@@ -10,6 +10,7 @@ namespace EverScord.Pool
 
         void Awake()
         {
+            ResourceManager.ClearAllPools();
             LoadPools();
         }
 
