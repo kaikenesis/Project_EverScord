@@ -75,6 +75,9 @@ namespace EverScord
             DOTween.Play(ConstStrings.TWEEN_OPEN_PORTAL);
 
             // Tween callback: SetPortalCollider(true)
+
+            if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
+                GameManager.View.RPC(nameof(GameManager.Instance.ReviveAllPlayers), RpcTarget.All);
         }
 
         public void Init(float countdown, Action callback)

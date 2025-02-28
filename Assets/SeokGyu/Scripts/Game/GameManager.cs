@@ -167,6 +167,20 @@ namespace EverScord
         }
 
         [PunRPC]
+        public void ReviveAllPlayers()
+        {
+            foreach (var kv in PlayerDict)
+            {
+                CharacterControl player = kv.Value;
+
+                if (!player.IsDead)
+                    continue;
+
+                player.StartCoroutine(player.HandleRevival());
+            }
+        }
+
+        [PunRPC]
         public void SyncLoadGameLevel()
         {
             SetLevelIndex(0);
