@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Photon.Pun;
 
 namespace EverScord
 {
@@ -40,7 +41,7 @@ namespace EverScord
 
         void Update()
         {
-            if (!GameManager.IsLoadingLevel)
+            if (!LevelControl.IsLoadingLevel)
                 return;
             
             UpdateProgress();
@@ -72,7 +73,7 @@ namespace EverScord
             bannerRectWidth = banner.rect.width;
             float initialBannerPosX = banner.anchoredPosition.x;
 
-            finalBannerPosX = initialBannerPosX - bannerRectWidth * (MAX_BANNER_COUNT - 1);
+            finalBannerPosX = initialBannerPosX - bannerRectWidth * MAX_BANNER_COUNT;
 
             for (int i = 1; i < MAX_BANNER_COUNT; i++)
             {
@@ -100,6 +101,12 @@ namespace EverScord
         {   
             DOTween.Rewind(ConstStrings.TWEEN_SHOW_SCREEN);
             DOTween.Play(ConstStrings.TWEEN_SHOW_SCREEN);
+        }
+
+        public void SetMainCamera(bool state)
+        {
+            if (Camera.main)
+                Camera.main.enabled = state;
         }
 
         public void SetProgress(float amount)

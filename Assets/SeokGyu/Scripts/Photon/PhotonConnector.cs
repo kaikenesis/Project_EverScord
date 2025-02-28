@@ -11,11 +11,20 @@ namespace EverScord
 
         public static Action OnLobbyJoined = delegate { };
         public static Action<string, int> OnLogin = delegate { };
+        public static Action OnReturnToLobbyScene = delegate { };
 
         #region Private Methods
         private void Awake()
         {
             Init();
+        }
+
+        private void Start()
+        {
+            if (PhotonNetwork.IsConnected)
+            {
+                OnReturnToLobbyScene?.Invoke();
+            }
         }
 
         private void Init()

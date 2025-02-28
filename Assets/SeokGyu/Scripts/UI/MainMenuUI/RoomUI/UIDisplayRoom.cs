@@ -35,9 +35,12 @@ namespace EverScord
 
         private void Start()
         {
-            OnHideObjects();
+            if(!PhotonNetwork.InRoom)
+            {
+                OnHideObjects();
 
-            gameObject.SetActive(false);
+                gameObject.SetActive(false);
+            }
         }
 
         private void OnDestroy()

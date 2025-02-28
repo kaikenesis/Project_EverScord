@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
 using EverScord.UI;
+using EverScord.GameCamera;
 
 namespace EverScord.Skill
 {
@@ -15,7 +16,6 @@ namespace EverScord.Skill
         private Hovl_Laser laserControl;
 
         private CounterSkill skill;
-        private Camera activatorCam;
         private CharacterControl cachedTarget;
         private Coroutine buffCoroutine;
 
@@ -32,7 +32,6 @@ namespace EverScord.Skill
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.skill   = (CounterSkill)skill;
-            activatorCam = activator.CameraControl.Cam;
 
             base.Init(activator, skill, ejob, skillIndex);
         }
@@ -193,7 +192,7 @@ namespace EverScord.Skill
             if (buffCoroutine != null)
                 return;
 
-            Ray ray = activatorCam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
+            Ray ray = CharacterCamera.CurrentClientCam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
 
             if (!Physics.Raycast(ray, out RaycastHit hit, RAYCAST_LENGTH, GameManager.PlayerLayer))
             {

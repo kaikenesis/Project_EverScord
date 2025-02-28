@@ -34,5 +34,8 @@ namespace EverScord
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";
+
+        // Scene Names
+        public const string SCENE_MAINGAME = "PhotonTestPlay";
     }
 }

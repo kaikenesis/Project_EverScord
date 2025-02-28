@@ -18,7 +18,6 @@ namespace EverScord.Skill
         private Transform throwPoint;
         private bool displayPath = false;
 
-        private Camera cam;
         private LineRenderer trajectoryLine;
         private SkillMarker skillMarker;
         public SkillMarker MarkerControl => skillMarker;
@@ -39,7 +38,6 @@ namespace EverScord.Skill
         public TrajectoryPredictor(CharacterControl activator, Transform skillTransform, ThrowSkill throwSkill)
         {
             this.activator  = activator;
-            cam             = activator.CameraControl.Cam;
 
             displayPath     = throwSkill.DisplayTrajectory;
             GRAVITY         = throwSkill.Gravity;
@@ -70,12 +68,7 @@ namespace EverScord.Skill
 
             while (!IsThrownObjectMoving)
             {
-                Ray ray = cam.ScreenPointToRay(activator.PlayerInputInfo.mousePosition);
-
-                if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GameManager.GroundLayer))
-                    yield return null;
-
-                throwDirection = hit.point - throwPoint.position;
+                throwDirection = activator.MouseRayHitPos - throwPoint.position;
                 groundDirection = new Vector3(throwDirection.x, 0, throwDirection.z);
                 Vector3 targetPos = new Vector3(groundDirection.magnitude, throwDirection.y, 0);
 
