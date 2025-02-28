@@ -37,8 +37,8 @@ public class MapBlackFogSpawner : MonoBehaviour
 
     private IEnumerator Spawn()
     {
-        //if (!PhotonNetwork.IsMasterClient)
-            //yield break;
+        if (!PhotonNetwork.IsMasterClient)
+            yield break;
         bool isDisappear = false;
         while (true)
         {            
@@ -67,7 +67,7 @@ public class MapBlackFogSpawner : MonoBehaviour
                         Debug.Log(ranPos);
                         Debug.Log(mo);
                         fogList.Add(mo);
-                        //photonView.RPC("SyncFog", RpcTarget.Others, ranPos);
+                        photonView.RPC("SyncFog", RpcTarget.Others, ranPos);
                     }                    
                 }
                 else
@@ -81,7 +81,7 @@ public class MapBlackFogSpawner : MonoBehaviour
                         fogList[i].SetActive(true);
                         fogList[i].transform.position = ranPos;
 
-                        //photonView.RPC("SyncFog", RpcTarget.Others, ranPos);
+                        photonView.RPC("SyncFog", RpcTarget.Others, ranPos);
                     }
                 }
                 curTime = 0f;

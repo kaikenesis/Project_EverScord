@@ -23,7 +23,7 @@ public class MapLaser : MonoBehaviour
 
     private void OnEnable()
     {
-        //if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             rotate = StartCoroutine(Rotate());
         }
