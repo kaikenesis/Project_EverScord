@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,12 +12,14 @@ namespace EverScord
         private void Awake()
         {
             PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonConnector.OnReturnToLobbyScene += HandleLobbyJoined;
             PhotonLogin.OnLoginError += HandleLoginError;
         }
 
         private void OnDestroy()
         {
             PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonConnector.OnReturnToLobbyScene -= HandleLobbyJoined;
             PhotonLogin.OnLoginError -= HandleLoginError;
         }
 

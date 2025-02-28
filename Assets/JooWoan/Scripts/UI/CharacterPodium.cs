@@ -15,11 +15,20 @@ namespace EverScord.UI
         private Transform currentCharacter;
         private InputInfo playerInput;
 
-        void Start()
+        private void Awake()
         {
+            UIDisplayRoom.OnVisibleObject += HandleVisibleObject;
             SetCharacterTransform();
             HideCharacters();
-            UIDisplayRoom.OnVisibleObject += HandleVisibleObject;
+        }
+
+        void Start()
+        {
+            //if(!PhotonNetwork.InRoom)
+            //{
+            //    SetCharacterTransform();
+            //    HideCharacters();
+            //}
         }
 
         private void OnDestroy()
@@ -46,7 +55,16 @@ namespace EverScord.UI
             if (CharacterList.Count == 0)
                 return;
 
-            currentCharacter = CharacterList[0].Character;
+            if(GameManager.Instance.PlayerData != null)
+            {
+                PlayerData.ECharacter type = GameManager.Instance.PlayerData.character;
+                currentCharacter = CharacterList[(int)type].Character;
+                SwitchPlayer(type);
+            }
+            else
+            {
+                currentCharacter = CharacterList[0].Character;
+            }
         }
 
         private void ShowCharacters()
@@ -70,7 +88,7 @@ namespace EverScord.UI
             );
         }
 
-        private void SwitchPlayer(CharacterType type)
+        private void SwitchPlayer(PlayerData.ECharacter type)
         {
             Quaternion previousRotation = currentCharacter.rotation;
             currentCharacter.gameObject.SetActive(false);
@@ -81,7 +99,7 @@ namespace EverScord.UI
             currentCharacter.gameObject.SetActive(true);
         }
 
-        private Transform GetCharacterTransform(CharacterType type)
+        private Transform GetCharacterTransform(PlayerData.ECharacter type)
         {
             for (int i = 0; i < CharacterList.Count; i++)
             {
@@ -97,7 +115,7 @@ namespace EverScord.UI
             if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Uni) return;
 
             GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Uni;
-            SwitchPlayer(CharacterType.UNI);
+            SwitchPlayer(PlayerData.ECharacter.Uni);
         }
 
         public void SetCharacterNed()
@@ -105,7 +123,7 @@ namespace EverScord.UI
             if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Ned) return;
 
             GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Ned;
-            SwitchPlayer(CharacterType.NED);
+            SwitchPlayer(PlayerData.ECharacter.Ned);
         }
 
         public void SetCharacterUs()
@@ -113,20 +131,13 @@ namespace EverScord.UI
             if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Us) return;
 
             GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Us;
-            SwitchPlayer(CharacterType.US);
-        }
-
-        public enum CharacterType
-        {
-            NED,
-            UNI,
-            US
+            SwitchPlayer(PlayerData.ECharacter.Us);
         }
 
         [System.Serializable]
         public class CharacterInfo
         {
-            [field: SerializeField] public CharacterType Type   { get; private set; }
+            [field: SerializeField] public PlayerData.ECharacter Type   { get; private set; }
             [field: SerializeField] public Transform Character  { get; private set; }
         }
     }

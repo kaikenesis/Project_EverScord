@@ -14,7 +14,6 @@ namespace EverScord
         [SerializeField] private int maxPlayers;
         [SerializeField] private int maxDealers = 2;
         [SerializeField] private int maxHealers = 1;
-        [SerializeField] private bool bDebug = false;
         private PhotonView pv;
         private string inviteRoomName;
 
@@ -30,6 +29,7 @@ namespace EverScord
         private void Awake()
         {
             PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonConnector.OnReturnToLobbyScene += HandleReturnToLobbyScene;
             PhotonChatController.OnRoomFollow += HandleRoomInviteAccept;
             PhotonChatController.OnExile += HandleExile;
             UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
@@ -46,6 +46,7 @@ namespace EverScord
         private void OnDestroy()
         {
             PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonConnector.OnReturnToLobbyScene -= HandleReturnToLobbyScene;
             PhotonChatController.OnRoomFollow -= HandleRoomInviteAccept;
             PhotonChatController.OnExile -= HandleExile;
             UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
@@ -85,6 +86,18 @@ namespace EverScord
                     }
                     break;
             }
+        }
+
+        private void HandleReturnToLobbyScene()
+        {
+            Debug.Log($"curState = {GameManager.Instance.PhotonData.state}");
+            Debug.Log($"InRoom = {PhotonNetwork.InRoom}");
+            Debug.Log($"RoomName = {PhotonNetwork.CurrentRoom.Name}");
+            Debug.Log($"IsMaster = {PhotonNetwork.IsMasterClient}");
+
+            OnJoinRoom?.Invoke();
+            OnUpdateRoom?.Invoke();
+            DisplayRoomPlayers();
         }
 
         private void HandleRoomInviteAccept(string roomName)
@@ -403,23 +416,6 @@ namespace EverScord
         #endregion
 
         #region Debug Methods
-        private void OnGUI()
-        {
-            if (bDebug == true)
-            {
-                if (GUI.Button(new Rect(400, 0, 150, 60), "Show Me The Money"))
-                {
-                    GameManager.Instance.PlayerData.IncreaseMoney(10000);
-                }
-                
-                if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
-                {
-                    //PhotonNetwork.LoadLevel("PhotonTestPlay");
-                    GameManager.LoadLevel();
-                }
-            }
-        }
-
         private void DebugPlayerList()
         {
             string players = "";
