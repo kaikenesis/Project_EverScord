@@ -33,19 +33,19 @@ namespace EverScord
         private void HandlePhotonViewListUpdated()
         {
             // Callback함수로 호출할것 없이 최대플레이어 수만큼 생성해두고 사용하면 될듯
-            List<PhotonView> list = GameManager.Instance.playerPhotonViews;
-            Debug.Log(list.Count);
+            //List<PhotonView> list = GameManager.Instance.playerPhotonViews;
+            //Debug.Log(list.Count);
 
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (deathIcons.Count < list.Count)
-                {
-                    GameObject obj;
-                    obj = Instantiate(deathIcon, transform);
-                    deathIcons.Add(obj);
-                    obj.SetActive(false);
-                }
-            }
+            //for (int i = 0; i < list.Count; i++)
+            //{
+            //    if (deathIcons.Count < list.Count)
+            //    {
+            //        GameObject obj;
+            //        obj = Instantiate(deathIcon, transform);
+            //        deathIcons.Add(obj);
+            //        obj.SetActive(false);
+            //    }
+            //}
         }
 
         private void Init()
