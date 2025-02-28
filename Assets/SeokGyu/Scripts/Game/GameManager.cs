@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Character;
@@ -22,12 +21,11 @@ namespace EverScord
         [SerializeField] private PhotonData photonData;
         public PhotonData PhotonData { get { return photonData; } }
 
-        public List<PhotonView> playerPhotonViews               { get; private set; }
+        [field: SerializeField] public LoadingScreen LoadScreen { get; private set; }
         public BulletControl BulletsControl                     { get; private set; }
         public EnemyHitControl EnemyHitsControl                 { get; private set; }
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
-        public LoadingScreen LoadScreen                         { get; private set; }
         public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
@@ -107,23 +105,18 @@ namespace EverScord
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
-            playerPhotonViews   = new();
-            playerData.Initialize();
 
-            View.ViewID = 242;
+            View.ViewID = 999;
             CurrentLevelIndex = -1;
             PhotonNetwork.AutomaticallySyncScene = true;
+
+            playerData.Initialize();
             photonData.Initialize();
         }
 
         public void UpdateUserName(string newName)
         {
             PhotonNetwork.NickName = newName;
-        }
-
-        public void AddPlayerPhotonView(PhotonView view)
-        {
-            playerPhotonViews.Add(view);
         }
 
         public void InitControl(object control)
@@ -153,10 +146,6 @@ namespace EverScord
                     LevelController = levelControl;
                     break;
 
-                case LoadingScreen loadScreen:
-                    LoadScreen = loadScreen;
-                    break;
-
                 default:
                     break;
             }
@@ -165,6 +154,11 @@ namespace EverScord
         public static void SetLevelIndex(int index)
         {
             CurrentLevelIndex = index;
+        }
+
+        public static void ResetPlayerInfo()
+        {
+            Instance.PlayerDict.Clear();
         }
 
         [PunRPC]
@@ -213,7 +207,9 @@ namespace EverScord
                 if (GUI.Button(new Rect(800, 0, 150, 60), "Go To LobbyScene"))
                 {
                     if(PhotonNetwork.IsMasterClient)
+                    {
                         PhotonNetwork.LoadLevel("PhotonTestLobby");
+                    }
                 }
             }
         }

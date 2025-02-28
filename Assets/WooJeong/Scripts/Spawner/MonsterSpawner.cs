@@ -18,9 +18,13 @@ public class MonsterSpawner : MonoBehaviour
     private GameObject mo;
     private PhotonView photonView;
 
-    private async void Awake()
+    void Awake()
     {
         photonView = GetComponent<PhotonView>();
+    }
+
+    private async void Start()
+    {
         await ResourceManager.Instance.CreatePool(monster.AssetGUID, 1);
         StartCoroutine(Spawn());
     }

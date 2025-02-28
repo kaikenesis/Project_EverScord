@@ -1,4 +1,5 @@
 using EverScord;
+using EverScord.Character;
 using System.Collections;
 using UnityEngine;
 
@@ -12,9 +13,9 @@ public class BossPattern10_Imp : ActionNodeImplement
         for (int i = 0; i < 3; i++)
         {
             bossRPC.PlayAnimation("StandingAttack");
-            foreach (var player in GameManager.Instance.playerPhotonViews)
+            foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                bossRPC.InstantiateStoneAttack(player.transform.position, attackWidth, 1, "StoneUp", attackDamage);
+                bossRPC.InstantiateStoneAttack(player.PlayerTransform.position, attackWidth, 1, "StoneUp", attackDamage);
             }
             yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"]);
         }

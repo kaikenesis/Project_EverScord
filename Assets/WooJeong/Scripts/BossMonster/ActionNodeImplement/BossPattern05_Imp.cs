@@ -9,15 +9,15 @@ public class BossPattern05_Imp : ActionNodeImplement
     private float attackRadius = 10;
     protected override IEnumerator Act()
     {
-        Vector3 projectorPos = transform.position + (transform.forward * Mathf.Sqrt(attackRadius * attackRadius)/2);
+        // Vector3 projectorPos = transform.position + (transform.forward * Mathf.Sqrt(attackRadius * attackRadius)/2);
         bossRPC.PlayAnimation("Idle");
         bossRPC.PlayAnimation("StandingAttack");
         yield return bossRPC.ProjectEnable(5, 1f);
         //yield return new WaitForSeconds(0.5f);
         //충돌 판정
-        foreach (var player in GameManager.Instance.playerPhotonViews)
+        foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
         {
-            Vector3 toPlayerVector = (player.transform.position - transform.position).normalized;
+            Vector3 toPlayerVector = (player.PlayerTransform.position - transform.position).normalized;
             if(toPlayerVector.magnitude > attackRadius)
                 continue;
 
@@ -32,8 +32,7 @@ public class BossPattern05_Imp : ActionNodeImplement
             if (degree <= 45)
             {
                 // 플레이어 충돌 함수 추가
-                CharacterControl controller = player.GetComponent<CharacterControl>();
-                controller.DecreaseHP(10);
+                player.DecreaseHP(10);
             }
         }
         yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1.5f);

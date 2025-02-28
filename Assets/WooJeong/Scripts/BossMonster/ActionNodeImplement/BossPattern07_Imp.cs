@@ -49,14 +49,13 @@ public class BossPattern07_Imp : ActionNodeImplement
                 yield break;
             }
 
-            foreach (var player in GameManager.Instance.playerPhotonViews)
+            foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
-                float distanceToSafe = Vector3.Distance(player.transform.position, safePos);
+                // float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
+                float distanceToSafe = Vector3.Distance(player.PlayerTransform.position, safePos);
                 if (distanceToSafe > safeRange/2)
                 {
-                    CharacterControl control = player.GetComponent<CharacterControl>();
-                    control.DecreaseHP(attackDamage);
+                    player.DecreaseHP(attackDamage);
                     Debug.Log("p7 hit");
                 }
             }

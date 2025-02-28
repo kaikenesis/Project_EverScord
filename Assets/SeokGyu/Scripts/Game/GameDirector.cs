@@ -11,6 +11,8 @@ namespace EverScord
 
         private void Awake()
         {
+            GameManager.ResetPlayerInfo();
+
             SpawnPhotonPrefabs();
             CreatePlayer();
         }
@@ -24,10 +26,9 @@ namespace EverScord
             
             for (int i = 0; i < photonPrefabList.Count; i++)
             {
-                if (pool.ResourceCache.ContainsKey(photonPrefabList[i].name))
-                    continue;
-
-                pool.ResourceCache.Add(photonPrefabList[i].name, photonPrefabList[i]);
+                if (!pool.ResourceCache.ContainsKey(photonPrefabList[i].name))
+                    pool.ResourceCache.Add(photonPrefabList[i].name, photonPrefabList[i]);
+                
                 PhotonNetwork.Instantiate(photonPrefabList[i].name, Vector3.zero, Quaternion.identity);
             }
         }
