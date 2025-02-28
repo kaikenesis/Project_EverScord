@@ -67,11 +67,11 @@ public class MonsterProjectile : MonoBehaviour
             StopCoroutine(move);
             IsDestroyed = true;
         }
-        else if (other.gameObject.CompareTag("Wall"))
-        {
-            StopCoroutine(move);
-            IsDestroyed = true;
-        }
+        //else if (other.gameObject.CompareTag("Wall"))
+        //{
+        //    StopCoroutine(move);
+        //    IsDestroyed = true;
+        //}
         
     }
 }

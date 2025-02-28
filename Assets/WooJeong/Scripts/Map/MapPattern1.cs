@@ -41,7 +41,7 @@ public class MapPattern1 : MonoBehaviour
         while (true)
         {
             transform.Rotate(0, rotateSpeed, 0);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForEndOfFrame();
         }
     }
 
