@@ -14,7 +14,6 @@ namespace EverScord
         [SerializeField] private int maxPlayers;
         [SerializeField] private int maxDealers = 2;
         [SerializeField] private int maxHealers = 1;
-        [SerializeField] private bool bDebug = false;
         private PhotonView pv;
         private string inviteRoomName;
 
@@ -30,6 +29,7 @@ namespace EverScord
         private void Awake()
         {
             PhotonConnector.OnLobbyJoined += HandleLobbyJoined;
+            PhotonConnector.OnReturnToLobbyScene += HandleReturnToLobbyScene;
             PhotonChatController.OnRoomFollow += HandleRoomInviteAccept;
             PhotonChatController.OnExile += HandleExile;
             UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
@@ -46,6 +46,7 @@ namespace EverScord
         private void OnDestroy()
         {
             PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
+            PhotonConnector.OnReturnToLobbyScene -= HandleReturnToLobbyScene;
             PhotonChatController.OnRoomFollow -= HandleRoomInviteAccept;
             PhotonChatController.OnExile -= HandleExile;
             UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
@@ -85,6 +86,18 @@ namespace EverScord
                     }
                     break;
             }
+        }
+
+        private void HandleReturnToLobbyScene()
+        {
+            Debug.Log($"curState = {GameManager.Instance.PhotonData.state}");
+            Debug.Log($"InRoom = {PhotonNetwork.InRoom}");
+            Debug.Log($"RoomName = {PhotonNetwork.CurrentRoom.Name}");
+            Debug.Log($"IsMaster = {PhotonNetwork.IsMasterClient}");
+
+            OnJoinRoom?.Invoke();
+            OnUpdateRoom?.Invoke();
+            DisplayRoomPlayers();
         }
 
         private void HandleRoomInviteAccept(string roomName)
@@ -203,7 +216,7 @@ namespace EverScord
             PhotonNetwork.CreateRoom(roomName, roomOptions);
         }
 
-        private RoomOptions GetRoomOptions() // ·ë ÃÊ±â »ý¼º
+        private RoomOptions GetRoomOptions() // ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½
         {
             Hashtable roomProperties = new Hashtable()
             {
@@ -334,7 +347,7 @@ namespace EverScord
         {
             Debug.Log("You have left Photon Room");
         }
-        // RandomRoom Join ½ÇÆÐ ½Ã ¿À·ù ÄÝ¹é ÇÔ¼ö ½ÇÇà
+        // RandomRoom Join ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¹ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Random Failed {returnCode} : {message}");
@@ -391,7 +404,7 @@ namespace EverScord
             {
                 case PhotonData.EState.NONE:
                     {
-                        // ÇöÀç ¹æ ÀÎ¿øÀÌ maxÀÏ¶§ Á÷¾÷Á¶°ÇÀ» È®ÀÎÇÏ°í ÇÃ·¹ÀÌ°¡ ºÒ°¡´ÉÇÏ¸é ½Ã½ºÅÛ¸Þ½ÃÁö Ãâ·Â ( ÀÏ´ÜÀº ¹ÝÀÀxÀ¸·Î)
+                        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Î¿ï¿½ï¿½ï¿½ maxï¿½Ï¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ã·ï¿½ï¿½Ì°ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ã½ï¿½ï¿½Û¸Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ( ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½)
                     }
                     break;
             }
@@ -403,23 +416,6 @@ namespace EverScord
         #endregion
 
         #region Debug Methods
-        private void OnGUI()
-        {
-            if (bDebug == true)
-            {
-                if (GUI.Button(new Rect(400, 0, 150, 60), "Show Me The Money"))
-                {
-                    GameManager.Instance.PlayerData.IncreaseMoney(10000);
-                }
-                
-                if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
-                {
-                    //PhotonNetwork.LoadLevel("PhotonTestPlay");
-                    LevelControl.LoadGameLevel();
-                }
-            }
-        }
-
         private void DebugPlayerList()
         {
             string players = "";

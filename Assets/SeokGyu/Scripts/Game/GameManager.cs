@@ -6,7 +6,6 @@ using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
 using EverScord.Effects;
-using DG.Tweening;
 
 namespace EverScord
 {
@@ -15,6 +14,7 @@ namespace EverScord
         private static GameManager instance;
         public const float GROUND_HEIGHT = 0f;
 
+        [SerializeField] private bool debugMode = false;
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
         //public PlayerData userData;
@@ -103,13 +103,14 @@ namespace EverScord
 
         private void Init()
         {
-            View                = GetComponent<PhotonView>();
+            View                = gameObject.AddComponent<PhotonView>();
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
             playerPhotonViews   = new();
             playerData.Initialize();
 
+            View.ViewID = 242;
             CurrentLevelIndex = -1;
             PhotonNetwork.AutomaticallySyncScene = true;
             photonData.Initialize();
@@ -192,6 +193,29 @@ namespace EverScord
         {            
             Debug.Log("Teleporting all players.");
             LevelController.PrepareNextLevel();
+        }
+
+        private void OnGUI()
+        {
+            if (debugMode == true)
+            {
+                if (GUI.Button(new Rect(400, 0, 150, 60), "Show Me The Money"))
+                {
+                    playerData.IncreaseMoney(10000);
+                }
+
+                if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
+                {
+                    //PhotonNetwork.LoadLevel("PhotonTestPlay");
+                    LevelControl.LoadGameLevel();
+                }
+
+                if (GUI.Button(new Rect(800, 0, 150, 60), "Go To LobbyScene"))
+                {
+                    if(PhotonNetwork.IsMasterClient)
+                        PhotonNetwork.LoadLevel("PhotonTestLobby");
+                }
+            }
         }
     }
 }

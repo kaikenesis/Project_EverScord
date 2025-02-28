@@ -1,3 +1,4 @@
+using EverScord.Skill;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,16 @@ namespace EverScord
         private int typeNum;
         private bool bCooldown;
 
+        private void Awake()
+        {
+            SkillAction.OnUsedSkill += HandleUsedSkill;
+        }
+
+        private void OnDestroy()
+        {
+            SkillAction.OnUsedSkill -= HandleUsedSkill;
+        }
+
         public void Initialize(int type, Sprite skillSourceImg, Sprite btnSourceImg)
         {
             typeNum = type;
@@ -29,48 +40,13 @@ namespace EverScord
             btnImg.sprite = btnSourceImg;
         }
 
-        public void Update()
+        private void HandleUsedSkill(int skillIndex, float value)
         {
-            if(Input.GetKeyDown(KeyCode.Q) && typeNum == 0)
+            Debug.Log($"Index : {skillIndex}, Cooldown : {value}");
+            
+            if (typeNum == skillIndex)
             {
-                ShowCooldown(3f);
-            }
-            if(Input.GetKeyDown(KeyCode.R) && typeNum == 1)
-            {
-                ShowCooldown(7f);
-            }
-        }
-
-        private void HandleUsedSkill(int skillIndex, float skillCooldown)
-        {
-            if(typeNum == skillIndex)
-            {
-                ShowCooldown(skillCooldown);
-            }
-        }
-
-        public void ShowCooldown(float duration)
-        {
-            if (bCooldown == true)
-                return;
-
-            coverImg.fillAmount = 1f;
-            bCooldown = true;
-            StartCoroutine(UpdateCooldown(duration));
-        }
-
-        private IEnumerator UpdateCooldown(float duration)
-        {
-            float time = coverImg.fillAmount * duration;
-            while(bCooldown)
-            {
-                time -= Time.deltaTime;
-                coverImg.fillAmount = time / duration;
-                if (time <= 0.0f)
-                    bCooldown = false;
-
-                Debug.Log(time);
-                yield return new WaitForSeconds(Time.deltaTime);
+                coverImg.fillAmount = 1 - value;
             }
         }
 

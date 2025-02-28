@@ -91,7 +91,7 @@ public class ResourceManager : Singleton<ResourceManager>
     {
         if (!poolDictionary.ContainsKey(addressableKey))
         {
-            Debug.LogWarning($"Pool for {addressableKey} doesn't exist!");           
+            Debug.Log($"Pool for {addressableKey} doesn't exist!");           
             return null;
         }
 
@@ -103,7 +103,7 @@ public class ResourceManager : Singleton<ResourceManager>
             GameObject newObj = CreateNewObject(addressableKey);
             objectPool.Enqueue(newObj);
         }
-
+        
         GameObject obj = objectPool.Dequeue();
         obj.transform.SetPositionAndRotation(position, rotation);
         obj.SetActive(true);
@@ -195,7 +195,9 @@ public class ResourceManager : Singleton<ResourceManager>
         if (PoolRoot)
             return;
         
-        PoolRoot = GameObject.FindGameObjectWithTag(ConstStrings.TAG_POOLROOT).transform;
+        GameObject temp = GameObject.FindGameObjectWithTag(ConstStrings.TAG_POOLROOT);
+        if (temp != null)
+            PoolRoot = temp.transform;
 
         if (!PoolRoot)
             PoolRoot = new GameObject("PoolRoot").transform;
