@@ -94,13 +94,16 @@ public class MapPattern2 : MonoBehaviour
         }
         else
         {
+            spawnList[0].SetActive(true);
             spawnList[0].transform.position = transform.position;
             effectDict[spawnList[0]].Play();
             yield return new WaitForSeconds(attackTimeSpan);
 
             for (int i = 1; i < spawnList.Count; i += 2)
             {
+                spawnList[i].SetActive(true);
                 spawnList[i].transform.position = transform.position + directions[randInt] * span * (i + 1) / 2;
+                spawnList[i + 1].SetActive(true);
                 spawnList[i + 1].transform.position = transform.position - directions[randInt] * span * (i + 1) / 2;
                 effectDict[spawnList[i]].Play();
                 effectDict[spawnList[i + 1]].Play();

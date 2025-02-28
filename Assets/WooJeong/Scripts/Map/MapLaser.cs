@@ -54,7 +54,7 @@ public class MapLaser : MonoBehaviour
     {
         if (!PhotonNetwork.IsMasterClient)
             return;
-
+        
         if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("MapLaser hit");

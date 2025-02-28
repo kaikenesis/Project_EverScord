@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static UnityEditor.PlayerSettings;
 
 public class MapBlackFogSpawner : MonoBehaviour
 {
@@ -55,6 +54,7 @@ public class MapBlackFogSpawner : MonoBehaviour
                 {
                     if(fogList.Count > 0)
                         fogList[i].SetActive(false);
+                    photonView.RPC("SyncMapFogDisable", RpcTarget.Others);
                 }
                 isDisappear = true;
             }
@@ -73,7 +73,7 @@ public class MapBlackFogSpawner : MonoBehaviour
                         Debug.Log(ranPos);
                         Debug.Log(mo);
                         fogList.Add(mo);
-                        photonView.RPC("SyncFog", RpcTarget.Others, ranPos);
+                        photonView.RPC("SyncMapFog", RpcTarget.Others, ranPos);
                     }                    
                 }
                 else
@@ -87,7 +87,7 @@ public class MapBlackFogSpawner : MonoBehaviour
                         fogList[i].SetActive(true);
                         fogList[i].transform.position = ranPos;
 
-                        photonView.RPC("SyncFog", RpcTarget.Others, ranPos);
+                        photonView.RPC("SyncMapFog", RpcTarget.Others, ranPos);
                     }
                 }
                 curTime = 0f;
@@ -101,7 +101,7 @@ public class MapBlackFogSpawner : MonoBehaviour
     [PunRPC]
     private void SyncMapFog(Vector3 pos)
     {
-        if (fogList == null)
+        if (fogList.Count == 0)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -124,7 +124,8 @@ public class MapBlackFogSpawner : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            fogList[i].SetActive(false);
+            if (fogList.Count > 0)
+                fogList[i].SetActive(false);
         }
     }
 }
