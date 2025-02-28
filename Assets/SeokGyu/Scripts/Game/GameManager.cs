@@ -28,6 +28,7 @@ namespace EverScord
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
         public LoadingScreen LoadScreen                         { get; private set; }
+        public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
         public static int CurrentLevelIndex                     { get; private set; }
@@ -102,6 +103,7 @@ namespace EverScord
 
         private void Init()
         {
+            View                = GetComponent<PhotonView>();
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
@@ -162,6 +164,20 @@ namespace EverScord
         public static void SetLevelIndex(int index)
         {
             CurrentLevelIndex = index;
+        }
+
+        [PunRPC]
+        public void SyncLoadGameLevel()
+        {
+            SetLevelIndex(0);
+            Instance.StartCoroutine(LevelControl.LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
+        }
+
+        [PunRPC]
+        public void TeleportPlayers()
+        {            
+            Debug.Log("Teleporting all players.");
+            LevelController.PrepareNextLevel();
         }
     }
 }

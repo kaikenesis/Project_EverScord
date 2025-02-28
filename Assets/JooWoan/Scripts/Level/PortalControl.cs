@@ -41,8 +41,6 @@ namespace EverScord
                 countdownCoroutine = null;
 
                 portalTimer.ResetElapsedTime();
-
-                // Teleport players
                 onCountdownFinished?.Invoke();
             }
 

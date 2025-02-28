@@ -23,7 +23,6 @@ namespace EverScord
         [SerializeField] private float countdown;
         [SerializeField] private List<LevelInfo> levelList;
 
-        private PhotonView photonView;
         private static WaitForSeconds waitLoadScreen;
         private float progress, maxProgress;
 
@@ -36,17 +35,12 @@ namespace EverScord
             portalControl.gameObject.SetActive(false);
             portalControl.SetIsPortalOpened(false);
             portalControl.SetPortalCollider(false);
-            portalControl.Init(countdown, TeleportPlayers);
+            portalControl.Init(countdown, NotifyTeleport);
 
             SetMaxProgress(DEFAULT_MAX_PROGRESS);
 
             OnProgressUpdated -= portalControl.TryOpenPortal;
             OnProgressUpdated += portalControl.TryOpenPortal;
-        }
-
-        void Start()
-        {
-            photonView = GameManager.Instance.LoadScreen.View;
         }
 
         void OnDisable()
@@ -69,27 +63,15 @@ namespace EverScord
             Debug.Log($"Current Level Progress: {progress}");
         }
 
-        private void TeleportPlayers()
+        private void NotifyTeleport()
         {
-            if (!photonView.IsMine)
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
-            
-            Debug.Log("Teleporting all players.");
 
-            foreach (var kv in GameManager.Instance.PlayerDict)
-            {
-                CharacterControl player = kv.Value;
-
-                // play effects
-
-                // make player invisible
-
-            }
-
-            PrepareNextLevel();
+            GameManager.View.RPC(nameof(GameManager.Instance.TeleportPlayers), RpcTarget.All);
         }
 
-        private void PrepareNextLevel()
+        public void PrepareNextLevel()
         {            
             foreach (PhotonView view in GameManager.Instance.playerPhotonViews)
                 view.gameObject.SetActive(false);
@@ -114,10 +96,7 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected)
                 return;
             
-            GameManager.Instance.LoadScreen.View.RPC(
-                nameof(GameManager.Instance.LoadScreen.SyncLoadGameLevel),
-                RpcTarget.All
-            );
+            GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadGameLevel), RpcTarget.All);
         }
 
         public static IEnumerator LoadLevelAsync(string levelName)

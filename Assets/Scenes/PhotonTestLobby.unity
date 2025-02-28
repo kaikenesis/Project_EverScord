@@ -3993,7 +3993,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1753294031}
   - component: {fileID: 1753294032}
-  - component: {fileID: 1753294033}
   m_Layer: 0
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -4048,28 +4047,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f662a11d36e50f04bbb103afce7301cb, type: 3}
   - {fileID: 21300000, guid: 29c2ce36d59fa6a42a857a25e89c1d24, type: 3}
   - {fileID: 21300000, guid: 8f0fec2fe28c2a1428f9a4cb081e0937, type: 3}
---- !u!114 &1753294033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1753294030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 242
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &1791133220 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1597878202987336141, guid: 2d7d0561970da4d47b7abfa59151a537, type: 3}
@@ -5505,6 +5482,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3993660413033888479, guid: 0a5493e3cf671374dbab4ad70b80fa18, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3281253951295882929}
+    - targetCorrespondingSourceObject: {fileID: 3993660413033888479, guid: 0a5493e3cf671374dbab4ad70b80fa18, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3281253951295882931}
   m_SourcePrefab: {fileID: 100100000, guid: 0a5493e3cf671374dbab4ad70b80fa18, type: 3}
 --- !u!1 &3281253951295882928 stripped
 GameObject:
@@ -5524,6 +5504,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: d67b4021e9678004a9dbf5d8d1cb8211, type: 2}
+--- !u!114 &3281253951295882931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3281253951295882928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 242
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &4188725931938616249
 PrefabInstance:
   m_ObjectHideFlags: 0

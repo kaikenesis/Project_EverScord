@@ -20,7 +20,6 @@ namespace EverScord
         [SerializeField] private float bannerSpeed;
         [SerializeField] private List<Sprite> bannerTextures;
 
-        public PhotonView View { get; private set; }
         private List<RectTransform> bannerList = new();
         private List<Image> bannerImages = new();
         private float accumulated = 0f;
@@ -33,7 +32,6 @@ namespace EverScord
         void Awake()
         {
             GameManager.Instance.InitControl(this);
-            View = GetComponent<PhotonView>();
 
             initialRectWidth = filterRect.rect.width;
             InitBanners();
@@ -173,12 +171,5 @@ namespace EverScord
                 list[randomIndex] = temp;
             }
 	    }
-
-        [PunRPC]
-        public void SyncLoadGameLevel()
-        {
-            GameManager.SetLevelIndex(0);
-            StartCoroutine(LevelControl.LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
-        }
     }
 }
