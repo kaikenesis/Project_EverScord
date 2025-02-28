@@ -13,6 +13,7 @@ public class BossPattern05_Imp : ActionNodeImplement
         bossRPC.PlayAnimation("Idle");
         bossRPC.PlayAnimation("StandingAttack");
         yield return bossRPC.ProjectEnable(5, 1f);
+        bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);
         //yield return new WaitForSeconds(0.5f);
         //충돌 판정
         foreach (var player in GameManager.Instance.playerPhotonViews)

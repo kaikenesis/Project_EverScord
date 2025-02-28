@@ -18,7 +18,9 @@ public class BossPattern12_Imp : ActionNodeImplement
             {
                 bossRPC.InstantiateStoneAttack2(player.transform.position, attackWidth, 1, "StoneUp", attackDamage);
             }
-            yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"]);
+            yield return new WaitForSeconds(1.5f);
+            bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);
+            yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1.5f);
         }
         isEnd = true;
         action = null;
