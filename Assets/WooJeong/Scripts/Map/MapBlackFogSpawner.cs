@@ -11,12 +11,17 @@ public class MapBlackFogSpawner : MonoBehaviour
     private float spawnTimer = 30f;
     private float disappearTimer = 10f;
     private bool isCreate = false;
-    private float randomRange = 50f;
+    private float randomRange = 25f;
     private float curTime = 30;
 
     private PhotonView photonView;
     private Coroutine spawn;
     private List<GameObject> fogList = new();
+
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
 
     private async void OnEnable()
     {
@@ -62,7 +67,8 @@ public class MapBlackFogSpawner : MonoBehaviour
                     {
                         float randomX = Random.Range(-randomRange, randomRange);
                         float randomZ = Random.Range(-randomRange, randomRange);
-                        Vector3 ranPos = new Vector3(randomX, 0, randomZ);
+                        Vector3 ranPos = new Vector3(transform.position.x + randomX, 0, transform.position.z + randomZ);
+
                         GameObject mo = ResourceManager.Instance.GetFromPool(fog.AssetGUID, ranPos, Quaternion.identity);
                         Debug.Log(ranPos);
                         Debug.Log(mo);
@@ -76,8 +82,8 @@ public class MapBlackFogSpawner : MonoBehaviour
                     {
                         float randomX = Random.Range(-randomRange, randomRange);
                         float randomZ = Random.Range(-randomRange, randomRange);
-                        Vector3 ranPos = new Vector3(randomX, 0, randomZ);
-                        
+                        Vector3 ranPos = new Vector3(transform.position.x + randomX, 0, transform.position.z + randomZ);
+
                         fogList[i].SetActive(true);
                         fogList[i].transform.position = ranPos;
 
