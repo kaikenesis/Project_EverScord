@@ -103,13 +103,14 @@ namespace EverScord
 
         private void Init()
         {
-            View                = GetComponent<PhotonView>();
+            View                = gameObject.AddComponent<PhotonView>();
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
             playerPhotonViews   = new();
             playerData.Initialize();
 
+            View.ViewID = 242;
             CurrentLevelIndex = -1;
             PhotonNetwork.AutomaticallySyncScene = true;
             photonData.Initialize();
@@ -192,7 +193,7 @@ namespace EverScord
                 if (GUI.Button(new Rect(600, 0, 150, 60), "Play"))
                 {
                     //PhotonNetwork.LoadLevel("PhotonTestPlay");
-                    LoadLevel();
+                    LevelControl.LoadGameLevel();
                 }
 
                 if (GUI.Button(new Rect(800, 0, 150, 60), "Go To LobbyScene"))

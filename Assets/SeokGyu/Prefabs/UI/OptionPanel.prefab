@@ -565,6 +565,7 @@ GameObject:
   - component: {fileID: 8123269740747529536}
   - component: {fileID: 5327787520057283702}
   - component: {fileID: 2803066571664187955}
+  - component: {fileID: 744487021730474925}
   m_Layer: 5
   m_Name: ResolutionPanel
   m_TagString: Untagged
@@ -657,6 +658,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &744487021730474925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697211258930808515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4eb73c93e89c74cb8a61f5956ee8f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resolutionDropdown: {fileID: 3840128559032613181}
 --- !u!1 &1900885481558867296
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,7 +809,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 744487021730474925}
         m_TargetAssemblyTypeName: EverScord.ResolutionController, Assembly-CSharp
         m_MethodName: SetResolution
         m_Mode: 0
@@ -1180,7 +1194,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2483576583631452745}
         m_TargetAssemblyTypeName: EverScord.AudioController, Assembly-CSharp
         m_MethodName: ChangeMasterVolume
         m_Mode: 0
@@ -1915,6 +1929,7 @@ GameObject:
   - component: {fileID: 6013344105376098900}
   - component: {fileID: 7842098794230492057}
   - component: {fileID: 1556318128277183738}
+  - component: {fileID: 2483576583631452745}
   m_Layer: 5
   m_Name: SoundPanel
   m_TagString: Untagged
@@ -2007,6 +2022,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2483576583631452745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6913092881793253408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6efe2a044d056c4297c8554b6cdc1c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: d67b4021e9678004a9dbf5d8d1cb8211, type: 2}
 --- !u!1 &7072443426936400871
 GameObject:
   m_ObjectHideFlags: 0
