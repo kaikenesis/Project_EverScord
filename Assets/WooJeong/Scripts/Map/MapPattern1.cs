@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapLaser : MonoBehaviour
+public class MapPattern1 : MonoBehaviour
 {
     [SerializeField] private bool isReverse;
     [SerializeField] private float rotateSpeed = 0.1f;

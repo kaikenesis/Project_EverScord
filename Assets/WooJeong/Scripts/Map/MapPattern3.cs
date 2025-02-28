@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class MapBlackFogSpawner : MonoBehaviour
+public class MapPattern3 : MonoBehaviour
 {
     [SerializeField] private AssetReferenceGameObject fog;
     private float spawnTimer = 30f;

@@ -60,16 +60,18 @@ public class MonsterProjectile : MonoBehaviour
     {
         if (!PhotonNetwork.IsMasterClient)
             return;
-        if(other.gameObject.CompareTag("Projectile") || other.gameObject.CompareTag("Enemy"))
-        {
-            return;
-        }
         if(other.gameObject.CompareTag("Player"))
         {
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(10);
+            StopCoroutine(move);
+            IsDestroyed = true;
         }
-        StopCoroutine(move);
-        IsDestroyed = true;
+        else if (other.gameObject.CompareTag("Wall"))
+        {
+            StopCoroutine(move);
+            IsDestroyed = true;
+        }
+        
     }
 }
