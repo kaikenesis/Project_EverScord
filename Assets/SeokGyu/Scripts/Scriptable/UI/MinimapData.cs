@@ -8,12 +8,38 @@ namespace EverScord
     {
         [SerializeField] private CameraTransform[] cameraPos;
         [SerializeField] private IconTransform[] portalIconPos;
+        [SerializeField] private StageMap[] stageMaps;
+
+        public CameraTransform[] CameraPos
+        {
+            get { return cameraPos; }
+        }
+
+        public IconTransform[] PortalIconPos
+        {
+            get { return portalIconPos; }
+        }
+
+        public StageMap[] StageMaps
+        {
+            get { return stageMaps; }
+        }
 
         [System.Serializable]
         public class CameraTransform
         {
             [SerializeField] private Vector3 position;
             [SerializeField] private Quaternion rotation;
+
+            public Vector3 Position
+            {
+                get { return position; }
+            }
+
+            public Quaternion Rotation
+            {
+                get { return rotation; }
+            }
         }
 
         [System.Serializable]
@@ -21,6 +47,45 @@ namespace EverScord
         {
             [SerializeField] private Vector3 position;
             [SerializeField] private Quaternion rotation;
+
+            public Vector3 Position
+            {
+                get { return position; }
+            }
+
+            public Quaternion Rotation
+            {
+                get { return rotation; }
+            }
+        }
+
+        [System.Serializable]
+        public class StageMap
+        {
+            [SerializeField] private Sprite sourceImg;
+            [SerializeField] private Vector3 position;
+            [SerializeField] private Vector2 size;
+            [SerializeField] private Quaternion rotation;
+
+            public Sprite SourceImg
+            {
+                get { return sourceImg; }
+            }
+
+            public Vector3 Position
+            {
+                get { return position; }
+            }
+
+            public Vector2 Size
+            {
+                get { return size; }
+            }
+
+            public Quaternion Rotation
+            {
+                get { return rotation; }
+            }
         }
     }
 }

@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: MinimapData
   m_EditorClassIdentifier: 
   cameraPos:
-  - position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0, w: 0}
+  - position: {x: 0, y: 64, z: 2}
+    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
   portalIconPos:
-  - position: {x: 0, y: 0, z: 0}
+  - position: {x: -1.1, y: -13, z: 50}
     rotation: {x: 0, y: 0, z: 0, w: 0}
+  stageMaps:
+  - sourceImg: {fileID: 21300000, guid: fe95119013209364d928b3bdb0222773, type: 3}
+    position: {x: -1.9, y: -2, z: -1}
+    size: {x: 81, y: 70}
+    rotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}

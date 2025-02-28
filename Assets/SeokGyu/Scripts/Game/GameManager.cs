@@ -45,7 +45,6 @@ namespace EverScord
         [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer, redOutlineLayer;
         [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo;
         [SerializeField] private CostData costData;
-
         public CostData CostDatas
         {
             get { return costData; }
@@ -71,6 +70,13 @@ namespace EverScord
         {
             get { return armorData; }
             private set { armorData = value; }
+        }
+
+        [SerializeField] private MinimapData minimapData;
+        public MinimapData MinimapData
+        {
+            get { return minimapData; }
+            private set { minimapData = value; }
         }
 
         private IDictionary<int, CharacterControl> playerDict;
