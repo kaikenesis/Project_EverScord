@@ -11,7 +11,7 @@ public class MapPattern2 : MonoBehaviour
     [SerializeField] private int maxSpawn = 10;
     [SerializeField] private float patternTimer = 10f;
     [SerializeField] private float attackTimeSpan = 0.3f;
-    private float curTime = 10;
+    private float curTime = 0;
     private bool isCreate = false;
     private List<Vector3> directions = new List<Vector3>();
     private float span = 3f;

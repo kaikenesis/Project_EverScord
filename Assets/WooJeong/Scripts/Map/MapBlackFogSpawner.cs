@@ -11,7 +11,7 @@ public class MapBlackFogSpawner : MonoBehaviour
     private float disappearTimer = 10f;
     private bool isCreate = false;
     private float randomRange = 25f;
-    private float curTime = 30;
+    private float curTime = 20;
 
     private PhotonView photonView;
     private Coroutine spawn;

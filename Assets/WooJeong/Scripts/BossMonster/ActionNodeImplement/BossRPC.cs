@@ -85,6 +85,21 @@ public class BossRPC : MonoBehaviour, IEnemy
         animator.CrossFade(animationName, transitionDuration, -1, 0);
     }
 
+    public void PlayEffect(string effectName, Vector3 pos)
+    {
+        photonView.RPC("SyncEffect", RpcTarget.All, effectName, pos);
+    }
+
+    [PunRPC]
+    public IEnumerator SyncEffect(string effectName, Vector3 pos)
+    {
+        GameObject go = ResourceManager.Instance.GetFromPool(effectName, pos, Quaternion.identity);
+        ParticleSystem particleSystem = go.GetComponent<ParticleSystem>();
+        particleSystem.Play();
+        yield return new WaitForSeconds(particleSystem.main.duration);
+        ResourceManager.Instance.ReturnToPool(go, effectName);
+    }
+
     public void PlayJumpEffect()
     {
         photonView.RPC("SyncJumpEffect", RpcTarget.All);

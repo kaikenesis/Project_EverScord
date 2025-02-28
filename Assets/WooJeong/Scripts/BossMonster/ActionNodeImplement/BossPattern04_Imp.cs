@@ -25,9 +25,10 @@ public class BossPattern04_Imp : ActionNodeImplement
         yield return bossRPC.ProjectEnable(4, 1f);
 
         bossRPC.PlayAnimation("RushAttack");
-        yield return StartCoroutine(Charge(1));
-        
-        yield return new WaitForSeconds(1.3f);
+        StartCoroutine(Charge(0.5f));
+        yield return new WaitForSeconds(0.7f);
+        bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 5);
+        yield return new WaitForSeconds(2f);
         bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
