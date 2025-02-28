@@ -7,16 +7,24 @@ using UnityEngine;
 public class MapPattern2_Attack : MonoBehaviour
 {
     private float attackDamage = 10;
+    private SphereCollider sphereCollider;
 
-    private void OnEnable()
+    private void Awake()
     {
+        sphereCollider = GetComponent<SphereCollider>();
+        sphereCollider.enabled = false;
+    }
+
+    public void Attack()
+    {
+        sphereCollider.enabled = true;
         StartCoroutine(Disable());
     }
 
     private IEnumerator Disable()
     {
         yield return new WaitForSeconds(1f);
-        gameObject.SetActive(false);
+        sphereCollider.enabled = false;
     }
 
     private void OnTriggerEnter(Collider other)

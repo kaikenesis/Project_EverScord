@@ -18,8 +18,9 @@ public class MapPattern2 : MonoBehaviour
     private int randInt;
     private PhotonView photonView;
     private Coroutine spawn;
-    private List<GameObject> spawnList = new();
+    private List<GameObject> spawnList = new();    
     private Dictionary<GameObject, VisualEffect> effectDict = new();
+    private Dictionary<GameObject, MapPattern2_Attack> attackDict = new();
 
     private void Awake()
     {
@@ -77,6 +78,9 @@ public class MapPattern2 : MonoBehaviour
                                                         transform.position, Quaternion.identity);
             spawnList.Add(start);
             effectDict.Add(start, start.GetComponent<VisualEffect>());
+            attackDict.Add(start, start.GetComponent<MapPattern2_Attack>());
+            attackDict[start].Attack();
+
             yield return new WaitForSeconds(attackTimeSpan);
 
             for (int i = 1; i < maxSpawn; i++)
@@ -87,26 +91,32 @@ public class MapPattern2 : MonoBehaviour
                     transform.position - directions[randInt] * span * i, Quaternion.identity);
                 spawnList.Add(go);
                 effectDict.Add(go, go.GetComponent<VisualEffect>());
+                attackDict.Add(go, go.GetComponent<MapPattern2_Attack>());
                 spawnList.Add(goReverse);
                 effectDict.Add(goReverse, goReverse.GetComponent<VisualEffect>());
+                attackDict.Add(goReverse, goReverse.GetComponent<MapPattern2_Attack>());
+
+                attackDict[go].Attack();
+                attackDict[goReverse].Attack();
                 yield return new WaitForSeconds(attackTimeSpan);
             }
         }
         else
         {
-            spawnList[0].SetActive(true);
             spawnList[0].transform.position = transform.position;
             effectDict[spawnList[0]].Play();
+            attackDict[spawnList[0]].Attack();
             yield return new WaitForSeconds(attackTimeSpan);
 
             for (int i = 1; i < spawnList.Count; i += 2)
             {
-                spawnList[i].SetActive(true);
                 spawnList[i].transform.position = transform.position + directions[randInt] * span * (i + 1) / 2;
-                spawnList[i + 1].SetActive(true);
                 spawnList[i + 1].transform.position = transform.position - directions[randInt] * span * (i + 1) / 2;
                 effectDict[spawnList[i]].Play();
                 effectDict[spawnList[i + 1]].Play();
+
+                attackDict[spawnList[i]].Attack();
+                attackDict[spawnList[i+1]].Attack();
                 yield return new WaitForSeconds(attackTimeSpan);
             }
         }
