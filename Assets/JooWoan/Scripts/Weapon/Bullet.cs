@@ -75,8 +75,15 @@ namespace EverScord.Weapons
         public void CheckCollision(Weapon sourceWeapon, Vector3 startPoint, Vector3 endPoint)
         {
             CharacterControl shooter = GameManager.Instance.PlayerDict[ViewID];
+
+            if (!shooter.CameraControl)
+            {
+                Debug.LogWarning("Bullet owner doesn't have a CameraControl.");
+                return;
+            }
+
+            Camera shooterCam = shooter.CameraControl.Cam;
             RaycastHit hit = new RaycastHit();
-            
             Vector3 direction = endPoint - startPoint;
             float totalDistance = direction.magnitude;
 
@@ -85,13 +92,13 @@ namespace EverScord.Weapons
             for (float distance = 0f; distance <= totalDistance; distance += COLLISION_STEP)
             {
                 Vector3 currentPoint = startPoint + direction * distance;
-                Vector3 currentScreenPoint = sourceWeapon.ShooterCam.WorldToScreenPoint(currentPoint);
+                Vector3 currentScreenPoint = shooterCam.WorldToScreenPoint(currentPoint);
                 
                 bool isWithinScreen = Screen.safeArea.Contains(currentScreenPoint);
 
                 if (isWithinScreen)
                 {
-                    Ray ray = sourceWeapon.ShooterCam.ScreenPointToRay(currentScreenPoint);
+                    Ray ray = shooterCam.ScreenPointToRay(currentScreenPoint);
                     //Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 3f);
 
                     if (!Physics.Raycast(ray, out hit, 50f, sourceWeapon.ShootableLayer))

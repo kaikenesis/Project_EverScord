@@ -216,7 +216,7 @@ namespace EverScord
             PhotonNetwork.CreateRoom(roomName, roomOptions);
         }
 
-        private RoomOptions GetRoomOptions() // ·ë ÃÊ±â »ý¼º
+        private RoomOptions GetRoomOptions() // ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½
         {
             Hashtable roomProperties = new Hashtable()
             {
@@ -347,7 +347,7 @@ namespace EverScord
         {
             Debug.Log("You have left Photon Room");
         }
-        // RandomRoom Join ½ÇÆÐ ½Ã ¿À·ù ÄÝ¹é ÇÔ¼ö ½ÇÇà
+        // RandomRoom Join ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¹ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log($"Join Random Failed {returnCode} : {message}");
@@ -404,7 +404,7 @@ namespace EverScord
             {
                 case PhotonData.EState.NONE:
                     {
-                        // ÇöÀç ¹æ ÀÎ¿øÀÌ maxÀÏ¶§ Á÷¾÷Á¶°ÇÀ» È®ÀÎÇÏ°í ÇÃ·¹ÀÌ°¡ ºÒ°¡´ÉÇÏ¸é ½Ã½ºÅÛ¸Þ½ÃÁö Ãâ·Â ( ÀÏ´ÜÀº ¹ÝÀÀxÀ¸·Î)
+                        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Î¿ï¿½ï¿½ï¿½ maxï¿½Ï¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ã·ï¿½ï¿½Ì°ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ã½ï¿½ï¿½Û¸Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ( ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½)
                     }
                     break;
             }

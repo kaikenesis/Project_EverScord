@@ -13,7 +13,6 @@ namespace EverScord
     {
         private static GameManager instance;
         public const float GROUND_HEIGHT = 0f;
-        private const float LOADSCREEN_DELAY = 3f;
 
         [SerializeField] private bool debugMode = false;
         [SerializeField] private PlayerData playerData;
@@ -29,10 +28,10 @@ namespace EverScord
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
         public LoadingScreen LoadScreen                         { get; private set; }
+        public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
-        public static int CurrentStageIndex                     { get; private set; }
-        public static bool IsLoadingLevel                       { get; private set; }
+        public static int CurrentLevelIndex                     { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
@@ -45,7 +44,6 @@ namespace EverScord
 
         [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer, redOutlineLayer;
         [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo;
-        [SerializeField] private List<StageInfo> stageInfos;
         [SerializeField] private CostData costData;
 
         public CostData CostDatas
@@ -76,7 +74,6 @@ namespace EverScord
         }
 
         private IDictionary<int, CharacterControl> playerDict;
-        private WaitForSeconds waitLoadScreen;
 
         public static GameManager Instance
         {
@@ -106,14 +103,14 @@ namespace EverScord
 
         private void Init()
         {
+            View                = GetComponent<PhotonView>();
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
-            waitLoadScreen      = new WaitForSeconds(LOADSCREEN_DELAY);
             playerPhotonViews   = new();
             playerData.Initialize();
 
-            CurrentStageIndex = -1;
+            CurrentLevelIndex = -1;
             PhotonNetwork.AutomaticallySyncScene = true;
             photonData.Initialize();
         }
@@ -164,58 +161,23 @@ namespace EverScord
             }
         }
 
-        public static void LoadLevel()
+        public static void SetLevelIndex(int index)
         {
-            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
-                return;
-
-            CurrentStageIndex = 0;
-
-            if (CurrentStageIndex >= Instance.stageInfos.Count)
-            {
-                Debug.LogWarning($"Invalid stage index : {CurrentStageIndex}");
-                return;
-            }
-
-            Instance.StartCoroutine(Instance.LoadLevelAsync());
+            CurrentLevelIndex = index;
         }
 
-        private IEnumerator LoadLevelAsync()
+        [PunRPC]
+        public void SyncLoadGameLevel()
         {
-            IsLoadingLevel = true;
-
-            LoadScreen.CoverScreen();
-            yield return new WaitForSeconds(1f);
-
-            Camera.main.enabled = false;
-
-            LoadScreen.ImageHub.SetActive(true);
-            LoadScreen.ShowScreen();
-
-            PhotonNetwork.LoadLevel(Instance.stageInfos[CurrentStageIndex].stageName);
-
-            while (PhotonNetwork.LevelLoadingProgress < 0.98f)
-            {
-                LoadScreen.SetProgress(PhotonNetwork.LevelLoadingProgress);
-                yield return null;
-            }
-
-            LoadScreen.SetProgress(1f);
-
-            Instance.StartCoroutine(ExitLoadingScreen());
+            SetLevelIndex(0);
+            Instance.StartCoroutine(LevelControl.LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
         }
 
-        private IEnumerator ExitLoadingScreen()
-        {
-            yield return waitLoadScreen;
-
-            LoadScreen.CoverScreen();
-            yield return new WaitForSeconds(3f);
-
-            LoadScreen.ShowScreen();
-            LoadScreen.ImageHub.SetActive(false);
-
-            IsLoadingLevel = false;
+        [PunRPC]
+        public void TeleportPlayers()
+        {            
+            Debug.Log("Teleporting all players.");
+            LevelController.PrepareNextLevel();
         }
 
         private void OnGUI()
@@ -241,11 +203,4 @@ namespace EverScord
             }
         }
     }
-}
-
-[System.Serializable]
-public class StageInfo
-{
-    public string stageName;
-    public AudioClip loopBgm;
 }
