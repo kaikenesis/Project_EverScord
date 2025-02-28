@@ -1,4 +1,6 @@
-using UnityEditor.Experimental.GraphView;
+using EverScord.Character;
+using Photon.Pun;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,10 +16,36 @@ namespace EverScord
         private int curStageNum = 0;
         private MinimapData.StageMap curStageMap;
         private MinimapData.IconTransform curPortal;
+        private List<GameObject> deathIcons;
 
         private void Awake()
         {
             Init();
+
+            CharacterControl.OnPhotonViewListUpdated += HandlePhotonViewListUpdated;
+        }
+
+        private void OnDestroy()
+        {
+            CharacterControl.OnPhotonViewListUpdated -= HandlePhotonViewListUpdated;
+        }
+
+        private void HandlePhotonViewListUpdated()
+        {
+            // Callback함수로 호출할것 없이 최대플레이어 수만큼 생성해두고 사용하면 될듯
+            List<PhotonView> list = GameManager.Instance.playerPhotonViews;
+            Debug.Log(list.Count);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (deathIcons.Count < list.Count)
+                {
+                    GameObject obj;
+                    obj = Instantiate(deathIcon, transform);
+                    deathIcons.Add(obj);
+                    obj.SetActive(false);
+                }
+            }
         }
 
         private void Init()
@@ -40,8 +68,9 @@ namespace EverScord
             portalRT.SetLocalPositionAndRotation(curPortal.Position, curPortal.Rotation);
             portalIcon.SetActive(false);
 
-            //bossIcon.GetComponent<Image>();
-            bossIcon.SetActive(false);
+            // Boss
+            GameObject bossObj = Instantiate(bossIcon, transform);
+            bossObj.SetActive(false);
         }
     }
 }
