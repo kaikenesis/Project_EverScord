@@ -3,10 +3,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using Photon.Pun;
 using System.Collections;
-using EverScord.Skill;
-using EverScord.Effects;
-using EverScord.Character;
-using System.Linq;
 
 namespace EverScord
 {
@@ -14,6 +10,7 @@ namespace EverScord
     {
         private const float DEFAULT_MAX_PROGRESS = 100f;
         private const float LOADSCREEN_DELAY = 3f;
+        private const float STAGE_TRANSITION_DELAY = 2f;
 
         public static Action<float> OnProgressUpdated = delegate { };
         public static bool IsLoadingLevel { get; private set; }
@@ -25,7 +22,6 @@ namespace EverScord
         [SerializeField] private float countdown;
         [SerializeField] private List<LevelInfo> levelList;
 
-        private GameObject teleportEffect;
         private float progress, maxProgress;
 
         void Awake()
@@ -33,7 +29,6 @@ namespace EverScord
             GameManager.Instance.InitControl(this);
 
             waitLoadScreen = new WaitForSeconds(LOADSCREEN_DELAY);
-            teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
 
             portalControl.gameObject.SetActive(false);
             portalControl.SetIsPortalOpened(false);
@@ -69,42 +64,18 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
 
-            TeleportPlayersOutofRange();
-            GameManager.View.RPC(nameof(GameManager.Instance.TeleportPlayers), RpcTarget.All);
+            GameManager.View.RPC(nameof(GameManager.Instance.PrepareNextLevel), RpcTarget.All);
         }
-
-        private void TeleportPlayersOutofRange()
-        {
-            Collider[] hits = portalControl.CheckPlayersInRange();
-
-            List<CharacterControl> playerList = GameManager.Instance.PlayerDict.Values.ToList();
-
-            for (int i = playerList.Count - 1; i >= 0; i--)
-            {
-                for (int j = 0; j < hits.Length; j++)
-                {
-                    if (playerList[i].gameObject == hits[j].gameObject)
-                    {
-                        playerList.RemoveAt(i);
-                        break;
-                    }
-                }
-            }
-
-            for (int i = 0; i < playerList.Count; i++)
-            {
-                Debug.Log(playerList[i].gameObject.name);
-            }
-        }
-
+        
         public IEnumerator PrepareNextLevel()
         {
-            var effect2 = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
+            foreach (var player in GameManager.Instance.PlayerDict.Values)
+                player.SetState(Character.SetCharState.ADD, Character.CharState.TELEPORTING);
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(STAGE_TRANSITION_DELAY);
 
-            foreach (var kv in GameManager.Instance.PlayerDict)
-                kv.Value.gameObject.SetActive(false);
+            foreach (var player in GameManager.Instance.PlayerDict.Values)
+                player.SetActive(false);
 
             levelList[GameManager.CurrentLevelIndex].Level.SetActive(false);
             GameManager.SetLevelIndex(GameManager.CurrentLevelIndex + 1);
@@ -114,11 +85,14 @@ namespace EverScord
 
             groundCollider.transform.position = nextLevel.transform.position;
 
-            foreach (var kv in GameManager.Instance.PlayerDict)
+            foreach (var player in GameManager.Instance.PlayerDict.Values)
             {
-                kv.Value.transform.position = nextLevel.transform.position;
-                kv.Value.gameObject.SetActive(true);
+                player.Teleport(nextLevel.transform.position);
+                player.SetActive(true);
+                player.SetState(Character.SetCharState.REMOVE, Character.CharState.TELEPORTING);
             }
+
+            portalControl.SetActive(false);
         }
 
         public static void LoadGameLevel()

@@ -194,8 +194,8 @@ namespace EverScord
         }
 
         [PunRPC]
-        public void TeleportPlayers()
-        {            
+        public void PrepareNextLevel()
+        {
             StartCoroutine(LevelController.PrepareNextLevel());
         }
 

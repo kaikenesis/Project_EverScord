@@ -60,6 +60,7 @@ namespace EverScord.Character
         public PlayerData.ECharacter CharacterType                      { get; private set; }
         public PlayerData.EJob CharacterJob                             { get; private set; }
         public CharState State                                          { get; private set; }
+        public BlinkEffect BlinkEffects                                 { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -79,7 +80,6 @@ namespace EverScord.Character
         private PhotonView photonView;
         private ParticleSystem healEffect;
         private ReviveCircle reviveCircle;
-        private BlinkEffect blinkEffect;
         private CharacterController controller;
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
@@ -103,7 +103,7 @@ namespace EverScord.Character
                     StartCoroutine(HandleDeath());
                 
                 if (previousIsLowHealth != afterIsLowHealth)
-                    blinkEffect.LoopBlink(IsLowHealth);
+                    BlinkEffects.LoopBlink(IsLowHealth);
 
                 if (photonView.IsMine)
                 {
@@ -155,7 +155,7 @@ namespace EverScord.Character
             RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
             RigControl.SetAimWeight(false);
 
-            blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
+            BlinkEffects = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
             groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
 
             CharacterJob = GameManager.Instance.PlayerData.job;
@@ -234,7 +234,7 @@ namespace EverScord.Character
 
         private void Move()
         {
-            if (HasState(CharState.SKILL_STANCE))
+            if (!CanMove)
                 return;
 
             movement = new Vector3(moveInput.x, 0, moveInput.z);
@@ -282,7 +282,7 @@ namespace EverScord.Character
 
         public void TrackAim()
         {
-            if (HasState(CharState.RIGID_ANIMATING))
+            if (!CanRotate)
                 return;
             
             if (!ProcessMouseRaycast(out Ray ray, out RaycastHit hit))
@@ -319,7 +319,7 @@ namespace EverScord.Character
 
         private void RotateBody()
         {
-            if (HasState(CharState.RIGID_ANIMATING))
+            if (!CanRotate)
                 return;
             
             float angle = Vector3.Angle(lookDir, PlayerTransform.forward);
@@ -480,9 +480,9 @@ namespace EverScord.Character
             bool isInvincible = HasState(CharState.INVINCIBLE);
 
             if (isInvincible)
-                blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
+                BlinkEffects.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
             
-            blinkEffect.Blink();
+            BlinkEffects.Blink();
             PlayHitEffects();
 
             if (PhotonNetwork.IsConnected)
@@ -523,7 +523,7 @@ namespace EverScord.Character
             controller.enabled = false;
 
             Instantiate(deathEffect, transform.position, Quaternion.identity);
-            blinkEffect.LoopBlink(false);
+            BlinkEffects.LoopBlink(false);
             
             RigControl.SetAimWeight(false);
             RigControl.SetMainRigWeight(false);
@@ -604,9 +604,47 @@ namespace EverScord.Character
             healEffect.Emit(1);
         }
 
+        public void Teleport(Vector3 position)
+        {
+            PlayerTransform.position = position;
+        }
+
+        public void SetActive(bool state)
+        {
+            gameObject.SetActive(state);
+        }
+
         public void EnableReviveCircle(bool state)
         {
             reviveCircle.gameObject.SetActive(state);
+        }
+
+        public bool CanMove
+        {
+            get
+            {
+                if (HasState(CharState.SKILL_STANCE))
+                    return false;
+
+                if (HasState(CharState.TELEPORTING))
+                    return false;
+
+                return true;
+            }
+        }
+
+        public bool CanRotate
+        {
+            get
+            {
+                if (HasState(CharState.RIGID_ANIMATING))
+                    return false;
+
+                if (HasState(CharState.TELEPORTING))
+                    return false;
+
+                return true;
+            }
         }
 
         public bool IsGrounded
@@ -647,7 +685,7 @@ namespace EverScord.Character
 
         public bool IsAiming { get; private set; }
         public bool IsShooting => playerInputInfo.holdLeftMouseButton;
-        public bool IsMoving => moveInput.magnitude > 0 || PhysicsControl.IsImpactAdded;
+        public bool IsMoving => (CanMove && moveInput.magnitude > 0) || PhysicsControl.IsImpactAdded;
 
         #region Photon
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
@@ -752,9 +790,9 @@ namespace EverScord.Character
             else
             {
                 if (isInvincible)
-                    blinkEffect.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
+                    BlinkEffects.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
 
-                blinkEffect.Blink();
+                BlinkEffects.Blink();
                 PlayHitEffects();
             }
         }
