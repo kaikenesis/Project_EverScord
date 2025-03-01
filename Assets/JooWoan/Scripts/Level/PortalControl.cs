@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace EverScord
 {
-
     public class PortalControl : MonoBehaviour
     {
         [SerializeField] private Collider portalCollider;
@@ -42,9 +41,19 @@ namespace EverScord
 
                 portalTimer.ResetElapsedTime();
                 onCountdownFinished?.Invoke();
+                gameObject.SetActive(false);
             }
 
             Debug.Log($"Teleport countdown: {portalTimer.Cooldown - portalTimer.ElapsedTime:F0}");
+        }
+
+        public void Init(float countdown, Action callback)
+        {
+            portalTimer = new CooldownTimer(countdown);
+            transform.localScale = initialPortalScale;
+
+            onCountdownFinished -= callback;
+            onCountdownFinished += callback;
         }
 
         private void ActivateCountdown()
@@ -78,15 +87,6 @@ namespace EverScord
 
             if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
                 GameManager.View.RPC(nameof(GameManager.Instance.ReviveAllPlayers), RpcTarget.All);
-        }
-
-        public void Init(float countdown, Action callback)
-        {
-            portalTimer = new CooldownTimer(countdown);
-            transform.localScale = initialPortalScale;
-
-            onCountdownFinished -= callback;
-            onCountdownFinished += callback;
         }
 
         public void SetPortalCollider(bool state)

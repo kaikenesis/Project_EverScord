@@ -7,7 +7,6 @@ namespace EverScord.Skill
     {
         private float cooldown;
         private float elapsedTime = 0f;
-        private bool shouldStopTimer = false;
 
         public bool IsCooldown => elapsedTime < cooldown;
         public float Cooldown => cooldown;
@@ -28,16 +27,11 @@ namespace EverScord.Skill
             if (resetTime)
                 ResetElapsedTime();
 
-            while (!shouldStopTimer)
+            while (true)
             {
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
-        }
-
-        public void StopTimer()
-        {
-            shouldStopTimer = true;
         }
 
         public void ResetElapsedTime()
