@@ -23,37 +23,6 @@ namespace EverScord.Skill
                 return GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
             }
         }
-
-        public static ParticleSystem[] SetEffectParticles(GameObject effect, bool shouldPlay)
-        {
-            // Effect will be destroyed due to particle stop action mode
-            
-            if (effect == null)
-                return null;
-
-            ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>();
-            SetEffectParticles(particles, shouldPlay);
-
-            return particles;
-        }
-
-        public static void SetEffectParticles(ParticleSystem[] particles, bool shouldPlay)
-        {
-            if (particles == null)
-                return;
-            
-            for (int i = 0; i < particles.Length; i++)
-            {
-                if (!shouldPlay)
-                    particles[i].Stop();
-
-                else
-                {
-                    particles[i].Clear();
-                    particles[i].Play();
-                }
-            }
-        }
     }
 
     [System.Serializable]

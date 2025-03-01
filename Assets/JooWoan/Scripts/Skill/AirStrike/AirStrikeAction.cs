@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
+using EverScord.Effects;
 
 namespace EverScord.Skill
 {
@@ -166,8 +167,8 @@ namespace EverScord.Skill
 
             yield return waitZoneDuration;
 
-            CharacterSkill.SetEffectParticles(flameEffect, false);
-            CharacterSkill.SetEffectParticles(healEffect, false);
+            EffectControl.SetEffectParticles(flameEffect, false);
+            EffectControl.SetEffectParticles(healEffect, false);
         }
 
         public override IEnumerator ThrowObject(TrajectoryInfo info)

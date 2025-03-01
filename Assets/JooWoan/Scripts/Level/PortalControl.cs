@@ -8,11 +8,13 @@ using UnityEngine;
 using EverScord.Skill;
 using EverScord.Character;
 using EverScord.Effects;
+using UnityEngine.VFX;
 
 namespace EverScord
 {
     public class PortalControl : MonoBehaviour
     {
+        [SerializeField] private VisualEffect warpEffect;
         [SerializeField] private SphereCollider portalCollider;
         [SerializeField] private Vector3 initialPortalScale;
 
@@ -21,16 +23,25 @@ namespace EverScord
         private Action onCountdownFinished;
         private GameObject teleportEffect;
 
-        private int currentCountdownNum = 0;
+        private int currentCountdownNum;
         private bool isPortalOpened = false;
 
-        private Vector3 colliderStartPos;
+        public Vector3 ColliderStartPos
+        {
+            get { return transform.TransformPoint(portalCollider.center); }
+        }
+
         private float colliderWorldRadius;
 
         void Start()
         {
             teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
             GameManager.Instance.InitControl(this);
+        }
+
+        void OnDisable()
+        {
+            ResetPortal();
         }
 
         void OnTriggerEnter(Collider other)
@@ -70,7 +81,6 @@ namespace EverScord
 
         public void Init(float countdown, Action callback)
         {
-            colliderStartPos = transform.TransformPoint(portalCollider.center);
             colliderWorldRadius = portalCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
 
             portalTimer = new CooldownTimer(countdown);
@@ -118,6 +128,24 @@ namespace EverScord
                 GameManager.View.RPC(nameof(GameManager.Instance.ReviveAllPlayers), RpcTarget.All);
         }
 
+        public void ClosePortal()
+        {
+            DOTween.Rewind(ConstStrings.TWEEN_CLOSE_PORTAL);
+            DOTween.Play(ConstStrings.TWEEN_CLOSE_PORTAL);
+
+            // Tween callback: gameObject.SetActive(false)
+        }
+
+        public void ResetPortal()
+        {
+            SetActive(false);
+            SetIsPortalOpened(false);
+            SetPortalCollider(false);
+
+            transform.localScale = initialPortalScale;
+            currentCountdownNum = (int)portalTimer.Cooldown + 1;
+        }
+
         public void SetPortalCollider(bool state)
         {
             portalCollider.enabled = state;
@@ -130,7 +158,7 @@ namespace EverScord
 
         public Collider[] CheckPlayersInRange()
         {
-            return Physics.OverlapSphere(colliderStartPos, colliderWorldRadius, GameManager.PlayerLayer);
+            return Physics.OverlapSphere(ColliderStartPos, colliderWorldRadius, GameManager.PlayerLayer);
         }
 
         private void BringPlayersOutofRange()
@@ -171,10 +199,18 @@ namespace EverScord
             effect.transform.position = player.PlayerTransform.position;
         }
 
-        private Vector3 GetRandomPosition()
+        public void PlayWarpEffect(bool isExit)
+        {
+            if (isExit)
+                warpEffect.SendEvent(ConstStrings.VFX_WARP_OUT);
+            else
+                warpEffect.SendEvent(ConstStrings.VFX_WARP_IN);
+        }
+
+        public Vector3 GetRandomPosition()
         {
             Vector3 randomPoint = UnityEngine.Random.insideUnitCircle;
-            randomPoint = colliderStartPos + randomPoint * colliderWorldRadius;
+            randomPoint = ColliderStartPos + randomPoint * colliderWorldRadius * 0.6f;
             randomPoint.y = CharacterControl.CurrentClientCharacter.PlayerTransform.position.y;
 
             return randomPoint;
@@ -183,6 +219,11 @@ namespace EverScord
         public void SetActive(bool state)
         {
             gameObject.SetActive(state);
+        }
+
+        public void MovePosition(Vector3 position)
+        {
+            transform.position = position;
         }
     }
 }

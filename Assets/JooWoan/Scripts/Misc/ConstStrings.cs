@@ -29,6 +29,7 @@ namespace EverScord
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
         public const string TWEEN_AMMORELOAD = "AmmoReload";
         public const string TWEEN_OPEN_PORTAL = "OpenPortal";
+        public const string TWEEN_CLOSE_PORTAL = "ClosePortal";
         public const string TWEEN_SHOW_SCREEN = "ShowScreen";
         public const string TWEEN_COVER_SCREEN = "CoverScreen";
         public const string TWEEN_STAGE_NOTIFICATION = "StageNotification";
@@ -40,6 +41,9 @@ namespace EverScord
 
         // Scene Names
         public const string SCENE_MAINGAME = "PhotonTestPlay";
-        
+
+        // VFX Events
+        public const string VFX_WARP_OUT = "out";
+        public const string VFX_WARP_IN = "in";
     }
 }
