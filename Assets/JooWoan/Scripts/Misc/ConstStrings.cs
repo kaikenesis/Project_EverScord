@@ -31,11 +31,15 @@ namespace EverScord
         public const string TWEEN_OPEN_PORTAL = "OpenPortal";
         public const string TWEEN_SHOW_SCREEN = "ShowScreen";
         public const string TWEEN_COVER_SCREEN = "CoverScreen";
+        public const string TWEEN_STAGE_NOTIFICATION = "StageNotification";
+        public const string TWEEN_STAGE_NOTIFICATION_OFF= "StageNotificationOff";
+        public const string TWEEN_STAGE_COUNTDOWN = "StageCountdown";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";
 
         // Scene Names
         public const string SCENE_MAINGAME = "PhotonTestPlay";
+        
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using DG.Tweening;
-using EverScord.Skill;
 using Photon.Pun;
 using UnityEngine;
+using EverScord.Skill;
+using EverScord.Character;
+using Photon.Pun.UtilityScripts;
 
 namespace EverScord
 {
@@ -15,7 +17,13 @@ namespace EverScord
         private Coroutine countdownCoroutine;
         private Action onCountdownFinished;
 
+        private int currentCountdownNum = 0;
         private bool isPortalOpened = false;
+
+        void Start()
+        {
+            GameManager.Instance.InitControl(this);
+        }
 
         void OnTriggerEnter(Collider other)
         {
@@ -26,13 +34,18 @@ namespace EverScord
                 return;
 
             ActivateCountdown();
-            SetPortalCollider(false);
         }
 
         void Update()
         {
             if (countdownCoroutine == null)
                 return;
+
+            int previousCountdownNum = currentCountdownNum;
+            currentCountdownNum = (int)(portalTimer.Cooldown - portalTimer.ElapsedTime);
+
+            if (previousCountdownNum != currentCountdownNum)
+                CharacterControl.CurrentClientCharacter.PlayerUIControl.ChangePortalCountdownNumber(currentCountdownNum);
 
             if (!portalTimer.IsCooldown)
             {
@@ -42,9 +55,9 @@ namespace EverScord
                 portalTimer.ResetElapsedTime();
                 onCountdownFinished?.Invoke();
                 gameObject.SetActive(false);
-            }
 
-            Debug.Log($"Teleport countdown: {portalTimer.Cooldown - portalTimer.ElapsedTime:F0}");
+                CharacterControl.CurrentClientCharacter.PlayerUIControl.HidePortalNotification();
+            }
         }
 
         public void Init(float countdown, Action callback)
@@ -52,13 +65,18 @@ namespace EverScord
             portalTimer = new CooldownTimer(countdown);
             transform.localScale = initialPortalScale;
 
+            currentCountdownNum = (int)countdown + 1;
+
             onCountdownFinished -= callback;
             onCountdownFinished += callback;
         }
 
         private void ActivateCountdown()
         {
+            SetPortalCollider(false);
             countdownCoroutine = StartCoroutine(portalTimer.RunTimer(true));
+
+            CharacterControl.CurrentClientCharacter.PlayerUIControl.ShowPortalNotification();
         }
 
         public void TryOpenPortal(float currentProgress)

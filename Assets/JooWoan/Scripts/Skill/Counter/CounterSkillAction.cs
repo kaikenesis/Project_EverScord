@@ -114,8 +114,11 @@ namespace EverScord.Skill
             if (laserControl)
                 return;
 
-            activator.TrackAim();
-            activator.PlayerWeapon.FireBullet();
+            if (photonView.IsMine)
+            {
+                activator.TrackAim();
+                activator.PlayerWeapon.FireBullet();
+            }
 
             laserControl = Instantiate(skill.LaserPrefab, CharacterSkill.SkillRoot).GetComponent<Hovl_Laser>();
         }

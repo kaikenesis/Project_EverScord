@@ -10538,6 +10538,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapPattern3
       objectReference: {fileID: 0}
+    - target: {fileID: 5380285033949727484, guid: e6842fcacfab2dc4ba76c93337224a38, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10669,6 +10673,10 @@ PrefabInstance:
     - target: {fileID: 3160128391856505993, guid: b681fd16d85140346b32ca4a7c28040a, type: 3}
       propertyPath: m_Name
       value: MapPattern2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160128391856505993, guid: b681fd16d85140346b32ca4a7c28040a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6553360898828202359, guid: b681fd16d85140346b32ca4a7c28040a, type: 3}
       propertyPath: sceneViewId
@@ -17489,7 +17497,7 @@ MonoBehaviour:
   portalControl: {fileID: 530787490}
   portal: {fileID: 530787486}
   groundCollider: {fileID: 2026387969}
-  increaseAmount: 20
+  increaseAmount: 50
   countdown: 5
   levelList:
   - Level: {fileID: 146849960}
@@ -22461,7 +22469,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 933150261, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

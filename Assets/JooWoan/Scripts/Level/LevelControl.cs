@@ -1,8 +1,5 @@
 using System;
 using UnityEngine;
-using DG.Tweening;
-using EverScord.Skill;
-using EverScord.Character;
 using System.Collections.Generic;
 using Photon.Pun;
 using System.Collections;
@@ -59,8 +56,6 @@ namespace EverScord
             float currentProgress = progress / maxProgress;
 
             OnProgressUpdated?.Invoke(currentProgress);
-
-            Debug.Log($"Current Level Progress: {progress}");
         }
 
         private void NotifyTeleport()

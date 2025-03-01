@@ -8,8 +8,6 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
-using Photon.Pun.Demo.SlotRacer;
-using Photon.Realtime;
 
 namespace EverScord.Character
 {
@@ -47,6 +45,7 @@ namespace EverScord.Character
         [Header("Rig")]
         [SerializeField] private CharacterRigControl rigLayerPrefab;
 
+        public static CharacterControl CurrentClientCharacter           { get; private set; }
         public PlayerUI PlayerUIControl                                 { get; private set; }
         public CharacterRigControl RigControl                           { get; private set; }
         public CharacterAnimation AnimationControl                      { get; private set; }
@@ -154,6 +153,8 @@ namespace EverScord.Character
 
                 CharacterJob = GameManager.Instance.PlayerData.job;
                 CharacterType = GameManager.Instance.PlayerData.character;
+
+                CurrentClientCharacter = this;
             }
 
             blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
