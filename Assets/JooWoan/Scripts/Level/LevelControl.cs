@@ -3,6 +3,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using Photon.Pun;
 using System.Collections;
+using EverScord.Skill;
+using EverScord.Effects;
+using EverScord.Character;
+using System.Linq;
 
 namespace EverScord
 {
@@ -13,6 +17,7 @@ namespace EverScord
 
         public static Action<float> OnProgressUpdated = delegate { };
         public static bool IsLoadingLevel { get; private set; }
+        private static WaitForSeconds waitLoadScreen;
 
         [SerializeField] private PortalControl portalControl;
         [SerializeField] private GameObject portal, groundCollider;
@@ -20,7 +25,7 @@ namespace EverScord
         [SerializeField] private float countdown;
         [SerializeField] private List<LevelInfo> levelList;
 
-        private static WaitForSeconds waitLoadScreen;
+        private GameObject teleportEffect;
         private float progress, maxProgress;
 
         void Awake()
@@ -28,6 +33,7 @@ namespace EverScord
             GameManager.Instance.InitControl(this);
 
             waitLoadScreen = new WaitForSeconds(LOADSCREEN_DELAY);
+            teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
 
             portalControl.gameObject.SetActive(false);
             portalControl.SetIsPortalOpened(false);
@@ -63,11 +69,40 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
 
+            TeleportPlayersOutofRange();
             GameManager.View.RPC(nameof(GameManager.Instance.TeleportPlayers), RpcTarget.All);
         }
 
-        public void PrepareNextLevel()
+        private void TeleportPlayersOutofRange()
         {
+            Collider[] hits = portalControl.CheckPlayersInRange();
+
+            List<CharacterControl> playerList = GameManager.Instance.PlayerDict.Values.ToList();
+
+            for (int i = playerList.Count - 1; i >= 0; i--)
+            {
+                for (int j = 0; j < hits.Length; j++)
+                {
+                    if (playerList[i].gameObject == hits[j].gameObject)
+                    {
+                        playerList.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < playerList.Count; i++)
+            {
+                Debug.Log(playerList[i].gameObject.name);
+            }
+        }
+
+        public IEnumerator PrepareNextLevel()
+        {
+            var effect2 = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
+
+            yield return new WaitForSeconds(2f);
+
             foreach (var kv in GameManager.Instance.PlayerDict)
                 kv.Value.gameObject.SetActive(false);
 

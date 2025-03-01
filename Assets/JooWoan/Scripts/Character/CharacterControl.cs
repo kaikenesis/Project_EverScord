@@ -132,15 +132,6 @@ namespace EverScord.Character
             if (SkinRenderers.Length > 0)
                 OriginalSkinLayer = 1 << SkinRenderers[0].gameObject.layer;
 
-            currentHealth = maxHealth;
-
-            AnimationControl.Init(photonView);
-            weapon.Init(this);
-
-            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
-            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
-            RigControl.SetAimWeight(false);
-
             if (photonView.IsMine)
             {
                 PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
@@ -157,10 +148,18 @@ namespace EverScord.Character
                 CurrentClientCharacter = this;
             }
 
+            AnimationControl.Init(photonView);
+            weapon.Init(this);
+
+            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
+            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
+            RigControl.SetAimWeight(false);
+
             blinkEffect = BlinkEffect.Create(transform, GameManager.HurtBlinkInfo);
             groundAndEnemyLayer = GameManager.GroundLayer | GameManager.EnemyLayer;
 
             CharacterJob = GameManager.Instance.PlayerData.job;
+            currentHealth = maxHealth;
         }
 
         void Start()

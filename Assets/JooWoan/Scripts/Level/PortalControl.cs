@@ -4,13 +4,12 @@ using Photon.Pun;
 using UnityEngine;
 using EverScord.Skill;
 using EverScord.Character;
-using Photon.Pun.UtilityScripts;
 
 namespace EverScord
 {
     public class PortalControl : MonoBehaviour
     {
-        [SerializeField] private Collider portalCollider;
+        [SerializeField] private SphereCollider portalCollider;
         [SerializeField] private Vector3 initialPortalScale;
 
         private CooldownTimer portalTimer;
@@ -20,8 +19,14 @@ namespace EverScord
         private int currentCountdownNum = 0;
         private bool isPortalOpened = false;
 
+        private Vector3 colliderStartPos;
+        private float colliderWorldRadius;
+
         void Start()
         {
+            colliderStartPos = transform.TransformPoint(portalCollider.center);
+            colliderWorldRadius = portalCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+
             GameManager.Instance.InitControl(this);
         }
 
@@ -115,6 +120,11 @@ namespace EverScord
         public void SetIsPortalOpened(bool state)
         {
             isPortalOpened = state;
+        }
+
+        public Collider[] CheckPlayersInRange()
+        {
+            return Physics.OverlapSphere(colliderStartPos, colliderWorldRadius, GameManager.PlayerLayer);
         }
     }
 }
