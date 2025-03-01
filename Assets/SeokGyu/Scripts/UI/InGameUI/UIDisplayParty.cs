@@ -59,7 +59,7 @@ namespace EverScord
             }
         }
 
-        private void HandleCheckAlive(int pvID, bool bDead)
+        private void HandleCheckAlive(int pvID, bool bDead, Vector3 position)
         {
             for (int i = 0; i < portraits.Count; i++)
             {

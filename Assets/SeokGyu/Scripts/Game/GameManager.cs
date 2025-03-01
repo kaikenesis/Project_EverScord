@@ -77,6 +77,18 @@ namespace EverScord
             private set { minimapData = value; }
         }
 
+        [SerializeField] private GameMode gameMode;
+        public GameMode GameMode
+        {
+            get { return gameMode; }
+        }
+
+        [SerializeField] private PointMarkData pointMarkData;
+        public PointMarkData PointMarkData
+        {
+            get { return pointMarkData; }
+        }
+
         private IDictionary<int, CharacterControl> playerDict;
 
         public static GameManager Instance
@@ -118,6 +130,7 @@ namespace EverScord
 
             playerData.Initialize();
             photonData.Initialize();
+            gameMode.Initialize();
         }
 
         public void UpdateUserName(string newName)
