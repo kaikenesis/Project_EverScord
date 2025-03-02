@@ -12,7 +12,6 @@ public class MapPattern2 : MonoBehaviour
     [SerializeField] private float patternTimer = 10f;
     [SerializeField] private float attackTimeSpan = 0.3f;
     private float curTime = 0;
-    private bool isCreate = false;
     private List<Vector3> directions = new List<Vector3>();
     private float span = 3f;
     private int randInt;
@@ -24,6 +23,7 @@ public class MapPattern2 : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("map2 awake");
         photonView = GetComponent<PhotonView>();
 
         for (int i = 0; i < 4; i++)
@@ -35,12 +35,8 @@ public class MapPattern2 : MonoBehaviour
 
     private async void OnEnable()
     {
-        if (!isCreate)
-        {
+        if(!ResourceManager.Instance.IsPoolExist(attackLaser.AssetGUID))
             await ResourceManager.Instance.CreatePool(attackLaser.AssetGUID, 20);
-            isCreate = true;
-        }
-
         spawn = StartCoroutine(Spawn());
     }
 

@@ -9799,7 +9799,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 451232242}
-  - component: {fileID: 451232243}
   - component: {fileID: 7111787312762547299}
   m_Layer: 0
   m_Name: Effect
@@ -9807,7 +9806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &451232242
 Transform:
   m_ObjectHideFlags: 0
@@ -9826,33 +9825,6 @@ Transform:
   - {fileID: 875078347}
   m_Father: {fileID: 619748627}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &451232243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 451232241}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4dbb8691d7544962857c6d74c85aa081, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  changeAllMaxLength: 0
-  maxLength: 32
-  globalProgressSpeed: 1
-  globalImpactProgressSpeed: 1.5
-  always: 0
-  colorizeAll: 1
-  finalColor: {r: 0, g: 0.4627451, b: 1, a: 1}
-  gammaLinear: 1
-  meshRend: {fileID: 0}
-  meshRendPower: 3
-  pointLight: {fileID: 1528171767}
-  startPointEffect: {fileID: 445746140}
-  endPointEffect: {fileID: 0}
-  smartWaveParticles: {fileID: 875078348}
-  sfxcontroller: {fileID: 851959977}
 --- !u!114 &7111787312762547299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29465,6 +29437,8 @@ MonoBehaviour:
   rotateSpeed: 0.1
   lenght: 32
   v3DLaserProgressCustom: {fileID: 7111787312762547299}
+  startDelay: 3
+  effect: {fileID: 451232241}
 --- !u!114 &-8145310050585751731
 MonoBehaviour:
   m_ObjectHideFlags: 0

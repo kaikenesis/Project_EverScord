@@ -47,6 +47,11 @@ public class ResourceManager : Singleton<ResourceManager>
         return objectDictionary[addressableKey] as T;
     }
 
+    public bool IsPoolExist(string addressableKey)
+    {
+        return poolDictionary.ContainsKey(addressableKey);
+    }
+
     // 어드레서블 에셋을 로드하고 풀 생성
     public async Task CreatePool(string addressableKey, int poolSize = DEFAULT_POOL_SIZE)
     {
