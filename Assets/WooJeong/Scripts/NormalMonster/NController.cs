@@ -165,7 +165,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         // 풀에서 체력바 얻기
         healthBarObject = ResourceManager.Instance.GetFromPool("MonsterHealthBar", Vector3.zero, Quaternion.identity);
         Transform canvas = GameObject.FindGameObjectWithTag("MonsterUI").transform;
-        healthBarObject.transform.parent = canvas;
+        healthBarObject.transform.SetParent(canvas);
 
         monsterHealthBar = healthBarObject.GetComponent<MonsterHealthBar>();
         monsterHealthBar.SetTarget(transform);
