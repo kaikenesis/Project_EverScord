@@ -87,11 +87,6 @@ public class MonsterSpawner : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        StopCoroutine(spawn);
-    }
-
     [PunRPC]
     private void SyncSpawn(int viewID)
     {

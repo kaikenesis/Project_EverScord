@@ -260,8 +260,6 @@ public abstract class NController : MonoBehaviour, IEnemy
         {
             isDead = false;
             HP = monsterData.HP;
-            if (monsterHealthBar == null)
-                SetHealthBar();
             healthBarObject.SetActive(true);
             monsterHealthBar.UpdateHealth(HP, monsterData.HP);
             photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
