@@ -18,15 +18,22 @@ namespace EverScord
         public static bool IsLoadingLevel { get; private set; }
         private static WaitForSeconds waitLoadScreen, waitStageTransition, waitStageFade;
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
-        private static WaitForSeconds waitPointOne = new WaitForSeconds(0.1f); 
+        private static WaitForSeconds waitPointOne = new WaitForSeconds(0.1f);
+        public static bool IsLevelCompleted => progress >= maxProgress;
 
         [SerializeField] private PortalControl portalControl;
         [SerializeField] private GameObject portal, groundCollider;
-        [SerializeField] private float increaseAmount;
         [SerializeField] private float countdown;
         [SerializeField] private List<LevelInfo> levelList;
 
-        private float progress, maxProgress;
+        private IDictionary<MonsterType, float> increaseDict = new Dictionary<MonsterType, float>
+        {
+            {MonsterType.SMALL, 2f},
+            {MonsterType.MEDIUM, 5f},
+            {MonsterType.LARGE, 25f}
+        };
+
+        private static float progress, maxProgress;
 
         void Awake()
         {
@@ -57,7 +64,7 @@ namespace EverScord
 
         public void IncreaseProgress(MonsterType monsterType)
         {
-            progress = Mathf.Min(progress + increaseAmount, maxProgress);
+            progress = Mathf.Min(progress + increaseDict[monsterType], maxProgress);
             float currentProgress = progress / maxProgress;
 
             OnProgressUpdated?.Invoke(currentProgress);
