@@ -265,6 +265,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         if (monsterHealthBar == null)
         {
             SetHealthBar();
+            healthBarObject.SetActive(true);
             photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
         }
 
@@ -272,7 +273,6 @@ public abstract class NController : MonoBehaviour, IEnemy
         {
             isDead = false;
             HP = monsterData.HP;
-            healthBarObject.SetActive(true);
             monsterHealthBar.UpdateHealth(HP, monsterData.HP);
             photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
             LastAttack = 0;
@@ -283,6 +283,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void SyncSetHealthBar()
     {
         SetHealthBar();
+        healthBarObject.SetActive(true);
     }
 
     public void PlayAnimation(string animationName)

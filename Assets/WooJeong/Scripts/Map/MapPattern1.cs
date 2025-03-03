@@ -1,3 +1,4 @@
+using EverScord;
 using EverScord.Character;
 using Photon.Pun;
 using System.Collections;
@@ -30,18 +31,19 @@ public class MapPattern1 : MonoBehaviour
             rotateSpeed *= -1;
     }
 
-    private void SetActiveEffect(bool value)
+    private void Start()
     {
-        effect.SetActive(value);
-        boxCollider.enabled = value;
-    }
-
-    private void OnEnable()
-    {
+        LevelControl.OnProgressUpdated += ProgressCheck;
         if (PhotonNetwork.IsMasterClient)
         {
             rotate = StartCoroutine(Rotate());
         }
+    }
+
+    private void SetActiveEffect(bool value)
+    {
+        effect.SetActive(value);
+        boxCollider.enabled = value;
     }
 
     private void OnValidate()
@@ -62,12 +64,6 @@ public class MapPattern1 : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        if (rotate != null)
-            StopCoroutine(rotate);
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -85,5 +81,17 @@ public class MapPattern1 : MonoBehaviour
     private void SyncMapLaserActice(bool tf)
     {
         SetActiveEffect(tf);
+    }
+
+    protected void ProgressCheck(float currentProgress)
+    {
+        if (currentProgress == 1)
+        {
+            // 현재 진행도 체크하고 다 됐으면 죽임
+            if (LevelControl.IsLevelCompleted == true)
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
 }
