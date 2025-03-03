@@ -129,6 +129,7 @@ namespace EverScord
                 Instantiate(beamEffect, player.PlayerTransform.position, Quaternion.identity);
                 player.SetActive(true);
                 player.SetState(Character.SetCharState.REMOVE, Character.CharState.TELEPORTING);
+                player.SetState(Character.SetCharState.REMOVE, Character.CharState.INVINCIBLE);
                 yield return waitPointOne;
             }
 
