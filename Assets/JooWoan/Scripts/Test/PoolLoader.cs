@@ -33,6 +33,7 @@ namespace EverScord.Pool
             _ = ResourceManager.Instance.CreatePool("BossMonsterStoneAttack");            
             _ = ResourceManager.Instance.CreatePool("NML2_A1_Effect01");
             _ = ResourceManager.Instance.CreatePool("NML2_A2_Effect");
+            _ = ResourceManager.Instance.CreatePool("P15_Attack", 1);
             _ = ResourceManager.Instance.CreatePool("StandingAttackEffect", 2);
         }
     }

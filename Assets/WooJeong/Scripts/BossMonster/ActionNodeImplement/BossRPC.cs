@@ -391,6 +391,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         BossShield bossShield = shield.GetComponent<BossShield>();
         if (bossShield.HP > 0)
         {
+            PlayEffect("P15_Attack", transform.position);
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
                 player.DecreaseHP(50);
