@@ -232,6 +232,7 @@ namespace EverScord
                     if(PhotonNetwork.IsMasterClient)
                     {
                         PhotonNetwork.LoadLevel("PhotonTestLobby");
+                        ResourceManager.ClearAllPools();
                     }
                 }
             }

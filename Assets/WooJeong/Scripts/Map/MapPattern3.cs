@@ -9,7 +9,6 @@ public class MapPattern3 : MonoBehaviour
     [SerializeField] private AssetReferenceGameObject fog;
     private float spawnTimer = 30f;
     private float disappearTimer = 10f;
-    private bool isCreate = false;
     private float randomRange = 25f;
     private float curTime = 20;
 
@@ -24,11 +23,8 @@ public class MapPattern3 : MonoBehaviour
 
     private async void OnEnable()
     {
-        if(!isCreate)
-        {
+        if (!ResourceManager.Instance.IsPoolExist(fog.AssetGUID))
             await ResourceManager.Instance.CreatePool(fog.AssetGUID, 2);
-            isCreate = true;
-        }
 
         spawn = StartCoroutine(Spawn());
     }
