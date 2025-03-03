@@ -35,10 +35,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (currentProgress == 1)
         {
-            if (LevelControl.IsLevelCompleted == true)
-            {
-                gameObject.SetActive(false);
-            }
+            gameObject.SetActive(false);
         }
     }
 

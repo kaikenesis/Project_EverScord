@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace EverScord
 {
@@ -18,10 +19,13 @@ namespace EverScord
         public static Action<int, bool> OnLevelUpdated = delegate { };
         public static Action OnLevelClear = delegate { };
         public static bool IsLoadingLevel { get; private set; }
+        public static bool IsLevelCompleted => progress >= maxProgress;
+        public float CurrentProgress => progress / Mathf.Max(0.001f, maxProgress);
+        public int MaxLevelIndex => levelList.Count - 1;
+
         private static WaitForSeconds waitLoadScreen, waitStageTransition, waitStageFade;
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
         private static WaitForSeconds waitPointOne = new WaitForSeconds(0.1f);
-        public static bool IsLevelCompleted => progress >= maxProgress;
 
         [SerializeField] private PortalControl portalControl;
         [SerializeField] private GameObject portal, groundCollider;
@@ -57,7 +61,9 @@ namespace EverScord
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.F2))
-                Debug.Log($"PROGRESS : {progress}");
+            {
+                Debug_IncreaseProgress(maxProgress);
+            }
         }
 
         void OnDisable()
@@ -73,14 +79,19 @@ namespace EverScord
         public void IncreaseProgress(MonsterType monsterType)
         {
             progress = Mathf.Min(progress + increaseDict[monsterType], maxProgress);
-            float currentProgress = progress / maxProgress;
-
-            OnProgressUpdated?.Invoke(currentProgress);
+            OnProgressUpdated?.Invoke(CurrentProgress);
         }
 
-        private void ResetProgress()
+        public void Debug_IncreaseProgress(float amount)
+        {
+            progress = Mathf.Clamp(amount, 0f, 100f);
+            OnProgressUpdated?.Invoke(CurrentProgress);
+        }
+
+        public void ResetProgress()
         {
             progress = 0f;
+            OnProgressUpdated?.Invoke(0);
         }
 
         private void NotifyTeleport()
