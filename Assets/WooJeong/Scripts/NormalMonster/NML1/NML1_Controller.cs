@@ -29,4 +29,10 @@ public class NML1_Controller : NController
         Projector2.pivot = new Vector3(0, transform.position.y,
                                        chargeRange / 2);
     }
+
+    protected override void SetHealthBar()
+    {
+        base.SetHealthBar();
+        monsterHealthBar.SetOffsetY(5);
+    }
 }

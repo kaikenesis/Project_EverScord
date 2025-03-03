@@ -1387,7 +1387,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 933150261, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7111787312762547299, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: maxLength
@@ -1511,6 +1511,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6789498769806980570, guid: e6842fcacfab2dc4ba76c93337224a38, type: 3}
+      propertyPath: sceneViewId
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2320430861467904597, guid: e6842fcacfab2dc4ba76c93337224a38, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1720,6 +1724,10 @@ PrefabInstance:
     - target: {fileID: 3160128391856505993, guid: b681fd16d85140346b32ca4a7c28040a, type: 3}
       propertyPath: m_Name
       value: MapPattern2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6553360898828202359, guid: b681fd16d85140346b32ca4a7c28040a, type: 3}
+      propertyPath: sceneViewId
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

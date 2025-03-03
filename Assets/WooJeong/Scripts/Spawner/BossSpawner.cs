@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 using EverScord.Effects;
+using EverScord;
 
 public class BossSpawner : MonoBehaviour
 {
@@ -27,7 +28,15 @@ public class BossSpawner : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(Spawn());
+        LevelControl.OnProgressUpdated += ProgressCheck;
+    }
+
+    private void ProgressCheck(float currentProgress)
+    {
+        if(currentProgress == 1)
+        {
+            StartCoroutine(Spawn());
+        }
     }
 
     private IEnumerator Spawn()
