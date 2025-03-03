@@ -19,6 +19,11 @@ namespace EverScord.Character
 
         private int upperMaskLayerIndex;
 
+        void OnEnable()
+        {
+            SetUpperMask(false, true);
+        }
+
         public void Init(PhotonView photonView)
         {
             this.photonView = photonView;

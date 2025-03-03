@@ -64,7 +64,8 @@ public class MapPattern1 : MonoBehaviour
 
     private void OnDisable()
     {
-        StopCoroutine(rotate);
+        if (rotate != null)
+            StopCoroutine(rotate);
     }
 
     private void OnTriggerEnter(Collider other)

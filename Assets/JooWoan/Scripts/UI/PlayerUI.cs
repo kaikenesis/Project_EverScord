@@ -23,7 +23,8 @@ namespace EverScord.UI
         private static Material bloodMat;
         private static ColorCurves colorCurves;
 
-        [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText;
+        [SerializeField] private GameObject notificationBox;
+        [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText, countdownText;
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
 
         private Coroutine bloodCoroutine;
@@ -144,6 +145,28 @@ namespace EverScord.UI
         {
             if (colorCurves)
                 colorCurves.active = state;
+        }
+
+        public void ShowPortalNotification()
+        {
+            notificationBox.SetActive(true);
+
+            DOTween.Rewind(ConstStrings.TWEEN_STAGE_NOTIFICATION);
+            DOTween.Play(ConstStrings.TWEEN_STAGE_NOTIFICATION);
+        }
+
+        public void HidePortalNotification()
+        {
+            DOTween.Rewind(ConstStrings.TWEEN_STAGE_NOTIFICATION_OFF);
+            DOTween.Play(ConstStrings.TWEEN_STAGE_NOTIFICATION_OFF);
+        }
+
+        public void ChangePortalCountdownNumber(int countdown)
+        {
+            countdownText.text = countdown.ToString();
+
+            DOTween.Rewind(ConstStrings.TWEEN_STAGE_COUNTDOWN);
+            DOTween.Play(ConstStrings.TWEEN_STAGE_COUNTDOWN);
         }
     }
 }

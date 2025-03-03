@@ -6,13 +6,16 @@ namespace EverScord
 {
     public class UITimer : MonoBehaviour
     {
+        [SerializeField] private Color32 timerColor;
         [SerializeField] private TMP_Text timerText;
         private bool bStop = true;
         private int min = 0;
         private int sec = 0;
+        private string colorHex;
 
         private void Awake()
         {
+            colorHex = ColorUtility.ToHtmlStringRGBA(timerColor);
             StartTimer();
         }
 
@@ -32,7 +35,7 @@ namespace EverScord
         {
             while(!bStop)
             {
-                timerText.text = string.Format("진행시간 [{0}:{1:D2}]", min, sec);
+                timerText.text = string.Format("진행시간 <color=#{0}>[{1}:{2:D2}]</color>", colorHex, min, sec);
                 sec++;
                 if (sec > 59)
                 {

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
+using EverScord.Effects;
 
 namespace EverScord.Skill
 {
@@ -11,10 +12,12 @@ namespace EverScord.Skill
 
         private BombDeliverySkill skill;
         private Transform closestTarget;
+        private GameObject teleportEffect;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.skill = (BombDeliverySkill)skill;
+            teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
 
             base.Init(activator, skill, ejob, skillIndex);
         }
@@ -80,8 +83,8 @@ namespace EverScord.Skill
 
         private void TeleportPlayer()
         {
-            var effect1 = Instantiate(skill.TeleportEffect, CharacterSkill.SkillRoot);
-            var effect2 = Instantiate(skill.TeleportEffect, CharacterSkill.SkillRoot);
+            var effect1 = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
+            var effect2 = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
 
             Vector3 effectScale = effect1.transform.localScale;
             effect1.transform.localScale = new Vector3(effectScale.x * 0.5f, effectScale.y * 0.5f, effectScale.z * 0.5f);
@@ -144,14 +147,5 @@ namespace EverScord.Skill
             teleportPos.y = 0f;
             return teleportPos;
         }
-
-        #region GIZMOS
-        private void OnDrawGizmos()
-        {
-            if (!Application.isPlaying) return;
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(activator.PlayerTransform.position, skill.DetectRadius);
-        }
-        #endregion
     }
 }

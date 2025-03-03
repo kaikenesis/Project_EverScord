@@ -16,7 +16,6 @@ namespace EverScord
         [SerializeField] private bool debugMode = false;
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
-        //public PlayerData userData;
 
         [SerializeField] private PhotonData photonData;
         public PhotonData PhotonData { get { return photonData; } }
@@ -26,6 +25,7 @@ namespace EverScord
         public EnemyHitControl EnemyHitsControl                 { get; private set; }
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
+        public PortalControl PortalController                   { get; private set; }
         public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
@@ -77,6 +77,18 @@ namespace EverScord
             private set { minimapData = value; }
         }
 
+        [SerializeField] private GameMode gameMode;
+        public GameMode GameMode
+        {
+            get { return gameMode; }
+        }
+
+        [SerializeField] private PointMarkData pointMarkData;
+        public PointMarkData PointMarkData
+        {
+            get { return pointMarkData; }
+        }
+
         private IDictionary<int, CharacterControl> playerDict;
 
         public static GameManager Instance
@@ -118,6 +130,7 @@ namespace EverScord
 
             playerData.Initialize();
             photonData.Initialize();
+            gameMode.Initialize();
         }
 
         public void UpdateUserName(string newName)
@@ -150,6 +163,10 @@ namespace EverScord
 
                 case LevelControl levelControl:
                     LevelController = levelControl;
+                    break;
+
+                case PortalControl portalControl:
+                    PortalController = portalControl;
                     break;
 
                 default:
@@ -189,10 +206,9 @@ namespace EverScord
         }
 
         [PunRPC]
-        public void TeleportPlayers()
-        {            
-            Debug.Log("Teleporting all players.");
-            LevelController.PrepareNextLevel();
+        public void PrepareNextLevel()
+        {
+            StartCoroutine(LevelController.PrepareNextLevel());
         }
 
         private void OnGUI()

@@ -20,6 +20,7 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference ReviveBeam                { get; private set; }
         [field: SerializeField] public AssetReference HitEffect1                { get; private set; }
         [field: SerializeField] public AssetReference HitEffect2                { get; private set; }
+        [field: SerializeField] public AssetReference TeleportEffect            { get; private set; }
 
         [field: SerializeField] public AssetReference Boss                      { get; private set; }
         [field: SerializeField] public AssetReference BossProjectile            { get; private set; }
@@ -46,6 +47,7 @@ namespace EverScord.Effects
         public static string ReviveBeam_ID              => Instance.ReviveBeam.AssetGUID;
         public static string HitEffect1_ID              => Instance.HitEffect1.AssetGUID;
         public static string HitEffect2_ID              => Instance.HitEffect2.AssetGUID;
+        public static string TeleportEffect_ID          => Instance.TeleportEffect.AssetGUID;
 
         public static string Boss_ID                    => Instance.Boss.AssetGUID;
         public static string BossProjectile_ID          => Instance.BossProjectile.AssetGUID;

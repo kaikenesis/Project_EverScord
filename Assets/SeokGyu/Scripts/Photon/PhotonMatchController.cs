@@ -4,14 +4,11 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using System;
 using UnityEngine;
-using Unity.VisualScripting;
 
 namespace EverScord
 {
     public class PhotonMatchController : MonoBehaviourPunCallbacks
     {
-        private int maxDealers = 2;
-        private int maxHealers = 1;
         Dictionary<int, Player> matchPlayers;
         private Hashtable expectedRoomProperties = new Hashtable();
         private PhotonView pv;
@@ -71,7 +68,7 @@ namespace EverScord
 
             if (PhotonNetwork.InRoom == true)
             {
-                if(PhotonNetwork.CurrentRoom.PlayerCount == (maxDealers + maxHealers))
+                if(PhotonNetwork.CurrentRoom.PlayerCount == (GameManager.Instance.GameMode.maxPlayer))
                 {
                     pv.RPC(nameof(MatchComplete), RpcTarget.All);
                 }
@@ -85,7 +82,7 @@ namespace EverScord
             else
             {
                 expectedRoomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
-                PhotonNetwork.JoinRandomRoom(expectedRoomProperties, maxDealers + maxHealers);
+                PhotonNetwork.JoinRandomRoom(expectedRoomProperties, GameManager.Instance.GameMode.maxPlayer);
             }
         }
         private void HandleRequestStopMatch()
@@ -143,7 +140,7 @@ namespace EverScord
             ro.IsOpen = true;
             ro.IsVisible = true;
             ro.PublishUserId = true;
-            ro.MaxPlayers = maxDealers + maxHealers;
+            ro.MaxPlayers = GameManager.Instance.GameMode.maxPlayer;
             ro.CustomRoomProperties = expectedRoomProperties;
             ro.CustomRoomPropertiesForLobby = new string[] { "DEALER", "HEALER", "LEVEL" };
 
@@ -168,8 +165,8 @@ namespace EverScord
 
             if (room.IsVisible == false) return false;
             if (roomLevel != joinLevel) return false;
-            if (roomDealer + joinDealer > maxDealers) return false;
-            if (roomHealer + joinHealer > maxHealers) return false;
+            if (roomDealer + joinDealer > GameManager.Instance.GameMode.MaxDealer) return false;
+            if (roomHealer + joinHealer > GameManager.Instance.GameMode.MaxHealer) return false;
 
             Debug.Log($"{room.Name}");
             if (matchPlayers.Count != 0)
@@ -206,8 +203,8 @@ namespace EverScord
             int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
             int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
 
-            if (curDealer < maxDealers) return;
-            if (curHealer < maxHealers) return;
+            if (curDealer < GameManager.Instance.GameMode.MaxDealer) return;
+            if (curHealer < GameManager.Instance.GameMode.MaxHealer) return;
 
             pv.RPC(nameof(MatchComplete), RpcTarget.All);
         }
@@ -260,6 +257,7 @@ namespace EverScord
         private void MatchComplete()
         {
             OnMatchComplete?.Invoke();
+            GameManager.Instance.PhotonData.state = PhotonData.EState.NONE;
             if (PhotonNetwork.IsMasterClient)
             {
                 StartCoroutine(LoadInGameScene());

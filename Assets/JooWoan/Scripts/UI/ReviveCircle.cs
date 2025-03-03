@@ -152,7 +152,8 @@ namespace EverScord.UI
 
             FadeOut();
 
-            reviveTarget.StartCoroutine(reviveTarget.HandleRevival());
+            if (reviveTarget.IsDead)
+                reviveTarget.StartCoroutine(reviveTarget.HandleRevival());
         }
 
         private void ResetCircle()

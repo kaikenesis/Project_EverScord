@@ -11,9 +11,6 @@ namespace EverScord
 {
     public class PhotonRoomController : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private int maxPlayers;
-        [SerializeField] private int maxDealers = 2;
-        [SerializeField] private int maxHealers = 1;
         private PhotonView pv;
         private string inviteRoomName;
 
@@ -229,7 +226,7 @@ namespace EverScord
             ro.IsOpen = true;
             ro.IsVisible = false;
             ro.PublishUserId = true;
-            ro.MaxPlayers = maxDealers + maxHealers;
+            ro.MaxPlayers = GameManager.Instance.GameMode.maxPlayer;
             ro.CustomRoomProperties = roomProperties;
             ro.CustomRoomPropertiesForLobby = new string[] { "DEALER", "HEALER", "LEVEL" };
 
@@ -313,9 +310,9 @@ namespace EverScord
 
             int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
             int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];
-
-            if (curDealer > maxDealers) return false;
-            if (curHealer > maxHealers) return false;
+            
+            if (curDealer > GameManager.Instance.GameMode.MaxDealer) return false;
+            if (curHealer > GameManager.Instance.GameMode.MaxHealer) return false;
 
             return true;
         }
