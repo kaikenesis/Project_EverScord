@@ -119,13 +119,21 @@ namespace EverScord.Weapons
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster, false);
                     }
-                    else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber && shooter.CharacterJob == PlayerData.EJob.Healer)
+                    else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber)
                     {
-                        // Calculate total heal
-                        float calculatedHeal = sourceWeapon.Heal;
-
                         CharacterControl character = hit.transform.GetComponent<CharacterControl>();
-                        character.IncreaseHP(calculatedHeal, true);
+
+                        if (shooter.CharacterJob == PlayerData.EJob.Healer)
+                        {
+                            // Calculate total heal
+                            float calculatedHeal = sourceWeapon.Heal;
+                            character.IncreaseHP(calculatedHeal, true);
+                        }
+                        else if (character.IsStunned)
+                        {
+                            StunnedDebuff debuff = character.DebuffDict[CharState.STUNNED] as StunnedDebuff;
+                            debuff.DecreaseCount();
+                        }
                     }
 
                     SetTracerEffectPosition(currentPoint);

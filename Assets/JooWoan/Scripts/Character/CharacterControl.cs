@@ -62,6 +62,7 @@ namespace EverScord.Character
         public CharState State                                          { get; private set; }
         public BlinkEffect BlinkEffects                                 { get; private set; }
         public UIMarker UIMarker                                        { get; private set; }
+        public IDictionary<CharState, Debuff> DebuffDict                { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -121,6 +122,7 @@ namespace EverScord.Character
 
             PlayerTransform  = transform;
             PhysicsControl   = new CharacterPhysics(gravity, mass);
+            DebuffDict       = new Dictionary<CharState, Debuff>();
 
             photonView       = GetComponent<PhotonView>();
             controller       = GetComponent<CharacterController>();
@@ -200,7 +202,7 @@ namespace EverScord.Character
 
             SetInput();
 
-            if (IsDead)
+            if (IsDead || IsStunned)
                 return;
 
             SetMovingDirection();
@@ -472,6 +474,30 @@ namespace EverScord.Character
                 default:
                     break;
             }
+
+            SetDebuff(mode, state);
+        }
+
+        private void SetDebuff(SetCharState mode, CharState state)
+        {
+            switch (mode)
+            {
+                case SetCharState.ADD:
+                    var debuff = Debuff.GetDebuff(state);
+
+                    if (debuff != null)
+                        DebuffDict[state] = debuff;
+                    break;
+
+                case SetCharState.REMOVE:
+                case SetCharState.CLEAR:
+                    if (DebuffDict.ContainsKey(state))
+                        DebuffDict.Remove(state);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         public bool HasState(CharState state)
@@ -699,6 +725,11 @@ namespace EverScord.Character
         public bool IsDead
         {
             get { return HasState(CharState.DEATH); }
+        }
+
+        public bool IsStunned
+        {
+            get { return HasState(CharState.STUNNED); }
         }
 
         public bool IsAiming { get; private set; }
