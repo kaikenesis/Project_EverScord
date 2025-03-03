@@ -185,6 +185,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
         SetPoolRoot();
 
+        prefabDictionary[addressableKey].SetActive(false);
         GameObject obj = Instantiate(prefabDictionary[addressableKey]);
         obj.name = $"{prefabDictionary[addressableKey].name}_Pooled";
         obj.transform.SetParent(PoolRoot);
