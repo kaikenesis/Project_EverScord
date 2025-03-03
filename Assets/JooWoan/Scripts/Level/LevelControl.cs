@@ -53,7 +53,7 @@ namespace EverScord
             maxProgress = amount;
         }
 
-        public void IncreaseProgress()
+        public void IncreaseProgress(MonsterType monsterType)
         {
             progress = Mathf.Min(progress + increaseAmount, maxProgress);
             float currentProgress = progress / maxProgress;

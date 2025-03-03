@@ -7,6 +7,7 @@ public class NML2_Controller : NController
 {
     protected override void Setup()
     {
+        monsterType = MonsterType.LARGE;
         runState = gameObject.AddComponent<NML2_RunState>();
         attackState1 = gameObject.AddComponent<NML2_AttackState1>();
         attackState2 = gameObject.AddComponent<NML2_AttackState2>();

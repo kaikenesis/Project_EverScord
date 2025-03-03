@@ -15,10 +15,14 @@ public class MapPattern1 : MonoBehaviour
     private BoxCollider boxCollider;
     private float laserDamage = 20;
     private Coroutine rotate;
+    private PhotonView photonView;
 
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider>();
+        photonView = GetComponent<PhotonView>();
+
+        photonView.RPC("SyncMapLaserActice", RpcTarget.Others, false);
         SetActiveEffect(false);
 
         v3DLaserProgressCustom.maxLength = lenght;
@@ -43,13 +47,13 @@ public class MapPattern1 : MonoBehaviour
     private void OnValidate()
     {
         v3DLaserProgressCustom.maxLength = lenght;
-
     }
 
     private IEnumerator Rotate()
     {
         yield return new WaitForSeconds(startDelay);
         SetActiveEffect(true);
+        photonView.RPC("SyncMapLaserActice", RpcTarget.Others, true);
 
         while (true)
         {
@@ -74,5 +78,11 @@ public class MapPattern1 : MonoBehaviour
             CharacterControl control = other.GetComponent<CharacterControl>();
             control.DecreaseHP(laserDamage);
         }
+    }
+
+    [PunRPC]
+    private void SyncMapLaserActice(bool tf)
+    {
+        SetActiveEffect(tf);
     }
 }

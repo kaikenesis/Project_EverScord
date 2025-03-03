@@ -5,6 +5,7 @@ public class NMM1_Controller : NController
 {
     protected override void Setup()
     {
+        monsterType = MonsterType.MEDIUM;
         runState = gameObject.AddComponent<NMM1_RunState>();
         attackState1 = gameObject.AddComponent<NMM1_AttackState1>();
         attackState2 = gameObject.AddComponent<NMM1_AttackState2>();       

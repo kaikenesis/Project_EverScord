@@ -7,6 +7,7 @@ public class NMM2_Controller : NController
 {
     protected override void Setup()
     {
+        monsterType = MonsterType.MEDIUM;
         GameObject projector = new GameObject();
         projector.name = "projector1";
         projector.transform.parent = transform;

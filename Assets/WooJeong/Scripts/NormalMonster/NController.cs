@@ -7,6 +7,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+public enum MonsterType
+{
+    SMALL, MEDIUM, LARGE
+}
+
 public abstract class NController : MonoBehaviour, IEnemy
 {
     [SerializeField] public NMonsterData monsterData;
@@ -23,6 +28,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected float curCool2 = 0;
     protected RaycastHit hit;
     protected LayerMask playerLayer;
+    protected MonsterType monsterType;
 
     public DecalProjector Projector1 { get; protected set; }
     public DecalProjector Projector2 { get; protected set; }
@@ -204,7 +210,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         photonView.RPC("SyncMonsterDeath", RpcTarget.Others);
         healthBarObject.SetActive(false);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
-        GameManager.Instance.LevelController.IncreaseProgress();
+        GameManager.Instance.LevelController.IncreaseProgress(monsterType);
     }
 
     [PunRPC]
@@ -212,7 +218,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         healthBarObject.SetActive(false);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
-        GameManager.Instance.LevelController.IncreaseProgress();
+        GameManager.Instance.LevelController.IncreaseProgress(monsterType);
     }
 
     public void StartFSM()
