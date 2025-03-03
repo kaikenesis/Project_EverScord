@@ -15,12 +15,14 @@ namespace EverScord
 
             CharacterControl.OnHealthUpdated += HandleHealthUpdated;
             LevelControl.OnProgressUpdated += HandleStageProgressUpdated;
+            LevelControl.OnLevelUpdated += HandleLevelUpdated;
         }
 
         private void OnDestroy()
         {
             CharacterControl.OnHealthUpdated -= HandleHealthUpdated;
             LevelControl.OnProgressUpdated -= HandleStageProgressUpdated;
+            LevelControl.OnLevelUpdated -= HandleLevelUpdated;
         }
 
         private void Update()
@@ -46,7 +48,15 @@ namespace EverScord
 
             UpdateProgress(value);
         }
-        
+
+        private void HandleLevelUpdated(int curStageNum, bool bCoverSreen)
+        {
+            if (type != EType.StageProgress || bCoverSreen == false)
+                return;
+
+            UpdateProgress(0f);
+        }
+
         private void Initialize()
         {
             if(type != EType.BossHealth)

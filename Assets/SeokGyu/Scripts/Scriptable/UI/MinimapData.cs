@@ -7,17 +7,11 @@ namespace EverScord
     public class MinimapData : ScriptableObject
     {
         [SerializeField] private CameraTransform[] cameraPos;
-        [SerializeField] private IconTransform[] portalIconPos;
         [SerializeField] private StageMap[] stageMaps;
 
         public CameraTransform[] CameraPos
         {
             get { return cameraPos; }
-        }
-
-        public IconTransform[] PortalIconPos
-        {
-            get { return portalIconPos; }
         }
 
         public StageMap[] StageMaps
@@ -27,23 +21,6 @@ namespace EverScord
 
         [System.Serializable]
         public class CameraTransform
-        {
-            [SerializeField] private Vector3 position;
-            [SerializeField] private Quaternion rotation;
-
-            public Vector3 Position
-            {
-                get { return position; }
-            }
-
-            public Quaternion Rotation
-            {
-                get { return rotation; }
-            }
-        }
-
-        [System.Serializable]
-        public class IconTransform
         {
             [SerializeField] private Vector3 position;
             [SerializeField] private Quaternion rotation;

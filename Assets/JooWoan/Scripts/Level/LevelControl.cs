@@ -15,6 +15,8 @@ namespace EverScord
         private const float STAGE_TRANSITION_FADE_DELAY = 3f;
 
         public static Action<float> OnProgressUpdated = delegate { };
+        public static Action<int, bool> OnLevelUpdated = delegate { };
+        public static Action OnLevelClear = delegate { };
         public static bool IsLoadingLevel { get; private set; }
         private static WaitForSeconds waitLoadScreen, waitStageTransition, waitStageFade;
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
@@ -96,6 +98,7 @@ namespace EverScord
 
             yield return waitStageTransition;
 
+            OnLevelClear?.Invoke();
             portalControl.PlayWarpEffect(true);
             yield return waitStageTransition;
 
@@ -112,6 +115,9 @@ namespace EverScord
             GameManager.Instance.LoadScreen.CoverScreen();
             yield return waitStageFade;
 
+            bool bCoverScreen = true;
+            OnLevelUpdated?.Invoke(GameManager.CurrentLevelIndex + 1, bCoverScreen);
+
             SetNextLevel(out GameObject nextLevel);
             portalControl.MovePosition(nextLevel.transform.position);
 
@@ -123,6 +129,9 @@ namespace EverScord
             GameManager.Instance.LoadScreen.ShowScreen();
             portalControl.PlayWarpEffect(false);
             yield return waitStageTransition;
+
+            bCoverScreen = false;
+            OnLevelUpdated?.Invoke(GameManager.CurrentLevelIndex + 1, bCoverScreen);
 
             foreach (var player in GameManager.Instance.PlayerDict.Values)
             {
