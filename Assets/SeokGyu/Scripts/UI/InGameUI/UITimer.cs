@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,25 @@ namespace EverScord
         {
             colorHex = ColorUtility.ToHtmlStringRGBA(timerColor);
             StartTimer();
+
+            LevelControl.OnLevelUpdated += HandleLevelUpdated;
+        }
+
+        private void OnDestroy()
+        {
+            LevelControl.OnLevelUpdated -= HandleLevelUpdated;
+        }
+
+        private void HandleLevelUpdated(int curStageNum, bool bCoverScreen)
+        {
+            if(bCoverScreen == true)
+            {
+                StopTimer();
+            }
+            else
+            {
+                StartTimer();
+            }
         }
 
         private void StartTimer()
@@ -25,17 +45,25 @@ namespace EverScord
             StartCoroutine(UpdateTimer());
         }
 
-        private void ResetTimer()
+        private void StopTimer()
         {
             bStop = true;
+            sec = 0;
+            min = 0;
             StopCoroutine(UpdateTimer());
+            SetTimerText();
+        }
+
+        private void SetTimerText()
+        {
+            timerText.text = string.Format("진행시간 <color=#{0}>[{1}:{2:D2}]</color>", colorHex, min, sec);
         }
 
         private IEnumerator UpdateTimer()
         {
             while(!bStop)
             {
-                timerText.text = string.Format("진행시간 <color=#{0}>[{1}:{2:D2}]</color>", colorHex, min, sec);
+                SetTimerText();
                 sec++;
                 if (sec > 59)
                 {
