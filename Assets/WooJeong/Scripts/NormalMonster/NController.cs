@@ -129,7 +129,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     private void Start()
     {
-        SetHealthBar();
+        //SetHealthBar();
         LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
@@ -256,6 +256,9 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void StartFSM()
     {
+        if (monsterHealthBar == null)
+            SetHealthBar();
+
         if (PhotonNetwork.IsMasterClient)
         {
             isDead = false;
