@@ -64,6 +64,10 @@ public class MonsterSpawner : MonoBehaviour
                         photonView.RPC("SyncSpawn", RpcTarget.Others, data);
                     }
                 }
+                else
+                {
+                    photonView.RPC("SyncSpawn", RpcTarget.Others, view.ViewID);
+                }
 
                 NController nController = mo.GetComponent<NController>();
                 nController.SetGUID(monster.AssetGUID);
