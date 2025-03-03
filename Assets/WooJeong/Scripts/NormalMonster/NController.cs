@@ -244,6 +244,8 @@ public abstract class NController : MonoBehaviour, IEnemy
         healthBarObject.SetActive(false);
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
+
+        Debug.Log("============== MASTER Death===============");
     }
 
     [PunRPC]
@@ -252,6 +254,8 @@ public abstract class NController : MonoBehaviour, IEnemy
         healthBarObject.SetActive(false);
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
+
+        Debug.Log("============== CLIENT Death===============");
     }
 
     public void StartFSM()
