@@ -257,7 +257,10 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void StartFSM()
     {
         if (monsterHealthBar == null)
+        {
             SetHealthBar();
+            photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
+        }
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -269,6 +272,11 @@ public abstract class NController : MonoBehaviour, IEnemy
             LastAttack = 0;
             WaitState();
         }
+    }
+    [PunRPC]
+    protected void SyncSetHealthBar()
+    {
+        SetHealthBar();
     }
 
     public void PlayAnimation(string animationName)
