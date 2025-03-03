@@ -242,16 +242,16 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         photonView.RPC("SyncMonsterDeath", RpcTarget.Others);
         healthBarObject.SetActive(false);
-        ResourceManager.Instance.ReturnToPool(gameObject, GUID);
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
+        ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 
     [PunRPC]
     protected void SyncMonsterDeath()
     {
         healthBarObject.SetActive(false);
-        ResourceManager.Instance.ReturnToPool(gameObject, GUID);
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
+        ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 
     public void StartFSM()
