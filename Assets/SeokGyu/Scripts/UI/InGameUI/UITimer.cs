@@ -20,18 +20,25 @@ namespace EverScord
             StartTimer();
 
             LevelControl.OnLevelUpdated += HandleLevelUpdated;
+            LevelControl.OnLevelClear += HandleLevelClear;
         }
 
         private void OnDestroy()
         {
             LevelControl.OnLevelUpdated -= HandleLevelUpdated;
+            LevelControl.OnLevelClear -= HandleLevelClear;
+        }
+
+        private void HandleLevelClear()
+        {
+            PauseTimer();
         }
 
         private void HandleLevelUpdated(int curStageNum, bool bCoverScreen)
         {
             if(bCoverScreen == true)
             {
-                StopTimer();
+                ResetTimer();
             }
             else
             {
@@ -45,13 +52,17 @@ namespace EverScord
             StartCoroutine(UpdateTimer());
         }
 
-        private void StopTimer()
+        private void ResetTimer()
         {
-            bStop = true;
             sec = 0;
             min = 0;
-            StopCoroutine(UpdateTimer());
             SetTimerText();
+        }
+
+        private void PauseTimer()
+        {
+            bStop = true;
+            StopCoroutine(UpdateTimer());
         }
 
         private void SetTimerText()
