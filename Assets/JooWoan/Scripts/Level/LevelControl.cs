@@ -52,6 +52,12 @@ namespace EverScord
             OnProgressUpdated += portalControl.TryOpenPortal;
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F2))
+                Debug.Log($"PROGRESS : {progress}");
+        }
+
         void OnDisable()
         {
             OnProgressUpdated -= portalControl.TryOpenPortal;
