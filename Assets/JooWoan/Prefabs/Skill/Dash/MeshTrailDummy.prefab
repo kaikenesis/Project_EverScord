@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4763548822958935183
 Transform:
   m_ObjectHideFlags: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DummyMeshRenderer: {fileID: 3638333741015955181}
   DummyMeshFilter: {fileID: 2424097287381723628}
+  DummyMesh: {fileID: 0}
 --- !u!23 &3638333741015955181
 MeshRenderer:
   m_ObjectHideFlags: 0

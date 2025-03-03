@@ -20,7 +20,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4604411065018221990
 Transform:
   m_ObjectHideFlags: 0
@@ -52,7 +52,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: 6ded637d7d430d44f801b63ac4bcf4e9, type: 2}
-  HP: 0
   LastAttack: 0
   player: {fileID: 0}
   stunTime: 2
