@@ -16,6 +16,7 @@ public abstract class NDeathState : MonoBehaviour, IState
     public void Enter()
     {
         monsterController.PlayAnimation("Dying");
+        monsterController.HitBox.enabled = false;
         StartCoroutine(Death());
     }
 

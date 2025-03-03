@@ -36,6 +36,8 @@ public abstract class NController : MonoBehaviour, IEnemy
     public BoxCollider BoxCollider1 { get; protected set; }
     public BoxCollider BoxCollider2 { get; protected set; }
     public Animator Animator { get; protected set; }
+    public BoxCollider HitBox { get; protected set; }
+
     public string GUID { get; protected set; }
 
     private BlinkEffect blinkEffect;
@@ -60,7 +62,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
-
+        HitBox = GetComponent<BoxCollider>();
         Projector1 = gameObject.AddComponent<DecalProjector>();
         Projector2 = gameObject.AddComponent<DecalProjector>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
@@ -282,11 +284,14 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         SetHealthBar();
         healthBarObject.SetActive(true);
+        HitBox.enabled = true;
     }
+
     [PunRPC]
     protected void SyncHealthBarActive(bool value)
     {
         healthBarObject.SetActive(true);
+        HitBox.enabled = value;
     }
 
     public void PlayAnimation(string animationName)
