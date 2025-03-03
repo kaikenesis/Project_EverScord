@@ -42,7 +42,8 @@ public class MapPattern2 : MonoBehaviour
 
     private void OnDisable()
     {
-        StopCoroutine(spawn);
+        if (spawn != null)
+            StopCoroutine(spawn);
         spawn = null;
     }
 
