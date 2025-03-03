@@ -245,6 +245,8 @@ public abstract class NController : MonoBehaviour, IEnemy
         Debug.Log(monsterType);
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
+        //ResourceManager.Instance.ReturnToPool(healthBarObject, "MonsterHealthBar");
+        //healthBarObject = null;
     }
 
     [PunRPC]
@@ -254,16 +256,20 @@ public abstract class NController : MonoBehaviour, IEnemy
         Debug.Log(monsterType);
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
+        //ResourceManager.Instance.ReturnToPool(healthBarObject, "MonsterHealthBar");
+        //healthBarObject = null;
     }
 
     public void StartFSM()
     {
-        if (monsterHealthBar == null)
+        if (healthBarObject == null)
         {
             SetHealthBar();
             healthBarObject.SetActive(true);
             photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
         }
+        healthBarObject.SetActive(true);
+        photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -279,6 +285,11 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void SyncSetHealthBar()
     {
         SetHealthBar();
+        healthBarObject.SetActive(true);
+    }
+    [PunRPC]
+    protected void SyncHealthBarActive(bool value)
+    {
         healthBarObject.SetActive(true);
     }
 
