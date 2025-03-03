@@ -63,11 +63,6 @@ namespace EverScord.Weapons
             StartCoroutine(cooldownTimer.RunTimer());
         }
 
-        void OnDisable()
-        {
-            cooldownTimer.StopTimer();
-        }
-
         private void LinkAimPoint()
         {
             GameObject[] aimpoints = GameObject.FindGameObjectsWithTag(ConstStrings.TAG_AIMPOINT);

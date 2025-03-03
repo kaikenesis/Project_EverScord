@@ -6,7 +6,6 @@ namespace EverScord.Skill
     public class BombDeliverySkill : CharacterSkill
     {
         [field: SerializeField] public GameObject BombPrefab            { get; private set; }
-        [field: SerializeField] public GameObject TeleportEffect        { get; private set; }
         [field: SerializeField] public GameObject TeleportElectric      { get; private set; }
         [field: SerializeField] public GameObject ImpactEffect          { get; private set; }
         [field: SerializeField] public GameObject HealCircleEffect      { get; private set; }

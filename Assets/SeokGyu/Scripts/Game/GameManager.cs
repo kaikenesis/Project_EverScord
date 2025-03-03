@@ -25,6 +25,7 @@ namespace EverScord
         public EnemyHitControl EnemyHitsControl                 { get; private set; }
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
+        public PortalControl PortalController                   { get; private set; }
         public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
@@ -164,6 +165,10 @@ namespace EverScord
                     LevelController = levelControl;
                     break;
 
+                case PortalControl portalControl:
+                    PortalController = portalControl;
+                    break;
+
                 default:
                     break;
             }
@@ -201,10 +206,9 @@ namespace EverScord
         }
 
         [PunRPC]
-        public void TeleportPlayers()
-        {            
-            Debug.Log("Teleporting all players.");
-            LevelController.PrepareNextLevel();
+        public void PrepareNextLevel()
+        {
+            StartCoroutine(LevelController.PrepareNextLevel());
         }
 
         private void OnGUI()
@@ -227,6 +231,7 @@ namespace EverScord
                     if(PhotonNetwork.IsMasterClient)
                     {
                         PhotonNetwork.LoadLevel("PhotonTestLobby");
+                        ResourceManager.ClearAllPools();
                     }
                 }
             }

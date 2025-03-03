@@ -5,6 +5,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.UI;
 using EverScord.GameCamera;
+using EverScord.Effects;
 
 namespace EverScord.Skill
 {
@@ -88,7 +89,7 @@ namespace EverScord.Skill
 
         private void StopBarrier(GameObject barrier)
         {
-            CharacterSkill.SetEffectParticles(barrier, false);
+            EffectControl.SetEffectParticles(barrier, false);
         }
 
         public override void OffensiveAction()
@@ -114,8 +115,11 @@ namespace EverScord.Skill
             if (laserControl)
                 return;
 
-            activator.TrackAim();
-            activator.PlayerWeapon.FireBullet();
+            if (photonView.IsMine)
+            {
+                activator.TrackAim();
+                activator.PlayerWeapon.FireBullet();
+            }
 
             laserControl = Instantiate(skill.LaserPrefab, CharacterSkill.SkillRoot).GetComponent<Hovl_Laser>();
         }

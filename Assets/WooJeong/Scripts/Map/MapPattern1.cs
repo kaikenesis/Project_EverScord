@@ -10,15 +10,26 @@ public class MapPattern1 : MonoBehaviour
     [SerializeField] private float rotateSpeed = 0.1f;
     [SerializeField] private float lenght = 32f;
     [SerializeField] private V3DLaserProgressCustom v3DLaserProgressCustom;
-
+    [SerializeField] private float startDelay = 3f;
+    [SerializeField] private GameObject effect;
+    private BoxCollider boxCollider;
     private float laserDamage = 20;
     private Coroutine rotate;
 
     private void Awake()
     {
+        boxCollider = GetComponent<BoxCollider>();
+        SetActiveEffect(false);
+
         v3DLaserProgressCustom.maxLength = lenght;
         if (isReverse)
             rotateSpeed *= -1;
+    }
+
+    private void SetActiveEffect(bool value)
+    {
+        effect.SetActive(value);
+        boxCollider.enabled = value;
     }
 
     private void OnEnable()
@@ -37,6 +48,8 @@ public class MapPattern1 : MonoBehaviour
 
     private IEnumerator Rotate()
     {
+        yield return new WaitForSeconds(startDelay);
+        SetActiveEffect(true);
 
         while (true)
         {

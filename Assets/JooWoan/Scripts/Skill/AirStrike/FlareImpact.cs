@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using EverScord.Character;
+using EverScord.Effects;
 
 namespace EverScord.Skill
 {
@@ -61,7 +62,7 @@ namespace EverScord.Skill
             yield return new WaitForSeconds(MARKER_DISPLAY_INTERVAL * 2);
 
             for (int i = 0; i < MARKER_COUNT; i++)
-                CharacterSkill.SetEffectParticles(markers[i], false);
+                EffectControl.SetEffectParticles(markers[i], false);
 
             airStrikeAction.SetAirStrikePosition(strikeStartPos, strikeEndPos);
             onSkillActivated.Invoke();

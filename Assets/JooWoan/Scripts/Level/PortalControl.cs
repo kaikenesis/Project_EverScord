@@ -1,22 +1,48 @@
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 using System;
 using DG.Tweening;
-using EverScord.Skill;
 using Photon.Pun;
 using UnityEngine;
+using EverScord.Skill;
+using EverScord.Character;
+using EverScord.Effects;
+using UnityEngine.VFX;
 
 namespace EverScord
 {
-
     public class PortalControl : MonoBehaviour
     {
-        [SerializeField] private Collider portalCollider;
+        [SerializeField] private VisualEffect warpEffect;
+        [SerializeField] private SphereCollider portalCollider;
         [SerializeField] private Vector3 initialPortalScale;
 
         private CooldownTimer portalTimer;
         private Coroutine countdownCoroutine;
         private Action onCountdownFinished;
+        private GameObject teleportEffect;
 
+        private int currentCountdownNum;
         private bool isPortalOpened = false;
+
+        public Vector3 ColliderStartPos
+        {
+            get { return transform.TransformPoint(portalCollider.center); }
+        }
+
+        private float colliderWorldRadius;
+
+        void Start()
+        {
+            teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
+            GameManager.Instance.InitControl(this);
+        }
+
+        void OnDisable()
+        {
+            ResetPortal();
+        }
 
         void OnTriggerEnter(Collider other)
         {
@@ -27,7 +53,6 @@ namespace EverScord
                 return;
 
             ActivateCountdown();
-            SetPortalCollider(false);
         }
 
         void Update()
@@ -35,21 +60,44 @@ namespace EverScord
             if (countdownCoroutine == null)
                 return;
 
+            int previousCountdownNum = currentCountdownNum;
+            currentCountdownNum = (int)(portalTimer.Cooldown - portalTimer.ElapsedTime);
+
+            if (previousCountdownNum != currentCountdownNum)
+                CharacterControl.CurrentClientCharacter.PlayerUIControl.ChangePortalCountdownNumber(currentCountdownNum);
+
             if (!portalTimer.IsCooldown)
             {
                 StopCoroutine(countdownCoroutine);
                 countdownCoroutine = null;
 
                 portalTimer.ResetElapsedTime();
+                BringPlayersOutofRange();
                 onCountdownFinished?.Invoke();
-            }
 
-            Debug.Log($"Teleport countdown: {portalTimer.Cooldown - portalTimer.ElapsedTime:F0}");
+                CharacterControl.CurrentClientCharacter.PlayerUIControl.HidePortalNotification();
+            }
+        }
+
+        public void Init(float countdown, Action callback)
+        {
+            colliderWorldRadius = portalCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+
+            portalTimer = new CooldownTimer(countdown);
+            transform.localScale = initialPortalScale;
+
+            currentCountdownNum = (int)countdown + 1;
+
+            onCountdownFinished -= callback;
+            onCountdownFinished += callback;
         }
 
         private void ActivateCountdown()
         {
+            SetPortalCollider(false);
             countdownCoroutine = StartCoroutine(portalTimer.RunTimer(true));
+
+            CharacterControl.CurrentClientCharacter.PlayerUIControl.ShowPortalNotification();
         }
 
         public void TryOpenPortal(float currentProgress)
@@ -80,13 +128,22 @@ namespace EverScord
                 GameManager.View.RPC(nameof(GameManager.Instance.ReviveAllPlayers), RpcTarget.All);
         }
 
-        public void Init(float countdown, Action callback)
+        public void ClosePortal()
         {
-            portalTimer = new CooldownTimer(countdown);
-            transform.localScale = initialPortalScale;
+            DOTween.Rewind(ConstStrings.TWEEN_CLOSE_PORTAL);
+            DOTween.Play(ConstStrings.TWEEN_CLOSE_PORTAL);
 
-            onCountdownFinished -= callback;
-            onCountdownFinished += callback;
+            // Tween callback: gameObject.SetActive(false)
+        }
+
+        public void ResetPortal()
+        {
+            SetActive(false);
+            SetIsPortalOpened(false);
+            SetPortalCollider(false);
+
+            transform.localScale = initialPortalScale;
+            currentCountdownNum = (int)portalTimer.Cooldown + 1;
         }
 
         public void SetPortalCollider(bool state)
@@ -97,6 +154,76 @@ namespace EverScord
         public void SetIsPortalOpened(bool state)
         {
             isPortalOpened = state;
+        }
+
+        public Collider[] CheckPlayersInRange()
+        {
+            return Physics.OverlapSphere(ColliderStartPos, colliderWorldRadius, GameManager.PlayerLayer);
+        }
+
+        private void BringPlayersOutofRange()
+        {
+            Collider[] hits = CheckPlayersInRange();
+            List<CharacterControl> targetPlayers = GameManager.Instance.PlayerDict.Values.ToList();
+
+            for (int i = targetPlayers.Count - 1; i >= 0; i--)
+            {
+                for (int j = 0; j < hits.Length; j++)
+                {
+                    if (targetPlayers[i].gameObject == hits[j].gameObject)
+                    {
+                        targetPlayers.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < targetPlayers.Count; i++)
+            {
+                var effect = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
+                effect.transform.position = targetPlayers[i].PlayerTransform.position;
+
+                targetPlayers[i].Teleport(GetRandomPosition());
+                StartCoroutine(DelayTeleportEffect(targetPlayers[i], 0.2f));
+            }
+        }
+
+        private IEnumerator DelayTeleportEffect(CharacterControl player, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            player.BlinkEffects.ChangeBlinkTemporarily(GameManager.InvincibleBlinkInfo);
+            player.BlinkEffects.LoopBlink(true);
+
+            var effect = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
+            effect.transform.position = player.PlayerTransform.position;
+        }
+
+        public void PlayWarpEffect(bool isExit)
+        {
+            if (isExit)
+                warpEffect.SendEvent(ConstStrings.VFX_WARP_OUT);
+            else
+                warpEffect.SendEvent(ConstStrings.VFX_WARP_IN);
+        }
+
+        public Vector3 GetRandomPosition()
+        {
+            Vector3 randomPoint = UnityEngine.Random.insideUnitCircle;
+            randomPoint = ColliderStartPos + randomPoint * colliderWorldRadius * 0.6f;
+            randomPoint.y = CharacterControl.CurrentClientCharacter.PlayerTransform.position.y;
+
+            return randomPoint;
+        }
+
+        public void SetActive(bool state)
+        {
+            gameObject.SetActive(state);
+        }
+
+        public void MovePosition(Vector3 position)
+        {
+            transform.position = position;
         }
     }
 }

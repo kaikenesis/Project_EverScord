@@ -8,7 +8,8 @@ namespace EverScord.Character
         STUNNED         = (1 << 1),
         RIGID_ANIMATING = (1 << 2),
         INVINCIBLE      = (1 << 3),
-        DEATH            = (1 << 4)
+        DEATH           = (1 << 4),
+        TELEPORTING     = (1 << 5),
     }
 
     public enum SetCharState

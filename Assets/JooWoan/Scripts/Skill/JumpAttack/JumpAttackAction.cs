@@ -5,6 +5,7 @@ using Photon.Pun;
 
 using AnimationInfo = EverScord.Character.AnimationInfo;
 using EverScord.UI;
+using EverScord.Effects;
 
 namespace EverScord.Skill
 {
@@ -18,7 +19,7 @@ namespace EverScord.Skill
         private WaitForSeconds waitSkill;
         private Coroutine counterCoroutine, jumpCoroutine, attackCoroutine;
         private SkillMarker skillMarker;
-        private GameObject stanceEffect, stanceEffectPrefab, landingEffectPrefab, shockwavePrefab;
+        private GameObject stanceEffect, stanceEffectPrefab, landingEffectPrefab, shockwavePrefab, slashPrefab;
         private ParticleSystem[] markerParticles;
         private Vector3 landingPosition;
         private LayerMask targetLayer;
@@ -39,6 +40,7 @@ namespace EverScord.Skill
             GameObject marker   = ResourceManager.Instance.GetAsset<GameObject>(Skill.Marker.AssetGUID);
             stanceEffectPrefab  = ResourceManager.Instance.GetAsset<GameObject>(Skill.StanceEffect.AssetGUID);
             shockwavePrefab     = ResourceManager.Instance.GetAsset<GameObject>(Skill.ShockwaveEffect.AssetGUID);
+            slashPrefab         = ResourceManager.Instance.GetAsset<GameObject>(Skill.SlashEffect.AssetGUID);
 
             if (ejob == PlayerData.EJob.Dealer)
             {
@@ -103,14 +105,17 @@ namespace EverScord.Skill
             if (photonView.IsMine)
             {
                 skillMarker.Set(true);
-                CharacterSkill.SetEffectParticles(markerParticles, true);
+                EffectControl.SetEffectParticles(markerParticles, true);
             }
 
             animControl.Play(animInfo.Howl);
             Invoke(nameof(ExitHowlAnimation), animInfo.Howl.length);
 
             var shockwave = Instantiate(shockwavePrefab, CharacterSkill.SkillRoot);
+            var slash     = Instantiate(slashPrefab, CharacterSkill.SkillRoot);
+
             shockwave.transform.position = new Vector3(activator.PlayerTransform.position.x, shockwave.transform.position.y, activator.PlayerTransform.position.z);
+            slash.transform.position     = new Vector3(activator.PlayerTransform.position.x, slash.transform.position.y,     activator.PlayerTransform.position.z);
 
             jumpCoroutine = StartCoroutine(JumpStance());
         }
@@ -150,7 +155,7 @@ namespace EverScord.Skill
 
             skillMarker.Set(false);
             skillMarker.Stamp(stampTime);
-            CharacterSkill.SetEffectParticles(stanceEffect, false);
+            EffectControl.SetEffectParticles(stanceEffect, false);
 
             CancelInvoke(nameof(ExitHowlAnimation));
             animControl.Play(animInfo.Jump.name);
@@ -178,8 +183,8 @@ namespace EverScord.Skill
 
             OutlineControl.SetCharacterOutline(activator, false);
 
-            CharacterSkill.SetEffectParticles(stanceEffect, false);
-            CharacterSkill.SetEffectParticles(markerParticles, false);
+            EffectControl.SetEffectParticles(stanceEffect, false);
+            EffectControl.SetEffectParticles(markerParticles, false);
 
             SetJumpMode(false);
             activator.UnsubscribeOnDecreaseHealth(OnDecreaseHealth);

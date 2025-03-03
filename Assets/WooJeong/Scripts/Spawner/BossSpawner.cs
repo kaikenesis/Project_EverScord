@@ -17,7 +17,6 @@ public class BossSpawner : MonoBehaviour
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
-
         GameObject bossPrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.Boss_ID);
         mo = Instantiate(bossPrefab, transform.position, Quaternion.identity);
         mo.SetActive(false);
