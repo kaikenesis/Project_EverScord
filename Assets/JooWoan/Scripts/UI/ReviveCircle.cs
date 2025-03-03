@@ -152,7 +152,7 @@ namespace EverScord.UI
 
             FadeOut();
 
-            if (reviveTarget.IsDead)
+            if (reviveTarget.IsDead && reviveTarget.gameObject.activeSelf)
                 reviveTarget.StartCoroutine(reviveTarget.HandleRevival());
         }
 
