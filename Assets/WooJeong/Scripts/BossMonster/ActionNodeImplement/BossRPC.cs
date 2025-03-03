@@ -415,6 +415,17 @@ public class BossRPC : MonoBehaviour, IEnemy
         hitBox.enabled = true;
     }
 
+    public void Death()
+    {
+        photonView.RPC("SyncBossDeath", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void SyncBossDeath()
+    {
+        ResourceManager.Instance.ReturnToPool(gameObject, "Boss");
+    }
+
     public void TestDamage(GameObject sender, float value)
     {
         throw new System.NotImplementedException();

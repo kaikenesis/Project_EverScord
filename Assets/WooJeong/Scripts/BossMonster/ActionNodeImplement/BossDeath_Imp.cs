@@ -6,12 +6,10 @@ public class BossDeath_Imp : ActionNodeImplement
 {
     protected override IEnumerator Act()
     {
-        Debug.Log("Death start");
         bossRPC.PlayAnimation("Die");
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(bossRPC.clipDict["Die"]);
         isEnd = true;
         action = null;
-        //ResourceManager.Instance.ReturnToPool(gameObject, "Boss");
-        Debug.Log("Death end");
+        bossRPC.Death();
     }
 }
