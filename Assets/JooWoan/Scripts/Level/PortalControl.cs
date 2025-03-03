@@ -112,10 +112,7 @@ namespace EverScord
                 return;
 
             if (GameManager.CurrentLevelIndex == GameManager.Instance.LevelController.MaxLevelIndex)
-            {
-                GameManager.Instance.LevelController.ResetProgress();
                 return;
-            }
 
             OpenPortal();
         }
