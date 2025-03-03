@@ -16,7 +16,6 @@ namespace EverScord
         [SerializeField] private bool debugMode = false;
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
-        //public PlayerData userData;
 
         [SerializeField] private PhotonData photonData;
         public PhotonData PhotonData { get { return photonData; } }

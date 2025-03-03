@@ -8,24 +8,23 @@ namespace EverScord
     public class UIMarker : MonoBehaviour
     {
         [SerializeField] private PointMarkData.EType type;
-        [SerializeField] private GameObject positionMarker;
-        GameObject canvasObj;
+        private GameObject canvasObj;
         private List<GameObject> markers = new List<GameObject>();
         private PhotonView pv;
 
-        public void Initialize(PointMarkData.EType type, GameObject markerObject)
+        public void Initialize(PointMarkData.EType type)
         {
             this.type = type;
-            positionMarker = markerObject;
 
-            canvasObj = Instantiate(new GameObject());
+            canvasObj = new GameObject("MarkerUI");
             canvasObj.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             canvasObj.layer = 13;
             Canvas canvas = canvasObj.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             pv = GetComponent<PhotonView>();
 
-            GameObject obj = Instantiate(positionMarker, canvasObj.transform);
+            GameObject markerObj = ResourceManager.Instance.GetAsset<GameObject>("PointMark");
+            GameObject obj = Instantiate(markerObj, canvasObj.transform);
             Image img = obj.GetComponent<Image>();
             RectTransform markRT = obj.GetComponent<RectTransform>();
             Vector2 size = new Vector2();
@@ -43,7 +42,7 @@ namespace EverScord
                             markRT.sizeDelta = size;
                         }
 
-                        GameObject death = Instantiate(positionMarker, canvasObj.transform);
+                        GameObject death = Instantiate(markerObj, canvasObj.transform);
                         Image deathImg = death.GetComponent<Image>();
                         RectTransform deathMarkRT = death.GetComponent<RectTransform>();
                         GameManager.Instance.PointMarkData.SetMarker((int)type + 2, deathImg, out size);
@@ -66,6 +65,11 @@ namespace EverScord
 
             markers[0].SetActive(!markers[0].activeSelf);
             markers[1].SetActive(!markers[1].activeSelf);
+        }
+
+        public void SetActivate(bool bActive)
+        {
+            canvasObj.SetActive(bActive);
         }
     }
 }

@@ -4,6 +4,7 @@ using EverScord.Effects;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -60,8 +61,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         BoxCollider2 = gameObject.AddComponent<BoxCollider>();
         uiMarker = gameObject.AddComponent<UIMarker>();
         
-        GameObject markerObj = ResourceManager.Instance.GetAsset<GameObject>("PointMark");
-        uiMarker.Initialize(PointMarkData.EType.Monster, markerObj);
+        uiMarker.Initialize(PointMarkData.EType.Monster);
         ProjectorSetup();
 
         blinkEffect = BlinkEffect.Create(this);
@@ -124,6 +124,16 @@ public abstract class NController : MonoBehaviour, IEnemy
     private void Start()
     {
         SetHealthBar();
+    }
+
+    private void OnEnable()
+    {
+        uiMarker.SetActivate(true);
+    }
+
+    private void OnDisable()
+    {
+        uiMarker.SetActivate(false);
     }
 
     private void Update()

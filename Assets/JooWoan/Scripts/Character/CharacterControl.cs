@@ -138,8 +138,7 @@ namespace EverScord.Character
 
             currentHealth = maxHealth;
 
-            GameObject markerObj = ResourceManager.Instance.GetAsset<GameObject>("PointMark");
-            UIMarker.Initialize(PointMarkData.EType.Player, markerObj);
+            UIMarker.Initialize(PointMarkData.EType.Player);
             AnimationControl.Init(photonView);
             weapon.Init(this);
 

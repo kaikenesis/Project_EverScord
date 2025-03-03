@@ -6,8 +6,6 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using static UnityEditor.PlayerSettings;
 
 public class BossRPC : MonoBehaviour, IEnemy
 {
@@ -28,6 +26,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     private PhotonView photonView;
     private Animator animator;
     private BoxCollider hitBox;
+    private UIMarker uiMarker;
 
     private BlinkEffect blinkEffect;
 
@@ -36,12 +35,30 @@ public class BossRPC : MonoBehaviour, IEnemy
         hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
+        uiMarker = gameObject.AddComponent<UIMarker>();
+        uiMarker.Initialize(PointMarkData.EType.BossMonster);
+
         blinkEffect = BlinkEffect.Create(this);
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
         {
             clipDict[clip.name] = clip.length;
         }
         SetProjectors();
+    }
+
+    private void OnEnable()
+    {
+        uiMarker.SetActivate(true);
+    }
+
+    private void OnDisable()
+    {
+        uiMarker.SetActivate(false);
+    }
+
+    private void Update()
+    {
+        uiMarker.UpdatePosition(transform.position);
     }
 
     private void SetProjectors()
