@@ -1,3 +1,4 @@
+using EverScord;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -26,7 +27,19 @@ public class MonsterSpawner : MonoBehaviour
     private async void Start()
     {
         await ResourceManager.Instance.CreatePool(monster.AssetGUID, 1);
+        LevelControl.OnProgressUpdated += ProgressCheck;
         spawn = StartCoroutine(Spawn());
+    }
+
+    protected void ProgressCheck(float currentProgress)
+    {
+        if (currentProgress == 1)
+        {
+            if (LevelControl.IsLevelCompleted == true)
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
 
     private IEnumerator Spawn()
