@@ -145,6 +145,8 @@ public abstract class NController : MonoBehaviour, IEnemy
     private void Update()
     {
         uiMarker.UpdatePosition(transform.position);
+        // 현재 진행도 체크하고 다 됐으면 죽임
+
     }
 
     protected virtual void SetHealthBar()

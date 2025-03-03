@@ -17,6 +17,7 @@ public class MonsterSpawner : MonoBehaviour
     private int data;
     private GameObject mo;
     private PhotonView photonView;
+    private Coroutine spawn;
 
     void Awake()
     {
@@ -26,7 +27,7 @@ public class MonsterSpawner : MonoBehaviour
     private async void Start()
     {
         await ResourceManager.Instance.CreatePool(monster.AssetGUID, 1);
-        StartCoroutine(Spawn());
+        spawn = StartCoroutine(Spawn());
     }
 
     private IEnumerator Spawn()
@@ -65,11 +66,14 @@ public class MonsterSpawner : MonoBehaviour
                 spawnCount++;
                 curTime = 0f;
             }
-            if (spawnCount >= maxSpawnCount)
-                yield break;
 
             yield return new WaitForSeconds(Time.deltaTime);
         }
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(spawn);
     }
 
     [PunRPC]
