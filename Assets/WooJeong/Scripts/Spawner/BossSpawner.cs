@@ -20,9 +20,7 @@ public class BossSpawner : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         GameObject bossPrefab = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.Boss_ID);
         mo = Instantiate(bossPrefab, transform.position, Quaternion.identity);
-
-        Debug.Log($"================= Current Boss POSITION {transform.position}");
-
+        
         mo.SetActive(false);
     }
 

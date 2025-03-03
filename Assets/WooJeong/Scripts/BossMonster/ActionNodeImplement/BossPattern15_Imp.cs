@@ -9,7 +9,7 @@ public class BossPattern15_Imp : ActionNodeImplement
     protected override void Awake()
     {
         base.Awake();
-        center = Vector3.zero;
+        center = GameObject.Find("BossSpawner").transform.position;
     }
     protected override IEnumerator Act()
     {
