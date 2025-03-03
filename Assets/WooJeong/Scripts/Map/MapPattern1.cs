@@ -14,15 +14,17 @@ public class MapPattern1 : MonoBehaviour
     [SerializeField] private float startDelay = 3f;
     [SerializeField] private GameObject effect;
     private BoxCollider boxCollider;
-    private float laserDamage = 20;
+    private float damage = 20;
     private Coroutine rotate;
     private PhotonView photonView;
+    private Dictionary<GameObject, float> hitPlayers = new();
 
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
-
+        boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, lenght);
+        boxCollider.center = new Vector3(0, 0, lenght / 2);
         photonView.RPC("SyncMapLaserActice", RpcTarget.Others, false);
         SetActiveEffect(false);
 
@@ -64,16 +66,25 @@ public class MapPattern1 : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (!PhotonNetwork.IsMasterClient)
             return;
-        
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("MapLaser hit");
-            CharacterControl control = other.GetComponent<CharacterControl>();
-            control.DecreaseHP(laserDamage);
+            if (!hitPlayers.ContainsKey(other.gameObject))
+            {
+                hitPlayers.Add(other.gameObject, 1);
+            }
+            else if (hitPlayers[other.gameObject] > 0)
+            {
+                hitPlayers[other.gameObject] -= Time.deltaTime;
+                return;
+            }
+
+            hitPlayers[other.gameObject] = 1f;
+            CharacterControl controller = other.GetComponent<CharacterControl>();
+            controller.DecreaseHP(damage);
         }
     }
 

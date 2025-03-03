@@ -15,4 +15,10 @@ public class NML2_Controller : NController
         stunState = gameObject.AddComponent<NML2_StunState>();
         deathState = gameObject.AddComponent<NML2_DeathState>();
     }
+
+    protected override void SetHealthBar()
+    {
+        base.SetHealthBar();
+        monsterHealthBar.SetOffsetY(4);
+    }
 }
