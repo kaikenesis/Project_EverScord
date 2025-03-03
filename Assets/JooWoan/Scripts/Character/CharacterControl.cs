@@ -826,6 +826,7 @@ namespace EverScord.Character
 
             reviveCircle.Init(photonView.ViewID);
             reviveCircle.transform.SetParent(PlayerUI.Root.parent);
+            reviveCircle.SetLocalHeight(0.02f);
             reviveCircle.gameObject.SetActive(false);
         }
 

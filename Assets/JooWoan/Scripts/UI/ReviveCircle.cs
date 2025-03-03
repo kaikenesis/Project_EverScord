@@ -87,6 +87,11 @@ namespace EverScord.UI
                 .SetEase(Ease.OutQuad);
         }
 
+        public void SetLocalHeight(float height)
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x, height, transform.localPosition.z);
+        }
+
         private void FadeOut()
         {
             canvasGroup.DOFade(0f, 1f)
