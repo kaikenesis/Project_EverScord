@@ -84,13 +84,13 @@ public abstract class NController : MonoBehaviour, IEnemy
             clipDict[clip.name] = clip.length;
         }
 
+        Setup();
+
         if (!PhotonNetwork.IsMasterClient)
             return;
 
         playerLayer = LayerMask.GetMask("Player");
         SetNearestPlayer();
-        
-        Setup();
     }
     protected void ProjectorSetup()
     {
