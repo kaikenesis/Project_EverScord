@@ -6491,6 +6491,7 @@ GameObject:
   - component: {fileID: 3476267616868440476}
   - component: {fileID: 7787370619873905059}
   - component: {fileID: 751370906049573107}
+  - component: {fileID: 8676018775236587538}
   m_Layer: 9
   m_Name: Uni
   m_TagString: Player
@@ -6682,6 +6683,20 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &8676018775236587538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2709675858173580103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12f414f13ef0c6c44a9f3f50b065271d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  positionMarker: {fileID: 1937029539867320608, guid: 67e0221c41cfd044ea1116b728da47aa, type: 3}
 --- !u!1 &2846519519347374116
 GameObject:
   m_ObjectHideFlags: 0

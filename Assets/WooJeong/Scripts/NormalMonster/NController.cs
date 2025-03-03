@@ -32,7 +32,8 @@ public abstract class NController : MonoBehaviour, IEnemy
     public string GUID { get; protected set; }
 
     private BlinkEffect blinkEffect;
-    
+    private UIMarker uiMarker;
+
     public PhotonView PhotonView => photonView;
     private PhotonView photonView;
     protected MonsterHealthBar monsterHealthBar;
@@ -57,6 +58,10 @@ public abstract class NController : MonoBehaviour, IEnemy
         Projector2 = gameObject.AddComponent<DecalProjector>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
         BoxCollider2 = gameObject.AddComponent<BoxCollider>();
+        uiMarker = gameObject.AddComponent<UIMarker>();
+        
+        GameObject markerObj = ResourceManager.Instance.GetAsset<GameObject>("PointMark");
+        uiMarker.Initialize(PointMarkData.EType.Monster, markerObj);
         ProjectorSetup();
 
         blinkEffect = BlinkEffect.Create(this);
@@ -119,6 +124,11 @@ public abstract class NController : MonoBehaviour, IEnemy
     private void Start()
     {
         SetHealthBar();
+    }
+
+    private void Update()
+    {
+        uiMarker.UpdatePosition(transform.position);
     }
 
     protected virtual void SetHealthBar()

@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 8512206243873579234}
   - component: {fileID: 991338864172412626}
   - component: {fileID: 3325583382920579105}
-  - component: {fileID: 1415371717676743180}
+  - component: {fileID: 4517429858962959723}
+  - component: {fileID: 767527538379262371}
   m_Layer: 13
-  m_Name: MinimapIcon
+  m_Name: MapImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -102,7 +103,15 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &1415371717676743180
+--- !u!222 &4517429858962959723
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5957988072393253205}
+  m_CullTransparentMesh: 1
+--- !u!114 &767527538379262371
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -111,10 +120,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 5957988072393253205}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0daa2303842d7bd42881c08443146296, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map: {fileID: 8426683998468999629, guid: 0987d6c6c156b3848a7a317074b3b8a3, type: 3}
-  portalIcon: {fileID: 6867857812285004322, guid: a284c325522960c44b3f9625acd44ca3, type: 3}
-  bossIcon: {fileID: 3324358031712648456, guid: 5a8abf031528ee6449618eaf01ced0cf, type: 3}
-  deathIcon: {fileID: 7376997880537904684, guid: c38df5f55cff283459fd6a61ec2bc78c, type: 3}
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: fe95119013209364d928b3bdb0222773, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1

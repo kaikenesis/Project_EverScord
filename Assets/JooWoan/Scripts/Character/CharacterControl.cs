@@ -61,6 +61,7 @@ namespace EverScord.Character
         public PlayerData.EJob CharacterJob                             { get; private set; }
         public CharState State                                          { get; private set; }
         public BlinkEffect BlinkEffects                                 { get; private set; }
+        public UIMarker UIMarker                                        { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -71,7 +72,7 @@ namespace EverScord.Character
         public float CharacterSpeed => speed;
 
         public static Action OnPhotonViewListUpdated = delegate { };
-        public static Action<int, bool> OnCheckAlive = delegate { };
+        public static Action<int, bool, Vector3> OnCheckAlive = delegate { };
         public static Action<float> OnHealthUpdated = delegate { };
 
         private static GameObject deathEffect, reviveEffect, beamEffect;
@@ -126,11 +127,24 @@ namespace EverScord.Character
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
 
+            UIMarker         = gameObject.AddComponent<UIMarker>();
+
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
             
             if (SkinRenderers.Length > 0)
                 OriginalSkinLayer = 1 << SkinRenderers[0].gameObject.layer;
+
+            currentHealth = maxHealth;
+
+            GameObject markerObj = ResourceManager.Instance.GetAsset<GameObject>("PointMark");
+            UIMarker.Initialize(PointMarkData.EType.Player, markerObj);
+            AnimationControl.Init(photonView);
+            weapon.Init(this);
+
+            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
+            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
+            RigControl.SetAimWeight(false);
 
             if (photonView.IsMine)
             {
@@ -168,7 +182,7 @@ namespace EverScord.Character
             SetReviveCircle();
             SetEffects();
             SetPortraits();
-            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
             OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
         }
 
@@ -176,6 +190,8 @@ namespace EverScord.Character
         {
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
                 IncreaseHP(10);
+
+            UIMarker.UpdatePosition(PlayerTransform.position);
 
             if (!photonView.IsMine)
             {
@@ -533,7 +549,8 @@ namespace EverScord.Character
 
             OutlineControl.SetCharacterOutline(this, true);
 
-            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead, transform.position);
+            UIMarker.ToggleDeathIcon();
 
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
@@ -572,8 +589,10 @@ namespace EverScord.Character
             SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
             SetState(SetCharState.REMOVE, CharState.DEATH);
 
-            OnCheckAlive?.Invoke(photonView.ViewID, IsDead);
-            if(photonView.IsMine)
+            OnCheckAlive?.Invoke(photonView.ViewID, IsDead, transform.position);
+            UIMarker.ToggleDeathIcon();
+
+            if (photonView.IsMine)
                 OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
         }
 
