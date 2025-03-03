@@ -20,16 +20,22 @@ namespace EverScord
         public static bool IsLoadingLevel { get; private set; }
         private static WaitForSeconds waitLoadScreen, waitStageTransition, waitStageFade;
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
-        private static WaitForSeconds waitPointOne = new WaitForSeconds(0.1f); 
+        private static WaitForSeconds waitPointOne = new WaitForSeconds(0.1f);
+        public static bool IsLevelCompleted => progress >= maxProgress;
 
         [SerializeField] private PortalControl portalControl;
         [SerializeField] private GameObject portal, groundCollider;
-        [SerializeField] private float increaseAmount;
         [SerializeField] private float countdown;
         [SerializeField] private List<LevelInfo> levelList;
 
-        private float progress, maxProgress;
-        
+        private IDictionary<MonsterType, float> increaseDict = new Dictionary<MonsterType, float>
+        {
+            {MonsterType.SMALL, 2f},
+            {MonsterType.MEDIUM, 5f},
+            {MonsterType.LARGE, 25f}
+        };
+
+        private static float progress, maxProgress;
 
         void Awake()
         {
@@ -48,6 +54,12 @@ namespace EverScord
             OnProgressUpdated += portalControl.TryOpenPortal;
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F2))
+                Debug.Log($"PROGRESS : {progress}");
+        }
+
         void OnDisable()
         {
             OnProgressUpdated -= portalControl.TryOpenPortal;
@@ -58,9 +70,9 @@ namespace EverScord
             maxProgress = amount;
         }
 
-        public void IncreaseProgress()
+        public void IncreaseProgress(MonsterType monsterType)
         {
-            progress = Mathf.Min(progress + increaseAmount, maxProgress);
+            progress = Mathf.Min(progress + increaseDict[monsterType], maxProgress);
             float currentProgress = progress / maxProgress;
 
             OnProgressUpdated?.Invoke(currentProgress);
@@ -126,6 +138,7 @@ namespace EverScord
                 Instantiate(beamEffect, player.PlayerTransform.position, Quaternion.identity);
                 player.SetActive(true);
                 player.SetState(Character.SetCharState.REMOVE, Character.CharState.TELEPORTING);
+                player.SetState(Character.SetCharState.REMOVE, Character.CharState.INVINCIBLE);
                 yield return waitPointOne;
             }
 

@@ -1,3 +1,4 @@
+using EverScord;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ public class MapPattern3 : MonoBehaviour
     private float curTime = 20;
 
     private PhotonView photonView;
-    private Coroutine spawn;
     private List<GameObject> fogList = new();
 
     private void Awake()
@@ -21,20 +21,25 @@ public class MapPattern3 : MonoBehaviour
         photonView = GetComponent<PhotonView>();
     }
 
-    private async void OnEnable()
+    private async void Start()
     {
+        LevelControl.OnProgressUpdated += ProgressCheck;
         if (!ResourceManager.Instance.IsPoolExist(fog.AssetGUID))
             await ResourceManager.Instance.CreatePool(fog.AssetGUID, 2);
 
-        spawn = StartCoroutine(Spawn());
+        StartCoroutine(Spawn());
     }
 
-    private void OnDisable()
+    protected void ProgressCheck(float currentProgress)
     {
-        if (spawn != null)
-            StopCoroutine(spawn);
-
-        spawn = null;
+        if (currentProgress == 1)
+        {
+            // 현재 진행도 체크하고 다 됐으면 죽임
+            if (LevelControl.IsLevelCompleted == true)
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
 
     private IEnumerator Spawn()

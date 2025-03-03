@@ -8,6 +8,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+public enum MonsterType
+{
+    SMALL, MEDIUM, LARGE
+}
+
 public abstract class NController : MonoBehaviour, IEnemy
 {
     [SerializeField] public NMonsterData monsterData;
@@ -24,6 +29,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected float curCool2 = 0;
     protected RaycastHit hit;
     protected LayerMask playerLayer;
+    protected MonsterType monsterType;
 
     public DecalProjector Projector1 { get; protected set; }
     public DecalProjector Projector2 { get; protected set; }
@@ -78,13 +84,13 @@ public abstract class NController : MonoBehaviour, IEnemy
             clipDict[clip.name] = clip.length;
         }
 
+        Setup();
+
         if (!PhotonNetwork.IsMasterClient)
             return;
 
         playerLayer = LayerMask.GetMask("Player");
         SetNearestPlayer();
-        
-        Setup();
     }
     protected void ProjectorSetup()
     {
@@ -123,7 +129,8 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     private void Start()
     {
-        SetHealthBar();
+        //SetHealthBar();
+        LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
     private void OnEnable()
@@ -139,6 +146,18 @@ public abstract class NController : MonoBehaviour, IEnemy
     private void Update()
     {
         uiMarker.UpdatePosition(transform.position);
+    }
+
+    protected void ProgressCheck(float currentProgress)
+    {
+        if (currentProgress == 1)
+        {
+            // 현재 진행도 체크하고 다 됐으면 죽임
+            if (LevelControl.IsLevelCompleted == true)
+            {
+                isDead = true;
+            }
+        }
     }
 
     protected virtual void SetHealthBar()
@@ -223,32 +242,55 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         photonView.RPC("SyncMonsterDeath", RpcTarget.Others);
         healthBarObject.SetActive(false);
+        Debug.Log(monsterType);
+        GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
-        GameManager.Instance.LevelController.IncreaseProgress();
+        //ResourceManager.Instance.ReturnToPool(healthBarObject, "MonsterHealthBar");
+        //healthBarObject = null;
     }
 
     [PunRPC]
     protected void SyncMonsterDeath()
     {
         healthBarObject.SetActive(false);
+        Debug.Log(monsterType);
+        GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
-        GameManager.Instance.LevelController.IncreaseProgress();
+        //ResourceManager.Instance.ReturnToPool(healthBarObject, "MonsterHealthBar");
+        //healthBarObject = null;
     }
 
     public void StartFSM()
     {
+        if (healthBarObject == null)
+        {
+            SetHealthBar();
+            healthBarObject.SetActive(true);
+            photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
+        }
+        healthBarObject.SetActive(true);
+        photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
+
         if (PhotonNetwork.IsMasterClient)
         {
             isDead = false;
             HP = monsterData.HP;
-            if (monsterHealthBar == null)
-                SetHealthBar();
-            healthBarObject.SetActive(true);
             monsterHealthBar.UpdateHealth(HP, monsterData.HP);
             photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
             LastAttack = 0;
             WaitState();
         }
+    }
+    [PunRPC]
+    protected void SyncSetHealthBar()
+    {
+        SetHealthBar();
+        healthBarObject.SetActive(true);
+    }
+    [PunRPC]
+    protected void SyncHealthBarActive(bool value)
+    {
+        healthBarObject.SetActive(true);
     }
 
     public void PlayAnimation(string animationName)

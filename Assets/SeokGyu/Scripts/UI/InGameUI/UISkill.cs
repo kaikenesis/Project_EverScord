@@ -42,7 +42,7 @@ namespace EverScord
 
         private void HandleUsedSkill(int skillIndex, float value)
         {
-            Debug.Log($"Index : {skillIndex}, Cooldown : {value}");
+            //Debug.Log($"Index : {skillIndex}, Cooldown : {value}");
             
             if (typeNum == skillIndex)
             {

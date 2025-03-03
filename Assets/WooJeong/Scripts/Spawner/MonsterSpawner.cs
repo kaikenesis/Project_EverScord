@@ -1,3 +1,4 @@
+using EverScord;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -11,12 +12,12 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField] private float spawnTimer = 0f;
     private float curTime = 0;
     private int spawnCount = 0;
-    [SerializeField] private int maxSpawnCount = 5;
     private int allocateCompleteCount = 1;
 
     private int data;
     private GameObject mo;
     private PhotonView photonView;
+    private Coroutine spawn;
 
     void Awake()
     {
@@ -26,7 +27,19 @@ public class MonsterSpawner : MonoBehaviour
     private async void Start()
     {
         await ResourceManager.Instance.CreatePool(monster.AssetGUID, 1);
-        StartCoroutine(Spawn());
+        LevelControl.OnProgressUpdated += ProgressCheck;
+        spawn = StartCoroutine(Spawn());
+    }
+
+    protected void ProgressCheck(float currentProgress)
+    {
+        if (currentProgress == 1)
+        {
+            if (LevelControl.IsLevelCompleted == true)
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
 
     private IEnumerator Spawn()
@@ -51,6 +64,10 @@ public class MonsterSpawner : MonoBehaviour
                         photonView.RPC("SyncSpawn", RpcTarget.Others, data);
                     }
                 }
+                else
+                {
+                    photonView.RPC("SyncSpawn", RpcTarget.Others, view.ViewID);
+                }
 
                 NController nController = mo.GetComponent<NController>();
                 nController.SetGUID(monster.AssetGUID);
@@ -65,8 +82,6 @@ public class MonsterSpawner : MonoBehaviour
                 spawnCount++;
                 curTime = 0f;
             }
-            if (spawnCount >= maxSpawnCount)
-                yield break;
 
             yield return new WaitForSeconds(Time.deltaTime);
         }

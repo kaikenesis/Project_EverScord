@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Bomb Delivery Skill
   m_EditorClassIdentifier: 
   Name: BombDeliverySkill
-  BaseDamage: 10
-  BaseHeal: 10
+  BaseDamage: 25
+  BaseHeal: 25
   Cooldown: 3
   SkillPrefab: {fileID: 3267024966870220487, guid: e3beafd2e0b52d34ca00bb32a85b421b, type: 3}
   <BombPrefab>k__BackingField: {fileID: 1029683450922114, guid: 911d39b31e356794d971139c547d1e61, type: 3}
-  <TeleportEffect>k__BackingField: {fileID: 2605316480486226868, guid: 2e3b2f8c3fb814342bb587e528be9189, type: 3}
   <TeleportElectric>k__BackingField: {fileID: 1029683450922114, guid: 3a5766751aecfea4ea1af00569fd4a57, type: 3}
   <ImpactEffect>k__BackingField: {fileID: 7101899591798170243, guid: 8f9dfda68c68fa644ae93a8323c50638, type: 3}
   <HealCircleEffect>k__BackingField: {fileID: 1244172968080546, guid: 3aa03d04a64a72f46af0304f832a4a95, type: 3}

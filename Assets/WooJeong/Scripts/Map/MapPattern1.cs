@@ -1,3 +1,4 @@
+using EverScord;
 using EverScord.Character;
 using Photon.Pun;
 using System.Collections;
@@ -15,15 +16,28 @@ public class MapPattern1 : MonoBehaviour
     private BoxCollider boxCollider;
     private float laserDamage = 20;
     private Coroutine rotate;
+    private PhotonView photonView;
 
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider>();
+        photonView = GetComponent<PhotonView>();
+
+        photonView.RPC("SyncMapLaserActice", RpcTarget.Others, false);
         SetActiveEffect(false);
 
         v3DLaserProgressCustom.maxLength = lenght;
         if (isReverse)
             rotateSpeed *= -1;
+    }
+
+    private void Start()
+    {
+        LevelControl.OnProgressUpdated += ProgressCheck;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            rotate = StartCoroutine(Rotate());
+        }
     }
 
     private void SetActiveEffect(bool value)
@@ -32,36 +46,22 @@ public class MapPattern1 : MonoBehaviour
         boxCollider.enabled = value;
     }
 
-    private void OnEnable()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            rotate = StartCoroutine(Rotate());
-        }
-    }
-
     private void OnValidate()
     {
         v3DLaserProgressCustom.maxLength = lenght;
-
     }
 
     private IEnumerator Rotate()
     {
         yield return new WaitForSeconds(startDelay);
         SetActiveEffect(true);
+        photonView.RPC("SyncMapLaserActice", RpcTarget.Others, true);
 
         while (true)
         {
             transform.Rotate(0, rotateSpeed, 0);
             yield return new WaitForSeconds(0.05f);
         }
-    }
-
-    private void OnDisable()
-    {
-        if (rotate != null)
-            StopCoroutine(rotate);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -74,6 +74,24 @@ public class MapPattern1 : MonoBehaviour
             Debug.Log("MapLaser hit");
             CharacterControl control = other.GetComponent<CharacterControl>();
             control.DecreaseHP(laserDamage);
+        }
+    }
+
+    [PunRPC]
+    private void SyncMapLaserActice(bool tf)
+    {
+        SetActiveEffect(tf);
+    }
+
+    protected void ProgressCheck(float currentProgress)
+    {
+        if (currentProgress == 1)
+        {
+            // 현재 진행도 체크하고 다 됐으면 죽임
+            if (LevelControl.IsLevelCompleted == true)
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

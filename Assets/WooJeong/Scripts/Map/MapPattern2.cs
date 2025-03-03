@@ -1,3 +1,4 @@
+using EverScord;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,6 @@ public class MapPattern2 : MonoBehaviour
     private float span = 3f;
     private int randInt;
     private PhotonView photonView;
-    private Coroutine spawn;
     private List<GameObject> spawnList = new();    
     private Dictionary<GameObject, VisualEffect> effectDict = new();
     private Dictionary<GameObject, MapPattern2_Attack> attackDict = new();
@@ -33,18 +33,12 @@ public class MapPattern2 : MonoBehaviour
         }
     }
 
-    private async void OnEnable()
+    private async void Start()
     {
-        if(!ResourceManager.Instance.IsPoolExist(attackLaser.AssetGUID))
+        if (!ResourceManager.Instance.IsPoolExist(attackLaser.AssetGUID))
             await ResourceManager.Instance.CreatePool(attackLaser.AssetGUID, 20);
-        spawn = StartCoroutine(Spawn());
-    }
-
-    private void OnDisable()
-    {
-        if (spawn != null)
-            StopCoroutine(spawn);
-        spawn = null;
+        LevelControl.OnProgressUpdated += ProgressCheck;
+        StartCoroutine(Spawn());
     }
 
     private IEnumerator Spawn()
@@ -126,4 +120,15 @@ public class MapPattern2 : MonoBehaviour
         StartCoroutine(Attack());
     }
 
+    protected void ProgressCheck(float currentProgress)
+    {
+        if (currentProgress == 1)
+        {
+            // 현재 진행도 체크하고 다 됐으면 죽임
+            if (LevelControl.IsLevelCompleted == true)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+    }
 }

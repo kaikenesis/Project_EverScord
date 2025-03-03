@@ -69,7 +69,8 @@ namespace EverScord
 
         public void SetActivate(bool bActive)
         {
-            canvasObj.SetActive(bActive);
+            if (canvasObj != null)
+                canvasObj.SetActive(bActive);
         }
     }
 }
