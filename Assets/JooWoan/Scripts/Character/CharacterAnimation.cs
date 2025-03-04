@@ -135,6 +135,11 @@ namespace EverScord.Character
             anim.speed = speed;
         }
 
+        public void SetAnimatorEnabled(bool state)
+        {
+            anim.enabled = state;
+        }
+
         #region PUN RPC
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////////////////////////////////////
 

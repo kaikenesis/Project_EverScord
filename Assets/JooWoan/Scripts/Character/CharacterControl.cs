@@ -8,6 +8,7 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
+using System.Linq;
 
 namespace EverScord.Character
 {
@@ -202,7 +203,7 @@ namespace EverScord.Character
 
             SetInput();
 
-            if (IsDead || IsStunned)
+            if (IsDead)
                 return;
 
             SetMovingDirection();
@@ -398,7 +399,6 @@ namespace EverScord.Character
 
         private void SetPortraits()
         {
-            // Debug.Log($"SetPortraits, {GameManager.Instance.playerPhotonViews.Count}");
             if (PhotonNetwork.IsMasterClient && GameManager.Instance.PlayerDict.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
                 photonView.RPC(nameof(CreatePortrait), RpcTarget.All);
         }
@@ -455,44 +455,38 @@ namespace EverScord.Character
             transform.position = position;
         }
 
-        public void SetState(SetCharState mode, CharState state)
+        public void SetState(SetCharState mode, CharState state = CharState.NONE)
         {
+            if (state == CharState.NONE && mode != SetCharState.CLEAR)
+                return;
+            
             switch (mode)
             {
                 case SetCharState.ADD:
                     State |= state;
+
+                    DebuffDict[state] = Debuff.GetDebuff(this, state, SetState);
                     break;
 
                 case SetCharState.REMOVE:
                     State &= ~state;
+
+                    if (DebuffDict.ContainsKey(state))
+                    {
+                        DebuffDict[state] = null;
+                        DebuffDict.Remove(state);
+                    }
                     break;
 
                 case SetCharState.CLEAR:
                     State = 0;
-                    break;
 
-                default:
-                    break;
-            }
+                    List<Debuff> debuffs = DebuffDict.Values.ToList();
 
-            SetDebuff(mode, state);
-        }
-
-        private void SetDebuff(SetCharState mode, CharState state)
-        {
-            switch (mode)
-            {
-                case SetCharState.ADD:
-                    var debuff = Debuff.GetDebuff(state);
-
-                    if (debuff != null)
-                        DebuffDict[state] = debuff;
-                    break;
-
-                case SetCharState.REMOVE:
-                case SetCharState.CLEAR:
-                    if (DebuffDict.ContainsKey(state))
-                        DebuffDict.Remove(state);
+                    for (int i = debuffs.Count - 1; i >= 0; i--)
+                        debuffs[i]?.RemoveDebuff();
+                    
+                    DebuffDict.Clear();
                     break;
 
                 default:
@@ -503,6 +497,11 @@ namespace EverScord.Character
         public bool HasState(CharState state)
         {
             return (State & state) != 0;
+        }
+
+        public void SetDebuff(CharState state)
+        {
+            photonView.RPC(nameof(SyncState), RpcTarget.All, (int)SetCharState.ADD, (int)state);
         }
 
         public void SubscribeOnDecreaseHealth(Action subscriber)
@@ -559,6 +558,7 @@ namespace EverScord.Character
 
         private IEnumerator HandleDeath()
         {
+            SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.DEATH);
 
             controller.enabled = false;
@@ -611,8 +611,7 @@ namespace EverScord.Character
 
             controller.enabled = true;
 
-            SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
-            SetState(SetCharState.REMOVE, CharState.DEATH);
+            SetState(SetCharState.CLEAR);
 
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, transform.position);
             UIMarker.ToggleDeathIcon();
@@ -621,7 +620,7 @@ namespace EverScord.Character
                 OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
         }
 
-        private void PlayHitEffects()
+        public void PlayHitEffects()
         {
             Vector3 hitPos = new Vector3(PlayerTransform.position.x, BODY_CENTER, PlayerTransform.position.z);
 
@@ -673,6 +672,9 @@ namespace EverScord.Character
                 if (HasState(CharState.TELEPORTING))
                     return false;
 
+                if (HasState(CharState.STUNNED))
+                    return false;
+
                 return true;
             }
         }
@@ -685,6 +687,9 @@ namespace EverScord.Character
                     return false;
 
                 if (HasState(CharState.TELEPORTING))
+                    return false;
+
+                if (HasState(CharState.STUNNED))
                     return false;
 
                 return true;
@@ -873,6 +878,24 @@ namespace EverScord.Character
                 return;
 
             reviveCircle.SyncExitCircle();
+        }
+        
+        [PunRPC]
+        private void SyncState(int mode, int state)
+        {
+            SetState((SetCharState)mode, (CharState)state);
+        }
+
+        [PunRPC]
+        public void SyncInteractStunDebuff()
+        {
+            if (!DebuffDict.ContainsKey(CharState.STUNNED))
+                return;
+
+            if (DebuffDict[CharState.STUNNED] is not StunnedDebuff debuff)
+                return;
+
+            debuff.DecreaseCount();
         }
 
         [PunRPC]

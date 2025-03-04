@@ -826,7 +826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6309676484649866624
 Transform:
   m_ObjectHideFlags: 0
@@ -861,13 +861,9 @@ MonoBehaviour:
   monsterData: {fileID: 11400000, guid: 59536a1f30f0ade4c8d15e93354bd470, type: 2}
   LastAttack: 0
   player: {fileID: 0}
-  HP: 0
   stunTime: 2
   isStun: 0
   isDead: 0
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!65 &7304675619012089806
 BoxCollider:
   m_ObjectHideFlags: 0

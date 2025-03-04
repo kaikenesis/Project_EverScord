@@ -1,7 +1,9 @@
 using UnityEngine;
+using Photon;
 using EverScord.Pool;
 using EverScord.Skill;
 using EverScord.Character;
+using Photon.Pun;
 
 namespace EverScord.Weapons
 {
@@ -129,11 +131,8 @@ namespace EverScord.Weapons
                             float calculatedHeal = sourceWeapon.Heal;
                             character.IncreaseHP(calculatedHeal, true);
                         }
-                        else if (character.IsStunned)
-                        {
-                            StunnedDebuff debuff = character.DebuffDict[CharState.STUNNED] as StunnedDebuff;
-                            debuff.DecreaseCount();
-                        }
+                        else if (character.IsStunned && PhotonNetwork.IsConnected)
+                            character.CharacterPhotonView.RPC(nameof(character.SyncInteractStunDebuff), RpcTarget.All);
                     }
 
                     SetTracerEffectPosition(currentPoint);

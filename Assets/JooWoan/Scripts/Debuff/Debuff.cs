@@ -1,22 +1,49 @@
-using EverScord.Character;
+using System;
 using UnityEngine;
+using EverScord.Character;
 
 namespace EverScord
 {
-    public abstract class Debuff : MonoBehaviour
+    public abstract class Debuff
     {
-        public abstract void Release();
+        protected Action<SetCharState, CharState> onDebuffRemoved;
+        protected CharState linkedState;
+        protected CharacterControl target;
 
-        public static Debuff GetDebuff(CharState state)
+        public static Debuff GetDebuff(CharacterControl target, CharState state, Action<SetCharState, CharState> onDebuffRemoved)
         {
+            Debuff targetDebuff = null;
+            
             switch (state)
             {
                 case CharState.STUNNED:
-                    return new StunnedDebuff(15);
-
-                default:
-                    return null;
+                    targetDebuff = new StunnedDebuff(15);
+                    break;
             }
+
+            return targetDebuff?.Init(target, state, onDebuffRemoved).ShowDebuffEffect();
+        }
+
+        protected Debuff Init(CharacterControl target, CharState state, Action<SetCharState, CharState> onDebuffRemoved)
+        {
+            this.target = target;
+
+            this.onDebuffRemoved -= onDebuffRemoved;
+            this.onDebuffRemoved += onDebuffRemoved;
+
+            linkedState = state;
+            return this;
+        }
+
+        protected virtual Debuff ShowDebuffEffect()
+        {
+            return this;
+        }
+
+        public virtual void RemoveDebuff()
+        {
+            onDebuffRemoved?.Invoke(SetCharState.REMOVE, linkedState);
+            onDebuffRemoved = null;
         }
     }
 }
