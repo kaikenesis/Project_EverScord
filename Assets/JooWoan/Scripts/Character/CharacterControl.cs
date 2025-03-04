@@ -282,6 +282,10 @@ namespace EverScord.Character
                 if ((GameManager.EnemyLayer & hitLayerMask) != 0)
                 {
                     IEnemy enemy = hits[i].transform.GetComponent<IEnemy>();
+
+                    if (enemy is NController nctrl && nctrl.isDead)
+                        continue;
+                    
                     OutlineControl.EnableEnemyOutline(photonView, enemy);
                     enemyFlag = true;
                 }
@@ -587,6 +591,7 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
+            // SetState(SetCharState.REMOVE, CharState.DEATH);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
             Instantiate(reviveEffect, PlayerTransform.position, Quaternion.identity);

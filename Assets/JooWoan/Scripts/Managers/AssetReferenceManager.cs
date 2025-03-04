@@ -13,6 +13,7 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference TrajectoryLineMat         { get; private set; }
         [field: SerializeField] public AssetReference BlinkWhiteMat             { get; private set; }
         [field: SerializeField] public AssetReference BloodMat                  { get; private set; }
+        [field: SerializeField] public AssetReference DissolveMat               { get; private set; }
         [field: SerializeField] public AssetReference CrosshairIcon             { get; private set; }
         [field: SerializeField] public AssetReference HealEffect                { get; private set; }
         [field: SerializeField] public AssetReference DeathEffect               { get; private set; }
@@ -42,6 +43,7 @@ namespace EverScord.Effects
         public static string TrajectoryLineMat_ID       => Instance.TrajectoryLineMat.AssetGUID;
         public static string BlinkWhiteMat_ID           => Instance.BlinkWhiteMat.AssetGUID;
         public static string BloodMat_ID                => Instance.BloodMat.AssetGUID;
+        public static string DissolveMat_ID             => Instance.DissolveMat.AssetGUID;
         public static string CrosshairIcon_ID           => Instance.CrosshairIcon.AssetGUID;
         public static string HealEffect_ID              => Instance.HealEffect.AssetGUID;
         public static string DeathEffect_ID             => Instance.DeathEffect.AssetGUID;

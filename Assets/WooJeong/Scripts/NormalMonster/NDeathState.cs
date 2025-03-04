@@ -1,11 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public abstract class NDeathState : MonoBehaviour, IState
 {
     protected NController monsterController;
-
+    protected float dissolveDuration = 3f;
     protected abstract void Setup();
 
     void Awake()
@@ -22,6 +22,10 @@ public abstract class NDeathState : MonoBehaviour, IState
     private IEnumerator Death()
     {
         yield return new WaitForSeconds(monsterController.clipDict["Dying"]);
+
+        monsterController.PhotonView.RPC(nameof(monsterController.SyncDissolve), RpcTarget.All, dissolveDuration);
+        yield return new WaitForSeconds(dissolveDuration);
+
         Exit();
     }
 

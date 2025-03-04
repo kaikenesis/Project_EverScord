@@ -39,6 +39,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public string GUID { get; protected set; }
 
     private BlinkEffect blinkEffect;
+    private DissolveEffect dissolveEffect;
     private UIMarker uiMarker;
 
     public PhotonView PhotonView => photonView;
@@ -71,6 +72,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         ProjectorSetup();
 
         blinkEffect = BlinkEffect.Create(this);
+        dissolveEffect = DissolveEffect.Create(this);
 
         Projector1.enabled = false;
         Projector2.enabled = false;
@@ -233,6 +235,12 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         isStun = true;
         this.stunTime = stunTime;
+    }
+
+    [PunRPC]
+    public void SyncDissolve(float duration)
+    {
+        StartCoroutine(dissolveEffect.Dissolve(duration));
     }
 
     public void Death()
