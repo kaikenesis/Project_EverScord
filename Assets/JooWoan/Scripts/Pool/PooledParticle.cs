@@ -26,5 +26,10 @@ namespace EverScord.Pool
         {
             effect.Emit(amount);
         }
+
+        public void Play()
+        {
+            effect.Play();
+        }
     }
 }

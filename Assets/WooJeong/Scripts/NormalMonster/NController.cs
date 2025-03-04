@@ -1,10 +1,10 @@
 using EverScord;
 using EverScord.Character;
 using EverScord.Effects;
+using EverScord.Pool;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -18,6 +18,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     [SerializeField] public NMonsterData monsterData;
 
     public float HP {  get; private set; }
+    private const float SMALL_SIZE = 2f;
+    private const float MEDIUM_SIZE = 3f;
+    private const float LARGE_SIZE = 4f;
 
     [HideInInspector] public Dictionary<string, float> clipDict = new();
     [HideInInspector] public int LastAttack = 0;
@@ -212,7 +215,9 @@ public abstract class NController : MonoBehaviour, IEnemy
         this.HP -= hp;
         if (this.HP <= 0)
             isDead = true;
-        monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
+
+        if (monsterHealthBar != null)
+            monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
         photonView.RPC("SyncMonsterHP", RpcTarget.Others, this.HP);
     }
 
@@ -222,7 +227,9 @@ public abstract class NController : MonoBehaviour, IEnemy
         this.HP = hp;
         if (this.HP <= 0)
             isDead = true;
-        monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
+
+        if (monsterHealthBar != null)
+            monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
     }
 
     public void StunMonster(float stunTime)
@@ -241,6 +248,37 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void SyncDissolve(float duration)
     {
         StartCoroutine(dissolveEffect.Dissolve(duration));
+    }
+
+    [PunRPC]
+    public void SyncGlitterEffect()
+    {
+        PooledParticle glitter = ResourceManager.Instance.GetFromPool(AssetReferenceManager.DeathGlitter_ID) as PooledParticle;
+        glitter.Init(AssetReferenceManager.DeathGlitter_ID);
+        glitter.transform.position = transform.position;
+
+        float effectSize;
+
+        switch (monsterType)
+        {
+            case MonsterType.SMALL:
+                effectSize = SMALL_SIZE;
+                break;
+
+            case MonsterType.MEDIUM:
+                effectSize = MEDIUM_SIZE;
+                break;
+
+            case MonsterType.LARGE:
+                effectSize = LARGE_SIZE;
+                break;
+
+            default:
+                effectSize = MEDIUM_SIZE;
+                break;
+        }
+        glitter.transform.localScale = new Vector3(effectSize, effectSize, effectSize);
+        glitter.Play();
     }
 
     public void Death()

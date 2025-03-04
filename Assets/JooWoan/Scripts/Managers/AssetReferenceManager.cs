@@ -26,6 +26,7 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference StunnedDebuffOut          { get; private set; }
         [field: SerializeField] public AssetReference SpawnMarker               { get; private set; }
         [field: SerializeField] public AssetReference SpawnSmoke                { get; private set; }
+        [field: SerializeField] public AssetReference DeathGlitter              { get; private set; }
 
         [field: SerializeField] public AssetReference Boss                      { get; private set; }
         [field: SerializeField] public AssetReference BossProjectile            { get; private set; }
@@ -58,6 +59,7 @@ namespace EverScord.Effects
         public static string StunnedDebuffOut_ID        => Instance.StunnedDebuffOut.AssetGUID;
         public static string SpawnMarker_ID             => Instance.SpawnMarker.AssetGUID;
         public static string SpawnSmoke_ID              => Instance.SpawnSmoke.AssetGUID;
+        public static string DeathGlitter_ID            => Instance.DeathGlitter.AssetGUID;
 
         public static string Boss_ID                    => Instance.Boss.AssetGUID;
         public static string BossProjectile_ID          => Instance.BossProjectile.AssetGUID;
