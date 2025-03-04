@@ -39,6 +39,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (currentProgress == 1)
         {
+            SyncSpawnMarker(false);
             gameObject.SetActive(false);
         }
     }
