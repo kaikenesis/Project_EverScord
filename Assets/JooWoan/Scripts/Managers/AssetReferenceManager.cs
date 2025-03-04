@@ -24,6 +24,8 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference TeleportEffect            { get; private set; }
         [field: SerializeField] public AssetReference StunnedDebuffEffect       { get; private set; }
         [field: SerializeField] public AssetReference StunnedDebuffOut          { get; private set; }
+        [field: SerializeField] public AssetReference SpawnMarker               { get; private set; }
+        [field: SerializeField] public AssetReference SpawnSmoke                { get; private set; }
 
         [field: SerializeField] public AssetReference Boss                      { get; private set; }
         [field: SerializeField] public AssetReference BossProjectile            { get; private set; }
@@ -54,6 +56,8 @@ namespace EverScord.Effects
         public static string TeleportEffect_ID          => Instance.TeleportEffect.AssetGUID;
         public static string StunnedDebuffEffect_ID     => Instance.StunnedDebuffEffect.AssetGUID;
         public static string StunnedDebuffOut_ID        => Instance.StunnedDebuffOut.AssetGUID;
+        public static string SpawnMarker_ID             => Instance.SpawnMarker.AssetGUID;
+        public static string SpawnSmoke_ID              => Instance.SpawnSmoke.AssetGUID;
 
         public static string Boss_ID                    => Instance.Boss.AssetGUID;
         public static string BossProjectile_ID          => Instance.BossProjectile.AssetGUID;

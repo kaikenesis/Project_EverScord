@@ -4,6 +4,7 @@ namespace EverScord.Pool
 {
     public class PooledParticle : MonoBehaviour, IPoolable
     {
+        [SerializeField] ParticleSystem effect;
         private string assetGUID;
 
         public void OnParticleSystemStopped()
@@ -19,6 +20,11 @@ namespace EverScord.Pool
         public void SetGameObject(bool state)
         {
             gameObject.SetActive(state);
+        }
+
+        public void Emit(int amount = 1)
+        {
+            effect.Emit(amount);
         }
     }
 }
