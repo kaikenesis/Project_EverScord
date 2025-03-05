@@ -283,11 +283,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void Death()
     {
-        photonView.RPC("SyncMonsterDeath", RpcTarget.Others);
-        isDead = false;
-        healthBarObject.SetActive(false);
-        GameManager.Instance.LevelController.IncreaseProgress(monsterType);
-        ResourceManager.Instance.ReturnToPool(gameObject, GUID);
+        photonView.RPC("SyncMonsterDeath", RpcTarget.All);        
     }
 
     [PunRPC]
@@ -311,17 +307,15 @@ public abstract class NController : MonoBehaviour, IEnemy
             photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
             healthBarObject.SetActive(true);
         }
+        isDead = false;
         healthBarObject.SetActive(true);
         photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            HP = monsterData.HP;
-            monsterHealthBar.UpdateHealth(HP, monsterData.HP);
-            photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
-            LastAttack = 0;
-            WaitState();
-        }
+        HP = monsterData.HP;
+        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
+        photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
+        LastAttack = 0;
+        WaitState();
     }
 
     [PunRPC]
@@ -329,6 +323,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         SetHealthBar();
         healthBarObject.SetActive(true);
+        isDead = false;
     }
 
     [PunRPC]
