@@ -25,6 +25,7 @@ namespace EverScord.Effects
         private MaterialPropertyBlock mpb;
         private IDictionary<(int, int), Texture> textureDict;
         private IDictionary<(int, int), Color> colorDict;
+        private Color? currentDefaultColor;
 
         private List<Material> originalParticleMats;
         private bool isParticle = false;
@@ -179,7 +180,7 @@ namespace EverScord.Effects
             else 
             {
                 ClearParticleBlink();
-                blinkCoroutine = StartCoroutine(StartParticleBlink());
+                blinkCoroutine = StartCoroutine(FlickerBlink());
             }
         }
         
@@ -271,12 +272,16 @@ namespace EverScord.Effects
                 }
             } while(isLoop);
 
-            SetMaterialColors(default, true);
+            if (currentDefaultColor != null)
+                SetMaterialColors((Color)currentDefaultColor);
+            else
+                SetMaterialColors(default, true);
+            
             blinkCoroutine = null;
             changedBlinkInfo = null;
         }
 
-        private IEnumerator StartParticleBlink()
+        private IEnumerator FlickerBlink()
         {
             int blinkCount = BLINK_REPEAT;
             WaitForSeconds waitblink = new WaitForSeconds(0.01f);
@@ -307,6 +312,11 @@ namespace EverScord.Effects
         public void ChangeBlinkTemporarily(BlinkEffectInfo info)
         {
             changedBlinkInfo = info;
+        }
+
+        public void SetDefaultColor(Color? color = null)
+        {
+            currentDefaultColor = color;
         }
     }
 

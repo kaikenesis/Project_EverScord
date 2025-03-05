@@ -1,7 +1,9 @@
 using UnityEngine;
+using Photon;
 using EverScord.Pool;
 using EverScord.Skill;
 using EverScord.Character;
+using Photon.Pun;
 
 namespace EverScord.Weapons
 {
@@ -119,13 +121,18 @@ namespace EverScord.Weapons
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster, false);
                     }
-                    else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber && shooter.CharacterJob == PlayerData.EJob.Healer)
+                    else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber)
                     {
-                        // Calculate total heal
-                        float calculatedHeal = sourceWeapon.Heal;
-
                         CharacterControl character = hit.transform.GetComponent<CharacterControl>();
-                        character.IncreaseHP(calculatedHeal, true);
+
+                        if (shooter.CharacterJob == PlayerData.EJob.Healer)
+                        {
+                            // Calculate total heal
+                            float calculatedHeal = sourceWeapon.Heal;
+                            character.IncreaseHP(calculatedHeal, true);
+                        }
+                        else if (character.IsStunned && PhotonNetwork.IsConnected)
+                            character.CharacterPhotonView.RPC(nameof(character.SyncInteractStunDebuff), RpcTarget.All);
                     }
 
                     SetTracerEffectPosition(currentPoint);

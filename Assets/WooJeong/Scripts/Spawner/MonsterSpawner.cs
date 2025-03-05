@@ -1,21 +1,25 @@
 using EverScord;
-using ExitGames.Client.Photon;
+using EverScord.Effects;
+using EverScord.Pool;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 public class MonsterSpawner : MonoBehaviour
 {
+    private const float SPAWN_ALERT_TIME = 3f;
+
     [SerializeField] private AssetReferenceGameObject monster;
     [SerializeField] private float spawnTimer = 0f;
     private float curTime = 0;
     private int spawnCount = 0;
     private int allocateCompleteCount = 1;
+    private bool enableMarker = true;
 
     private int data;
-    private GameObject mo;
+    private GameObject mo, spawnMarker;
+    private PooledParticle spawnSmoke;
     private PhotonView photonView;
     private Coroutine spawn;
 
@@ -35,6 +39,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (currentProgress == 1)
         {
+            SyncSpawnMarker(false);
             gameObject.SetActive(false);
         }
     }
@@ -47,10 +52,14 @@ public class MonsterSpawner : MonoBehaviour
         while(true)
         {
             curTime += Time.deltaTime;
+            float timeUntilSpawn = spawnTimer - curTime;
+
             if (curTime > spawnTimer)
             {
                 Debug.Log("스폰");
                 mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
+
+                SpawnSmoke();
 
                 PhotonView view = mo.GetComponent<PhotonView>();
                 if (view.ViewID == 0)
@@ -78,10 +87,37 @@ public class MonsterSpawner : MonoBehaviour
 
                 spawnCount++;
                 curTime = 0f;
+
+                photonView.RPC(nameof(SyncSpawnMarker), RpcTarget.All, false);
             }
+            else if (enableMarker && timeUntilSpawn < SPAWN_ALERT_TIME)
+                photonView.RPC(nameof(SyncSpawnMarker), RpcTarget.All, true);
 
             yield return new WaitForSeconds(Time.deltaTime);
         }
+    }
+
+    private void SpawnSmoke()
+    {
+        spawnSmoke = ResourceManager.Instance.GetFromPool(AssetReferenceManager.SpawnSmoke_ID) as PooledParticle;
+        spawnSmoke.Init(AssetReferenceManager.SpawnSmoke_ID);
+
+        spawnSmoke.transform.position = transform.position;
+        spawnSmoke.Emit();
+    }
+
+    [PunRPC]
+    private void SyncSpawnMarker(bool state)
+    {
+        enableMarker = !state;
+
+        if (state)
+        {
+            spawnMarker = ResourceManager.Instance.GetFromPool(AssetReferenceManager.SpawnMarker_ID, transform.position, Quaternion.identity);
+            spawnMarker.SetActive(true);
+        }
+        else
+            ResourceManager.Instance.ReturnToPool(spawnMarker, AssetReferenceManager.SpawnMarker_ID);
     }
 
     [PunRPC]
@@ -96,6 +132,8 @@ public class MonsterSpawner : MonoBehaviour
 
         NController nController = mo.GetComponent<NController>();
         nController.SetGUID(monster.AssetGUID);
+
+        SpawnSmoke();
 
         Debug.Log("[client] 몬스터 viewID = " + view.ViewID);
         //PhotonNetwork.RegisterPhotonView(view);

@@ -11505,6 +11505,11 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  <DissolveMat>k__BackingField:
+    m_AssetGUID: 50c1d10cff51d6c4ab76faf460368b1b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   <CrosshairIcon>k__BackingField:
     m_AssetGUID: 6ce58e4cb11fb704cb1a438a440b11d6
     m_SubObjectName: 
@@ -11542,6 +11547,31 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   <TeleportEffect>k__BackingField:
     m_AssetGUID: 2e3b2f8c3fb814342bb587e528be9189
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <StunnedDebuffEffect>k__BackingField:
+    m_AssetGUID: 8ec547722ea126840ae8cf62c04cd5d5
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <StunnedDebuffOut>k__BackingField:
+    m_AssetGUID: ddb92181dfa74aa4eae1bf52328070cd
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <SpawnMarker>k__BackingField:
+    m_AssetGUID: f4d5932cb5db7494faf5231d242b74cf
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <SpawnSmoke>k__BackingField:
+    m_AssetGUID: ac0e3f90b29d9f640ba75223b10a22f7
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <DeathGlitter>k__BackingField:
+    m_AssetGUID: 0e3f81b75de47df498ab48ea7a54b922
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
@@ -12938,6 +12968,24 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 1
     PoolSize: 10
+  - Reference:
+      m_AssetGUID: f4d5932cb5db7494faf5231d242b74cf
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 7
+  - Reference:
+      m_AssetGUID: ac0e3f90b29d9f640ba75223b10a22f7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 7
+  - Reference:
+      m_AssetGUID: 0e3f81b75de47df498ab48ea7a54b922
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    PoolSize: 7
 --- !u!1 &677225042
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference TrajectoryLineMat         { get; private set; }
         [field: SerializeField] public AssetReference BlinkWhiteMat             { get; private set; }
         [field: SerializeField] public AssetReference BloodMat                  { get; private set; }
+        [field: SerializeField] public AssetReference DissolveMat               { get; private set; }
         [field: SerializeField] public AssetReference CrosshairIcon             { get; private set; }
         [field: SerializeField] public AssetReference HealEffect                { get; private set; }
         [field: SerializeField] public AssetReference DeathEffect               { get; private set; }
@@ -21,6 +22,11 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference HitEffect1                { get; private set; }
         [field: SerializeField] public AssetReference HitEffect2                { get; private set; }
         [field: SerializeField] public AssetReference TeleportEffect            { get; private set; }
+        [field: SerializeField] public AssetReference StunnedDebuffEffect       { get; private set; }
+        [field: SerializeField] public AssetReference StunnedDebuffOut          { get; private set; }
+        [field: SerializeField] public AssetReference SpawnMarker               { get; private set; }
+        [field: SerializeField] public AssetReference SpawnSmoke                { get; private set; }
+        [field: SerializeField] public AssetReference DeathGlitter              { get; private set; }
 
         [field: SerializeField] public AssetReference Boss                      { get; private set; }
         [field: SerializeField] public AssetReference BossProjectile            { get; private set; }
@@ -40,6 +46,7 @@ namespace EverScord.Effects
         public static string TrajectoryLineMat_ID       => Instance.TrajectoryLineMat.AssetGUID;
         public static string BlinkWhiteMat_ID           => Instance.BlinkWhiteMat.AssetGUID;
         public static string BloodMat_ID                => Instance.BloodMat.AssetGUID;
+        public static string DissolveMat_ID             => Instance.DissolveMat.AssetGUID;
         public static string CrosshairIcon_ID           => Instance.CrosshairIcon.AssetGUID;
         public static string HealEffect_ID              => Instance.HealEffect.AssetGUID;
         public static string DeathEffect_ID             => Instance.DeathEffect.AssetGUID;
@@ -48,6 +55,11 @@ namespace EverScord.Effects
         public static string HitEffect1_ID              => Instance.HitEffect1.AssetGUID;
         public static string HitEffect2_ID              => Instance.HitEffect2.AssetGUID;
         public static string TeleportEffect_ID          => Instance.TeleportEffect.AssetGUID;
+        public static string StunnedDebuffEffect_ID     => Instance.StunnedDebuffEffect.AssetGUID;
+        public static string StunnedDebuffOut_ID        => Instance.StunnedDebuffOut.AssetGUID;
+        public static string SpawnMarker_ID             => Instance.SpawnMarker.AssetGUID;
+        public static string SpawnSmoke_ID              => Instance.SpawnSmoke.AssetGUID;
+        public static string DeathGlitter_ID            => Instance.DeathGlitter.AssetGUID;
 
         public static string Boss_ID                    => Instance.Boss.AssetGUID;
         public static string BossProjectile_ID          => Instance.BossProjectile.AssetGUID;
