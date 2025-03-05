@@ -14,6 +14,9 @@ namespace EverScord.Monster
 
         public void ApplyDamageToEnemy(float hp, IEnemy monster, bool isSkillDamage = true)
         {
+            if (monster is NController nctrl && nctrl.isDead)
+                return;
+
             monster?.DecreaseHP(hp);
 
             BlinkEffect blinkEffect = monster.GetBlinkEffect();
