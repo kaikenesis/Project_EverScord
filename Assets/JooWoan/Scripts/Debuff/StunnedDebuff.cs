@@ -9,11 +9,15 @@ namespace EverScord
         private GameObject effect1, effect2;
         private GameObject inEffect, outEffect;
 
-        public StunnedDebuff(int amount)
+        public StunnedDebuff()
         {
             effect1 = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.StunnedDebuffEffect_ID);
             effect2 = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.StunnedDebuffOut_ID);
-            LeftCount = amount;
+        }
+
+        public void SetCount(int count)
+        {
+            LeftCount = count;
         }
 
         public void DecreaseCount()

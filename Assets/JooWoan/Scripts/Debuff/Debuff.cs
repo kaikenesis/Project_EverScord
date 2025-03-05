@@ -17,7 +17,7 @@ namespace EverScord
             switch (state)
             {
                 case CharState.STUNNED:
-                    targetDebuff = new StunnedDebuff(15);
+                    targetDebuff = new StunnedDebuff();
                     break;
             }
 
