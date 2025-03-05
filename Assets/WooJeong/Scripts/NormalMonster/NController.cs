@@ -295,7 +295,10 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         healthBarObject.SetActive(false);
         isDead = false;
-        Debug.Log(monsterType);
+        Projector1.enabled = false;
+        Projector2.enabled = false;
+        BoxCollider1.enabled = false;
+        BoxCollider2.enabled = false;
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
@@ -305,8 +308,8 @@ public abstract class NController : MonoBehaviour, IEnemy
         if (healthBarObject == null)
         {
             SetHealthBar();
-            healthBarObject.SetActive(true);
             photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
+            healthBarObject.SetActive(true);
         }
         healthBarObject.SetActive(true);
         photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
