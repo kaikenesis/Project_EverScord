@@ -116,7 +116,7 @@ public class MonsterSpawner : MonoBehaviour
             spawnMarker = ResourceManager.Instance.GetFromPool(AssetReferenceManager.SpawnMarker_ID, transform.position, Quaternion.identity);
             spawnMarker.SetActive(true);
         }
-        else
+        else if (spawnMarker != null)
             ResourceManager.Instance.ReturnToPool(spawnMarker, AssetReferenceManager.SpawnMarker_ID);
     }
 
