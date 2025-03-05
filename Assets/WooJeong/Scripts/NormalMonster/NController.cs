@@ -307,8 +307,8 @@ public abstract class NController : MonoBehaviour, IEnemy
             photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
             healthBarObject.SetActive(true);
         }
-        isDead = false;
         healthBarObject.SetActive(true);
+        photonView.RPC("SyncIsDead", RpcTarget.All, false);
         photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
 
         HP = monsterData.HP;
@@ -319,11 +319,16 @@ public abstract class NController : MonoBehaviour, IEnemy
     }
 
     [PunRPC]
+    protected void SyncIsDead(bool value)
+    {
+        isDead = value;
+    }
+
+    [PunRPC]
     protected void SyncSetHealthBar()
     {
         SetHealthBar();
         healthBarObject.SetActive(true);
-        isDead = false;
     }
 
     [PunRPC]
