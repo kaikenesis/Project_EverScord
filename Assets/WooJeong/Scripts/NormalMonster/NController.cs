@@ -39,7 +39,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     public BoxCollider BoxCollider1 { get; protected set; }
     public BoxCollider BoxCollider2 { get; protected set; }
     public Animator Animator { get; protected set; }
-    public BoxCollider HitBox { get; protected set; }
 
     public string GUID { get; protected set; }
 
@@ -336,7 +335,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void SyncHealthBarActive(bool value)
     {
         healthBarObject.SetActive(true);
-        HitBox.enabled = value;
     }
 
     public void PlayAnimation(string animationName)
