@@ -593,6 +593,80 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116643031}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &116949053
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1522223907}
+    m_Modifications:
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: monster.m_AssetGUID
+      value: b7d1e2b4971697348a37b2d81a85e2e9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_Name
+      value: MonsterSpawner_NMS2 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 18.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319237137368259706, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: sceneViewId
+      value: 37
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+--- !u!4 &116949054 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+  m_PrefabInstance: {fileID: 116949053}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &122784714
 GameObject:
   m_ObjectHideFlags: 0
@@ -5484,6 +5558,80 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 8c527fb3af25cc14896e585a4901676c, type: 2}
   m_BuildHeightMesh: 0
+--- !u!1001 &157332882
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1522223907}
+    m_Modifications:
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: monster.m_AssetGUID
+      value: b7d1e2b4971697348a37b2d81a85e2e9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_Name
+      value: MonsterSpawner_NMS2 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -14.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319237137368259706, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: sceneViewId
+      value: 38
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+--- !u!4 &157332883 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+  m_PrefabInstance: {fileID: 157332882}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &177188667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5492,6 +5640,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1444675645}
     m_Modifications:
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS2 (3)
@@ -5553,6 +5705,80 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
   m_PrefabInstance: {fileID: 177188667}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &182783247
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1522223907}
+    m_Modifications:
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: monster.m_AssetGUID
+      value: b7d1e2b4971697348a37b2d81a85e2e9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_Name
+      value: MonsterSpawner_NMS2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 18.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319237137368259706, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: sceneViewId
+      value: 36
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+--- !u!4 &182783248 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+  m_PrefabInstance: {fileID: 182783247}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &192499121
 PrefabInstance:
@@ -11931,72 +12157,6 @@ Transform:
   - {fileID: 854334680}
   m_Father: {fileID: 1444675645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &511581207
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1522223907}
-    m_Modifications:
-    - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_Name
-      value: MonsterSpawner_NMM2 (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -10.51
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -6.12
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6319237137368259706, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: sceneViewId
-      value: 35
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
---- !u!4 &511581208 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-  m_PrefabInstance: {fileID: 511581207}
-  m_PrefabAsset: {fileID: 0}
 --- !u!64 &528174292
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -12145,6 +12305,80 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 532648975}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &552888644
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1522223907}
+    m_Modifications:
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: monster.m_AssetGUID
+      value: b7d1e2b4971697348a37b2d81a85e2e9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_Name
+      value: MonsterSpawner_NMS2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 20.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -12.94
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319237137368259706, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: sceneViewId
+      value: 35
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+--- !u!4 &552888645 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+  m_PrefabInstance: {fileID: 552888644}
+  m_PrefabAsset: {fileID: 0}
 --- !u!64 &587106012
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -12175,6 +12409,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 600858348}
     m_Modifications:
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS1 (2)
@@ -12245,6 +12483,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1522223907}
     m_Modifications:
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: spawnTimer
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMM2
@@ -13514,6 +13756,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 600858348}
     m_Modifications:
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS1 (3)
@@ -18647,6 +18893,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 600858348}
     m_Modifications:
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS1 (4)
@@ -18717,6 +18967,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 600858348}
     m_Modifications:
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS1
@@ -18775,6 +19029,80 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3358353371170997986, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
   m_PrefabInstance: {fileID: 1129453333}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1175295689
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1522223907}
+    m_Modifications:
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: monster.m_AssetGUID
+      value: b7d1e2b4971697348a37b2d81a85e2e9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_Name
+      value: MonsterSpawner_NMS2 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -11.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319237137368259706, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: sceneViewId
+      value: 39
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+--- !u!4 &1175295690 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+  m_PrefabInstance: {fileID: 1175295689}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1184705144
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18783,6 +19111,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1444675645}
     m_Modifications:
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: spawnTimer
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMM2
@@ -18853,6 +19185,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 600858348}
     m_Modifications:
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS1 (1)
@@ -19028,6 +19364,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 600858348}
     m_Modifications:
+    - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
+      propertyPath: spawnTimer
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 6377856683032125126, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: sceneViewId
       value: 13
@@ -19247,6 +19587,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1444675645}
     m_Modifications:
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS2 (4)
@@ -19613,6 +19957,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1444675645}
     m_Modifications:
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS2 (1)
@@ -20799,18 +21147,27 @@ PrefabInstance:
       addedObject: {fileID: 437332811}
     - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
       insertIndex: 1
-      addedObject: {fileID: 595929435}
+      addedObject: {fileID: 552888645}
     - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
       insertIndex: 2
-      addedObject: {fileID: 511581208}
+      addedObject: {fileID: 182783248}
     - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
       insertIndex: 3
-      addedObject: {fileID: 2121445563}
+      addedObject: {fileID: 116949054}
     - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
       insertIndex: 4
-      addedObject: {fileID: 6662743594078570036}
+      addedObject: {fileID: 157332883}
     - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
       insertIndex: 5
+      addedObject: {fileID: 1175295690}
+    - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 595929435}
+    - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 6662743594078570036}
+    - targetCorrespondingSourceObject: {fileID: 3147576952570807958, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
+      insertIndex: 8
       addedObject: {fileID: 332673747}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8187379366719888155, guid: 3318e675307ea31419c1f8ee762cc526, type: 3}
@@ -26361,6 +26718,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1444675645}
     m_Modifications:
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS2
@@ -26999,6 +27360,10 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
+      propertyPath: spawnTimer
+      value: 60
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27437,6 +27802,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1444675645}
     m_Modifications:
+    - target: {fileID: 1278200459900447085, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
+      propertyPath: spawnTimer
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 3147461548993780595, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NML2
@@ -27687,6 +28056,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1444675645}
     m_Modifications:
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: spawnTimer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NMS2 (2)
@@ -27781,72 +28154,6 @@ Transform:
   - {fileID: 973766776}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &2121445562
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1522223907}
-    m_Modifications:
-    - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_Name
-      value: MonsterSpawner_NMM2 (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 17.52
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 3.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6319237137368259706, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-      propertyPath: sceneViewId
-      value: 36
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
---- !u!4 &2121445563 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6033131647584001831, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
-  m_PrefabInstance: {fileID: 2121445562}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2131212556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28132,7 +28439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
       propertyPath: spawnTimer
-      value: 30
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
       propertyPath: maxSpawnCount
@@ -28299,7 +28606,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: maxSpawnCount
@@ -28370,6 +28677,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1522223907}
     m_Modifications:
+    - target: {fileID: 1278200459900447085, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
+      propertyPath: spawnTimer
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 3147461548993780595, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NML2
