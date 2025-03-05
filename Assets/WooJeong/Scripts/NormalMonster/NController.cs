@@ -311,17 +311,15 @@ public abstract class NController : MonoBehaviour, IEnemy
             photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
             healthBarObject.SetActive(true);
         }
+        isDead = false;
         healthBarObject.SetActive(true);
         photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            HP = monsterData.HP;
-            monsterHealthBar.UpdateHealth(HP, monsterData.HP);
-            photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
-            LastAttack = 0;
-            WaitState();
-        }
+        HP = monsterData.HP;
+        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
+        photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
+        LastAttack = 0;
+        WaitState();
     }
 
     [PunRPC]
