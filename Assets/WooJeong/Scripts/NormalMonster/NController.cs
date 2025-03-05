@@ -66,7 +66,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
-        HitBox = GetComponent<BoxCollider>();
         Projector1 = gameObject.AddComponent<DecalProjector>();
         Projector2 = gameObject.AddComponent<DecalProjector>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
@@ -325,12 +324,12 @@ public abstract class NController : MonoBehaviour, IEnemy
             WaitState();
         }
     }
+
     [PunRPC]
     protected void SyncSetHealthBar()
     {
         SetHealthBar();
         healthBarObject.SetActive(true);
-        HitBox.enabled = true;
     }
 
     [PunRPC]
