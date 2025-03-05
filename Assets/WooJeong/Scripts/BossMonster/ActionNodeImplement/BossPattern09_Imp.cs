@@ -17,6 +17,8 @@ public class BossPattern09_Imp : ActionNodeImplement
         }
         int randInt = Random.Range(0, controls.Count);
         controls[randInt].SetState(SetCharState.ADD, CharState.STUNNED);
+        StunnedDebuff stunnedDebuff = controls[randInt].DebuffDict[CharState.STUNNED] as StunnedDebuff;
+        stunnedDebuff.SetCount(attackCount);
         bossRPC.PlayAnimation("Shoot");
         yield return new WaitForSeconds(bossRPC.clipDict["Shoot"]);
         isEnd = true;

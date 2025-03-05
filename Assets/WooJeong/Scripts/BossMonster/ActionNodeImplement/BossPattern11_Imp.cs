@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern11_Imp : ActionNodeImplement
+public class BossPattern11_Imp : BossPattern09_Imp
 {
-    protected override IEnumerator Act()
+    protected override void Awake()
     {
-        isEnd = true;
-        action = null;
-        yield return null;
+        base.Awake();
+        attackCount = 60;
     }
-
 }
