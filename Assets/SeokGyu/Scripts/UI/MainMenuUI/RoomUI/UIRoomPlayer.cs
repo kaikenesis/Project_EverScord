@@ -45,5 +45,10 @@ namespace EverScord
                     break;
             }
         }
+
+        private void OnUpdatedPortrait()
+        {
+            
+        }
     }
 }
