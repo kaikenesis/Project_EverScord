@@ -83,19 +83,22 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     protected void ExitToWait()
     {
-        StopCoroutine(updating);
+        if (updating != null)
+            StopCoroutine(updating);
         monsterController.WaitState();
     }
 
     protected void ExitToRun()
     {
-        StopCoroutine(updating);
+        if (updating != null)
+            StopCoroutine(updating);
         monsterController.RunState();
     }
 
     protected void ExitToStun()
     {
-        StopCoroutine(updating);
+        if (updating != null)
+            StopCoroutine(updating);
         if (attack != null)
             StopCoroutine(attack);
         if (project != null)
@@ -122,7 +125,8 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     protected void ExitToDeath()
     {
-        StopCoroutine(updating);
+        if (updating != null)
+            StopCoroutine(updating);
         if (attack != null)
             StopCoroutine(attack);
         if (project != null)

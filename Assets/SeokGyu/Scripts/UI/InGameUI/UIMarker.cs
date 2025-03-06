@@ -17,6 +17,7 @@ namespace EverScord
             this.type = type;
 
             canvasObj = new GameObject("MarkerUI");
+            canvasObj.transform.SetParent(ResourceManager.PoolRoot);
             canvasObj.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             canvasObj.layer = 13;
             Canvas canvas = canvasObj.AddComponent<Canvas>();

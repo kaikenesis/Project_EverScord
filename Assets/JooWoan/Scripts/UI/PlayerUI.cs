@@ -18,7 +18,18 @@ namespace EverScord.UI
         private const float BLOOD_THRESHOLD = 0.5f;
         private const float BLOOD_SPEED = 1f;
 
-        public static Transform Root { get; private set; }
+        public static Transform Root
+        {
+            get
+            {
+                if (root)
+                    return root;
+                
+                return root = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
+            }
+        }
+        
+        private static Transform root;
         private static Texture2D cursorIcon;
         private static Material bloodMat;
         private static ColorCurves colorCurves;
@@ -33,11 +44,11 @@ namespace EverScord.UI
 
         public void Init()
         {
-            if (!cursorIcon) cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(AssetReferenceManager.CrosshairIcon_ID);
-            if (!bloodMat)   bloodMat   = ResourceManager.Instance.GetAsset<Material>(AssetReferenceManager.BloodMat_ID);
-
-            Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
-            Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
+            if (!bloodMat) 
+                bloodMat = ResourceManager.Instance.GetAsset<Material>(AssetReferenceManager.BloodMat_ID);
+            
+            if (!cursorIcon)
+                SetCursor(CursorType.BATTLE);
 
             Volume volume = CharacterCamera.Root.GetComponent<Volume>();
             VolumeProfile profile = volume.sharedProfile;
@@ -53,10 +64,20 @@ namespace EverScord.UI
             SetGrayscaleScreen(false);
         }
 
-        public static void SetUIRoot()
+        public void SetCursor(CursorType type)
         {
-            if (Root == null)
-                Root = GameObject.FindGameObjectWithTag(ConstStrings.TAG_UIROOT).transform;
+            string iconID = AssetReferenceManager.CrosshairIcon_ID;
+
+            switch (type)
+            {
+                case CursorType.AUGMENT:
+                    iconID = AssetReferenceManager.AugmentCursorIcon_ID;
+                    break;
+            }
+
+            cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(iconID);
+            Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
+            Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
         }
 
         public void SetAmmoText(int count)
@@ -168,5 +189,10 @@ namespace EverScord.UI
             DOTween.Rewind(ConstStrings.TWEEN_STAGE_COUNTDOWN);
             DOTween.Play(ConstStrings.TWEEN_STAGE_COUNTDOWN);
         }
+    }
+    public enum CursorType
+    {
+        BATTLE,
+        AUGMENT,
     }
 }

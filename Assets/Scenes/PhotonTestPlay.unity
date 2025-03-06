@@ -11741,6 +11741,11 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  <AugmentCursorIcon>k__BackingField:
+    m_AssetGUID: 214d561cb29302b4988cd5837391c59c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
   <HealEffect>k__BackingField:
     m_AssetGUID: 2900d1807ba4af04687b8e58bf0f0f85
     m_SubObjectName: 
@@ -18975,6 +18980,10 @@ PrefabInstance:
       propertyPath: uiCanvas
       value: 
       objectReference: {fileID: 1113726317}
+    - target: {fileID: 2342019967957374983, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
+      propertyPath: selectTimeLimit
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3964615265655247520, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
       propertyPath: m_Name
       value: AugmentCanvas
@@ -19912,7 +19921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5217522696083798951, guid: 99aeb5bf9ff7d0e4888da48e5bf1818d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6943696938596616190, guid: 99aeb5bf9ff7d0e4888da48e5bf1818d, type: 3}
       propertyPath: m_LocalPosition.x

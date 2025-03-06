@@ -22,6 +22,9 @@ namespace EverScord.UI
         void Awake()
         {
             slotImages = slotParent.GetComponentsInChildren<Image>(true);
+            
+            if (slotImages.Length > 0)
+                initialColor = slotImages[0].color;
         }
 
         public void Init(UnityAction listener)
@@ -30,9 +33,6 @@ namespace EverScord.UI
             
             foreach (Image slot in slotImages)
                 slotTexts.Add(slot.GetComponentInChildren<TextMeshProUGUI>(true));
-
-            if (slotImages.Length > 0)
-                initialColor = slotImages[0].color;
 
             ResetState();
         }

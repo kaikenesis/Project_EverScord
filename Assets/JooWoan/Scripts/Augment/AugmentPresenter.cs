@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,6 +6,8 @@ using DG.Tweening;
 using EverScord.UI;
 using EverScord.Armor;
 using EverScord.Character;
+
+using Random = UnityEngine.Random;
 
 namespace EverScord.Augment
 {
@@ -20,7 +23,6 @@ namespace EverScord.Augment
         private const string DOTWEEN_UI_APPEAR  = "AugmentCard_Appear";
         private const string DOTWEEN_UI_DISAPPEAR = "AugmentCard_Disappear";
 
-        [SerializeField] private Canvas uiCanvas;
         [SerializeField] private GameObject uiHub;
         [SerializeField] private SelectUI helmetSelectUI, vestSelectUI, shoesSelectUI;
         [SerializeField] private UpgradeUI helmetUpgradeUI, vestUpgradeUI, shoesUpgradeUI;
@@ -34,6 +36,7 @@ namespace EverScord.Augment
         private List<string> shoesAugmentTags = new();
         private AugmentData augmentData = new();
         private CharacterControl player;
+        public Action<bool> OnAugmented;
 
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
@@ -70,6 +73,13 @@ namespace EverScord.Augment
         {
             uiHub.SetActive(true);
             augmentTimer.gameObject.SetActive(true);
+            player.PlayerUIControl.SetCursor(CursorType.AUGMENT);
+
+            foreach (var player in GameManager.Instance.PlayerDict.Values)
+                player.SetState(SetCharState.ADD, CharState.SELECTING_AUGMENT);
+
+            OnAugmented -= GameManager.Instance.PortalController.SetPortalCollider;
+            OnAugmented += GameManager.Instance.PortalController.SetPortalCollider;
 
             if (isAugmentSelectMode)
             {
@@ -119,6 +129,14 @@ namespace EverScord.Augment
 
             DOTween.Rewind(DOTWEEN_UI_DISAPPEAR);
             DOTween.Play(DOTWEEN_UI_DISAPPEAR);
+
+            player.PlayerUIControl.SetCursor(CursorType.BATTLE);
+
+            foreach (var player in GameManager.Instance.PlayerDict.Values)
+                player.SetState(SetCharState.REMOVE, CharState.SELECTING_AUGMENT);
+
+            OnAugmented?.Invoke(true);
+            OnAugmented -= GameManager.Instance.PortalController.SetPortalCollider;
         }
 
         private void CreateAugmentSelectTags()

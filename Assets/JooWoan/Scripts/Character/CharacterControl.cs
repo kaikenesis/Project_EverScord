@@ -69,7 +69,6 @@ namespace EverScord.Character
         public IVest CharacterVest                                      { get; private set; }
         public IShoes CharacterShoes                                    { get; private set; }
 
-        private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
@@ -92,6 +91,7 @@ namespace EverScord.Character
         private Vector3 remoteMouseRayHitPos;
         private LayerMask groundAndEnemyLayer;
         private Action onDecreaseHealth;
+        private InputInfo playerInputInfo = new InputInfo();
 
         public float CurrentHealth
         {
@@ -122,9 +122,6 @@ namespace EverScord.Character
 
         void Awake()
         {
-            PlayerUI.SetUIRoot();
-            CharacterCamera.SetCameraRoot();
-
             PlayerTransform  = transform;
             PhysicsControl   = new CharacterPhysics(gravity, mass);
             DebuffDict       = new Dictionary<CharState, Debuff>();
@@ -136,7 +133,6 @@ namespace EverScord.Character
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
-
             UIMarker         = gameObject.AddComponent<UIMarker>();
 
             // Unity docs: Set skinwidth 10% of the Radius
@@ -213,7 +209,7 @@ namespace EverScord.Character
 
             SetInput();
 
-            if (IsDead)
+            if (IsDead || IsInteractingUI)
                 return;
 
             SetMovingDirection();
@@ -793,6 +789,11 @@ namespace EverScord.Character
         public bool IsStunned
         {
             get { return HasState(CharState.STUNNED); }
+        }
+
+        public bool IsInteractingUI
+        {
+            get { return HasState(CharState.SELECTING_AUGMENT); }
         }
 
         public bool IsAiming { get; private set; }

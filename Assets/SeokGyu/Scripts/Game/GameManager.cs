@@ -100,7 +100,8 @@ namespace EverScord
             {
                 if (instance == null)
                 {
-                    instance = new GameManager();
+                    GameObject manager = new GameObject("_GameManager");
+                    instance = manager.AddComponent<GameManager>();
                 }
                 return instance;
             }
