@@ -19,20 +19,20 @@ namespace EverScord.UI
 
         private UnityEvent onSelectSlotEvent = new UnityEvent();
 
+        void Awake()
+        {
+            slotImages = slotParent.GetComponentsInChildren<Image>(true);
+        }
+
         public void Init(UnityAction listener)
         {
             onSelectSlotEvent?.AddListener(listener);
             
-            if (slotImages == null)
-            {
-                slotImages = slotParent.GetComponentsInChildren<Image>(true);
+            foreach (Image slot in slotImages)
+                slotTexts.Add(slot.GetComponentInChildren<TextMeshProUGUI>(true));
 
-                foreach (Image slot in slotImages)
-                    slotTexts.Add(slot.GetComponentInChildren<TextMeshProUGUI>(true));
-
-                if (slotImages.Length > 0)
-                    initialColor = slotImages[0].color;
-            }
+            if (slotImages.Length > 0)
+                initialColor = slotImages[0].color;
 
             ResetState();
         }

@@ -5,6 +5,7 @@ using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
 using EverScord.Effects;
+using EverScord.Augment;
 
 namespace EverScord
 {
@@ -26,6 +27,7 @@ namespace EverScord
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
         public PortalControl PortalController                   { get; private set; }
+        public AugmentPresenter AugmentControl                  { get; private set; }
         public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
@@ -168,6 +170,10 @@ namespace EverScord
 
                 case PortalControl portalControl:
                     PortalController = portalControl;
+                    break;
+
+                case AugmentPresenter augmentPresenter:
+                    AugmentControl = augmentPresenter;
                     break;
 
                 default:

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using EverScord.UI;
 using EverScord.Armor;
+using EverScord.Character;
 
 namespace EverScord.Augment
 {
@@ -19,7 +20,7 @@ namespace EverScord.Augment
         private const string DOTWEEN_UI_APPEAR  = "AugmentCard_Appear";
         private const string DOTWEEN_UI_DISAPPEAR = "AugmentCard_Disappear";
 
-        [SerializeField] private TestPlayer player;
+        [SerializeField] private Canvas uiCanvas;
         [SerializeField] private GameObject uiHub;
         [SerializeField] private SelectUI helmetSelectUI, vestSelectUI, shoesSelectUI;
         [SerializeField] private UpgradeUI helmetUpgradeUI, vestUpgradeUI, shoesUpgradeUI;
@@ -32,6 +33,7 @@ namespace EverScord.Augment
         private List<string> vestAugmentTags = new();
         private List<string> shoesAugmentTags = new();
         private AugmentData augmentData = new();
+        private CharacterControl player;
 
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
@@ -44,6 +46,13 @@ namespace EverScord.Augment
         {
             augmentData.Init();
             uiHub.SetActive(false);
+
+            GameManager.Instance.InitControl(this);
+        }
+
+        void Start()
+        {
+            player = CharacterControl.CurrentClientCharacter;
         }
 
         void OnDisable()
@@ -57,13 +66,7 @@ namespace EverScord.Augment
             upgradeBtn.onClick.RemoveListener(HideAugmentCards);
         }
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F1))
-                ShowAugmentCards();
-        }
-
-        private void ShowAugmentCards()
+        public void ShowAugmentCards()
         {
             uiHub.SetActive(true);
             augmentTimer.gameObject.SetActive(true);
@@ -255,9 +258,9 @@ namespace EverScord.Augment
             VestAugment vestAugment     = (VestAugment)augmentData.VestAugmentDict[selectedVestTag][enhanceCount];
             ShoesAugment shoesAugment   = (ShoesAugment)augmentData.ShoesAugmentDict[selectedShoesTag][enhanceCount];
 
-            player.SetArmor(new HelmetDecorator(player.helmet, helmetAugment));
-            player.SetArmor(new VestDecorator(player.vest, vestAugment));
-            player.SetArmor(new ShoesDecorator(player.shoes, shoesAugment));
+            player.SetArmor(new HelmetDecorator(player.CharacterHelmet, helmetAugment));
+            player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
+            player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
 
             enhanceCount++;
 

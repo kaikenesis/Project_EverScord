@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 using UnityEngine;
 using Photon.Pun;
@@ -8,7 +9,7 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
-using System.Linq;
+using EverScord.Armor;
 
 namespace EverScord.Character
 {
@@ -64,6 +65,9 @@ namespace EverScord.Character
         public BlinkEffect BlinkEffects                                 { get; private set; }
         public UIMarker UIMarker                                        { get; private set; }
         public IDictionary<CharState, Debuff> DebuffDict                { get; private set; }
+        public IHelmet CharacterHelmet                                  { get; private set; }
+        public IVest CharacterVest                                      { get; private set; }
+        public IShoes CharacterShoes                                    { get; private set; }
 
         private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
@@ -124,6 +128,9 @@ namespace EverScord.Character
             PlayerTransform  = transform;
             PhysicsControl   = new CharacterPhysics(gravity, mass);
             DebuffDict       = new Dictionary<CharState, Debuff>();
+            CharacterHelmet  = new Helmet(10, 10, 10, 10, 10);
+            CharacterVest    = new Vest(10, 10, 10);
+            CharacterShoes   = new Shoes(10, 10, 10);
 
             photonView       = GetComponent<PhotonView>();
             controller       = GetComponent<CharacterController>();
@@ -193,8 +200,8 @@ namespace EverScord.Character
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
                 IncreaseHP(10);
 
-            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F2))
-                ApplyDebuff(CharState.STUNNED, 10);
+            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F3))
+                GameManager.Instance.AugmentControl.ShowAugmentCards();
 
             UIMarker.UpdatePosition(PlayerTransform.position);
 
@@ -460,6 +467,24 @@ namespace EverScord.Character
         public void SetPosition(Vector3 position)
         {
             transform.position = position;
+        }
+
+        public void SetArmor(IArmor newArmor)
+        {
+            switch (newArmor)
+            {
+                case IHelmet newHelmet:
+                    CharacterHelmet = newHelmet;
+                    break;
+
+                case IVest newVest:
+                    CharacterVest = newVest;
+                    break;
+
+                case IShoes newShoes:
+                    CharacterShoes = newShoes;
+                    break;
+            }
         }
 
         public void SetState(SetCharState mode, CharState state = CharState.NONE)
