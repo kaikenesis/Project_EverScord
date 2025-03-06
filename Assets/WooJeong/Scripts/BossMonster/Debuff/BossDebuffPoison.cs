@@ -5,7 +5,6 @@ public class BossDebuffPoison : BaseBossDebuff
 {
     public override IEnumerator StartDebuff(BossRPC boss, float time, float tickDamage)
     {
-        Debug.Log("boss poison");
         timer = time;
         while (true)
         {

@@ -17,6 +17,12 @@ public abstract class NStunState : MonoBehaviour, IState
     public void Enter()
     {
         monsterController.PlayAnimation("Wait");
+        monsterController.ProjectorDisable(1);
+        monsterController.ProjectorDisable(2);
+        if (monsterController.BoxCollider1 != null)
+            monsterController.BoxCollider1.enabled = false;
+        if (monsterController.BoxCollider2 != null)
+            monsterController.BoxCollider2.enabled = false;
         StartCoroutine(Stun());
     }
 

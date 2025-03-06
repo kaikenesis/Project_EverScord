@@ -6,11 +6,13 @@ using UnityEngine;
 public class NMonsterData : ScriptableObject
 {
     [field: SerializeField] public float HP { get; protected set; }
+    [field: SerializeField] public float Armor { get; protected set; }
     [field: SerializeField] public float MoveSpeed { get; protected set; }
     [field: SerializeField] public float StopDistance { get; protected set; }
     [field: SerializeField] public float CoolDown1 { get; protected set; }
     [field: SerializeField] public float CoolDown2 { get; protected set; }
     [field: SerializeField] public float ProjectionTime { get; protected set; }
+    [field: SerializeField] public float BaseAttackDamage { get; protected set; }
     [field: SerializeField] public float AttackDamage1 { get; protected set; }
     [field: SerializeField] public float AttackRangeX1 { get; protected set; }
     [field: SerializeField] public float AttackRangeY1 { get; protected set; }

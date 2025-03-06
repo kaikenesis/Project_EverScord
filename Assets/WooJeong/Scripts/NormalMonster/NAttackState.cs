@@ -46,13 +46,18 @@ public abstract class NAttackState : MonoBehaviour, IState
 
             if (!isAttacking)
             {
-                if (monsterController.player == null)
-                    monsterController.SetNearestPlayer();
+                monsterController.SetNearestPlayer();
+                if(monsterController.player == null)
+                {
+                    ExitToWait();
+                    yield break;
+                }
 
                 if (monsterController.CalcDistance() > monsterController.monsterData.StopDistance)
                 {
                     isAttacking = false;
                     ExitToRun();
+                    yield break;
                 }
 
                 monsterController.LookPlayer();
@@ -63,7 +68,7 @@ public abstract class NAttackState : MonoBehaviour, IState
                 }
             }
 
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
     }
 
@@ -83,62 +88,41 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     protected void ExitToWait()
     {
-        StopCoroutine(updating);
+        StopUpdating();
         monsterController.WaitState();
     }
 
     protected void ExitToRun()
     {
-        StopCoroutine(updating);
+        StopUpdating();
         monsterController.RunState();
     }
 
     protected void ExitToStun()
-    {
-        StopCoroutine(updating);
+    {        
         if (attack != null)
             StopCoroutine(attack);
         if (project != null)
-        { 
             StopCoroutine(project);
-            //if (monsterController.Projector1 != null)
-            //    monsterController.ProjectorDisable(monsterController.Projector1);
-            //else if (monsterController.Projector2 != null)
-            //    monsterController.ProjectorDisable(monsterController.Projector2);
-        }
-
-        if(monsterController.Projector1 != null)
-            monsterController.ProjectorDisable(1);
-        else if(monsterController.Projector2 != null)
-            monsterController.ProjectorDisable(2);
-
-        if (monsterController.BoxCollider1 != null)
-            monsterController.BoxCollider1.enabled = false;
-        else if (monsterController.BoxCollider2 != null)
-            monsterController.BoxCollider2.enabled = false;
 
         monsterController.StunState();
     }
 
     protected void ExitToDeath()
     {
-        StopCoroutine(updating);
+        StopUpdating();
         if (attack != null)
             StopCoroutine(attack);
         if (project != null)
             StopCoroutine(project);
 
-        if (monsterController.Projector1 != null)
-            monsterController.ProjectorDisable(1);
-        else if (monsterController.Projector2 != null)
-            monsterController.ProjectorDisable(2);
-
-        if (monsterController.BoxCollider1 != null)
-            monsterController.BoxCollider1.enabled = false;
-        else if (monsterController.BoxCollider2 != null)
-            monsterController.BoxCollider2.enabled = false;
-
         monsterController.DeathState();
     }
 
+    protected void StopUpdating()
+    {
+        if(updating != null)
+            StopCoroutine(updating);
+        updating = null;
+    }
 }

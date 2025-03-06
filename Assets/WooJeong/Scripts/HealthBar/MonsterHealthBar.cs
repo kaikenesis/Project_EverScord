@@ -1,3 +1,4 @@
+using DG.Tweening;
 using EverScord.Pool;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ public class MonsterHealthBar : MonoBehaviour
 
     public void UpdateHealth(float currentHealth, float maxHealth)
     {
-        healthBarFill.fillAmount = currentHealth / maxHealth;
+        healthBarFill.DOFillAmount(currentHealth / maxHealth, 0.5f);
+        //healthBarFill.fillAmount = currentHealth / maxHealth;
     }
 }

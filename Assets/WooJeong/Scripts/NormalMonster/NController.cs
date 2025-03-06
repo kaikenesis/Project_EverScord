@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static UnityEngine.Rendering.DebugUI;
 
 public enum MonsterType
 {
@@ -36,6 +37,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public DecalProjector Projector1 { get; protected set; }
     public DecalProjector Projector2 { get; protected set; }
+    public BoxCollider Hitbox { get; protected set; }
     public BoxCollider BoxCollider1 { get; protected set; }
     public BoxCollider BoxCollider2 { get; protected set; }
     public Animator Animator { get; protected set; }
@@ -65,12 +67,12 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
+        Hitbox = GetComponent<BoxCollider>();
         Projector1 = gameObject.AddComponent<DecalProjector>();
         Projector2 = gameObject.AddComponent<DecalProjector>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
         BoxCollider2 = gameObject.AddComponent<BoxCollider>();
         uiMarker = gameObject.AddComponent<UIMarker>();
-        
         uiMarker.Initialize(PointMarkData.EType.Monster);
         ProjectorSetup();
 
@@ -291,10 +293,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         healthBarObject.SetActive(false);
         isDead = false;
-        Projector1.enabled = false;
-        Projector2.enabled = false;
-        BoxCollider1.enabled = false;
-        BoxCollider2.enabled = false;
         GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
@@ -308,7 +306,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             healthBarObject.SetActive(true);
         }
         healthBarObject.SetActive(true);
-        photonView.RPC("SyncIsDead", RpcTarget.All, false);
+        photonView.RPC(nameof(SyncIsDead), RpcTarget.All, false);
         photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
 
         HP = monsterData.HP;
@@ -439,10 +437,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             }
         }
 
-        if (nearPlayer != null)
-            player = nearPlayer;
-        //else
-            //isDead = true;
+        player = nearPlayer;
     }
 
     public void LookPlayer()

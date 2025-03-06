@@ -12,6 +12,7 @@ public abstract class NRunState : MonoBehaviour, IState
     protected Vector3 remotePos;
     protected Quaternion remoteRot;
     protected NavMeshAgent navMeshAgent;
+    protected Coroutine updating;
 
     protected abstract void Setup();
 
@@ -27,7 +28,7 @@ public abstract class NRunState : MonoBehaviour, IState
     {
         monsterController.SetNearestPlayer();
         monsterController.PlayAnimation("Run");
-        StartCoroutine(Updating());
+        updating = StartCoroutine(Updating());
     }
 
     protected virtual IEnumerator Updating()
@@ -46,10 +47,9 @@ public abstract class NRunState : MonoBehaviour, IState
                 yield break;
             }
 
+            monsterController.SetNearestPlayer();
             if (monsterController.player != null)
                 navMeshAgent.destination = monsterController.player.transform.position;
-            else
-                monsterController.SetNearestPlayer();
 
             if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
             {
@@ -102,33 +102,46 @@ public abstract class NRunState : MonoBehaviour, IState
 
     public void Exit()
     {
+        StopUpdating();
         StartCoroutine(RandomAttack());
     }
 
     protected void ExitToWait()
     {
+        StopUpdating();
         monsterController.WaitState();
     }
 
     protected void ExitToAttack1()
     {
+        StopUpdating();
         monsterController.AttackState1();
     }
 
     protected void ExitToAttack2()
     {
+        StopUpdating();
         monsterController.AttackState2();
     }
 
     protected void ExitToStun()
     {
+        StopUpdating();
         navMeshAgent.destination = transform.position;
         monsterController.StunState();
     }
 
     protected void ExitToDeath()
     {
+        StopUpdating();
         navMeshAgent.destination = transform.position;
         monsterController.DeathState();
+    }
+
+    protected void StopUpdating()
+    {
+        if (updating != null)
+            StopCoroutine(updating);
+        updating = null;
     }
 }
