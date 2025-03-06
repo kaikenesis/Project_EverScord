@@ -52,6 +52,12 @@ namespace EverScord.Skill
             return true;
         }
 
+        public virtual void ExitSkill()
+        {
+            if (skillCoroutine != null)
+                StopCoroutine(skillCoroutine);
+        }
+
         public abstract void OffensiveAction();
         public abstract void SupportAction();
 

@@ -193,6 +193,9 @@ namespace EverScord.Character
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
                 IncreaseHP(10);
 
+            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F2))
+                ApplyDebuff(CharState.STUNNED, 10);
+
             UIMarker.UpdatePosition(PlayerTransform.position);
 
             if (!photonView.IsMine)
@@ -468,8 +471,8 @@ namespace EverScord.Character
             {
                 case SetCharState.ADD:
                     State |= state;
-
-                    DebuffDict[state] = Debuff.GetDebuff(this, state, SetState);
+                    
+                    DebuffDict[state] = Debuff.GetDebuff(this, state, RemoveDebuff);
                     break;
 
                 case SetCharState.REMOVE:
@@ -503,9 +506,26 @@ namespace EverScord.Character
             return (State & state) != 0;
         }
 
-        public void SetDebuff(CharState state)
+        public void ApplyDebuff(CharState state, int count)
         {
-            photonView.RPC(nameof(SyncState), RpcTarget.All, (int)SetCharState.ADD, (int)state);
+            if (HasState(CharState.INVINCIBLE))
+                return;
+                        
+            if (DebuffDict.ContainsKey(state) && DebuffDict[state] != null)
+                return;
+            
+            if (!PhotonNetwork.IsConnected)
+                return;
+            
+            photonView.RPC(nameof(SyncApplyDebuff), RpcTarget.All, (int)SetCharState.ADD, (int)state, count);
+        }
+
+        public void RemoveDebuff(CharState state)
+        {
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
+                return;
+            
+            photonView.RPC(nameof(SyncRemoveDebuff), RpcTarget.All, (int)state);
         }
 
         public void SubscribeOnDecreaseHealth(Action subscriber)
@@ -591,7 +611,7 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
-            // SetState(SetCharState.REMOVE, CharState.DEATH);
+            SetState(SetCharState.REMOVE, CharState.DEATH);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
             Instantiate(reviveEffect, PlayerTransform.position, Quaternion.identity);
@@ -665,6 +685,14 @@ namespace EverScord.Character
         public void EnableReviveCircle(bool state)
         {
             reviveCircle.gameObject.SetActive(state);
+        }
+
+        private void CancelAction()
+        {
+            weapon.SetShootingStance(this, false, true);
+
+            for (int i = 0; i < skillList.Count; i++)
+                skillList[i].SkillAction.ExitSkill();
         }
 
         public bool CanMove
@@ -782,6 +810,25 @@ namespace EverScord.Character
         }
 
         [PunRPC]
+        private void SyncApplyDebuff(int mode, int state, int count)
+        {
+            CancelAction();
+
+            SetState((SetCharState)mode, (CharState)state);
+            StunnedDebuff debuff = DebuffDict[CharState.STUNNED] as StunnedDebuff;
+
+            if (debuff != null)
+                debuff.SetCount(count);
+        }
+
+        [PunRPC]
+        private void SyncRemoveDebuff(int state)
+        {
+            CharState debuffState = (CharState)state;
+            SetState(SetCharState.REMOVE, debuffState);
+        }
+
+        [PunRPC]
         public void SyncCounterSkill(Vector3 mouseRayHitPos, bool toggle, int index)
         {
             MouseRayHitPos = MouseRayHitPos;
@@ -884,12 +931,6 @@ namespace EverScord.Character
                 return;
 
             reviveCircle.SyncExitCircle();
-        }
-        
-        [PunRPC]
-        private void SyncState(int mode, int state)
-        {
-            SetState((SetCharState)mode, (CharState)state);
         }
 
         [PunRPC]

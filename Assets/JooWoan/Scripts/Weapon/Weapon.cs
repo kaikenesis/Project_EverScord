@@ -210,6 +210,9 @@ namespace EverScord.Weapons
             if (shooter.IsUsingSkill && !shooter.CurrentSkillAction.CanAttackWhileSkill)
                 return false;
 
+            if (shooter.IsStunned)
+                return false;
+
             return true;
         }
 

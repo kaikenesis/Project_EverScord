@@ -191,7 +191,6 @@ namespace EverScord
             foreach (var kv in PlayerDict)
             {
                 CharacterControl player = kv.Value;
-                player.SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
                 if (!player.IsDead)
                     continue;

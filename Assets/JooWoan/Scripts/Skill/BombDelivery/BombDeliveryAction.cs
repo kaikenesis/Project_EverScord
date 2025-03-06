@@ -39,7 +39,7 @@ namespace EverScord.Skill
                 SupportAction();
 
             yield return new WaitForSeconds(0.1f);
-            skillCoroutine = null;
+            ExitSkill();
         }
 
         public override void OffensiveAction()
@@ -146,6 +146,11 @@ namespace EverScord.Skill
 
             teleportPos.y = 0f;
             return teleportPos;
+        }
+
+        public override void ExitSkill()
+        {
+            skillCoroutine = null;
         }
     }
 }
