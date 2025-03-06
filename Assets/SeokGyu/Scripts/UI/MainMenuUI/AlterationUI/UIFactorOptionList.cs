@@ -12,7 +12,7 @@ namespace EverScord
         [SerializeField] private Transform containor;
         private List<UIFactorOption> options = new List<UIFactorOption>();
 
-        public static Action<Color, string, float> OnApplyOption = delegate { };
+        public static Action<string, float, Sprite, Color> OnApplyOption = delegate { };
         public static Action<string> OnInitializeOptionName = delegate { };
 
         private void Awake()
@@ -29,6 +29,21 @@ namespace EverScord
             UIFactorOption.OnSelectOption -= HandleSelectOption;
         }
 
+        private void Start()
+        {
+            int count = GameManager.Instance.FactorDatas.Length;
+            for (int i = 0; i < count; i++)
+            {
+                FactorData.OptionData[] optionDatas = GameManager.Instance.FactorDatas[i].OptionDatas;
+                for (int j = 0; j < optionDatas.Length; j++)
+                {
+                    OnInitializeOptionName?.Invoke(optionDatas[j].Name);
+                }
+            }
+
+            gameObject.SetActive(false);
+        }
+
         private void HandleDisplayOptionList(int typeNum)
         {
             gameObject.SetActive(true);
@@ -40,10 +55,11 @@ namespace EverScord
         private void HandleSelectOption(int typeNum, int optionNum, float value)
         {
             FactorData datas = GameManager.Instance.FactorDatas[typeNum];
-            Color optionImgColor = datas.OptionDatas[optionNum].ImgColor;
             string optionName = datas.OptionDatas[optionNum].Name;
+            Sprite sourceImg = datas.OptionDatas[optionNum].SourceImg;
+            Color optionImgColor = datas.OptionDatas[optionNum].ImgColor;
 
-            OnApplyOption?.Invoke(optionImgColor, optionName, value);
+            OnApplyOption?.Invoke(optionName, value, sourceImg, optionImgColor);
 
             gameObject.SetActive(false);
         }
@@ -66,21 +82,6 @@ namespace EverScord
                 UIFactorOption factorOption = obj.GetComponent<UIFactorOption>();
                 options.Add(factorOption);
             }
-        }
-
-        private void Start()
-        {
-            int count = GameManager.Instance.FactorDatas.Length;
-            for (int i = 0; i < count; i++)
-            {
-                FactorData.OptionData[] optionDatas = GameManager.Instance.FactorDatas[i].OptionDatas;
-                for (int j = 0; j < optionDatas.Length; j++)
-                {
-                    OnInitializeOptionName?.Invoke(optionDatas[j].Name);
-                }
-            }
-
-            gameObject.SetActive(false);
         }
 
         private void DisplayOption(int count, FactorData datas, int typeNum)

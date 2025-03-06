@@ -11,9 +11,10 @@ namespace EverScord
         [SerializeField] private Image optionImg;
         private int curTypeNum;
         private int slotNum;
-        private Color newOptionColor;
         private string newOptionName;
         private float newOptionValue;
+        private Sprite newOptionSprite;
+        private Color newOptionColor;
 
         public bool bLock { get; private set; }
         public bool bConfirmed { get; private set; }
@@ -68,6 +69,7 @@ namespace EverScord
 
             int randomOptionNum = UnityEngine.Random.Range(0, datas.OptionDatas.Length);
 
+            newOptionSprite = datas.OptionDatas[randomOptionNum].SourceImg;
             newOptionColor = datas.OptionDatas[randomOptionNum].ImgColor;
             newOptionName = datas.OptionDatas[randomOptionNum].Name;
 
@@ -77,7 +79,7 @@ namespace EverScord
             OnRequestApplyOption?.Invoke(newOptionColor, newOptionName, newOptionValue, curOptionName, curOptionValue);
         }
 
-        private void HandleApplyOption(int typeNum, int slotNum, Color newColor, string newName, float newValue)
+        private void HandleApplyOption(int typeNum, int slotNum, string newName, float newValue, Sprite newSourceImg, Color newColor)
         {
             if (bLock == true || curTypeNum != typeNum || this.slotNum != slotNum) return;
 
@@ -86,6 +88,7 @@ namespace EverScord
                 OnRequestUpdateInfo?.Invoke(newOptionName, newOptionValue, curOptionName, curOptionValue);
 
                 optionImg.enabled = true;
+                optionImg.sprite = newOptionSprite;
                 optionImg.color = newOptionColor;
                 curOptionName = newOptionName;
                 curOptionValue = newOptionValue;
@@ -95,6 +98,7 @@ namespace EverScord
                 OnRequestUpdateInfo?.Invoke(newName, newValue, curOptionName, curOptionValue);
 
                 optionImg.enabled = true;
+                optionImg.sprite = newSourceImg;
                 optionImg.color = newColor;
                 curOptionName = newName;
                 curOptionValue = newValue;
@@ -104,11 +108,30 @@ namespace EverScord
 
         public void Initialize(int typeNum, bool bConfirmed, int slotIndex)
         {
+            UIFactorSlot slotData = GameManager.Instance.PlayerAlterationData[typeNum].slots[slotIndex];
             slotNum = slotIndex;
             this.bConfirmed = bConfirmed;
-            bLock = !bConfirmed;
-            lockImg.enabled = !bConfirmed;
+            lockImg.sprite = GameManager.Instance.FactorDatas[typeNum].LockedSourceImg;
             curTypeNum = typeNum;
+
+            if (slotData != null)
+            {
+                bLock = slotData.bLock;
+                lockImg.enabled = slotData.bLock;
+                if(bLock == false)
+                {
+                    curOptionName = slotData.curOptionName;
+                    curOptionValue = slotData.curOptionValue;
+                    optionImg.enabled = slotData.optionImg.enabled;
+                    optionImg.sprite = slotData.optionImg.sprite;
+                    optionImg.color = slotData.newOptionColor;
+                }
+            }
+            else
+            {
+                bLock = !bConfirmed;
+                lockImg.enabled = !bConfirmed;
+            }
 
             switch (curTypeNum)
             {

@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71d9715c0bd60e42845aae475323200, type: 3}
   m_Name: BetaData
   m_EditorClassIdentifier: 
+  type: 1
+  slotCount: 5
+  confirmedCount: 2
+  lockedSourceImg: {fileID: 21300000, guid: 063e37523739fc54a81dbc610b77fc5c, type: 3}
   optionDatas:
   - _name: "\uCCB4\uB825"
     values:
@@ -19,25 +23,25 @@ MonoBehaviour:
     - 200
     - 300
     sourceImg: {fileID: 21300000, guid: 9a81829210672544c93c37b120165000, type: 3}
-    imgColor: {r: 0, g: 0.3, b: 0, a: 1}
+    imgColor: {r: 1, g: 1, b: 1, a: 1}
   - _name: "\uBC29\uC5B4\uB825"
     values:
     - 7
     - 8
     - 9
     sourceImg: {fileID: 21300000, guid: 7cc41f11193a0bf4f8f8577f1f6b21a2, type: 3}
-    imgColor: {r: 0, g: 1, b: 0, a: 1}
+    imgColor: {r: 1, g: 1, b: 1, a: 1}
   - _name: "\uC774\uB3D9\uC18D\uB3C4"
     values:
     - 11
     - 22
     - 33
     sourceImg: {fileID: 21300000, guid: 7cc7d86fba22b564fbb72e9d75628180, type: 3}
-    imgColor: {r: 0, g: 0, b: 0.5, a: 1}
+    imgColor: {r: 1, g: 1, b: 1, a: 1}
   - _name: "\uC7AC\uC7A5\uC804 \uC18D\uB3C4"
     values:
     - 1
     - 1.5
     - 2
     sourceImg: {fileID: 21300000, guid: a5ab81187480f8349920de3025c59a36, type: 3}
-    imgColor: {r: 1, g: 0, b: 1, a: 1}
+    imgColor: {r: 1, g: 1, b: 1, a: 1}

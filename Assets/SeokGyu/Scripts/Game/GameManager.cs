@@ -30,6 +30,7 @@ namespace EverScord
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
         public static int CurrentLevelIndex                     { get; private set; }
+        public AlterationData[] PlayerAlterationData              { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
@@ -124,6 +125,11 @@ namespace EverScord
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
+            PlayerAlterationData = new AlterationData[factorDatas.Length];
+            for(int i = 0; i< factorDatas.Length; i++)
+            {
+                PlayerAlterationData[i].slots = new List<UIFactorSlot>();
+            }
 
             View.ViewID = 999;
             CurrentLevelIndex = -1;

@@ -6,7 +6,38 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Datas/FactorData", fileName = "newFactorData")]
     public class FactorData : ScriptableObject
     {
+        public enum EType
+        {
+            ALPHA,
+            BETA
+        }
+
+        [SerializeField] private EType type;
+        [SerializeField] private int slotCount;
+        [SerializeField] private int confirmedCount;
+        [SerializeField] private Sprite lockedSourceImg;
         [SerializeField] private OptionData[] optionDatas;
+
+        public EType Type
+        {
+            get { return type; }
+        }
+
+        public int SlotCount
+        {
+            get { return slotCount; }
+        }
+
+        public int ConfirmedCount
+        {
+            get { return confirmedCount; }
+        }
+
+        public Sprite LockedSourceImg
+        {
+            get { return lockedSourceImg; }
+            private set { lockedSourceImg = value; }
+        }
 
         public OptionData[] OptionDatas
         {
@@ -32,6 +63,12 @@ namespace EverScord
             {
                 get { return values; }
                 private set { values = value; }
+            }
+
+            public Sprite SourceImg
+            {
+                get { return sourceImg; }
+                private set { sourceImg = value; }
             }
 
             public Color ImgColor

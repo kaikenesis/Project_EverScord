@@ -5,7 +5,6 @@ namespace EverScord
 {
     public class UIFactor : MonoBehaviour
     {
-        [SerializeField] private FactorPanel[] panels;
         [SerializeField] private Transform containor;
         [SerializeField] private GameObject factorPanel;
         [SerializeField] private GameObject optionPanel;
@@ -14,8 +13,8 @@ namespace EverScord
 
         public static Action<int, int> OnRequestUnlock = delegate { };
         public static Action<int, int> OnRequestReroll = delegate { };
-        public static Action<int, int, Color, string, float> OnApplyOption = delegate { };
-        public static Action<int, int, Color, string, float> OnApplyConfirmedOption = delegate { };
+        public static Action<int, int, string, float, Sprite, Color> OnApplyOption = delegate { };
+        public static Action<int, int, string, float, Sprite, Color> OnApplyConfirmedOption = delegate { };
 
         private void Awake()
         {
@@ -50,12 +49,12 @@ namespace EverScord
 
         private void HandleApplyOption()
         {
-            OnApplyOption?.Invoke(selectType, selectIndex, new Color(), "", 0.0f);
+            OnApplyOption?.Invoke(selectType, selectIndex, "", 0.0f, null, new Color());
         }
 
-        private void HandleApplyOption(Color newColor, string newName, float newValue)
+        private void HandleApplyOption(string newName, float newValue, Sprite sourceImg, Color newColor)
         {
-            OnApplyOption.Invoke(selectType, selectIndex, newColor, newName, newValue);
+            OnApplyOption?.Invoke(selectType, selectIndex, newName, newValue, sourceImg, newColor);
         }
 
         private void HandleClickedSlot(int type, int slotNum)
@@ -67,43 +66,12 @@ namespace EverScord
 
         private void Init()
         {
-            for (int i = 0; i < panels.Length; i++)
+            int count = GameManager.Instance.FactorDatas.Length;
+            for (int i = 0; i < count; i++)
             {
+                FactorData data = GameManager.Instance.FactorDatas[i];
                 UIFactorPanel panel = Instantiate(factorPanel, containor).GetComponent<UIFactorPanel>();
-                panel.Initialize((int)panels[i].Type, panels[i].SlotCount, panels[i].ConfirmedCount);
-            }
-        }
-
-        [System.Serializable]
-        public class FactorPanel
-        {
-            public enum EType
-            {
-                ALPHA,
-                BETA,
-                MAX
-            }
-
-            [SerializeField] private EType type;
-            [SerializeField] private int slotCount;
-            [SerializeField] private int confirmedCount;
-
-            public EType Type
-            {
-                get { return type; }
-                private set { type = value; }
-            }
-
-            public int SlotCount
-            {
-                get { return slotCount; }
-                private set {  slotCount = value; }
-            }
-
-            public int ConfirmedCount
-            {
-                get { return confirmedCount; }
-                private set { confirmedCount = value; }
+                panel.Initialize((int)data.Type, data.SlotCount, data.ConfirmedCount);
             }
         }
     }
