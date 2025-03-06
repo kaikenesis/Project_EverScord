@@ -22,6 +22,7 @@ namespace EverScord
         private Coroutine countdownCoroutine;
         private Action onCountdownFinished;
         private GameObject teleportEffect;
+        private UIMarker uiMarker;
 
         private int currentCountdownNum;
         private bool isPortalOpened = false;
@@ -33,15 +34,28 @@ namespace EverScord
 
         private float colliderWorldRadius;
 
+        private void Awake()
+        {
+            uiMarker = gameObject.AddComponent<UIMarker>();
+            uiMarker.Initialize(PointMarkData.EType.Portal);
+        }
+
         void Start()
         {
             teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
             GameManager.Instance.InitControl(this);
         }
 
+        private void OnEnable()
+        {
+            uiMarker.SetActivate(true);
+            uiMarker.UpdatePosition(transform.position);
+        }
+
         void OnDisable()
         {
             ResetPortal();
+            uiMarker.SetActivate(false);
         }
 
         void OnTriggerEnter(Collider other)

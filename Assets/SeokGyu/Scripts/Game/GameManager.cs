@@ -222,18 +222,18 @@ namespace EverScord
         {
             if (debugMode == true)
             {
-                if (GUI.Button(new Rect(180, 0, 120, 60), "Show Me The Money"))
+                if (GUI.Button(new Rect(200, 0, 120, 60), "Show Me The Money"))
                 {
                     playerData.IncreaseMoney(10000);
                 }
 
-                if (GUI.Button(new Rect(180, 70, 120, 60), "Play"))
+                if (GUI.Button(new Rect(200, 70, 120, 60), "Play"))
                 {
                     //PhotonNetwork.LoadLevel("PhotonTestPlay");
                     LevelControl.LoadGameLevel();
                 }
 
-                if (GUI.Button(new Rect(180, 140, 120, 60), "Go To LobbyScene"))
+                if (GUI.Button(new Rect(200, 140, 120, 60), "Go To LobbyScene"))
                 {
                     if(PhotonNetwork.IsMasterClient)
                     {

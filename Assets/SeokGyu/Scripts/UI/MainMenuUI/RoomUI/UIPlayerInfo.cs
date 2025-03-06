@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace EverScord
             UIChangeName.OnChangeName += HandleChangeName;
             UIFactorSlot.OnDecreaseMoney += HandleUpdateMoney;
 
+            Initialize();
             gameObject.SetActive(false);
         }
 
@@ -24,6 +26,13 @@ namespace EverScord
             PhotonConnector.OnLogin -= HandleLogin;
             UIChangeName.OnChangeName -= HandleChangeName;
             UIFactorSlot.OnDecreaseMoney -= HandleUpdateMoney;
+        }
+
+        private void Initialize()
+        {
+            if(PhotonNetwork.IsConnected)
+                UpdateName(PhotonNetwork.NickName);
+            UpdateMoney(GameManager.Instance.PlayerData.money);
         }
 
         #region Handle Methods
