@@ -88,6 +88,13 @@ public class MapPattern1 : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        hitPlayers.Remove(other.gameObject);
+    }
+
     [PunRPC]
     private void SyncMapLaserActice(bool tf)
     {

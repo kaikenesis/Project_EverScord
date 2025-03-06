@@ -13,6 +13,7 @@ public class MapPattern3_Attack : MonoBehaviour
     private void Awake()
     {
         sphereCollider = GetComponent<SphereCollider>();
+        sphereCollider.isTrigger = true;
     }
 
     private void OnTriggerStay(Collider other)
@@ -35,5 +36,12 @@ public class MapPattern3_Attack : MonoBehaviour
             CharacterControl controller = other.GetComponent<CharacterControl>();
             controller.DecreaseHP(attackDamage);
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(!PhotonNetwork.IsMasterClient) return;
+
+        hitPlayers.Remove(other.gameObject);
     }
 }

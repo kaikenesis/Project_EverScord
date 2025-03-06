@@ -6,6 +6,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BossRPC : MonoBehaviour, IEnemy
 {
@@ -27,6 +28,8 @@ public class BossRPC : MonoBehaviour, IEnemy
     private Animator animator;
     private BoxCollider hitBox;
     private UIMarker uiMarker;
+    public NavMeshAgent BossNavMeshAgent { get; private set; }
+    private BossDebuffSystem bossDebuffSystem;
 
     private BlinkEffect blinkEffect;
 
@@ -37,7 +40,8 @@ public class BossRPC : MonoBehaviour, IEnemy
         animator = GetComponent<Animator>();
         uiMarker = gameObject.AddComponent<UIMarker>();
         uiMarker.Initialize(PointMarkData.EType.BossMonster);
-
+        BossNavMeshAgent = GetComponent<NavMeshAgent>();
+        bossDebuffSystem = gameObject.AddComponent<BossDebuffSystem>();
         blinkEffect = BlinkEffect.Create(this);
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
         {
@@ -59,6 +63,11 @@ public class BossRPC : MonoBehaviour, IEnemy
     private void Update()
     {
         uiMarker.UpdatePosition(transform.position);
+    }
+
+    public void SetDebuff(BossDebuff debuffState, float time, float value)
+    {
+        bossDebuffSystem.SetDebuff(this, debuffState, time, value);
     }
 
     private void SetProjectors()
@@ -294,7 +303,6 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float hp)
     {
-        Debug.Log("Boss Hit");
         photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
     }
     

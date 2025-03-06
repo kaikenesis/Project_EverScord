@@ -12,8 +12,8 @@ public class MonsterSpawner : MonoBehaviour
 
     [SerializeField] private AssetReferenceGameObject monster;
     [SerializeField] private float spawnTimer = 0f;
+    [SerializeField] private float startDelay = 0f;
     private float curTime = 0;
-    private int spawnCount = 0;
     private int allocateCompleteCount = 1;
     private bool enableMarker = true;
 
@@ -48,7 +48,9 @@ public class MonsterSpawner : MonoBehaviour
     {
         if(!PhotonNetwork.IsMasterClient)
             yield break;
-        Debug.Log("[MasterCient] 몬스터 스폰 함수 실행");
+
+        yield return new WaitForSeconds(startDelay);
+
         while(true)
         {
             curTime += Time.deltaTime;
@@ -56,7 +58,6 @@ public class MonsterSpawner : MonoBehaviour
 
             if (curTime > spawnTimer)
             {
-                Debug.Log("스폰");
                 mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
 
                 SpawnSmoke();
@@ -80,12 +81,10 @@ public class MonsterSpawner : MonoBehaviour
 
                 if (allocateCompleteCount == PhotonNetwork.PlayerList.Length)
                 {
-                    Debug.Log("[MasterClient] 모든 플레이어가 스폰 완료! FSM 시작");
                     allocateCompleteCount = 1;
                     nController.StartFSM();
                 }
 
-                spawnCount++;
                 curTime = 0f;
 
                 photonView.RPC(nameof(SyncSpawnMarker), RpcTarget.All, false);
@@ -93,7 +92,7 @@ public class MonsterSpawner : MonoBehaviour
             else if (enableMarker && timeUntilSpawn < SPAWN_ALERT_TIME)
                 photonView.RPC(nameof(SyncSpawnMarker), RpcTarget.All, true);
 
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
     }
 
@@ -135,8 +134,6 @@ public class MonsterSpawner : MonoBehaviour
 
         SpawnSmoke();
 
-        Debug.Log("[client] 몬스터 viewID = " + view.ViewID);
-        //PhotonNetwork.RegisterPhotonView(view);
         photonView.RPC("SpawnComplete", RpcTarget.MasterClient);
     }
 
@@ -150,7 +147,6 @@ public class MonsterSpawner : MonoBehaviour
 
         if (allocateCompleteCount == PhotonNetwork.PlayerList.Length)
         {
-            Debug.Log("[MasterClient] 모든 플레이어가 스폰 완료! FSM 시작");
             allocateCompleteCount = 1;
             NController nController = mo.GetComponent<NController>();
             nController.StartFSM();
