@@ -49,7 +49,6 @@ public class BossSpawner : MonoBehaviour
             {
                 Debug.Log("½ºÆù");
 
-                // mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
                 mo.SetActive(true);
 
                 PhotonView view = mo.GetComponent<PhotonView>();
@@ -76,7 +75,6 @@ public class BossSpawner : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
             return;
 
-        // mo = ResourceManager.Instance.GetFromPool(assetName, transform.position, Quaternion.identity);
         mo.SetActive(true);
 
         PhotonView view = mo.GetComponent<PhotonView>();
