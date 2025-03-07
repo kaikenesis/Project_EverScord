@@ -31,7 +31,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     private UIMarker uiMarker;
     public NavMeshAgent BossNavMeshAgent { get; private set; }
     private BossDebuffSystem bossDebuffSystem;
-
+    private BossDebuffUI bossDebuffUI;
     private BlinkEffect blinkEffect;
 
     private void Awake()
@@ -43,6 +43,11 @@ public class BossRPC : MonoBehaviour, IEnemy
         uiMarker.Initialize(PointMarkData.EType.BossMonster);
         BossNavMeshAgent = GetComponent<NavMeshAgent>();
         bossDebuffSystem = gameObject.AddComponent<BossDebuffSystem>();
+        GameObject ui = GameObject.FindGameObjectWithTag("BossDebuffUI");
+        bossDebuffUI = ui.GetComponent<BossDebuffUI>();
+        bossDebuffSystem.SubcribeOnBossDebuffStart(bossDebuffUI.DebuffEnter);
+        bossDebuffSystem.SubcribeOnBossDebuffEnd(bossDebuffUI.DebuffEnd);
+
         blinkEffect = BlinkEffect.Create(this);
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
         {
@@ -306,11 +311,20 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
     }
-    
+
     [PunRPC]
     protected void SyncBossMonsterHP(float hp)
     {
         bossData.ReduceHp(hp);
+    }
+    public void PhaseUp()
+    {
+        photonView.RPC(nameof(SyncPhaseUp), RpcTarget.All);
+    }
+    [PunRPC]
+    private void SyncPhaseUp()
+    {
+        bossData.PhaseUp();
     }
 
     public void LaserEnable(float enableTime)
@@ -433,7 +447,8 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private void SyncBossDeath()
     {
-        ResourceManager.Instance.ReturnToPool(gameObject, "Boss");
+        bossDebuffSystem.ClearActions();
+        Destroy(gameObject);
     }
 
     public void TestDamage(GameObject sender, float value)

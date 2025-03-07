@@ -13,6 +13,7 @@ public class BossPattern09_Imp : ActionNodeImplement
         List<CharacterControl> controls = new List<CharacterControl>();
         foreach(var player in GameManager.Instance.PlayerDict.Values)
         {
+            if(player.IsDead) continue;
             controls.Add(player);
         }
         int randInt = Random.Range(0, controls.Count);
