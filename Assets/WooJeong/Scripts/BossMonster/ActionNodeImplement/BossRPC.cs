@@ -317,14 +317,16 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         bossData.ReduceHp(hp);
     }
+
     public void PhaseUp()
     {
         photonView.RPC(nameof(SyncPhaseUp), RpcTarget.All);
     }
+
     [PunRPC]
     private void SyncPhaseUp()
     {
-        bossData.PhaseUp();
+        bossData.PhaseUp();        
     }
 
     public void LaserEnable(float enableTime)
