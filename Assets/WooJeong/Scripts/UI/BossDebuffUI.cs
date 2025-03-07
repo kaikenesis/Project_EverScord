@@ -17,7 +17,7 @@ public class BossDebuffUI : MonoBehaviour
         poisonImage = poisonUI.GetComponent<Image>();
     }
 
-    private void DebuffEnter(BossDebuff bossDebuff)
+    public void DebuffEnter(BossDebuff bossDebuff)
     {
         switch (bossDebuff)
         {
@@ -32,7 +32,7 @@ public class BossDebuffUI : MonoBehaviour
         }
     }
 
-    private void DebuffEnd(BossDebuff bossDebuff)
+    public void DebuffEnd(BossDebuff bossDebuff)
     {
         switch (bossDebuff)
         {

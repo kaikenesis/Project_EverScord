@@ -10,7 +10,7 @@ public class BossDeath_Imp : ActionNodeImplement
         {
             bossRPC.PlayAnimation("Roar");
             yield return new WaitForSeconds(bossRPC.clipDict["Roar"]);
-            bossData.PhaseUp();
+            bossRPC.PhaseUp();
             isEnd = true;
             action = null;
             yield break;

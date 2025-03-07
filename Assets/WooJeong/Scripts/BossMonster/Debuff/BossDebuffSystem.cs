@@ -20,6 +20,16 @@ public class BossDebuffSystem : MonoBehaviour
         OnBossDebuffEnd += action;
     }
 
+    public void ClearActions()
+    {
+        foreach(BossDebuff d in Enum.GetValues(typeof(BossDebuff)))
+        {
+            OnBossDebuffEnd?.Invoke(d);
+        }
+        OnBossDebuffStart = null;
+        OnBossDebuffEnd = null;
+    }
+
     private void Awake()
     {
         Initialize();

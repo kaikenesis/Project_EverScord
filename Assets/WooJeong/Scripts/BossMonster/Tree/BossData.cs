@@ -8,6 +8,7 @@ public class BossData : ScriptableObject
     [field: SerializeField] public float HP { get; protected set; }
     [field: SerializeField] public int Phase { get; protected set; }
     [field: SerializeField] public float MaxHP { get; protected set; }
+    [field: SerializeField] public float MaxHP_Phase2 { get; protected set; }
     [field: SerializeField] public float Speed { get; protected set; }
     [field: SerializeField] public float StopDistance { get; protected set; }
     [field: SerializeField] public float AttackRange { get; protected set; }
@@ -30,7 +31,7 @@ public class BossData : ScriptableObject
     {
         Debug.Log("2페이즈 진입");
         Phase++;
-        HP = 500;
+        HP = MaxHP_Phase2;
     }
 
     public bool IsUnderHP(float hp)
