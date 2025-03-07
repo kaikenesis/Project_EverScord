@@ -915,6 +915,12 @@ namespace EverScord.Character
         }
 
         [PunRPC]
+        public void SyncState(int state)
+        {
+            State = (CharState)state;
+        }
+
+        [PunRPC]
         private void SyncHitEffects(bool isIncreasing, bool isInvincible)
         {
             if (isIncreasing)

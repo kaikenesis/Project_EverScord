@@ -19068,6 +19068,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6833233089743677241, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21471,10 +21475,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621b535992660b44c97b4a0f851c1b14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  progressUI: {fileID: 1034619282614934497}
   portalControl: {fileID: 530787490}
   portal: {fileID: 530787486}
   groundCollider: {fileID: 2026387969}
   countdown: 5
+  bossHpBarColor: {r: 0.83137256, g: 0.2, b: 0.29803923, a: 1}
   levelList:
   - Level: {fileID: 146849960}
     LoopBgm: {fileID: 0}
@@ -28591,6 +28597,10 @@ PrefabInstance:
       propertyPath: minimapBackgroundUI
       value: 
       objectReference: {fileID: 5957988072393253205, guid: da5047a01cf129f4989975f2a3fdecdb, type: 3}
+    - target: {fileID: 4075133746324520991, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
+      propertyPath: image
+      value: 
+      objectReference: {fileID: 1034619282614934496}
     - target: {fileID: 5064923224959894883, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -28673,15 +28683,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.488
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.488
       objectReference: {fileID: 0}
     - target: {fileID: 5365646518902323504, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.x
@@ -28716,6 +28726,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
+--- !u!114 &1034619282614934496 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 656931847264496784, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
+  m_PrefabInstance: {fileID: 1034619282614934495}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1034619282614934497 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4075133746324520991, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
+  m_PrefabInstance: {fileID: 1034619282614934495}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a7a3cff2faad649a4be3221e76ad7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &4087430365913434671 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6858877037431276954, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}

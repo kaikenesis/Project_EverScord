@@ -9,8 +9,9 @@ namespace EverScord
         [Range(0.0f,1.0f)]
         [SerializeField] private float value;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Initialize();
 
             CharacterControl.OnHealthUpdated += HandleHealthUpdated;

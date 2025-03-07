@@ -8,6 +8,7 @@ using EverScord.Armor;
 using EverScord.Character;
 
 using Random = UnityEngine.Random;
+using Photon.Pun;
 
 namespace EverScord.Augment
 {
@@ -36,7 +37,7 @@ namespace EverScord.Augment
         private List<string> shoesAugmentTags = new();
         private AugmentData augmentData = new();
         private CharacterControl player;
-        public Action<bool> OnAugmented;
+        public Action OnAugmented;
 
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
@@ -73,13 +74,15 @@ namespace EverScord.Augment
         {
             uiHub.SetActive(true);
             augmentTimer.gameObject.SetActive(true);
-            player.PlayerUIControl.SetCursor(CursorType.AUGMENT);
 
-            foreach (var player in GameManager.Instance.PlayerDict.Values)
-                player.SetState(SetCharState.ADD, CharState.SELECTING_AUGMENT);
+            player.PlayerUIControl.SetCursor(CursorType.AUGMENT, 0, 0);
+            player.SetState(SetCharState.ADD, CharState.SELECTING_AUGMENT);
 
-            OnAugmented -= GameManager.Instance.PortalController.SetPortalCollider;
-            OnAugmented += GameManager.Instance.PortalController.SetPortalCollider;
+            if (PhotonNetwork.IsConnected)
+                player.CharacterPhotonView.RPC(nameof(player.SyncState), RpcTarget.Others, player.State);
+
+            OnAugmented -= GameManager.Instance.PortalController.TryEnablePortal;
+            OnAugmented += GameManager.Instance.PortalController.TryEnablePortal;
 
             if (isAugmentSelectMode)
             {
@@ -132,11 +135,13 @@ namespace EverScord.Augment
 
             player.PlayerUIControl.SetCursor(CursorType.BATTLE);
 
-            foreach (var player in GameManager.Instance.PlayerDict.Values)
-                player.SetState(SetCharState.REMOVE, CharState.SELECTING_AUGMENT);
+            player.SetState(SetCharState.REMOVE, CharState.SELECTING_AUGMENT);
 
-            OnAugmented?.Invoke(true);
-            OnAugmented -= GameManager.Instance.PortalController.SetPortalCollider;
+            if (PhotonNetwork.IsConnected)
+                player.CharacterPhotonView.RPC(nameof(player.SyncState), RpcTarget.Others, player.State);
+
+            OnAugmented?.Invoke();
+            OnAugmented -= GameManager.Instance.PortalController.TryEnablePortal;
         }
 
         private void CreateAugmentSelectTags()

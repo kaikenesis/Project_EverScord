@@ -214,9 +214,21 @@ namespace EverScord
         }
 
         [PunRPC]
-        public void PrepareNextLevel()
+        public void SyncPrepareNextLevel()
         {
             StartCoroutine(LevelController.PrepareNextLevel());
+        }
+
+        [PunRPC]
+        public void SyncProgress(float changeAmount)
+        {
+            LevelController.SetCurrentProgress(changeAmount);
+        }
+
+        [PunRPC]
+        public void SyncEnablePortal()
+        {
+            PortalController.SetPortalCollider(true);
         }
 
         private void OnGUI()

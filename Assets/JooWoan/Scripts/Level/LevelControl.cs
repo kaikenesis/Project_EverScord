@@ -10,7 +10,7 @@ namespace EverScord
 {
     public class LevelControl : MonoBehaviour
     {
-        private const float DEFAULT_MAX_PROGRESS = 100f;
+        private const float MAX_PROGRESS = 100f;
         private const float LOADSCREEN_DELAY = 3f;
         private const float STAGE_TRANSITION_DELAY = 2f;
         private const float STAGE_TRANSITION_FADE_DELAY = 3f;
@@ -19,6 +19,7 @@ namespace EverScord
         public static Action<int, bool> OnLevelUpdated = delegate { };
         public static Action OnLevelClear = delegate { };
         public static bool IsLoadingLevel { get; private set; }
+        public static bool IsBossMode { get; private set; }
         public static bool IsLevelCompleted => progress >= maxProgress;
         public float CurrentProgress => progress / Mathf.Max(0.001f, maxProgress);
         public int MaxLevelIndex => levelList.Count - 1;
@@ -27,9 +28,11 @@ namespace EverScord
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
         private static WaitForSeconds waitPointOne = new WaitForSeconds(0.1f);
 
+        [SerializeField] private UIProgress progressUI;
         [SerializeField] private PortalControl portalControl;
         [SerializeField] private GameObject portal, groundCollider;
         [SerializeField] private float countdown;
+        [SerializeField] private Color bossHpBarColor;
         [SerializeField] private List<LevelInfo> levelList;
 
         private IDictionary<MonsterType, float> increaseDict = new Dictionary<MonsterType, float>
@@ -52,7 +55,8 @@ namespace EverScord
             portalControl.Init(countdown, NotifyTeleport);
             portalControl.ResetPortal();
 
-            SetMaxProgress(DEFAULT_MAX_PROGRESS);
+            IsBossMode = false;
+            SetMaxProgress(MAX_PROGRESS);
 
             OnProgressUpdated -= portalControl.TryOpenPortal;
             OnProgressUpdated += portalControl.TryOpenPortal;
@@ -62,7 +66,7 @@ namespace EverScord
         {
             if (Input.GetKeyDown(KeyCode.F2))
             {
-                Debug_IncreaseProgress(maxProgress);
+                SyncSetCurrentProgress(maxProgress);
             }
         }
 
@@ -76,22 +80,45 @@ namespace EverScord
             maxProgress = amount;
         }
 
-        public void IncreaseProgress(MonsterType monsterType)
+        public void SetCurrentProgress(float changeAmount)
         {
-            progress = Mathf.Min(progress + increaseDict[monsterType], maxProgress);
+            progress = Mathf.Clamp(progress + changeAmount, 0, maxProgress);
             OnProgressUpdated?.Invoke(CurrentProgress);
         }
 
-        public void Debug_IncreaseProgress(float amount)
+        private void SyncSetCurrentProgress(float changeAmount)
         {
-            progress = Mathf.Clamp(amount, 0f, 100f);
-            OnProgressUpdated?.Invoke(CurrentProgress);
+            if (PhotonNetwork.IsConnected)
+                GameManager.View.RPC(nameof(GameManager.Instance.SyncProgress), RpcTarget.All, changeAmount);
+        }
+
+        public void IncreaseMonsterProgress(MonsterType monsterType)
+        {
+            SetCurrentProgress(increaseDict[monsterType]);
+        }
+
+        public void IncreaseBossProgress(BossRPC boss)
+        {
+            float bossMaxHP = boss.BossMonsterData.MaxHP;
+            float bossCurrentHP = boss.BossMonsterData.HP;
+            float amount = (bossMaxHP - bossCurrentHP) / bossMaxHP;
+            SyncSetCurrentProgress(-amount);
         }
 
         public void ResetProgress()
         {
             progress = 0f;
             OnProgressUpdated?.Invoke(0);
+            IsBossMode = false;
+            progressUI.ChangeFillColor(null);
+        }
+
+        public void SetBossMode(bool state)
+        {
+            IsBossMode = state;
+
+            if (IsBossMode)
+                progressUI.ChangeFillColor(bossHpBarColor);
         }
 
         private void NotifyTeleport()
@@ -99,7 +126,7 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
 
-            GameManager.View.RPC(nameof(GameManager.Instance.PrepareNextLevel), RpcTarget.All);
+            GameManager.View.RPC(nameof(GameManager.Instance.SyncPrepareNextLevel), RpcTarget.All);
         }
         
         public IEnumerator PrepareNextLevel()

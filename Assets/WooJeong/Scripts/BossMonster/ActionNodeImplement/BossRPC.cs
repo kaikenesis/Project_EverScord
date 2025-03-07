@@ -10,6 +10,7 @@ using UnityEngine;
 public class BossRPC : MonoBehaviour, IEnemy
 {
     public Dictionary<string, float> clipDict = new();
+    public BossData BossMonsterData => bossData;
     
     [SerializeField] private BossData bossData;
     [SerializeField] private GameObject laserPoint;
