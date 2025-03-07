@@ -73,8 +73,7 @@ public class ResourceManager : Singleton<ResourceManager>
     public async Task CreatePool(string addressableKey, int poolSize = DEFAULT_POOL_SIZE)
     {
         if (poolDictionary.ContainsKey(addressableKey))
-        {
-            Debug.LogWarning($"Pool for {addressableKey} already exists!");
+        {            
             return;
         }
 
