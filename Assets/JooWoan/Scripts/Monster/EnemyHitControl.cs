@@ -5,8 +5,6 @@ namespace EverScord.Monster
 {
     public class EnemyHitControl : MonoBehaviour
     {
-        private const float BIG_DAMAGE = 15f;
-
         void Awake()
         {
             GameManager.Instance.InitControl(this);
@@ -18,6 +16,9 @@ namespace EverScord.Monster
                 return;
 
             monster?.DecreaseHP(hp);
+
+            if (monster is BossRPC)
+                GameManager.Instance.LevelController.IncreaseBossProgress((BossRPC)monster);
 
             BlinkEffect blinkEffect = monster.GetBlinkEffect();
 

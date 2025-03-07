@@ -253,7 +253,13 @@ public abstract class NController : MonoBehaviour, IEnemy
     }
 
     [PunRPC]
-    public void SyncGlitterEffect()
+    public void SyncDeathAftermath()
+    {
+        DeathGlitter();
+        GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
+    }
+
+    private void DeathGlitter()
     {
         PooledParticle glitter = ResourceManager.Instance.GetFromPool(AssetReferenceManager.DeathGlitter_ID) as PooledParticle;
         glitter.Init(AssetReferenceManager.DeathGlitter_ID);
@@ -293,7 +299,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         healthBarObject.SetActive(false);
         isDead = false;
-        GameManager.Instance.LevelController.IncreaseProgress(monsterType);
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 

@@ -64,7 +64,7 @@ namespace EverScord.UI
             SetGrayscaleScreen(false);
         }
 
-        public void SetCursor(CursorType type)
+        public void SetCursor(CursorType type, float xPos = 0.5f, float yPos = 0.5f)
         {
             string iconID = AssetReferenceManager.CrosshairIcon_ID;
 
@@ -76,7 +76,7 @@ namespace EverScord.UI
             }
 
             cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(iconID);
-            Vector2 cursorCenter = new Vector2(cursorIcon.width * 0.5f, cursorIcon.height * 0.5f);
+            Vector2 cursorCenter = new Vector2(cursorIcon.width * xPos, cursorIcon.height * yPos);
             Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
         }
 

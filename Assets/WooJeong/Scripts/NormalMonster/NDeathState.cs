@@ -27,7 +27,7 @@ public abstract class NDeathState : MonoBehaviour, IState
 
     private IEnumerator Death()
     {
-        monsterController.PhotonView.RPC(nameof(monsterController.SyncGlitterEffect), RpcTarget.All);
+        monsterController.PhotonView.RPC(nameof(monsterController.SyncDeathAftermath), RpcTarget.All);
         yield return new WaitForSeconds(monsterController.clipDict["Dying"]);
 
         monsterController.PhotonView.RPC(nameof(monsterController.SyncDissolve), RpcTarget.All, dissolveDuration);
