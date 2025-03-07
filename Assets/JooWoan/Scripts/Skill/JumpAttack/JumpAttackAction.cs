@@ -238,6 +238,9 @@ namespace EverScord.Skill
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
+
+                    if (enemy is BossRPC boss)
+                        boss.SetDebuff(BossDebuff.SLOW, Skill.SlowDuration, Skill.SlowedAmount);
                 }
                 else
                 {
