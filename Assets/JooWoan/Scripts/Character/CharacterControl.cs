@@ -10,6 +10,7 @@ using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
 using EverScord.Armor;
+using EverScord.Augment;
 
 namespace EverScord.Character
 {
@@ -918,6 +919,14 @@ namespace EverScord.Character
         public void SyncState(int state)
         {
             State = (CharState)state;
+        }
+
+
+        [PunRPC]
+        public void SyncOnAugmentSelect(int state)
+        {
+            State = (CharState)state;
+            AugmentPresenter.IncreaseSelectedPeople();
         }
 
         [PunRPC]

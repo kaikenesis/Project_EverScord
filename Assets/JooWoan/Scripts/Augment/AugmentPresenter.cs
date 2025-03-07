@@ -24,6 +24,8 @@ namespace EverScord.Augment
         private const string DOTWEEN_UI_APPEAR  = "AugmentCard_Appear";
         private const string DOTWEEN_UI_DISAPPEAR = "AugmentCard_Disappear";
 
+        private static int selectedPeople = 0;
+
         [SerializeField] private GameObject uiHub;
         [SerializeField] private SelectUI helmetSelectUI, vestSelectUI, shoesSelectUI;
         [SerializeField] private UpgradeUI helmetUpgradeUI, vestUpgradeUI, shoesUpgradeUI;
@@ -37,7 +39,6 @@ namespace EverScord.Augment
         private List<string> shoesAugmentTags = new();
         private AugmentData augmentData = new();
         private CharacterControl player;
-        public Action OnAugmented;
 
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
@@ -72,6 +73,8 @@ namespace EverScord.Augment
 
         public void ShowAugmentCards()
         {
+            selectedPeople = 0;
+
             uiHub.SetActive(true);
             augmentTimer.gameObject.SetActive(true);
 
@@ -80,9 +83,6 @@ namespace EverScord.Augment
 
             if (PhotonNetwork.IsConnected)
                 player.CharacterPhotonView.RPC(nameof(player.SyncState), RpcTarget.Others, player.State);
-
-            OnAugmented -= GameManager.Instance.PortalController.TryEnablePortal;
-            OnAugmented += GameManager.Instance.PortalController.TryEnablePortal;
 
             if (isAugmentSelectMode)
             {
@@ -138,10 +138,18 @@ namespace EverScord.Augment
             player.SetState(SetCharState.REMOVE, CharState.SELECTING_AUGMENT);
 
             if (PhotonNetwork.IsConnected)
-                player.CharacterPhotonView.RPC(nameof(player.SyncState), RpcTarget.Others, player.State);
+                player.CharacterPhotonView.RPC(nameof(player.SyncOnAugmentSelect), RpcTarget.Others, player.State);
+        }
 
-            OnAugmented?.Invoke();
-            OnAugmented -= GameManager.Instance.PortalController.TryEnablePortal;
+        public static void IncreaseSelectedPeople()
+        {
+            ++selectedPeople;
+
+            if (selectedPeople != PhotonNetwork.CurrentRoom.PlayerCount)
+                return;
+
+            if (PhotonNetwork.IsMasterClient)
+                GameManager.View.RPC(nameof(GameManager.Instance.SyncEnablePortal), RpcTarget.All);
         }
 
         private void CreateAugmentSelectTags()

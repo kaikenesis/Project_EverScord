@@ -167,18 +167,6 @@ namespace EverScord
             currentCountdownNum = (int)portalTimer.Cooldown + 1;
         }
 
-        public void TryEnablePortal()
-        {
-            foreach (var player in GameManager.Instance.PlayerDict.Values)
-            {
-                if (player.IsInteractingUI)
-                    return;
-            }
-
-            if (PhotonNetwork.IsConnected)
-                GameManager.View.RPC(nameof(GameManager.Instance.SyncEnablePortal), RpcTarget.All);
-        }
-
         public void SetPortalCollider(bool state)
         {
             portalCollider.enabled = state;
