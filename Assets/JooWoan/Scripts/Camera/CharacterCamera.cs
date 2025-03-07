@@ -8,7 +8,18 @@ namespace EverScord.GameCamera
         [field: SerializeField] public Camera Cam { get; private set; }
         [SerializeField] private float smoothTime;
 
-        public static Transform Root { get; private set; }
+        public static Transform root;
+        public static Transform Root
+        {
+            get
+            {
+                if (root)
+                    return root;
+                
+                return root = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
+            }
+        }
+
         private Transform target;
         private Vector3 velocity = Vector3.zero;
         private Vector3 nextPos;
@@ -30,12 +41,6 @@ namespace EverScord.GameCamera
                 return;
 
             FollowTarget();
-        }
-
-        public static void SetCameraRoot()
-        {
-            if (Root == null)
-                Root = GameObject.FindGameObjectWithTag(ConstStrings.TAG_CAMERAROOT).transform;
         }
 
         private void FollowTarget()

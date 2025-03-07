@@ -19,6 +19,7 @@ namespace EverScord.Skill
         private CounterSkill skill;
         private CharacterControl cachedTarget;
         private Coroutine buffCoroutine;
+        private GameObject barrier, secondBarrier;
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
@@ -51,7 +52,7 @@ namespace EverScord.Skill
 
         private IEnumerator ActivateSkill()
         {
-            GameObject barrier = Instantiate(skill.BarrierPrefab, activator.PlayerTransform);
+            barrier = Instantiate(skill.BarrierPrefab, activator.PlayerTransform);
             barrier.transform.SetParent(CharacterSkill.SkillRoot);
 
             StartCoroutine(UpdateBarrierPosition(barrier.transform, activator.PlayerTransform));
@@ -66,11 +67,7 @@ namespace EverScord.Skill
                 yield return null;
             }
 
-            StopBarrier(barrier);
-            StopLaser();
-            SetOutline(false);
-
-            skillCoroutine = null;
+            ExitSkill();
         }
 
         private IEnumerator UpdateBarrierPosition(Transform barrierTransform, Transform targetCharacter)
@@ -257,6 +254,17 @@ namespace EverScord.Skill
                 isOutlineActivated = false;
                 OutlineControl.SetCharacterOutline(cachedTarget, false);
             }
+        }
+
+        public override void ExitSkill()
+        {
+            StopBarrier(barrier);
+            StopBarrier(secondBarrier);
+            
+            StopLaser();
+            SetOutline(false);
+
+            skillCoroutine = null;
         }
     }
 }

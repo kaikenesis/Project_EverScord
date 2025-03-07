@@ -84,7 +84,7 @@ namespace EverScord.Skill
             }
         }
 
-        protected void ExitSkill()
+        public override void ExitSkill()
         {
             hasActivated = false;
             predictor.Exit();

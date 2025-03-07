@@ -43,7 +43,6 @@ namespace EverScord
         void Start()
         {
             teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
-            GameManager.Instance.InitControl(this);
         }
 
         private void OnEnable()
@@ -95,6 +94,7 @@ namespace EverScord
 
         public void Init(float countdown, Action callback)
         {
+            GameManager.Instance.InitControl(this);
             colliderWorldRadius = portalCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
 
             portalTimer = new CooldownTimer(countdown);
@@ -136,10 +136,10 @@ namespace EverScord
             isPortalOpened = true;
             gameObject.SetActive(true);
 
+            GameManager.Instance.AugmentControl.ShowAugmentCards();
+
             DOTween.Rewind(ConstStrings.TWEEN_OPEN_PORTAL);
             DOTween.Play(ConstStrings.TWEEN_OPEN_PORTAL);
-
-            // Tween callback: SetPortalCollider(true)
 
             if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
                 GameManager.View.RPC(nameof(GameManager.Instance.ReviveAllPlayers), RpcTarget.All);

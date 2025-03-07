@@ -13,6 +13,8 @@ namespace EverScord.Skill
         public DashSkill Skill => skill;
         private MeshTrail meshTrail;
         private Coroutine trailCoroutine;
+        private GameObject tornadoEffect;
+        private float originalSpeed;
 
         public override bool CanAttackWhileSkill => true;
         public override bool IsUsingSkill
@@ -30,6 +32,7 @@ namespace EverScord.Skill
         {
             this.skill = (DashSkill)skill;
             meshTrail  = new MeshTrail(activator.PlayerTransform, this);
+            originalSpeed = activator.CharacterSpeed;
             
             base.Init(activator, skill, ejob, skillIndex);
         }
@@ -47,7 +50,6 @@ namespace EverScord.Skill
         private IEnumerator ActivateSkill()
         {
             float animatorSpeed = skill.SpeedMultiplier;
-            float originalSpeed = activator.CharacterSpeed;
             float moveSpeed     = originalSpeed * skill.SpeedMultiplier;
 
             float decreaseValue = SPEED_DROP_POINT;
@@ -57,7 +59,7 @@ namespace EverScord.Skill
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
             activator.PhysicsControl.AddImpact(activator.LookDir, skill.DashForce);
 
-            GameObject tornadoEffect = Instantiate(skill.DashTornado, activator.PlayerTransform);
+            tornadoEffect = Instantiate(skill.DashTornado, activator.PlayerTransform);
             GameObject sparkEffect   = Instantiate(skill.DashSpark, activator.PlayerTransform);
 
             tornadoEffect.transform.position = activator.PlayerTransform.position;
@@ -78,15 +80,7 @@ namespace EverScord.Skill
                 yield return null;
             }
 
-            activator.SetSpeed(originalSpeed);
-            activator.AnimationControl.SetAnimatorSpeed();
-
-            // Effect will be automatically destroyed due to particle system settings
-            tornadoEffect.GetComponent<ParticleSystem>().Stop();
-
-            StopCoroutine(trailCoroutine);
-            trailCoroutine = null;
-            skillCoroutine = null;
+            ExitSkill();
         }
 
         public override void OffensiveAction()
@@ -97,6 +91,25 @@ namespace EverScord.Skill
         public override void SupportAction()
         {
             throw new System.NotImplementedException();
+        }
+
+        public override void ExitSkill()
+        {
+            activator.SetSpeed(originalSpeed);
+            activator.AnimationControl.SetAnimatorSpeed();
+
+            // Effect will be automatically destroyed due to particle system settings
+            if (tornadoEffect)
+                tornadoEffect.GetComponent<ParticleSystem>().Stop();
+
+            if (trailCoroutine != null)
+                StopCoroutine(trailCoroutine);
+
+            if (skillCoroutine != null)
+                StopCoroutine(skillCoroutine);
+
+            trailCoroutine = null;
+            skillCoroutine = null;
         }
     }
 }

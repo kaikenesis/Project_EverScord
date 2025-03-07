@@ -19,7 +19,24 @@ public class ResourceManager : Singleton<ResourceManager>
 
     private Dictionary<string, Object> objectDictionary = new();
     
-    public Transform PoolRoot { get; private set; }
+    public static Transform poolRoot;
+    public static Transform PoolRoot
+    {
+        get
+        {
+            if (poolRoot != null)
+                return poolRoot;
+            
+            GameObject root = GameObject.FindGameObjectWithTag(ConstStrings.TAG_POOLROOT);
+
+            if (root != null)
+                poolRoot = root.transform;
+            else
+                poolRoot = new GameObject("PoolRoot").transform;
+
+            return poolRoot;
+        }
+    }
 
     // 풀 크기 설정
     private const int DEFAULT_POOL_SIZE = 10;
@@ -183,8 +200,6 @@ public class ResourceManager : Singleton<ResourceManager>
             return null;
         }
 
-        SetPoolRoot();
-
         prefabDictionary[addressableKey].SetActive(false);
         GameObject obj = Instantiate(prefabDictionary[addressableKey]);
         obj.name = $"{prefabDictionary[addressableKey].name}_Pooled";
@@ -202,19 +217,6 @@ public class ResourceManager : Singleton<ResourceManager>
         prefabDictionary.Remove(addressableKey);
 
         Addressables.Release(addressableKey);
-    }
-
-    private void SetPoolRoot()
-    {
-        if (PoolRoot)
-            return;
-        
-        GameObject temp = GameObject.FindGameObjectWithTag(ConstStrings.TAG_POOLROOT);
-        if (temp != null)
-            PoolRoot = temp.transform;
-
-        if (!PoolRoot)
-            PoolRoot = new GameObject("PoolRoot").transform;
     }
 
     //private void OnDestroy()

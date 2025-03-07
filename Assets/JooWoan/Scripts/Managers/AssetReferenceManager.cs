@@ -15,6 +15,7 @@ namespace EverScord.Effects
         [field: SerializeField] public AssetReference BloodMat                  { get; private set; }
         [field: SerializeField] public AssetReference DissolveMat               { get; private set; }
         [field: SerializeField] public AssetReference CrosshairIcon             { get; private set; }
+        [field: SerializeField] public AssetReference AugmentCursorIcon         { get; private set; }
         [field: SerializeField] public AssetReference HealEffect                { get; private set; }
         [field: SerializeField] public AssetReference DeathEffect               { get; private set; }
         [field: SerializeField] public AssetReference ReviveEffect              { get; private set; }
@@ -48,6 +49,7 @@ namespace EverScord.Effects
         public static string BloodMat_ID                => Instance.BloodMat.AssetGUID;
         public static string DissolveMat_ID             => Instance.DissolveMat.AssetGUID;
         public static string CrosshairIcon_ID           => Instance.CrosshairIcon.AssetGUID;
+        public static string AugmentCursorIcon_ID       => Instance.AugmentCursorIcon.AssetGUID;
         public static string HealEffect_ID              => Instance.HealEffect.AssetGUID;
         public static string DeathEffect_ID             => Instance.DeathEffect.AssetGUID;
         public static string ReviveEffect_ID            => Instance.ReviveEffect.AssetGUID;

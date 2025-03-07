@@ -30,7 +30,9 @@ namespace EverScord
 
         protected override Debuff ShowDebuffEffect()
         {
-            inEffect = Object.Instantiate(effect1, target.PlayerTransform.position, Quaternion.identity);
+            inEffect = Object.Instantiate(effect1, target.PlayerTransform);
+            inEffect.transform.position = target.PlayerTransform.position;
+
             target.AnimationControl.SetAnimatorEnabled(false);
 
             target.BlinkEffects.SetDefaultColor(GameManager.StunnedBlinkInfo.BlinkColor);
@@ -41,9 +43,11 @@ namespace EverScord
 
         public override void RemoveDebuff()
         {
+            if (inEffect)
+                Object.Destroy(inEffect);
+
             outEffect = Object.Instantiate(effect2, target.PlayerTransform.position, Quaternion.identity);
 
-            Object.Destroy(inEffect);
             target.AnimationControl.SetAnimatorEnabled(true);
 
             target.BlinkEffects.SetDefaultColor();

@@ -215,6 +215,11 @@ namespace EverScord.Skill
             activator.SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
         }
 
+        public override void ExitSkill()
+        {
+            return;
+        }
+
         private void ExitHowlAnimation()
         {
             animControl.CrossFade(new AnimationParam(animInfo.CounterStance.name, 0.1f));

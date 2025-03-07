@@ -1,4 +1,6 @@
 using System;
+using EPOOutline.Demo;
+using EverScord.GameCamera;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,7 +41,7 @@ namespace EverScord
 
         private void Init()
         {
-            cameraObj = Instantiate(minimapCamera);
+            cameraObj = Instantiate(minimapCamera, CharacterCamera.Root);
             MinimapData.CameraTransform cameraData = GameManager.Instance.MinimapData.CameraPos[0];
             cameraObj.transform.SetLocalPositionAndRotation(cameraData.Position, cameraData.Rotation);
 

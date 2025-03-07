@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 using UnityEngine;
 using Photon.Pun;
@@ -8,7 +9,7 @@ using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
-using System.Linq;
+using EverScord.Armor;
 
 namespace EverScord.Character
 {
@@ -64,8 +65,10 @@ namespace EverScord.Character
         public BlinkEffect BlinkEffects                                 { get; private set; }
         public UIMarker UIMarker                                        { get; private set; }
         public IDictionary<CharState, Debuff> DebuffDict                { get; private set; }
+        public IHelmet CharacterHelmet                                  { get; private set; }
+        public IVest CharacterVest                                      { get; private set; }
+        public IShoes CharacterShoes                                    { get; private set; }
 
-        private InputInfo playerInputInfo = new InputInfo();
         public InputInfo PlayerInputInfo => playerInputInfo;
         public Weapon PlayerWeapon => weapon;
         public PhotonView CharacterPhotonView => photonView;
@@ -88,6 +91,7 @@ namespace EverScord.Character
         private Vector3 remoteMouseRayHitPos;
         private LayerMask groundAndEnemyLayer;
         private Action onDecreaseHealth;
+        private InputInfo playerInputInfo = new InputInfo();
 
         public float CurrentHealth
         {
@@ -118,18 +122,17 @@ namespace EverScord.Character
 
         void Awake()
         {
-            PlayerUI.SetUIRoot();
-            CharacterCamera.SetCameraRoot();
-
             PlayerTransform  = transform;
             PhysicsControl   = new CharacterPhysics(gravity, mass);
             DebuffDict       = new Dictionary<CharState, Debuff>();
+            CharacterHelmet  = new Helmet(10, 10, 10, 10, 10);
+            CharacterVest    = new Vest(10, 10, 10);
+            CharacterShoes   = new Shoes(10, 10, 10);
 
             photonView       = GetComponent<PhotonView>();
             controller       = GetComponent<CharacterController>();
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
-
             UIMarker         = gameObject.AddComponent<UIMarker>();
 
             // Unity docs: Set skinwidth 10% of the Radius
@@ -193,6 +196,9 @@ namespace EverScord.Character
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
                 IncreaseHP(10);
 
+            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F3))
+                GameManager.Instance.AugmentControl.ShowAugmentCards();
+
             UIMarker.UpdatePosition(PlayerTransform.position);
 
             if (!photonView.IsMine)
@@ -203,7 +209,7 @@ namespace EverScord.Character
 
             SetInput();
 
-            if (IsDead)
+            if (IsDead || IsInteractingUI)
                 return;
 
             SetMovingDirection();
@@ -459,6 +465,24 @@ namespace EverScord.Character
             transform.position = position;
         }
 
+        public void SetArmor(IArmor newArmor)
+        {
+            switch (newArmor)
+            {
+                case IHelmet newHelmet:
+                    CharacterHelmet = newHelmet;
+                    break;
+
+                case IVest newVest:
+                    CharacterVest = newVest;
+                    break;
+
+                case IShoes newShoes:
+                    CharacterShoes = newShoes;
+                    break;
+            }
+        }
+
         public void SetState(SetCharState mode, CharState state = CharState.NONE)
         {
             if (state == CharState.NONE && mode != SetCharState.CLEAR)
@@ -468,8 +492,8 @@ namespace EverScord.Character
             {
                 case SetCharState.ADD:
                     State |= state;
-
-                    DebuffDict[state] = Debuff.GetDebuff(this, state, SetState);
+                    
+                    DebuffDict[state] = Debuff.GetDebuff(this, state, RemoveDebuff);
                     break;
 
                 case SetCharState.REMOVE:
@@ -503,9 +527,26 @@ namespace EverScord.Character
             return (State & state) != 0;
         }
 
-        public void SetDebuff(CharState state)
+        public void ApplyDebuff(CharState state, int count)
         {
-            photonView.RPC(nameof(SyncState), RpcTarget.All, (int)SetCharState.ADD, (int)state);
+            if (HasState(CharState.INVINCIBLE))
+                return;
+                        
+            if (DebuffDict.ContainsKey(state) && DebuffDict[state] != null)
+                return;
+            
+            if (!PhotonNetwork.IsConnected)
+                return;
+            
+            photonView.RPC(nameof(SyncApplyDebuff), RpcTarget.All, (int)SetCharState.ADD, (int)state, count);
+        }
+
+        public void RemoveDebuff(CharState state)
+        {
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
+                return;
+            
+            photonView.RPC(nameof(SyncRemoveDebuff), RpcTarget.All, (int)state);
         }
 
         public void SubscribeOnDecreaseHealth(Action subscriber)
@@ -591,7 +632,7 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
-            // SetState(SetCharState.REMOVE, CharState.DEATH);
+            SetState(SetCharState.REMOVE, CharState.DEATH);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
             Instantiate(reviveEffect, PlayerTransform.position, Quaternion.identity);
@@ -665,6 +706,14 @@ namespace EverScord.Character
         public void EnableReviveCircle(bool state)
         {
             reviveCircle.gameObject.SetActive(state);
+        }
+
+        private void CancelAction()
+        {
+            weapon.SetShootingStance(this, false, true);
+
+            for (int i = 0; i < skillList.Count; i++)
+                skillList[i].SkillAction.ExitSkill();
         }
 
         public bool CanMove
@@ -742,6 +791,11 @@ namespace EverScord.Character
             get { return HasState(CharState.STUNNED); }
         }
 
+        public bool IsInteractingUI
+        {
+            get { return HasState(CharState.SELECTING_AUGMENT); }
+        }
+
         public bool IsAiming { get; private set; }
         public bool IsShooting => playerInputInfo.holdLeftMouseButton;
         public bool IsMoving => (CanMove && moveInput.magnitude > 0) || PhysicsControl.IsImpactAdded;
@@ -779,6 +833,25 @@ namespace EverScord.Character
         {
             CurrentSkillAction = skillList[index].SkillAction;
             skillList[index].SkillAction.Activate();
+        }
+
+        [PunRPC]
+        private void SyncApplyDebuff(int mode, int state, int count)
+        {
+            CancelAction();
+
+            SetState((SetCharState)mode, (CharState)state);
+            StunnedDebuff debuff = DebuffDict[CharState.STUNNED] as StunnedDebuff;
+
+            if (debuff != null)
+                debuff.SetCount(count);
+        }
+
+        [PunRPC]
+        private void SyncRemoveDebuff(int state)
+        {
+            CharState debuffState = (CharState)state;
+            SetState(SetCharState.REMOVE, debuffState);
         }
 
         [PunRPC]
@@ -884,12 +957,6 @@ namespace EverScord.Character
                 return;
 
             reviveCircle.SyncExitCircle();
-        }
-        
-        [PunRPC]
-        private void SyncState(int mode, int state)
-        {
-            SetState((SetCharState)mode, (CharState)state);
         }
 
         [PunRPC]

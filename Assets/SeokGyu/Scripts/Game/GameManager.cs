@@ -5,6 +5,7 @@ using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
 using EverScord.Effects;
+using EverScord.Augment;
 
 namespace EverScord
 {
@@ -26,6 +27,7 @@ namespace EverScord
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
         public PortalControl PortalController                   { get; private set; }
+        public AugmentPresenter AugmentControl                  { get; private set; }
         public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
@@ -98,7 +100,8 @@ namespace EverScord
             {
                 if (instance == null)
                 {
-                    instance = new GameManager();
+                    GameObject manager = new GameObject("_GameManager");
+                    instance = manager.AddComponent<GameManager>();
                 }
                 return instance;
             }
@@ -170,6 +173,10 @@ namespace EverScord
                     PortalController = portalControl;
                     break;
 
+                case AugmentPresenter augmentPresenter:
+                    AugmentControl = augmentPresenter;
+                    break;
+
                 default:
                     break;
             }
@@ -191,7 +198,6 @@ namespace EverScord
             foreach (var kv in PlayerDict)
             {
                 CharacterControl player = kv.Value;
-                player.SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
                 if (!player.IsDead)
                     continue;

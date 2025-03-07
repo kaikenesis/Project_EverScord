@@ -9,7 +9,7 @@ namespace EverScord.Pool
 
         public void OnParticleSystemStopped()
         {
-            ResourceManager.Instance.ReturnToPool(gameObject, assetGUID);
+            ResourceManager.Instance.ReturnToPool(this, assetGUID);
         }
 
         public void Init(string id)

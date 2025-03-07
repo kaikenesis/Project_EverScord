@@ -1,19 +1,18 @@
 using System;
-using UnityEngine;
 using EverScord.Character;
 
 namespace EverScord
 {
     public abstract class Debuff
     {
-        protected Action<SetCharState, CharState> onDebuffRemoved;
+        protected Action<CharState> onDebuffRemoved;
         protected CharState linkedState;
         protected CharacterControl target;
 
-        public static Debuff GetDebuff(CharacterControl target, CharState state, Action<SetCharState, CharState> onDebuffRemoved)
+        public static Debuff GetDebuff(CharacterControl target, CharState state, Action<CharState> onDebuffRemoved)
         {
             Debuff targetDebuff = null;
-            
+
             switch (state)
             {
                 case CharState.STUNNED:
@@ -24,7 +23,7 @@ namespace EverScord
             return targetDebuff?.Init(target, state, onDebuffRemoved).ShowDebuffEffect();
         }
 
-        protected Debuff Init(CharacterControl target, CharState state, Action<SetCharState, CharState> onDebuffRemoved)
+        protected Debuff Init(CharacterControl target, CharState state, Action<CharState> onDebuffRemoved)
         {
             this.target = target;
 
@@ -42,7 +41,7 @@ namespace EverScord
 
         public virtual void RemoveDebuff()
         {
-            onDebuffRemoved?.Invoke(SetCharState.REMOVE, linkedState);
+            onDebuffRemoved?.Invoke(linkedState);
             onDebuffRemoved = null;
         }
     }
