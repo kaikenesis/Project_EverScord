@@ -256,6 +256,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void SyncDeathAftermath()
     {
         DeathGlitter();
+        healthBarObject.SetActive(false);
         GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
     }
 
@@ -297,7 +298,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncMonsterDeath()
     {
-        healthBarObject.SetActive(false);
         isDead = false;
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
