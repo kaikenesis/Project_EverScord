@@ -66,7 +66,7 @@ namespace EverScord
         {
             if (Input.GetKeyDown(KeyCode.F2))
             {
-                SyncSetCurrentProgress(maxProgress);
+                SyncChangeCurrentProgress(maxProgress);
             }
         }
 
@@ -80,13 +80,19 @@ namespace EverScord
             maxProgress = amount;
         }
 
-        public void SetCurrentProgress(float changeAmount)
+        public void ChangeCurrentProgress(float changeAmount)
         {
             progress = Mathf.Clamp(progress + changeAmount, 0, maxProgress);
             OnProgressUpdated?.Invoke(CurrentProgress);
         }
 
-        private void SyncSetCurrentProgress(float changeAmount)
+        public void SetCurrentProgress(float amount)
+        {
+            progress = Mathf.Clamp(amount, 0, maxProgress);
+            OnProgressUpdated?.Invoke(CurrentProgress);
+        }
+
+        private void SyncChangeCurrentProgress(float changeAmount)
         {
             if (PhotonNetwork.IsConnected)
                 GameManager.View.RPC(nameof(GameManager.Instance.SyncProgress), RpcTarget.All, changeAmount);
@@ -94,15 +100,15 @@ namespace EverScord
 
         public void IncreaseMonsterProgress(MonsterType monsterType)
         {
-            SetCurrentProgress(increaseDict[monsterType]);
+            ChangeCurrentProgress(increaseDict[monsterType]);
         }
 
         public void IncreaseBossProgress(BossRPC boss)
         {
             float bossMaxHP = boss.BossMonsterData.MaxHP;
             float bossCurrentHP = boss.BossMonsterData.HP;
-            float amount = (bossMaxHP - bossCurrentHP) / bossMaxHP;
-            SyncSetCurrentProgress(-amount);
+            float amount = bossCurrentHP / bossMaxHP * maxProgress;
+            SetCurrentProgress(amount);
         }
 
         public void ResetProgress()

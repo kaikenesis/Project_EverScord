@@ -632,7 +632,7 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
-            SetState(SetCharState.REMOVE, CharState.DEATH);
+            SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
             Instantiate(reviveEffect, PlayerTransform.position, Quaternion.identity);

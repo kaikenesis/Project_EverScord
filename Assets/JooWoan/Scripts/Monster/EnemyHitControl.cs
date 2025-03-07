@@ -17,9 +17,6 @@ namespace EverScord.Monster
 
             monster?.DecreaseHP(hp);
 
-            if (monster is BossRPC)
-                GameManager.Instance.LevelController.IncreaseBossProgress((BossRPC)monster);
-
             BlinkEffect blinkEffect = monster.GetBlinkEffect();
 
             if (blinkEffect == null)
