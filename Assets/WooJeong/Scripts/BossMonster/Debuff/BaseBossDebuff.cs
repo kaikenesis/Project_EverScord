@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BossDebuff
+public enum EBossDebuff
 {
     POISON, SLOW
 }

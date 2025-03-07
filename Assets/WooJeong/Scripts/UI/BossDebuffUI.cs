@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,40 +11,49 @@ public class BossDebuffUI : MonoBehaviour
     [SerializeField] private GameObject poisonUI;
     private Image slowImage;
     private Image poisonImage;
+    private PhotonView photonView;
 
     private void Awake()
     {
+        photonView = GetComponent<PhotonView>();
         slowImage = slowUI.GetComponent<Image>();
         poisonImage = poisonUI.GetComponent<Image>();
     }
 
-    public void DebuffEnter(BossDebuff bossDebuff)
+    public void DebuffEnter(EBossDebuff bossDebuff)
     {
         switch (bossDebuff)
         {
-            case BossDebuff.SLOW:
-                slowUI.SetActive(true);
-                slowImage.DOFade(1, 1);
+            case EBossDebuff.SLOW:
+                photonView.RPC(nameof(SyncBossSlowDebuffUI), RpcTarget.All, true);
                 break;
-            case BossDebuff.POISON:
-                poisonUI.SetActive(true);
-                poisonImage.DOFade(255, 1);
+            case EBossDebuff.POISON:
+                photonView.RPC(nameof(SyncBossPoisonDebuffUI), RpcTarget.All, true);
                 break;
         }
     }
 
-    public void DebuffEnd(BossDebuff bossDebuff)
+    public void DebuffEnd(EBossDebuff bossDebuff)
     {
         switch (bossDebuff)
         {
-            case BossDebuff.SLOW:
-                //slowUI.SetActive(false);
-                slowImage.DOFade(0, 1);
+            case EBossDebuff.SLOW:
+                photonView.RPC(nameof(SyncBossSlowDebuffUI), RpcTarget.All, false);
                 break;
-            case BossDebuff.POISON:
-                //poisonUI.SetActive(false);
-                poisonImage.DOFade(0, 1);
+            case EBossDebuff.POISON:
+                photonView.RPC(nameof(SyncBossPoisonDebuffUI), RpcTarget.All, false);
                 break;
         }
+    }
+
+    [PunRPC]
+    private void SyncBossSlowDebuffUI(bool value)
+    {
+        slowUI.SetActive(value);
+    }
+    [PunRPC]
+    private void SyncBossPoisonDebuffUI(bool value)
+    {
+        poisonUI.SetActive(value);
     }
 }

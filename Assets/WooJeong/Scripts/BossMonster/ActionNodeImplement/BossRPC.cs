@@ -71,7 +71,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         uiMarker.UpdatePosition(transform.position);
     }
 
-    public void SetDebuff(BossDebuff debuffState, float time, float value)
+    public void SetDebuff(EBossDebuff debuffState, float time, float value)
     {
         bossDebuffSystem.SetDebuff(this, debuffState, time, value);
     }

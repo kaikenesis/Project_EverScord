@@ -5,24 +5,23 @@ using UnityEngine;
 
 public class BossDebuffSystem : MonoBehaviour
 {
-    private Dictionary<BossDebuff, BaseBossDebuff> debuffDict = new();
+    private Dictionary<EBossDebuff, BaseBossDebuff> debuffDict = new();
+    public Action<EBossDebuff> OnBossDebuffStart;
+    public Action<EBossDebuff> OnBossDebuffEnd;
 
-    public Action<BossDebuff> OnBossDebuffStart;
-    public Action<BossDebuff> OnBossDebuffEnd;
-
-    public void SubcribeOnBossDebuffStart(Action<BossDebuff> action)
+    public void SubcribeOnBossDebuffStart(Action<EBossDebuff> action)
     {
         OnBossDebuffStart += action;
     }
 
-    public void SubcribeOnBossDebuffEnd(Action<BossDebuff> action)
+    public void SubcribeOnBossDebuffEnd(Action<EBossDebuff> action)
     {
         OnBossDebuffEnd += action;
     }
 
     public void ClearActions()
     {
-        foreach(BossDebuff d in Enum.GetValues(typeof(BossDebuff)))
+        foreach(EBossDebuff d in Enum.GetValues(typeof(EBossDebuff)))
         {
             OnBossDebuffEnd?.Invoke(d);
         }
@@ -40,11 +39,11 @@ public class BossDebuffSystem : MonoBehaviour
         if (debuffDict.Count > 0)
             return;
 
-        debuffDict[BossDebuff.POISON] = new BossDebuffPoison();
-        debuffDict[BossDebuff.SLOW] = new BossDebuffSlow();
+        debuffDict[EBossDebuff.POISON] = new BossDebuffPoison();
+        debuffDict[EBossDebuff.SLOW] = new BossDebuffSlow();
     }
 
-    public void SetDebuff(BossRPC boss, BossDebuff bossDebuff, float time, float value)
+    public void SetDebuff(BossRPC boss, EBossDebuff bossDebuff, float time, float value)
     {
         if (debuffDict.Count == 0)
             Initialize();
@@ -54,7 +53,7 @@ public class BossDebuffSystem : MonoBehaviour
         OnBossDebuffStart?.Invoke(bossDebuff);
     }
 
-    private IEnumerator DebuffEnd(BossDebuff bossDebuff, float time)
+    private IEnumerator DebuffEnd(EBossDebuff bossDebuff, float time)
     {
         yield return new WaitForSeconds(time);
         OnBossDebuffEnd?.Invoke(bossDebuff);
