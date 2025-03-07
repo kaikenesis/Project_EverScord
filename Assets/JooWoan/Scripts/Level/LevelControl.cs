@@ -105,8 +105,13 @@ namespace EverScord
 
         public void IncreaseBossProgress(BossRPC boss)
         {
+            int currentPhase = boss.BossMonsterData.Phase;
             float bossMaxHP = boss.BossMonsterData.MaxHP;
             float bossCurrentHP = boss.BossMonsterData.HP;
+
+            if (currentPhase == 2)
+                bossMaxHP = boss.BossMonsterData.MaxHP_Phase2;
+
             float amount = bossCurrentHP / bossMaxHP * maxProgress;
             SetCurrentProgress(amount);
         }
