@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static EverScord.UISkill;
 
 namespace EverScord
 {
@@ -12,7 +11,7 @@ namespace EverScord
         [SerializeField] private GameObject factor;
         [SerializeField] private Transform containor;
         [SerializeField] private TMP_Text text;
-
+        private List<UIFactorSlot> slots = new List<UIFactorSlot>();
         private int panelTypeNum;
 
         public static Action<int> OnUnlockFactor = delegate { };
@@ -30,7 +29,6 @@ namespace EverScord
 
         private void HandleClickedSlot(int type, int slotNum)
         {
-            List<UIFactorSlot> slots = GameManager.Instance.PlayerAlterationData[type].slots;
             if (panelTypeNum != type || slots[slotNum].bConfirmed == true || slots[slotNum - 1].bLock == true) return;
 
             if (slots[slotNum].bLock == true)
@@ -49,7 +47,6 @@ namespace EverScord
         {
             SetTitle(typeNum);
 
-            List<UIFactorSlot> slots = GameManager.Instance.PlayerAlterationData[typeNum].slots;
             for (int i = 0; i < slotCount; i++)
             {
                 bool bConfirmed = false;
@@ -62,8 +59,7 @@ namespace EverScord
                 UIFactorSlot slot = obj.GetComponent<UIFactorSlot>();
                 slot.Initialize(typeNum, bConfirmed, i);
 
-                if (slots.Count <= i)
-                    slots.Add(slot);
+                slots.Add(slot);
             }
         }
 

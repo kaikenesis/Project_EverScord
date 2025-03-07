@@ -12,7 +12,7 @@ namespace EverScord
         [SerializeField] private Transform containor;
         private List<UIFactorOption> options = new List<UIFactorOption>();
 
-        public static Action<string, float, Sprite, Color> OnApplyOption = delegate { };
+        public static Action<int, int, float> OnApplyOption = delegate { };
         public static Action<string> OnInitializeOptionName = delegate { };
 
         private void Awake()
@@ -54,13 +54,6 @@ namespace EverScord
 
         private void HandleSelectOption(int typeNum, int optionNum, float value)
         {
-            FactorData datas = GameManager.Instance.FactorDatas[typeNum];
-            string optionName = datas.OptionDatas[optionNum].Name;
-            Sprite sourceImg = datas.OptionDatas[optionNum].SourceImg;
-            Color optionImgColor = datas.OptionDatas[optionNum].ImgColor;
-
-            OnApplyOption?.Invoke(optionName, value, sourceImg, optionImgColor);
-
             gameObject.SetActive(false);
         }
 

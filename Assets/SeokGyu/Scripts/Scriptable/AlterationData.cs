@@ -3,10 +3,37 @@ using UnityEngine;
 
 namespace EverScord
 {
-    [SerializeField]
-    [CreateAssetMenu(menuName = "EverScord/Datas/PortraitData", fileName = "newPortraitData")]
-    public class AlterationData : ScriptableObject
+    public class AlterationData : MonoBehaviour
     {
-        public List<UIFactorSlot> slots;
+        private List<PanelData> panelDatas = new List<PanelData>();
+        public List<PanelData> PanelDatas 
+        {
+            get { return panelDatas; }
+        }
+
+        public AlterationData(int panelNum)
+        {
+            for (int i = 0; i < panelNum; i++)
+            {
+                panelDatas.Add(new PanelData());
+            }
+        }
+
+        public class PanelData
+        {
+            public int lastUnlockedNum = 0;
+
+            private List<int> optionNum = new List<int>();
+            public List<int> OptionNum
+            {
+                get { return optionNum; }
+            }
+
+            private List<float> valueNum = new List<float>();
+            public List<float> ValueNum
+            {
+                get { return valueNum; }
+            }
+        }
     }
 }

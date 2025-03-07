@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WebSocketSharp;
 
 namespace EverScord
 {
@@ -54,7 +56,10 @@ namespace EverScord
             GameManager.Instance.PlayerData.DecreaseMoney(cost);
             OnDecreaseMoney?.Invoke(GameManager.Instance.PlayerData.money);
             bLock = false;
-            lockImg.enabled = false;
+            lockImg.enabled = bLock;
+
+            AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
+            panelData.lastUnlockedNum++;
         }
 
         private void HandleRequestReroll(int typeNum, int slotNum)
@@ -77,6 +82,13 @@ namespace EverScord
             newOptionValue = datas.OptionDatas[randomOptionNum].Values[randomValueNum];
 
             OnRequestApplyOption?.Invoke(newOptionColor, newOptionName, newOptionValue, curOptionName, curOptionValue);
+
+            AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
+            List<int> optionNums = panelData.OptionNum;
+            optionNums[slotNum] = randomOptionNum;
+
+            List<float> valueNums = panelData.ValueNum;
+            valueNums[slotNum] = newOptionValue;
         }
 
         private void HandleApplyOption(int typeNum, int slotNum, string newName, float newValue, Sprite newSourceImg, Color newColor)
@@ -108,29 +120,49 @@ namespace EverScord
 
         public void Initialize(int typeNum, bool bConfirmed, int slotIndex)
         {
-            UIFactorSlot slotData = GameManager.Instance.PlayerAlterationData[typeNum].slots[slotIndex];
+            AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
+            List<int> optionNums = panelData.OptionNum;
+            List<float> valueNums = panelData.ValueNum;
+
             slotNum = slotIndex;
             this.bConfirmed = bConfirmed;
             lockImg.sprite = GameManager.Instance.FactorDatas[typeNum].LockedSourceImg;
             curTypeNum = typeNum;
 
-            if (slotData != null)
+            if (optionNums.Count > slotIndex)
             {
-                bLock = slotData.bLock;
-                lockImg.enabled = slotData.bLock;
-                if(bLock == false)
+                if(slotIndex < panelData.lastUnlockedNum)
                 {
-                    curOptionName = slotData.curOptionName;
-                    curOptionValue = slotData.curOptionValue;
-                    optionImg.enabled = slotData.optionImg.enabled;
-                    optionImg.sprite = slotData.optionImg.sprite;
-                    optionImg.color = slotData.newOptionColor;
+                    bLock = false;
+                    lockImg.enabled = bLock;
+
+                    if(optionNums[slotIndex] != -1)
+                    {
+                        FactorData.OptionData optionData = GameManager.Instance.FactorDatas[typeNum].OptionDatas[optionNums[slotIndex]];
+
+                        curOptionName = optionData.Name;
+                        curOptionValue = valueNums[slotIndex];
+                        optionImg.enabled = true;
+                        optionImg.sprite = optionData.SourceImg;
+                        optionImg.color = optionData.ImgColor;
+                    }
+                }
+                else
+                {
+                    bLock = !bConfirmed;
+                    lockImg.enabled = bLock;
                 }
             }
             else
             {
                 bLock = !bConfirmed;
-                lockImg.enabled = !bConfirmed;
+                lockImg.enabled = bLock;
+
+                if (bLock == false)
+                    panelData.lastUnlockedNum++;
+
+                optionNums.Add(-1);
+                valueNums.Add(-1);
             }
 
             switch (curTypeNum)

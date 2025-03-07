@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EverScord
@@ -14,7 +15,6 @@ namespace EverScord
         public static Action<int, int> OnRequestUnlock = delegate { };
         public static Action<int, int> OnRequestReroll = delegate { };
         public static Action<int, int, string, float, Sprite, Color> OnApplyOption = delegate { };
-        public static Action<int, int, string, float, Sprite, Color> OnApplyConfirmedOption = delegate { };
 
         private void Awake()
         {
@@ -22,7 +22,7 @@ namespace EverScord
             UIPopUpWindow.OnAcceptReroll += HandleAcceptReroll;
             UIPopUpWindow.OnApplyOption += HandleApplyOption;
             UIFactorSlot.OnClickedSlot += HandleClickedSlot;
-            UIFactorOptionList.OnApplyOption += HandleApplyOption;
+            UIFactorOption.OnSelectOption += HandleSelectOption;
 
             Init();
         }
@@ -33,7 +33,7 @@ namespace EverScord
             UIPopUpWindow.OnAcceptReroll -= HandleAcceptReroll;
             UIPopUpWindow.OnApplyOption -= HandleApplyOption;
             UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
-            UIFactorOptionList.OnApplyOption -= HandleApplyOption;
+            UIFactorOption.OnSelectOption -= HandleSelectOption;
         }
 
         #region Handle Methods
@@ -52,15 +52,27 @@ namespace EverScord
             OnApplyOption?.Invoke(selectType, selectIndex, "", 0.0f, null, new Color());
         }
 
-        private void HandleApplyOption(string newName, float newValue, Sprite sourceImg, Color newColor)
-        {
-            OnApplyOption?.Invoke(selectType, selectIndex, newName, newValue, sourceImg, newColor);
-        }
-
         private void HandleClickedSlot(int type, int slotNum)
         {
             selectType = type;
             selectIndex = slotNum;
+        }
+
+        private void HandleSelectOption(int typeNum, int optionNum, float value)
+        {
+            FactorData datas = GameManager.Instance.FactorDatas[typeNum];
+            string optionName = datas.OptionDatas[optionNum].Name;
+            Sprite sourceImg = datas.OptionDatas[optionNum].SourceImg;
+            Color optionImgColor = datas.OptionDatas[optionNum].ImgColor;
+
+            AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
+            List<int> optionNums = panelData.OptionNum;
+            optionNums[selectIndex] = optionNum;
+
+            List<float> valueNums = panelData.ValueNum;
+            valueNums[selectIndex] = value;
+
+            OnApplyOption?.Invoke(selectType, selectIndex, optionName, value, sourceImg, optionImgColor);
         }
         #endregion // Handle Methods
 
