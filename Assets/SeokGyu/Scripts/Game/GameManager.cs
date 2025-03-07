@@ -222,7 +222,7 @@ namespace EverScord
         [PunRPC]
         public void SyncProgress(float changeAmount)
         {
-            LevelController.SetCurrentProgress(changeAmount);
+            LevelController.ChangeCurrentProgress(changeAmount);
         }
 
         [PunRPC]

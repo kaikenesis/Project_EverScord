@@ -316,6 +316,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     protected void SyncBossMonsterHP(float hp)
     {
         bossData.ReduceHp(hp);
+        GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
 
     public void PhaseUp()
@@ -326,7 +327,8 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private void SyncPhaseUp()
     {
-        bossData.PhaseUp();        
+        bossData.PhaseUp();
+        GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
 
     public void LaserEnable(float enableTime)
