@@ -230,6 +230,11 @@ namespace EverScord.Character
             UseSkills();
         }
 
+        void OnDisable()
+        {
+            IsAiming = false;
+        }
+
         private void LerpRemoteInfo()
         {
             MouseRayHitPos = Vector3.Lerp(MouseRayHitPos, remoteMouseRayHitPos, Time.deltaTime * REMOTE_LERP_VALUE);

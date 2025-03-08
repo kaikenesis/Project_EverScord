@@ -155,7 +155,11 @@ namespace EverScord
         public IEnumerator PrepareNextLevel()
         {
             foreach (var player in GameManager.Instance.PlayerDict.Values)
+            {
                 player.SetState(Character.SetCharState.ADD, Character.CharState.TELEPORTING);
+                player.AnimationControl.Rotate(false);
+                player.PlayerWeapon.SetShootingStance(player, false, true);
+            }
 
             yield return waitStageTransition;
 
