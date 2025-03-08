@@ -55,12 +55,12 @@ namespace EverScord
 
         private void UpdateName(string newName)
         {
-            nickName.text = $"닉네임 : {newName}";
+            nickName.text = $"{newName}";
         }
 
         private void UpdateMoney(int money)
         {
-            this.money.text = $"재화 : {money}";
+            this.money.text = $"{money}";
         }
     }
 }
