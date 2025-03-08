@@ -1,29 +1,38 @@
-using System.Collections;
 using System;
-using UnityEngine;
 
 namespace EverScord.Skill
 {
     public class SkillTimer : CooldownTimer
     {
-        public static Action<int, float> OnSkillCooldown = delegate { };
+        // int: skill index, float: cooldown duration
+        private static Action<int, float> onCoolDown;
+        private int skillIndex;
+        private bool isMine;
 
-        public SkillTimer(float cooldown) : base(cooldown) { }
+        public SkillTimer(float cooldown, int skillIndex, bool isMine) : base(cooldown)
+        {
+            this.skillIndex = skillIndex;
+            this.isMine = isMine;
+
+            onTimerTick -= UpdateCooldownProgress;
+            onTimerTick += UpdateCooldownProgress;
+        }
+
+        public static void SubscribeOnCooldown(Action<int, float> subscriber)
+        {
+            onCoolDown -= subscriber;
+            onCoolDown += subscriber;
+        }
+
+        public static void UnsubscribeOnCooldown(Action<int, float> subscriber)
+        {
+            onCoolDown -= subscriber;
+        }
 
         private void UpdateCooldownProgress()
         {
-            //if (!photonView.IsMine || !cooldownTimer.IsCooldown)
-            //    return;
-
-            //OnUsedSkill?.Invoke(skillIndex, cooldownTimer.CooldownProgress);
-            Debug.Log("on going");
-        }
-
-        public override IEnumerator RunTimer(bool resetTime = false)
-        {
-            UpdateCooldownProgress();
-            yield return base.RunTimer(resetTime);
+            if (IsCooldown && isMine)
+                onCoolDown?.Invoke(skillIndex, CooldownProgress);
         }
     }
 }
-

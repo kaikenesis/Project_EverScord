@@ -197,9 +197,6 @@ namespace EverScord.Character
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
                 IncreaseHP(10);
 
-            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F3))
-                GameManager.Instance.AugmentControl.ShowAugmentCards();
-
             UIMarker.UpdatePosition(PlayerTransform.position);
 
             if (!photonView.IsMine)

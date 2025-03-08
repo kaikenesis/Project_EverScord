@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace EverScord.Skill
     {
         protected float cooldown;
         protected float elapsedTime = 0f;
+        protected Action onTimerTick;
 
         public bool IsCooldown => elapsedTime < cooldown;
         public float Cooldown => cooldown;
@@ -30,6 +32,7 @@ namespace EverScord.Skill
             while (true)
             {
                 elapsedTime += Time.deltaTime;
+                onTimerTick?.Invoke();
                 yield return null;
             }
         }
