@@ -18,6 +18,9 @@ namespace EverScord
         [SerializeField] private SphereCollider portalCollider;
         [SerializeField] private Vector3 initialPortalScale;
 
+        public PhotonView View => photonView;
+
+        private PhotonView photonView;
         private CooldownTimer portalTimer;
         private Coroutine countdownCoroutine;
         private Action onCountdownFinished;
@@ -36,6 +39,7 @@ namespace EverScord
 
         private void Awake()
         {
+            photonView = GetComponent<PhotonView>();
             uiMarker = gameObject.AddComponent<UIMarker>();
             uiMarker.Initialize(PointMarkData.EType.Portal);
         }
@@ -245,6 +249,12 @@ namespace EverScord
         public void MovePosition(Vector3 position)
         {
             transform.position = position;
+        }
+
+        [PunRPC]
+        public void SyncSetPortal(bool state)
+        {
+            SetPortalCollider(state);
         }
     }
 }

@@ -18,11 +18,15 @@ namespace EverScord
         public static Action<float> OnProgressUpdated = delegate { };
         public static Action<int, bool> OnLevelUpdated = delegate { };
         public static Action OnLevelClear = delegate { };
+
+        public static PhotonView View { get; private set; }
         public static bool IsLoadingLevel { get; private set; }
         public static bool IsBossMode { get; private set; }
-        public static bool IsLevelCompleted => progress >= maxProgress;
+
+        public PortalControl PortalController => portalControl;
         public float CurrentProgress => progress / Mathf.Max(0.001f, maxProgress);
         public int MaxLevelIndex => levelList.Count - 1;
+        public static bool IsLevelCompleted => progress >= maxProgress;
 
         private static WaitForSeconds waitLoadScreen, waitStageTransition, waitStageFade;
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
@@ -47,6 +51,8 @@ namespace EverScord
         void Awake()
         {
             GameManager.Instance.InitControl(this);
+
+            View = GetComponent<PhotonView>();
 
             waitLoadScreen      = new WaitForSeconds(LOADSCREEN_DELAY);
             waitStageTransition = new WaitForSeconds(STAGE_TRANSITION_DELAY);
@@ -95,7 +101,13 @@ namespace EverScord
         private void SyncChangeCurrentProgress(float changeAmount)
         {
             if (PhotonNetwork.IsConnected)
-                GameManager.View.RPC(nameof(GameManager.Instance.SyncProgress), RpcTarget.All, changeAmount);
+                View.RPC(nameof(SyncProgress), RpcTarget.All, changeAmount);
+        }
+
+        [PunRPC]
+        public void SyncProgress(float changeAmount)
+        {
+            ChangeCurrentProgress(changeAmount);
         }
 
         public void IncreaseMonsterProgress(MonsterType monsterType)
@@ -137,7 +149,7 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
 
-            GameManager.View.RPC(nameof(GameManager.Instance.SyncPrepareNextLevel), RpcTarget.All);
+            View.RPC(nameof(SyncPrepareNextLevel), RpcTarget.All);
         }
         
         public IEnumerator PrepareNextLevel()
@@ -193,6 +205,12 @@ namespace EverScord
 
             ResetProgress();
             portalControl.ClosePortal();
+        }
+
+        [PunRPC]
+        public void SyncPrepareNextLevel()
+        {
+            StartCoroutine(PrepareNextLevel());
         }
 
         private void SetNextLevel(out GameObject nextLevel)

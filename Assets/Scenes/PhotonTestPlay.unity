@@ -12210,6 +12210,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d538046acb6244cbdcd95f4932936e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &530787491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530787486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 41
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &532648975
 GameObject:
   m_ObjectHideFlags: 0
@@ -21445,6 +21467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1547650009}
   - component: {fileID: 1547650010}
+  - component: {fileID: 1547650011}
   m_Layer: 0
   m_Name: LevelControl
   m_TagString: Untagged
@@ -21500,6 +21523,28 @@ MonoBehaviour:
     LoopBgm: {fileID: 0}
   - Level: {fileID: 1444675646}
     LoopBgm: {fileID: 0}
+--- !u!114 &1547650011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547650008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 40
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1587413783
 GameObject:
   m_ObjectHideFlags: 0
@@ -28992,7 +29037,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2619601317213053651, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 530787491}
   m_SourcePrefab: {fileID: 100100000, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
 --- !u!1001 &8328645704140777150
 PrefabInstance:

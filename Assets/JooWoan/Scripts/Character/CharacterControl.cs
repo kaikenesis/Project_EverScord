@@ -921,11 +921,9 @@ namespace EverScord.Character
             State = (CharState)state;
         }
 
-
         [PunRPC]
-        public void SyncOnAugmentSelect(int state)
+        public void SyncOnAugmentSelect()
         {
-            State = (CharState)state;
             AugmentPresenter.IncreaseSelectedPeople();
         }
 

@@ -134,11 +134,13 @@ namespace EverScord.Augment
             DOTween.Play(DOTWEEN_UI_DISAPPEAR);
 
             player.PlayerUIControl.SetCursor(CursorType.BATTLE);
-
             player.SetState(SetCharState.REMOVE, CharState.SELECTING_AUGMENT);
 
             if (PhotonNetwork.IsConnected)
-                player.CharacterPhotonView.RPC(nameof(player.SyncOnAugmentSelect), RpcTarget.Others, player.State);
+            {
+                player.CharacterPhotonView.RPC(nameof(player.SyncState), RpcTarget.Others, player.State);
+                player.CharacterPhotonView.RPC(nameof(player.SyncOnAugmentSelect), RpcTarget.MasterClient);
+            }
         }
 
         public static void IncreaseSelectedPeople()
@@ -148,8 +150,13 @@ namespace EverScord.Augment
             if (selectedPeople != PhotonNetwork.CurrentRoom.PlayerCount)
                 return;
 
-            if (PhotonNetwork.IsMasterClient)
-                GameManager.View.RPC(nameof(GameManager.Instance.SyncEnablePortal), RpcTarget.All);
+            selectedPeople = 0;
+
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            PortalControl portal = GameManager.Instance.LevelController.PortalController;
+            portal.View.RPC(nameof(portal.SyncSetPortal), RpcTarget.All, true);
         }
 
         private void CreateAugmentSelectTags()
