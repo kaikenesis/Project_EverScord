@@ -39,10 +39,6 @@ namespace EverScord
             return this;
         }
 
-        public virtual void RemoveDebuff()
-        {
-            onDebuffRemoved?.Invoke(linkedState);
-            onDebuffRemoved = null;
-        }
+        public abstract void RemoveDebuff();
     }
 }

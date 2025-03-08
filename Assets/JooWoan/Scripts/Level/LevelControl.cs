@@ -200,10 +200,10 @@ namespace EverScord
 
             foreach (var player in GameManager.Instance.PlayerDict.Values)
             {
-                Instantiate(beamEffect, player.PlayerTransform.position, Quaternion.identity);
                 player.SetActive(true);
                 player.SetState(Character.SetCharState.REMOVE, Character.CharState.TELEPORTING);
                 player.SetState(Character.SetCharState.REMOVE, Character.CharState.INVINCIBLE);
+                Instantiate(beamEffect, player.PlayerTransform.position, Quaternion.identity);
                 yield return waitPointOne;
             }
 
