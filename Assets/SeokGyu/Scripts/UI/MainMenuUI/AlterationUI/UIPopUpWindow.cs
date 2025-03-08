@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
@@ -71,7 +72,6 @@ namespace EverScord
 
         private void DisplayUnlockFactor(int cost)
         {
-            // mainMsg, subMsg, acceptText, cancelText, 요구 money, 현재 money 데이터로 분리 필요
             gameObject.SetActive(true);
             curWindowType = EType.Unlock;
             int money;
@@ -80,6 +80,7 @@ namespace EverScord
             else
                 money = -1;
 
+            refuseText.transform.parent.GetComponent<Button>().interactable = true;
             if (money < cost)
             {
                 SetMessage($"필요한 재화 : {cost}\n 개방하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
@@ -105,6 +106,7 @@ namespace EverScord
             else
                 money = -1;
 
+            refuseText.transform.parent.GetComponent<Button>().interactable = true;
             if (money < cost)
             {
                 SetMessage($"필요한 재화 : {cost}\n 개조하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
@@ -125,9 +127,11 @@ namespace EverScord
             gameObject.SetActive(true);
             curWindowType = EType.Apply;
 
-            if(curName == "" || curValue == 0)
+            refuseText.transform.parent.GetComponent<Button>().interactable = true;
+            if (curName == "" || curValue == 0)
             {
                 mainMessage.text = $"현재 : X\n적용 후 : {newName}, {newValue}\n적용하시겠습니까?";
+                refuseText.transform.parent.GetComponent<Button>().interactable = false;
             }
             else
             {
