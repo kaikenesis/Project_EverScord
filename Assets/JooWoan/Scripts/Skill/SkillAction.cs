@@ -8,7 +8,7 @@ namespace EverScord.Skill
     public abstract class SkillAction : MonoBehaviour
     {
         protected CharacterControl activator;
-        protected CooldownTimer cooldownTimer;
+        protected SkillTimer cooldownTimer;
         protected Coroutine skillCoroutine;
         protected PhotonView photonView;
         protected PlayerData.EJob ejob;
@@ -39,7 +39,7 @@ namespace EverScord.Skill
             this.ejob       = ejob;
             photonView      = activator.CharacterPhotonView;
 
-            cooldownTimer = new CooldownTimer(skill.Cooldown);
+            cooldownTimer = new SkillTimer(skill.Cooldown);
             StartCoroutine(cooldownTimer.RunTimer());
         }
 
