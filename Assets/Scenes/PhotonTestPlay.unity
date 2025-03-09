@@ -11747,10 +11747,10 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   <AugmentCursorIcon>k__BackingField:
-    m_AssetGUID: 214d561cb29302b4988cd5837391c59c
+    m_AssetGUID: b90698a5d27a5eb47b65b8eb282f5546
     m_SubObjectName: 
     m_SubObjectType: 
-    m_EditorAssetChanged: 1
+    m_EditorAssetChanged: 0
   <HealEffect>k__BackingField:
     m_AssetGUID: 2900d1807ba4af04687b8e58bf0f0f85
     m_SubObjectName: 
@@ -19000,16 +19000,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 2057764309}
     m_Modifications:
     - target: {fileID: 1409612709447654985, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-      propertyPath: m_RenderMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2342019967957374983, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-      propertyPath: uiCanvas
-      value: 
-      objectReference: {fileID: 1113726317}
-    - target: {fileID: 2342019967957374983, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-      propertyPath: selectTimeLimit
-      value: 30
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3964615265655247520, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
       propertyPath: m_Name
@@ -19095,7 +19087,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5333142832648325611, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6833233089743677241, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8659823668569634787, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -19107,11 +19107,6 @@ PrefabInstance:
 --- !u!224 &1113726316 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4212752072324433900, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-  m_PrefabInstance: {fileID: 1113726315}
-  m_PrefabAsset: {fileID: 0}
---- !u!223 &1113726317 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 1409612709447654985, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
   m_PrefabInstance: {fileID: 1113726315}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1129453333
@@ -28648,6 +28643,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGameUI
       objectReference: {fileID: 0}
+    - target: {fileID: 2128375665284905751, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3254376632951464756, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: minimapBackgroundUI
       value: 
@@ -28738,15 +28737,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.488
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.488
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5365646518902323504, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.x

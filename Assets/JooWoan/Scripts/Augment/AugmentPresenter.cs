@@ -33,6 +33,9 @@ namespace EverScord.Augment
         [SerializeField] private LockableButton confirmBtn;
         [SerializeField] private Button upgradeBtn;
         [SerializeField] private float selectTimeLimit;
+        [SerializeField] private ArmorUpgradeIcon helmetUpgradeIcons, vestUpgradeIcons, shoeUpgradeIcons;
+        [SerializeField] private List<Sprite> helmetIcons, vestIcons, shoeIcons;
+        [SerializeField] private Color greenIconColor, deafultIconColor;
 
         private List<string> helmetAugmentTags = new();
         private List<string> vestAugmentTags = new();
@@ -43,9 +46,9 @@ namespace EverScord.Augment
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
         private string selectedShoesTag = "";
+        private int enhanceIndex = 0;
         private int enhanceCount = 0;
-
-        private bool isAugmentSelectMode => enhanceCount == 0;
+        private bool isAugmentSelectMode => enhanceIndex == 0;
 
         void Awake()
         {
@@ -60,20 +63,17 @@ namespace EverScord.Augment
             player = CharacterControl.CurrentClientCharacter;
         }
 
-        void OnDisable()
+        private void RemoveListeners()
         {
             RemoveSlotSelectEvent();
-
-            confirmBtn.GetComponent<Button>().onClick.RemoveListener(EnhanceArmor);
-            confirmBtn.GetComponent<Button>().onClick.RemoveListener(HideAugmentCards);
-
-            upgradeBtn.onClick.RemoveListener(EnhanceArmor);
-            upgradeBtn.onClick.RemoveListener(HideAugmentCards);
+            confirmBtn.GetComponent<Button>().onClick.RemoveAllListeners();
+            upgradeBtn.onClick.RemoveAllListeners();
         }
 
         public void ShowAugmentCards()
         {
             selectedPeople = 0;
+            RemoveListeners();
 
             uiHub.SetActive(true);
             augmentTimer.gameObject.SetActive(true);
@@ -106,14 +106,14 @@ namespace EverScord.Augment
             }
             else
             {
+                upgradeBtn.onClick.AddListener(EnhanceArmor);
+                upgradeBtn.onClick.AddListener(HideAugmentCards);
+
                 SetSelectUI(false);
                 SetUpgradeUI(true);
 
                 augmentTimer.SetTimer(selectTimeLimit, ProceedUpgrade);
                 augmentTimer.StartTimer();
-
-                upgradeBtn.onClick.AddListener(EnhanceArmor);
-                upgradeBtn.onClick.AddListener(HideAugmentCards);
 
                 SetAugmentUpgradeText();
             }
@@ -124,7 +124,7 @@ namespace EverScord.Augment
 
         private void HideAugmentCards()
         {
-            OnDisable();
+            RemoveListeners();
 
             augmentTimer.gameObject.SetActive(false);
             confirmBtn.gameObject.SetActive(false);
@@ -215,14 +215,14 @@ namespace EverScord.Augment
                 if (index >= targetUI.slotImages.Length)
                     break;
 
-                if (enhanceCount >= record.Value.Count)
+                if (enhanceIndex >= record.Value.Count)
                 {
-                    Debug.LogWarning($"Enhanced augment does not exist. Current enhance count : {enhanceCount}");
+                    Debug.LogWarning($"Enhanced augment does not exist. Current enhance count : {enhanceIndex}");
                     break;
                 }
 
                 augmentTags.Add(record.Key);
-                targetUI.SetSlotText(index, record.Value[enhanceCount]?.Description);
+                targetUI.SetSlotText(index, record.Value[enhanceIndex]?.Description);
                 index++;
             }
         }
@@ -232,9 +232,9 @@ namespace EverScord.Augment
             // Check dealer or healer
             var helmetAugmentDict = augmentData.OffenseHelmetAugmentDict;
 
-            helmetUpgradeUI.SetText(helmetAugmentDict[selectedHelmetTag][enhanceCount]?.Description);
-            vestUpgradeUI.SetText(augmentData.VestAugmentDict[selectedVestTag][enhanceCount]?.Description);
-            shoesUpgradeUI.SetText(augmentData.ShoesAugmentDict[selectedShoesTag][enhanceCount]?.Description);
+            helmetUpgradeUI.SetText(helmetAugmentDict[selectedHelmetTag][enhanceIndex]?.Description);
+            vestUpgradeUI.SetText(augmentData.VestAugmentDict[selectedVestTag][enhanceIndex]?.Description);
+            shoesUpgradeUI.SetText(augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex]?.Description);
         }
 
         private void TryUnlockConfirmBtn()
@@ -292,18 +292,19 @@ namespace EverScord.Augment
                 selectedShoesTag        = shoesAugmentTags[shoesSelectUI.selectedSlotIndex];
             }
 
-            HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[selectedHelmetTag][enhanceCount];
-            VestAugment vestAugment     = (VestAugment)augmentData.VestAugmentDict[selectedVestTag][enhanceCount];
-            ShoesAugment shoesAugment   = (ShoesAugment)augmentData.ShoesAugmentDict[selectedShoesTag][enhanceCount];
+            HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[selectedHelmetTag][enhanceIndex];
+            VestAugment vestAugment     = (VestAugment)augmentData.VestAugmentDict[selectedVestTag][enhanceIndex];
+            ShoesAugment shoesAugment   = (ShoesAugment)augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex];
 
             player.SetArmor(new HelmetDecorator(player.CharacterHelmet, helmetAugment));
             player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
             player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
 
+            enhanceIndex++;
             enhanceCount++;
 
-            if (enhanceCount >= helmetAugmentDict[selectedHelmetTag].Count)
-                enhanceCount = helmetAugmentDict[selectedHelmetTag].Count - 1;
+            if (enhanceIndex >= helmetAugmentDict[selectedHelmetTag].Count)
+                enhanceIndex = helmetAugmentDict[selectedHelmetTag].Count - 1;
         }
 
         private void RemoveSlotSelectEvent()
@@ -319,6 +320,27 @@ namespace EverScord.Augment
             helmetUpgradeUI.gameObject.SetActive(isEnabled);
             vestUpgradeUI.gameObject.SetActive(isEnabled);
             shoesUpgradeUI.gameObject.SetActive(isEnabled);
+
+            if (!isEnabled || enhanceCount == 0)
+                return;
+
+            List<Sprite>[] armorIcons = { helmetIcons, vestIcons, shoeIcons };
+            ArmorUpgradeIcon[] upgradeIcons = { helmetUpgradeIcons, vestUpgradeIcons, shoeUpgradeIcons };
+
+            for (int i = 0; i < armorIcons.Length; i++)
+            {
+                if (armorIcons[i].Count <= 0 || enhanceCount >= armorIcons[i].Count)
+                    continue;
+
+                upgradeIcons[i].PreviousIcon.color = deafultIconColor;
+                upgradeIcons[i].NextIcon.color = deafultIconColor;
+
+                if (enhanceCount == 1)
+                    upgradeIcons[i].PreviousIcon.color = greenIconColor;
+
+                upgradeIcons[i].PreviousIcon.sprite = armorIcons[i][enhanceCount - 1];
+                upgradeIcons[i].NextIcon.sprite = armorIcons[i][enhanceCount];
+            }
         }
 
         private void SetSelectUI(bool isEnabled)
@@ -327,5 +349,12 @@ namespace EverScord.Augment
             vestSelectUI.gameObject.SetActive(isEnabled);
             shoesSelectUI.gameObject.SetActive(isEnabled);
         }
+    }
+
+    [System.Serializable]
+    public class ArmorUpgradeIcon
+    {
+        public Image PreviousIcon;
+        public Image NextIcon;
     }
 }
