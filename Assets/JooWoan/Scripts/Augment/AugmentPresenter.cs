@@ -344,8 +344,6 @@ namespace EverScord.Augment
             player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
             player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
 
-            Debug.Log(player.CharacterShoes.Cooldown);
-
             enhanceIndex++;
             enhanceCount++;
 
