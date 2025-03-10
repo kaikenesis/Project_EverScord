@@ -46,6 +46,8 @@ namespace EverScord.Augment
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
         private string selectedShoesTag = "";
+        private float helmetStatIncrease, vestStatIncrease, shoesStatIncrease;
+        private float previousHelmetStatIncrease, previousVestStatIncrease, previousShoesStatIncrease;
         private int enhanceIndex = 0;
         private int enhanceCount = 0;
         private bool isAugmentSelectMode => enhanceIndex == 0;
@@ -115,11 +117,43 @@ namespace EverScord.Augment
                 augmentTimer.SetTimer(selectTimeLimit, ProceedUpgrade);
                 augmentTimer.StartTimer();
 
+                SetStatIncrease();
                 SetAugmentUpgradeText();
             }
 
             DOTween.Rewind(DOTWEEN_UI_APPEAR);
             DOTween.Play(DOTWEEN_UI_APPEAR);
+        }
+
+        private void SetStatIncrease()
+        {
+            var helmetAugmentDict = augmentData.OffenseHelmetAugmentDict;
+
+            if (player.CharacterJob == PlayerData.EJob.Healer)
+                helmetAugmentDict = augmentData.SupportHelmetAugmentDict;
+            
+            HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[selectedHelmetTag][enhanceIndex];
+            VestAugment vestAugment     = (VestAugment)augmentData.VestAugmentDict[selectedVestTag][enhanceIndex];
+            ShoesAugment shoesAugment   = (ShoesAugment)augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex];
+
+            IHelmet originalHelmet  = player.CharacterHelmet;
+            IVest originalVest      = player.CharacterVest;
+            IShoes originalShoes    = player.CharacterShoes;
+
+            if (enhanceIndex > 0)
+            {
+                originalHelmet = ((HelmetDecorator)player.CharacterHelmet).originalHelmet;
+                originalVest   = ((VestDecorator)player.CharacterVest).originalVest;
+                originalShoes  = ((ShoesDecorator)player.CharacterShoes).originalShoes;
+            }
+
+            previousHelmetStatIncrease  = helmetStatIncrease;
+            previousVestStatIncrease    = vestStatIncrease;
+            previousShoesStatIncrease   = shoesStatIncrease;
+
+            helmetStatIncrease  = IArmor.GetStatChangeAmount(originalHelmet, new HelmetDecorator(player.CharacterHelmet, helmetAugment), helmetAugment.BonusIndex);
+            vestStatIncrease    = IArmor.GetStatChangeAmount(originalVest,   new VestDecorator(player.CharacterVest,     vestAugment),   vestAugment.BonusIndex);
+            shoesStatIncrease   = IArmor.GetStatChangeAmount(originalShoes,  new ShoesDecorator(player.CharacterShoes,   shoesAugment),  shoesAugment.BonusIndex);
         }
 
         private void HideAugmentCards()
@@ -179,8 +213,10 @@ namespace EverScord.Augment
             switch (type)
             {
                 case AugmentType.Helmet:
-                    // Check dealer or healer
                     augmentDict = augmentData.OffenseHelmetAugmentDict;
+
+                    if (player.CharacterJob == PlayerData.EJob.Healer)
+                        augmentDict = augmentData.SupportHelmetAugmentDict;
 
                     augmentTags = helmetAugmentTags;
                     targetUI    = helmetSelectUI;
@@ -222,19 +258,21 @@ namespace EverScord.Augment
                 }
 
                 augmentTags.Add(record.Key);
-                targetUI.SetSlotText(index, record.Value[enhanceIndex]?.Description);
+                targetUI.SetSlotText(index, record.Value[enhanceIndex]);
                 index++;
             }
         }
 
         private void SetAugmentUpgradeText()
         {
-            // Check dealer or healer
             var helmetAugmentDict = augmentData.OffenseHelmetAugmentDict;
 
-            helmetUpgradeUI.SetText(helmetAugmentDict[selectedHelmetTag][enhanceIndex]?.Description);
-            vestUpgradeUI.SetText(augmentData.VestAugmentDict[selectedVestTag][enhanceIndex]?.Description);
-            shoesUpgradeUI.SetText(augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex]?.Description);
+            if (player.CharacterJob == PlayerData.EJob.Healer)
+                helmetAugmentDict = augmentData.SupportHelmetAugmentDict;
+
+            helmetUpgradeUI.SetText(helmetAugmentDict[selectedHelmetTag][enhanceIndex], previousHelmetStatIncrease, helmetStatIncrease);
+            vestUpgradeUI.SetText(augmentData.VestAugmentDict[selectedVestTag][enhanceIndex], previousVestStatIncrease, vestStatIncrease);
+            shoesUpgradeUI.SetText(augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex], previousShoesStatIncrease, shoesStatIncrease);
         }
 
         private void TryUnlockConfirmBtn()
@@ -282,14 +320,20 @@ namespace EverScord.Augment
 
         private void EnhanceArmor()
         {
-            // Check dealer or healer
-            var helmetAugmentDict       = augmentData.OffenseHelmetAugmentDict;
+            var helmetAugmentDict = augmentData.OffenseHelmetAugmentDict;
+
+            if (player.CharacterJob == PlayerData.EJob.Healer)
+                helmetAugmentDict = augmentData.SupportHelmetAugmentDict;
 
             if (isAugmentSelectMode)
             {
                 selectedHelmetTag       = helmetAugmentTags[helmetSelectUI.selectedSlotIndex];
                 selectedVestTag         = vestAugmentTags[vestSelectUI.selectedSlotIndex];
                 selectedShoesTag        = shoesAugmentTags[shoesSelectUI.selectedSlotIndex];
+
+                helmetStatIncrease      = helmetAugmentDict[selectedHelmetTag][enhanceIndex].DescriptionValue;
+                vestStatIncrease        = augmentData.VestAugmentDict[selectedVestTag][enhanceIndex].DescriptionValue;
+                shoesStatIncrease       = augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex].DescriptionValue;
             }
 
             HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[selectedHelmetTag][enhanceIndex];
@@ -299,6 +343,8 @@ namespace EverScord.Augment
             player.SetArmor(new HelmetDecorator(player.CharacterHelmet, helmetAugment));
             player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
             player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
+
+            Debug.Log(player.CharacterShoes.Cooldown);
 
             enhanceIndex++;
             enhanceCount++;

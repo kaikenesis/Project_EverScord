@@ -19,7 +19,6 @@ namespace EverScord.Armor
         public StatBonus SkillHealBonus     { get; }
         public StatBonus AllroundHealBonus  { get; }
 
-
         // BonusType enum 의 순서는 ArmorAugmentSheet.csv 에 나열된 강화 순서와 동일해야 합니다.
         // BonusType order must be identical to ArmorAugmentSheet.csv augment order.
         public enum BonusType
@@ -30,5 +29,29 @@ namespace EverScord.Armor
             SkillHeal,
             AllroundHeal,
         };
+
+        public float GetStat(BonusType bonusType)
+        {
+            switch (bonusType)
+            {
+                case BonusType.BasicAttack:
+                    return BasicAttackDamage;
+
+                case BonusType.SkillAttack:
+                    return SkillDamage;
+
+                case BonusType.BasicHeal:
+                    return BasicHealAmount;
+
+                case BonusType.SkillHeal:
+                    return SkillHealAmount;
+
+                case BonusType.AllroundHeal:
+                    return AllroundHealAmount;
+
+                default:
+                    return -1;
+            }
+        }
     }
 }

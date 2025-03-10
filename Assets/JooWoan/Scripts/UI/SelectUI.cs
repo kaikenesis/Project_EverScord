@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using EverScord.Augment;
 
 namespace EverScord.UI
 {
@@ -69,9 +70,30 @@ namespace EverScord.UI
             selectedSlotIndex = index;
         }
 
-        public void SetSlotText(int index, string description)
+        public void SetSlotText(int index, ArmorAugment augment)
         {
-            slotTexts[index].text = description;
+            if (augment == null)
+            {
+                Debug.LogWarning("Null armor augment detected.");
+                return;
+            }
+
+            float value = augment.DescriptionValue;
+            if (value < 0)
+                value *= -1;
+            
+            slotTexts[index].text = augment.Description.Replace("@", $"{value:G}%");
+        }
+
+        public string GetSlotText(int index)
+        {
+            if (index >= slotTexts.Count)
+            {
+                Debug.LogWarning("Wrong augment select slot index");
+                return "?";
+            }
+            
+            return slotTexts[index].text;
         }
 
         private void SetSlotColor(int index, bool isSelected)

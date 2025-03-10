@@ -1,4 +1,3 @@
-using UnityEngine;
 using System.Collections.Generic;
 using EverScord.Armor;
 using EverScord.FileIO;
@@ -71,6 +70,8 @@ namespace EverScord.Augment
                                     .SetBonus((IHelmet.BonusType)4, bonusList[4].Item1, bonusList[4].Item2)
                                     .Build();
 
+                                helmetAugment.SetDescriptionInfo(bonusList);
+
                                 if (i < 2 || i == 4)
                                 {
                                     if (!offenseHelmetAugmentDict.ContainsKey(helmetAugment.Name))
@@ -100,6 +101,8 @@ namespace EverScord.Augment
                                     .SetBonus((IVest.BonusType)2, bonusList[2].Item1, bonusList[2].Item2)
                                     .Build();
 
+                                vestAugment.SetDescriptionInfo(bonusList);
+
                                 if (!vestAugmentDict.ContainsKey(vestAugment.Name))
                                     vestAugmentDict[vestAugment.Name] = new();
 
@@ -117,6 +120,8 @@ namespace EverScord.Augment
                                     .SetBonus((IShoes.BonusType)1, bonusList[1].Item1, bonusList[1].Item2)
                                     .SetBonus((IShoes.BonusType)2, bonusList[2].Item1, bonusList[2].Item2)
                                     .Build();
+
+                                shoesAugment.SetDescriptionInfo(bonusList);
 
                                 if (!shoesAugmentDict.ContainsKey(shoesAugment.Name))
                                     shoesAugmentDict[shoesAugment.Name] = new();
