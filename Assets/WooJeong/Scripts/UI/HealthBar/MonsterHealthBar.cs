@@ -43,8 +43,8 @@ public class MonsterHealthBar : MonoBehaviour
         healthBarFill.DOFillAmount(curHP / maxHP, 0.5f);
 
         GameObject damageObj = ResourceManager.Instance.GetFromPool("DamageText", transform.position, Quaternion.identity);
-        damageObj.transform.SetParent(transform.parent);
-        DamageTextUI damageUI = damageObj.GetComponent<DamageTextUI>();        
+        damageObj.transform.SetParent(transform);
+        DamageTextUI damageUI = damageObj.GetComponent<DamageTextUI>();
         damageUI.DisplayDamage(transform, damage);
     }
 

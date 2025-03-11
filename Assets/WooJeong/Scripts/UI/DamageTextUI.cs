@@ -44,6 +44,7 @@ public class DamageTextUI : MonoBehaviour
         target = newTarget;
         transform.position = target.position + new Vector3(0, yOffset, 0);
         damageText.text = damage.ToString();
-        StartCoroutine(Updating());
+        if (gameObject.activeSelf)
+            StartCoroutine(Updating());
     }
 }
