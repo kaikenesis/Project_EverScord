@@ -12,9 +12,12 @@ public abstract class ActionNodeImplement : MonoBehaviour
     protected GameObject player;
     protected BossRPC bossRPC;
     protected LayerMask playerLayer;
+    protected float attackableHP = 100;
+    protected bool attackable = false;
 
     protected virtual void Awake()
     {
+        attackable = false;
         bossRPC = GetComponent<BossRPC>();
         playerLayer = LayerMask.GetMask("Player");
     }
@@ -27,6 +30,16 @@ public abstract class ActionNodeImplement : MonoBehaviour
     
     public virtual NodeState Evaluate()
     {
+        if(attackable == false && bossRPC.IsUnderHP(attackableHP))
+        {
+            attackable = true;
+        }
+
+        if(attackable == false)
+        {
+            return NodeState.FAILURE;
+        }
+
         if (isEnd)
         {
             isEnd = false;

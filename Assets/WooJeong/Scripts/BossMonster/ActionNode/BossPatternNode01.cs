@@ -3,31 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern01")]
-public class BossPatternNode01 : BAttackPatternNode
+public class BossPatternNode01 : BActionNode
 {
     public override void Setup(GameObject gameObject)
     {
-        bossData = GetValue<BossData>("BossData");
         actionNodeImplement = gameObject.AddComponent<BossPattern01_Imp>();
         base.Setup(gameObject);
-    }
-
-    public override NodeState Evaluate()
-    {
-        if (!isRunning)
-        {
-            int random = Random.Range(0, 10);
-            if (random <= 5)
-            {
-                return NodeState.FAILURE;
-            }
-            isRunning = true;
-        }
-        
-        state = actionNodeImplement.Evaluate();
-        if (state == NodeState.SUCCESS)
-            isRunning = false;
-
-        return state;
     }
 }

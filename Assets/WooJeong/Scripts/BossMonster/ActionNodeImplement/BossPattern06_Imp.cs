@@ -7,6 +7,12 @@ public class BossPattern06_Imp : ActionNodeImplement
 {
     private float laserLifeTime = 3.5f;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        attackableHP = 80;
+    }
+
     protected override IEnumerator Act()
     {
         Debug.Log("Attack6 start");
