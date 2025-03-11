@@ -131,7 +131,8 @@ namespace EverScord.Weapons
                             float calculatedHeal = sourceWeapon.Heal;
                             character.IncreaseHP(shooter, calculatedHeal, true);
                         }
-                        else if (character.IsStunned && PhotonNetwork.IsConnected)
+
+                        if (character.IsStunned && PhotonNetwork.IsConnected)
                             character.CharacterPhotonView.RPC(nameof(character.SyncInteractStunDebuff), RpcTarget.All);
                     }
 
