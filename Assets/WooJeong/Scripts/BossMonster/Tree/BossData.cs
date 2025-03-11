@@ -1,3 +1,5 @@
+using EverScord;
+using EverScord.Character;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,11 +21,17 @@ public class BossData : ScriptableObject
         Phase = 1;
     }
 
-    public void ReduceHp(float decrease)
+    public void ReduceHp(float decrease, int attackerID)
     {
         HP -= decrease;
-        if (HP < 0) 
+        if (HP < 0)
             HP = 0;
+
+        CharacterControl attacker = GameManager.Instance.PlayerDict[attackerID];
+
+        if (attacker.CharacterPhotonView.IsMine && HP == 0 && Phase == 2)
+            attacker.IncreaseKillCount();
+
         Debug.Log(decrease + " 데미지, 남은 체력 : " + HP);
     }
 

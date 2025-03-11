@@ -109,12 +109,12 @@ namespace EverScord.Skill
                 if (ejob == PlayerData.EJob.Dealer)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedImpact, enemy);
                 }
                 else
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                    player.IncreaseHP(calculatedImpact, true);
+                    player.IncreaseHP(activator, calculatedImpact, true);
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace EverScord.Skill
                     flameControl = flameEffect.GetComponent<FlameControl>();
 
                     flameControl.Init(
-                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy,
+                        activator,
                         Skill.ZoneInfluenceInterval,
                         Skill.FlameBaseDamage,
                         targetLayer
@@ -158,6 +158,7 @@ namespace EverScord.Skill
                     healZoneControl = healEffect.GetComponent<HealZoneControl>();
 
                     healZoneControl.Init(
+                        activator,
                         Skill.ZoneInfluenceInterval,
                         Skill.HealBaseAmount,
                         targetLayer

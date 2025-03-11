@@ -6,14 +6,16 @@ namespace EverScord.Skill
 {
     public class HealZoneControl : MonoBehaviour
     {
+        private CharacterControl activator;
         private LayerMask targetLayer;
         private IDictionary<CharacterControl, CooldownTimer> healTimerDict;
         private float healInterval;
         private float healBaseAmount;
         private bool isInitialized = false;
 
-        public void Init(float healInterval, float healBaseAmount, LayerMask targetLayer)
+        public void Init(CharacterControl activator, float healInterval, float healBaseAmount, LayerMask targetLayer)
         {
+            this.activator = activator;
             this.healInterval = healInterval;
             this.healBaseAmount = healBaseAmount;
             this.targetLayer = targetLayer;
@@ -44,7 +46,7 @@ namespace EverScord.Skill
             // Calculate total heal based on character stats
             float totalHealAmount = healBaseAmount;
 
-            player.IncreaseHP(totalHealAmount, true);            
+            player.IncreaseHP(activator, totalHealAmount, true);
             healTimerDict[player].ResetElapsedTime();
         }
     }

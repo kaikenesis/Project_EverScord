@@ -28,6 +28,9 @@ namespace EverScord.Character
         [SerializeField] private float bodyRotateSpeed;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currentHealth;
+        [SerializeField] private float killCount;
+        [SerializeField] private float dealtDamage;
+        [SerializeField] private float dealtHeal;
 
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius;
@@ -195,7 +198,7 @@ namespace EverScord.Character
         void Update()
         {
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
-                IncreaseHP(10);
+                IncreaseHP(this, 10);
 
             UIMarker.UpdatePosition(PlayerTransform.position);
 
@@ -585,20 +588,33 @@ namespace EverScord.Character
                 photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, false);
         }
 
-        public void IncreaseHP(float amount, bool isExternalHeal = false)
+        public void IncreaseHP(CharacterControl activator, float amount, bool isExternalHeal = false)
         {
             if (IsDead)
                 return;
-            
+
             PlayHealEffects();
 
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+
+            if (activator.CharacterPhotonView.IsMine)
+                dealtHeal += amount;
 
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
             {
                 photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
                 photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, true);
             }
+        }
+
+        public void IncreaseDealtDamage(float amount)
+        {
+            dealtDamage += amount;
+        }
+
+        public void IncreaseKillCount()
+        {
+            ++killCount;
         }
 
         private IEnumerator HandleDeath()
@@ -639,7 +655,6 @@ namespace EverScord.Character
             Instantiate(beamEffect, PlayerTransform.position, Quaternion.identity);
 
             PlayHealEffects();
-
             CurrentHealth = maxHealth;
 
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);

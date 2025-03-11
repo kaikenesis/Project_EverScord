@@ -1,3 +1,4 @@
+using EverScord.Character;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,12 +45,12 @@ public class BossDebuffSystem : MonoBehaviour
         debuffDict[BossDebuff.SLOW] = new BossDebuffSlow();
     }
 
-    public void SetDebuff(BossRPC boss, BossDebuff bossDebuff, float time, float value)
+    public void SetDebuff(BossRPC boss, BossDebuff bossDebuff, CharacterControl attacker, float time, float value)
     {
         if (debuffDict.Count == 0)
             Initialize();
 
-        StartCoroutine(debuffDict[bossDebuff].StartDebuff(boss, time, value));
+        StartCoroutine(debuffDict[bossDebuff].StartDebuff(boss, attacker, time, value));
         StartCoroutine(DebuffEnd(bossDebuff, time));
         OnBossDebuffStart?.Invoke(bossDebuff);
     }

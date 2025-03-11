@@ -33,10 +33,10 @@ namespace EverScord.Skill
             for (int i = 0; i < colliders.Length; i++)
             {
                 IEnemy enemy = colliders[i].GetComponent<IEnemy>();
-                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
+                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
 
                 if (enemy is BossRPC boss)
-                    boss.SetDebuff(BossDebuff.POISON, Skill.PoisonedDuration, Skill.PoisonDamage);
+                    boss.SetDebuff(activator, BossDebuff.POISON, Skill.PoisonedDuration, Skill.PoisonDamage);
             }
         }
 
@@ -51,7 +51,7 @@ namespace EverScord.Skill
             for (int i = 0; i < colliders.Length; i++)
             {
                 CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                player.IncreaseHP(calculatedHeal, true);
+                player.IncreaseHP(activator, calculatedHeal, true);
             }
         }
 

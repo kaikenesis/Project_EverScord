@@ -71,9 +71,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         uiMarker.UpdatePosition(transform.position);
     }
 
-    public void SetDebuff(BossDebuff debuffState, float time, float value)
+    public void SetDebuff(CharacterControl attacker, BossDebuff debuffState, float time, float value)
     {
-        bossDebuffSystem.SetDebuff(this, debuffState, time, value);
+        bossDebuffSystem.SetDebuff(this, debuffState, attacker, time, value);
     }
 
     private void SetProjectors()
@@ -307,15 +307,15 @@ public class BossRPC : MonoBehaviour, IEnemy
         safeZone.transform.position = pos;
     }
 
-    public void DecreaseHP(float hp)
+    public void DecreaseHP(float hp, CharacterControl attacker)
     {
-        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp);
+        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp, attacker.CharacterPhotonView.ViewID);
     }
 
     [PunRPC]
-    protected void SyncBossMonsterHP(float hp)
+    protected void SyncBossMonsterHP(float hp, int attackerID)
     {
-        bossData.ReduceHp(hp);
+        bossData.ReduceHp(hp, attackerID);
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
 

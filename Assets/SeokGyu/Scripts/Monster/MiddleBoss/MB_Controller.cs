@@ -1,3 +1,4 @@
+using EverScord.Character;
 using EverScord.Effects;
 using Photon.Pun;
 using System.Collections;
@@ -256,7 +257,7 @@ namespace EverScord
             btRunner.UpdatePhase();
         }
 
-        public void DecreaseHP(float hp)
+        public void DecreaseHP(float hp, CharacterControl attacker)
         {
             throw new System.NotImplementedException();
         }

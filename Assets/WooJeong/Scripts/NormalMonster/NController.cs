@@ -3,6 +3,7 @@ using EverScord.Character;
 using EverScord.Effects;
 using EverScord.Pool;
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -212,11 +213,14 @@ public abstract class NController : MonoBehaviour, IEnemy
         ma.Setup(width, projectTime, addressableKey, attackDamage);
     }
 
-    public void DecreaseHP(float hp)
+    public void DecreaseHP(float hp, CharacterControl attacker)
     {
         this.HP -= hp;
         if (this.HP <= 0)
+        {
             isDead = true;
+            attacker.IncreaseKillCount();
+        }
 
         if (monsterHealthBar != null)
             monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);

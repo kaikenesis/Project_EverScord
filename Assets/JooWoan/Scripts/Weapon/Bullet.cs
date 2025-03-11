@@ -119,7 +119,7 @@ namespace EverScord.Weapons
                         float calculatedDamage = DamageCalculator.GetBulletDamage(ViewID, sourceWeapon);
 
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
-                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster, false);
+                        GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(shooter, calculatedDamage, monster, false);
                     }
                     else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber)
                     {
@@ -129,7 +129,7 @@ namespace EverScord.Weapons
                         {
                             // Calculate total heal
                             float calculatedHeal = sourceWeapon.Heal;
-                            character.IncreaseHP(calculatedHeal, true);
+                            character.IncreaseHP(shooter, calculatedHeal, true);
                         }
                         else if (character.IsStunned && PhotonNetwork.IsConnected)
                             character.CharacterPhotonView.RPC(nameof(character.SyncInteractStunDebuff), RpcTarget.All);
