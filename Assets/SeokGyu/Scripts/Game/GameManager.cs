@@ -5,6 +5,7 @@ using EverScord.Character;
 using EverScord.Weapons;
 using EverScord.Monster;
 using EverScord.Effects;
+using System;
 
 namespace EverScord
 {
@@ -93,6 +94,8 @@ namespace EverScord
 
         private IDictionary<int, CharacterControl> playerDict;
 
+        public static Action<int> OnUpdatedMoney = delegate { };
+
         public static GameManager Instance
         {
             get
@@ -139,6 +142,12 @@ namespace EverScord
         public void UpdateUserName(string newName)
         {
             PhotonNetwork.NickName = newName;
+        }
+
+        public void UpdateMoney(int cost)
+        {
+            playerData.UpdateMoney(cost);
+            OnUpdatedMoney?.Invoke(PlayerData.money);
         }
 
         public void InitControl(object control)
@@ -221,7 +230,7 @@ namespace EverScord
             {
                 if (GUI.Button(new Rect(200, 0, 120, 60), "Show Me The Money"))
                 {
-                    playerData.IncreaseMoney(10000);
+                    UpdateMoney(10000);
                 }
 
                 if (GUI.Button(new Rect(200, 70, 120, 60), "Play"))

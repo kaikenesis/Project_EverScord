@@ -6,23 +6,27 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Datas/PopUpWindowData", fileName = "newPopUpWindowData")]
     public class PopUpWindowData : ScriptableObject
     {
-        [SerializeField] private Message[] message;
+        [SerializeField] private Message[] messages;
 
-        public void SetText(int typeNum, out string mainMessage, out string subMessage, out string acceptText, out string refuseText)
+        public Message[] Messages
         {
-            mainMessage = message[typeNum].MainMessage;
-            subMessage = message[typeNum].SubMessage;
-            acceptText = message[typeNum].AcceptText;
-            refuseText = message[typeNum].RefuseText;
+            get { return messages; }
         }
 
         [System.Serializable]
         public class Message
         {
+            [SerializeField] private string titleText;
             [SerializeField] private string mainMessage;
             [SerializeField] private string subMessage;
             [SerializeField] private string acceptText;
-            [SerializeField] private string refuseText;
+            [SerializeField] private string cancelText;
+
+            public string TitleText
+            {
+                get { return titleText; }
+                private set { titleText = value; }
+            }
 
             public string MainMessage
             {
@@ -42,10 +46,10 @@ namespace EverScord
                 private set { acceptText = value; }
             }
 
-            public string RefuseText
+            public string CancelText
             {
-                get { return refuseText; }
-                private set { refuseText = value; }
+                get { return cancelText; }
+                private set { cancelText = value; }
             }
         }
     }

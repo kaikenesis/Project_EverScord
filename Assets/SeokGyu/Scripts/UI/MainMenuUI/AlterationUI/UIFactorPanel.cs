@@ -1,8 +1,8 @@
-using Photon.Pun.Demo.Procedural;
 using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
@@ -10,6 +10,7 @@ namespace EverScord
     {
         [SerializeField] private GameObject factor;
         [SerializeField] private Transform containor;
+        [SerializeField] private Image titleImg;
         [SerializeField] private TMP_Text text;
         private List<UIFactorSlot> slots = new List<UIFactorSlot>();
         private int panelTypeNum;
@@ -65,15 +66,17 @@ namespace EverScord
 
         private void SetTitle(int typeNum)
         {
+            titleImg.sprite = GameManager.Instance.FactorDatas[typeNum].TitleSourceImg;
+            text.color = GameManager.Instance.FactorDatas[typeNum].TitleTextColor;
             panelTypeNum = typeNum;
 
             switch (typeNum)
             {
                 case 0:
-                    text.text = "Alpha";
+                    text.text = "알파";
                     break;
                 case 1:
-                    text.text = "Beta";
+                    text.text = "베타";
                     break;
             }
         }

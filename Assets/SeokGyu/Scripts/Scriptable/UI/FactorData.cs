@@ -16,6 +16,9 @@ namespace EverScord
         [SerializeField] private int slotCount;
         [SerializeField] private int confirmedCount;
         [SerializeField] private Sprite lockedSourceImg;
+        [SerializeField] private Sprite titleSourceImg;
+        [SerializeField] private Color titleTextColor;
+        [SerializeField] private Sprite slotSourceImg;
         [SerializeField] private OptionData[] optionDatas;
 
         public EType Type
@@ -37,6 +40,24 @@ namespace EverScord
         {
             get { return lockedSourceImg; }
             private set { lockedSourceImg = value; }
+        }
+
+        public Sprite TitleSourceImg
+        {
+            get { return titleSourceImg; }
+            private set { titleSourceImg = value; }
+        }
+
+        public Color TitleTextColor
+        {
+            get { return titleTextColor; }
+            private set { titleTextColor = value; }
+        }
+
+        public Sprite SlotSourceImg
+        {
+            get { return slotSourceImg; }
+            private set { slotSourceImg = value; }
         }
 
         public OptionData[] OptionDatas

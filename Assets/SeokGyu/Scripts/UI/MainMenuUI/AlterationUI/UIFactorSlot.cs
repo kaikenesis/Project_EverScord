@@ -28,7 +28,6 @@ namespace EverScord
         public static Action<int> OnDisplayOptionList = delegate { };
         public static Action<string, float, string, float> OnRequestUpdateInfo = delegate { };
         public static Action<Color, string, float, string, float> OnRequestApplyOption = delegate { };
-        public static Action<int> OnDecreaseMoney = delegate { };
 
         private void Awake()
         {
@@ -53,8 +52,7 @@ namespace EverScord
             if (bLock == false || curTypeNum != typeNum || this.slotNum != slotNum) return;
 
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Unlock;
-            GameManager.Instance.PlayerData.DecreaseMoney(cost);
-            OnDecreaseMoney?.Invoke(GameManager.Instance.PlayerData.money);
+            GameManager.Instance.UpdateMoney(-cost);
             bLock = false;
             lockImg.enabled = bLock;
 
@@ -67,8 +65,7 @@ namespace EverScord
             if (bLock == true || curTypeNum != typeNum || this.slotNum != slotNum) return;
 
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
-            GameManager.Instance.PlayerData.DecreaseMoney(cost);
-            OnDecreaseMoney?.Invoke(GameManager.Instance.PlayerData.money);
+            GameManager.Instance.UpdateMoney(-cost);
 
             FactorData datas = GameManager.Instance.FactorDatas[typeNum];
 
@@ -126,8 +123,11 @@ namespace EverScord
 
             slotNum = slotIndex;
             this.bConfirmed = bConfirmed;
+            backImg.sprite = GameManager.Instance.FactorDatas[typeNum].SlotSourceImg;
             lockImg.sprite = GameManager.Instance.FactorDatas[typeNum].LockedSourceImg;
             curTypeNum = typeNum;
+
+
 
             if (optionNums.Count > slotIndex)
             {
@@ -165,18 +165,20 @@ namespace EverScord
                 valueNums.Add(-1);
             }
 
-            switch (curTypeNum)
-            {
-                case 0:
-                    backImg.color = new Color(1, 0.54f, 0.54f);
-                    break;
-                case 1:
-                    backImg.color = new Color(0.54f, 0.54f, 1);
-                    break;
-                default:
-                    backImg.color = new Color(1, 1, 1);
-                    break;
-            }
+            
+
+            //switch (curTypeNum)
+            //{
+            //    case 0:
+            //        backImg.color = new Color(1, 0.54f, 0.54f);
+            //        break;
+            //    case 1:
+            //        backImg.color = new Color(0.54f, 0.54f, 1);
+            //        break;
+            //    default:
+            //        backImg.color = new Color(1, 1, 1);
+            //        break;
+            //}
         }
 
         public void OnClicked()
