@@ -41,6 +41,7 @@ public class MonsterHealthBar : MonoBehaviour
         if (curHP < 0)
             curHP = 0;
         healthBarFill.DOFillAmount(curHP / maxHP, 0.5f);
+
         GameObject damageObj = ResourceManager.Instance.GetFromPool("DamageText", transform.position, Quaternion.identity);
         damageObj.transform.SetParent(transform);
         DamageTextUI damageUI = damageObj.GetComponent<DamageTextUI>();        
