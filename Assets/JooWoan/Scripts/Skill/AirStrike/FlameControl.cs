@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using EverScord.Character;
 
 namespace EverScord.Skill
 {
     public class FlameControl : MonoBehaviour
     {
-        private Action<float, IEnemy, bool> onEnemyHurt;
+        private CharacterControl activator;
         private LayerMask targetLayer;
         private IDictionary<IEnemy, CooldownTimer> hurtTimerDict;
         private float hurtInterval;
         private float flameBaseDamage;
 
-        public void Init(Action<float, IEnemy, bool> onEnemyHurt, float hurtInterval, float flameBaseDamage, LayerMask targetLayer)
+        public void Init(CharacterControl activator, float hurtInterval, float flameBaseDamage, LayerMask targetLayer)
         {
-            this.onEnemyHurt = onEnemyHurt;
+            this.activator = activator;
             this.hurtInterval = hurtInterval;
             this.flameBaseDamage = flameBaseDamage;
             this.targetLayer = targetLayer;
@@ -24,7 +25,7 @@ namespace EverScord.Skill
 
         void OnTriggerStay(Collider other)
         {
-            if (onEnemyHurt == null)
+            if (activator == null)
                 return;
             
             if (((1 << other.gameObject.layer) & targetLayer) == 0)
@@ -43,8 +44,8 @@ namespace EverScord.Skill
 
             // Calculate flame total damage based on character stats
             float totalFlameDamage = flameBaseDamage;
-            
-            onEnemyHurt.Invoke(totalFlameDamage, enemy, true);
+
+            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, totalFlameDamage, enemy, true);
             hurtTimerDict[enemy].ResetElapsedTime();
         }
     }

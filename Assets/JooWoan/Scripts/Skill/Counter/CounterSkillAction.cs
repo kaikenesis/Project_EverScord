@@ -162,7 +162,7 @@ namespace EverScord.Skill
                 IEnemy monster = hit.transform.GetComponent<IEnemy>();
 
                 if (activator.CharacterPhotonView.IsMine)
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, monster);
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, monster);
             }
         }
 
