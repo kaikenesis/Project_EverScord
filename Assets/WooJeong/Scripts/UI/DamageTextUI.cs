@@ -22,14 +22,13 @@ public class DamageTextUI : MonoBehaviour
     private IEnumerator Updating()
     {
         timer = 0f;
+        damageText.DOFade(0, duration);
         while (true)
         {
             timer += Time.deltaTime;
             if(timer >= duration)
             {
                 target = null;
-                damageText.DOFade(0, 0.5f);
-                yield return new WaitForSeconds(0.5f);
                 ResourceManager.Instance.ReturnToPool(gameObject, "");
                 yield break;
             }
@@ -38,11 +37,6 @@ public class DamageTextUI : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    public void SetTarget(Transform newTarget)
-    {
-        target = newTarget;
     }
 
     public void DisplayDamage(Transform newTarget, float damage)
