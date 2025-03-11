@@ -24,6 +24,7 @@ namespace EverScord.Pool
                     await ResourceManager.Instance.CreatePool(info.Reference.AssetGUID, info.PoolSize);
             }
 
+            _ = ResourceManager.Instance.CreatePool("DamageText");
             _ = ResourceManager.Instance.CreatePool("BossProjectile", 63);
             _ = ResourceManager.Instance.CreatePool("MonsterProjectile", 63);
             _ = ResourceManager.Instance.CreatePool("MonsterHealthBar");

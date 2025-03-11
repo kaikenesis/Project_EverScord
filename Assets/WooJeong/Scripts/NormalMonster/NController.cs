@@ -212,26 +212,26 @@ public abstract class NController : MonoBehaviour, IEnemy
         ma.Setup(width, projectTime, addressableKey, attackDamage);
     }
 
-    public void DecreaseHP(float hp)
+    public void DecreaseHP(float damage)
+    {
+        this.HP -= damage;
+        if (this.HP <= 0)
+            isDead = true;
+
+        if (monsterHealthBar != null)
+            monsterHealthBar.UpdateHealth(damage);
+        photonView.RPC("SyncMonsterHP", RpcTarget.Others, damage);
+    }
+
+    [PunRPC]
+    protected void SyncMonsterHP(float hp)
     {
         this.HP -= hp;
         if (this.HP <= 0)
             isDead = true;
 
         if (monsterHealthBar != null)
-            monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
-        photonView.RPC("SyncMonsterHP", RpcTarget.Others, this.HP);
-    }
-
-    [PunRPC]
-    protected void SyncMonsterHP(float hp)
-    {
-        this.HP = hp;
-        if (this.HP <= 0)
-            isDead = true;
-
-        if (monsterHealthBar != null)
-            monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
+            monsterHealthBar.UpdateHealth(hp);
     }
 
     public void StunMonster(float stunTime)
@@ -310,13 +310,10 @@ public abstract class NController : MonoBehaviour, IEnemy
             photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
             healthBarObject.SetActive(true);
         }
-        healthBarObject.SetActive(true);
         photonView.RPC(nameof(SyncIsDead), RpcTarget.All, false);
-        photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
-
+        photonView.RPC(nameof(SyncHealthBarActive), RpcTarget.All);
         HP = monsterData.HP;
-        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
-        photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
+        photonView.RPC(nameof(SyncMonsterHP), RpcTarget.Others, HP);
         LastAttack = 0;
         WaitState();
     }
@@ -335,9 +332,10 @@ public abstract class NController : MonoBehaviour, IEnemy
     }
 
     [PunRPC]
-    protected void SyncHealthBarActive(bool value)
+    protected void SyncHealthBarActive()
     {
         healthBarObject.SetActive(true);
+        monsterHealthBar.InitHealthBar(monsterData.HP);
     }
 
     public void PlayAnimation(string animationName)
