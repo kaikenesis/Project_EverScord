@@ -5,11 +5,8 @@ using UnityEngine;
 
 public class SkillData : MonoBehaviour
 {
-    #region Expression-bodied member source
-    private IDictionary<string, CharacterSkillInfo> skillInfoDict = new Dictionary<string, CharacterSkillInfo>();
-    #endregion
-
-    private IDictionary<string, CharacterSkillInfo> SkillInfoDict => skillInfoDict;
+    private static IDictionary<string, CharacterSkillInfo> skillInfoDict = new Dictionary<string, CharacterSkillInfo>();
+    public static IDictionary<string, CharacterSkillInfo> SkillInfoDict => skillInfoDict;
 
     void Awake()
     {
@@ -24,23 +21,23 @@ public class SkillData : MonoBehaviour
         {
             CharacterSkillInfo info = new CharacterSkillInfo();
 
-            info.tag = sheet[i]["index"];
-            info.name = sheet[i]["name"];
-            info.effectType = sheet[i]["effect_type"];
-            info.triggerCondition = sheet[i]["trigger_condition"];
+            info.tag         = sheet[i]["tag"];
+            info.name        = sheet[i]["name"];
+            info.skillTypes  = CSVReader.SplitCellInt(sheet[i]["skill_type"]);
+            float.TryParse(sheet[i]["cooldown"],     out info.cooldown);
+            info.isOffensive = sheet[i]["effect_type"] == "1";
 
-            info.skillTypes = CSVReader.SplitCellInt(sheet[i]["skill_type"]);
-            info.skillRanges = CSVReader.SplitCellFloat(sheet[i]["skill_range"]);
+            float.TryParse(sheet[i]["skill_atk"],    out info.skillCoefficient);
+            float.TryParse(sheet[i]["skill_dmg"],    out info.skillDamage);
+            float.TryParse(sheet[i]["skill_dot"],    out info.skillDps);
+            float.TryParse(sheet[i]["skill_shield"], out info.skillShield);
 
-            float.TryParse(sheet[i]["cooldown"], out info.cooldown);
-            float.TryParse(sheet[i]["effect_value"], out info.effectValue);
-            float.TryParse(sheet[i]["aoe_diameter"], out info.aoeDiameter);
+            float.TryParse(sheet[i]["skill_range"], out info.skillRange);
+            float.TryParse(sheet[i]["skill_size"], out info.skillSize);
 
-            int.TryParse(sheet[i]["hit_type"], out info.hitType);
-            int.TryParse(sheet[i]["weapon_type"], out int offensive);
-            info.isOffensive = offensive == 1;
+            skillInfoDict[info.tag] = info;
 
-            skillInfoDict[info.name] = info;
+            Debug.Log($"{info.tag} : {info.name} , {info.skillTypes.Count} , {info.cooldown} , {info.isOffensive} , {info.skillCoefficient} , {info.skillDamage}, {info.skillDps}, {info.skillShield}, {info.skillRange}, {info.skillSize}");
         }
     }
 }
