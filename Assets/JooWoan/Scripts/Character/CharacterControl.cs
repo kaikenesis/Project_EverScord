@@ -10,6 +10,7 @@ using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
 using EverScord.Armor;
+using EverScord.Augment;
 
 namespace EverScord.Character
 {
@@ -27,6 +28,9 @@ namespace EverScord.Character
         [SerializeField] private float bodyRotateSpeed;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currentHealth;
+        [SerializeField] private float killCount;
+        [SerializeField] private float dealtDamage;
+        [SerializeField] private float dealtHeal;
 
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius;
@@ -194,10 +198,7 @@ namespace EverScord.Character
         void Update()
         {
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
-                IncreaseHP(10);
-
-            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F3))
-                GameManager.Instance.AugmentControl.ShowAugmentCards();
+                IncreaseHP(this, 10);
 
             UIMarker.UpdatePosition(PlayerTransform.position);
 
@@ -227,6 +228,11 @@ namespace EverScord.Character
             weapon.Shoot(this);
 
             UseSkills();
+        }
+
+        void OnDisable()
+        {
+            IsAiming = false;
         }
 
         private void LerpRemoteInfo()
@@ -501,6 +507,7 @@ namespace EverScord.Character
 
                     if (DebuffDict.ContainsKey(state))
                     {
+                        DebuffDict[state]?.RemoveDebuff();
                         DebuffDict[state] = null;
                         DebuffDict.Remove(state);
                     }
@@ -513,8 +520,6 @@ namespace EverScord.Character
 
                     for (int i = debuffs.Count - 1; i >= 0; i--)
                         debuffs[i]?.RemoveDebuff();
-                    
-                    DebuffDict.Clear();
                     break;
 
                 default:
@@ -538,15 +543,13 @@ namespace EverScord.Character
             if (!PhotonNetwork.IsConnected)
                 return;
             
-            photonView.RPC(nameof(SyncApplyDebuff), RpcTarget.All, (int)SetCharState.ADD, (int)state, count);
+            photonView.RPC(nameof(SyncApplyDebuff), RpcTarget.All, (int)state, count);
         }
 
-        public void RemoveDebuff(CharState state)
+        private void RemoveDebuff(CharState state)
         {
-            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
-                return;
-            
-            photonView.RPC(nameof(SyncRemoveDebuff), RpcTarget.All, (int)state);
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncRemoveDebuff), RpcTarget.All, (int)state);
         }
 
         public void SubscribeOnDecreaseHealth(Action subscriber)
@@ -585,20 +588,38 @@ namespace EverScord.Character
                 photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, false);
         }
 
-        public void IncreaseHP(float amount, bool isExternalHeal = false)
+        public void IncreaseHP(CharacterControl activator, float amount, bool isExternalHeal = false)
         {
             if (IsDead)
                 return;
-            
+
             PlayHealEffects();
 
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+
+            if (activator.CharacterPhotonView.IsMine)
+                activator.IncreaseDealtHeal(amount);
 
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
             {
                 photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
                 photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, true);
             }
+        }
+
+        public void IncreaseDealtDamage(float amount)
+        {
+            dealtDamage += amount;
+        }
+
+        public void IncreaseDealtHeal(float amount)
+        {
+            dealtHeal += amount;
+        }
+
+        public void IncreaseKillCount()
+        {
+            ++killCount;
         }
 
         private IEnumerator HandleDeath()
@@ -639,7 +660,6 @@ namespace EverScord.Character
             Instantiate(beamEffect, PlayerTransform.position, Quaternion.identity);
 
             PlayHealEffects();
-
             CurrentHealth = maxHealth;
 
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);
@@ -836,11 +856,11 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        private void SyncApplyDebuff(int mode, int state, int count)
+        private void SyncApplyDebuff(int state, int count)
         {
             CancelAction();
 
-            SetState((SetCharState)mode, (CharState)state);
+            SetState(SetCharState.ADD, (CharState)state);
             StunnedDebuff debuff = DebuffDict[CharState.STUNNED] as StunnedDebuff;
 
             if (debuff != null)
@@ -918,6 +938,12 @@ namespace EverScord.Character
         public void SyncState(int state)
         {
             State = (CharState)state;
+        }
+
+        [PunRPC]
+        public void SyncOnAugmentSelect()
+        {
+            AugmentPresenter.IncreaseSelectedPeople();
         }
 
         [PunRPC]

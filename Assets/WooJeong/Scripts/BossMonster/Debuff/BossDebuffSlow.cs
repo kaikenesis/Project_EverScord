@@ -1,9 +1,10 @@
+using EverScord.Character;
 using System.Collections;
 using UnityEngine;
 
 public class BossDebuffSlow : BaseBossDebuff
 {
-    public override IEnumerator StartDebuff(BossRPC boss, float time, float value)
+    public override IEnumerator StartDebuff(BossRPC boss, CharacterControl attacker, float time, float value)
     {
         Debug.Log("boss slow");
         timer = time;

@@ -60,6 +60,7 @@ namespace EverScord.Weapons
             if (cooldownTimer == null)
                 cooldownTimer = new CooldownTimer(Cooldown);
 
+            isReloading = false;
             StartCoroutine(cooldownTimer.RunTimer());
         }
 
@@ -211,6 +212,9 @@ namespace EverScord.Weapons
                 return false;
 
             if (shooter.IsStunned)
+                return false;
+
+            if (shooter.HasState(CharState.TELEPORTING))
                 return false;
 
             return true;

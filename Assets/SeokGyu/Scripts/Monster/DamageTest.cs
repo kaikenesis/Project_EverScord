@@ -1,3 +1,4 @@
+using EverScord.Character;
 using EverScord.Effects;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace EverScord
             //Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");
         }
 
-        public void DecreaseHP(float hp)
+        public void DecreaseHP(float hp, CharacterControl attacker)
         {
             throw new System.NotImplementedException();
         }

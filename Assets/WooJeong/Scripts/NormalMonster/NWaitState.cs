@@ -17,7 +17,7 @@ public abstract class NWaitState : MonoBehaviour, IState
     {
         isEnter = true;
         monsterController.PlayAnimation("Wait");
-        Exit();
+        //Exit();
     }
 
     private void Update()
@@ -41,50 +41,54 @@ public abstract class NWaitState : MonoBehaviour, IState
 
         if (monsterController.player == null)
             monsterController.SetNearestPlayer();
+        if (monsterController.player == null)
+            monsterController.isDead = true;
 
         monsterController.LookPlayer();
+
+        if (monsterController.CalcDistance() > monsterController.monsterData.StopDistance)
+        {
+            ExitToRun();
+            return;
+        }
+
+        int transition = monsterController.CheckCoolDown();
+        switch (transition)
+        {
+            case 1:
+                {
+                    monsterController.LastAttack = 1;
+                    ExitToAttack1();
+                    return;
+                }
+            case 2:
+                {
+                    monsterController.LastAttack = 2;
+                    ExitToAttack2();
+                    return;
+                }
+            case 3:
+                {
+                    if (monsterController.LastAttack == 1)
+                    {
+                        monsterController.LastAttack = 2;
+                        ExitToAttack2();
+                    }
+                    else
+                    {
+                        monsterController.LastAttack = 1;
+                        ExitToAttack1();
+                    }
+                    return;
+                }
+        }
     }
 
     protected virtual IEnumerator RandomAttack()
     {
         while (true)
         {
-            if (monsterController.CalcDistance() > monsterController.monsterData.StopDistance)
-            {
-                ExitToRun();
-                yield break;
-            }
-
-            int transition = monsterController.CheckCoolDown();
-            switch (transition)
-            {
-                case 1:
-                    {
-                        monsterController.LastAttack = 1;
-                        ExitToAttack1();
-                        yield break;
-                    }
-                case 2:
-                    {
-                        monsterController.LastAttack = 2;
-                        ExitToAttack2();
-                        yield break;
-                    }
-                case 3:
-                    {
-                        if (monsterController.LastAttack == 1)
-                        {
-                            monsterController.LastAttack = 2;
-                            ExitToAttack2();
-                        }
-                        else
-                        {
-                            monsterController.LastAttack = 1;
-                            ExitToAttack1();
-                        }
-                        yield break;
-                    }
-            }
+            
 
             yield return new WaitForSeconds(0.1f);
         }

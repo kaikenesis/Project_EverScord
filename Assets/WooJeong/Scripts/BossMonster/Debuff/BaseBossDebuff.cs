@@ -1,3 +1,4 @@
+using EverScord.Character;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,5 +13,5 @@ public abstract class BaseBossDebuff
 {
     protected float timer = 3f;
 
-    public abstract IEnumerator StartDebuff(BossRPC boss, float time, float value);        
+    public abstract IEnumerator StartDebuff(BossRPC boss, CharacterControl attacker, float time, float value);        
 }

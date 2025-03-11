@@ -237,15 +237,15 @@ namespace EverScord.Skill
                 if (ejob == PlayerData.EJob.Dealer)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedImpact, enemy);
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedImpact, enemy);
 
                     if (enemy is BossRPC boss)
-                        boss.SetDebuff(EBossDebuff.SLOW, Skill.SlowDuration, Skill.SlowedAmount);
+                        boss.SetDebuff(activator, EBossDebuff.SLOW, Skill.SlowDuration, Skill.SlowedAmount);
                 }
                 else
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                    player.IncreaseHP(calculatedImpact, true);
+                    player.IncreaseHP(activator, calculatedImpact, true);
                 }
             }
         }

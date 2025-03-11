@@ -7,6 +7,27 @@ public class BossPattern01_Imp : ActionNodeImplement
     //private float projectileSize = 1;
     private float projectileSpeed = 20f;
 
+    public override NodeState Evaluate()
+    {
+        int random = Random.Range(0, 10);
+        if (random <= 5)
+        {
+            return NodeState.FAILURE;
+        }
+
+        if (isEnd)
+        {
+            isEnd = false;
+            action = null;
+            return NodeState.SUCCESS;
+        }
+
+        if (action == null)
+            action = StartCoroutine(Act());
+
+        return NodeState.RUNNING;
+    }
+
     protected override IEnumerator Act()
     {
         bossRPC.PlayAnimation("Shoot");

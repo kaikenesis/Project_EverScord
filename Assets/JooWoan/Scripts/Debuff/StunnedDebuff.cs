@@ -25,7 +25,7 @@ namespace EverScord
             --LeftCount;
 
             if (LeftCount <= 0)
-                RemoveDebuff();
+                onDebuffRemoved?.Invoke(linkedState);
         }
 
         protected override Debuff ShowDebuffEffect()
@@ -52,8 +52,6 @@ namespace EverScord
 
             target.BlinkEffects.SetDefaultColor();
             target.BlinkEffects.SetMaterialColors(default, true);
-
-            base.RemoveDebuff();
         }
     }
 }

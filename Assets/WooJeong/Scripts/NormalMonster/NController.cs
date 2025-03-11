@@ -3,6 +3,7 @@ using EverScord.Character;
 using EverScord.Effects;
 using EverScord.Pool;
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -136,7 +137,6 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     private void Start()
     {
-        //SetHealthBar();
         LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
@@ -169,7 +169,6 @@ public abstract class NController : MonoBehaviour, IEnemy
         if (healthBarObject != null)
             return;
 
-        // 풀에서 체력바 얻기
         healthBarObject = ResourceManager.Instance.GetFromPool("MonsterHealthBar", Vector3.zero, Quaternion.identity);
         Transform canvas = GameObject.FindGameObjectWithTag("MonsterUI").transform;
         healthBarObject.transform.SetParent(canvas);
@@ -201,7 +200,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage)
     {
-        photonView.RPC("SyncMonsterAttack", RpcTarget.All, pos, width, projectTime, addressableKey, attackDamage);
+        photonView.RPC(nameof(SyncMonsterAttack), RpcTarget.All, pos, width, projectTime, addressableKey, attackDamage);
     }
 
     [PunRPC]
@@ -212,32 +211,38 @@ public abstract class NController : MonoBehaviour, IEnemy
         ma.Setup(width, projectTime, addressableKey, attackDamage);
     }
 
-    public void DecreaseHP(float hp)
+    public void DecreaseHP(float damage, CharacterControl attacker)
     {
-        this.HP -= hp;
+        Debug.Log("Monster hitted");
+        this.HP -= damage;
         if (this.HP <= 0)
+        {
             isDead = true;
+            attacker.IncreaseKillCount();
+        }
 
         if (monsterHealthBar != null)
-            monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
-        photonView.RPC("SyncMonsterHP", RpcTarget.Others, this.HP);
+            monsterHealthBar.UpdateHealth(damage);
+
+        photonView.RPC(nameof(SyncMonsterHP), RpcTarget.Others, damage);
     }
 
     [PunRPC]
-    protected void SyncMonsterHP(float hp)
+    protected void SyncMonsterHP(float damage)
     {
-        this.HP = hp;
+        this.HP -= damage;
         if (this.HP <= 0)
             isDead = true;
 
         if (monsterHealthBar != null)
-            monsterHealthBar.UpdateHealth(this.HP, monsterData.HP);
+            monsterHealthBar.UpdateHealth(damage);
     }
 
     public void StunMonster(float stunTime)
     {
-        photonView.RPC("SyncMonsterStun", RpcTarget.All, stunTime);
+        photonView.RPC(nameof(SyncMonsterStun), RpcTarget.All, stunTime);
     }
+    
 
     [PunRPC]
     protected void SyncMonsterStun(float stunTime)
@@ -256,6 +261,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void SyncDeathAftermath()
     {
         DeathGlitter();
+        healthBarObject.SetActive(false);
         GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
     }
 
@@ -291,13 +297,12 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void Death()
     {
-        photonView.RPC("SyncMonsterDeath", RpcTarget.All);        
+        photonView.RPC(nameof(SyncMonsterDeath), RpcTarget.All);        
     }
 
     [PunRPC]
     protected void SyncMonsterDeath()
     {
-        healthBarObject.SetActive(false);
         isDead = false;
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
@@ -307,16 +312,10 @@ public abstract class NController : MonoBehaviour, IEnemy
         if (healthBarObject == null)
         {
             SetHealthBar();
-            photonView.RPC("SyncSetHealthBar", RpcTarget.Others);
-            healthBarObject.SetActive(true);
+            photonView.RPC(nameof(SyncSetHealthBar), RpcTarget.Others);
         }
-        healthBarObject.SetActive(true);
         photonView.RPC(nameof(SyncIsDead), RpcTarget.All, false);
-        photonView.RPC("SyncHealthBarActive", RpcTarget.Others, true);
-
-        HP = monsterData.HP;
-        monsterHealthBar.UpdateHealth(HP, monsterData.HP);
-        photonView.RPC("SyncMonsterHP", RpcTarget.Others, HP);
+        photonView.RPC(nameof(SyncHealthBarEnable), RpcTarget.All);
         LastAttack = 0;
         WaitState();
     }
@@ -331,19 +330,20 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void SyncSetHealthBar()
     {
         SetHealthBar();
-        healthBarObject.SetActive(true);
     }
 
     [PunRPC]
-    protected void SyncHealthBarActive(bool value)
+    protected void SyncHealthBarEnable()
     {
+        HP = monsterData.HP;
         healthBarObject.SetActive(true);
+        monsterHealthBar.InitHealthBar(monsterData.HP);
     }
 
     public void PlayAnimation(string animationName)
     {
         Animator.CrossFade(animationName, 0.3f, -1, 0);
-        photonView.RPC("SyncAnimation", RpcTarget.Others, animationName);
+        photonView.RPC(nameof(SyncAnimation), RpcTarget.Others, animationName);
     }
 
     [PunRPC]
@@ -360,10 +360,10 @@ public abstract class NController : MonoBehaviour, IEnemy
         else
             projector = Projector2;
 
-        photonView.RPC("SyncProjectorEnable", RpcTarget.Others, attackNum);
+        photonView.RPC(nameof(SyncProjectorEnable), RpcTarget.Others, attackNum);
         projector.enabled = true;
         yield return new WaitForSeconds(monsterData.ProjectionTime);
-        photonView.RPC("SyncProjectorDisable", RpcTarget.Others, attackNum);
+        photonView.RPC(nameof(SyncProjectorDisable), RpcTarget.Others, attackNum);
         projector.enabled = false;
     }
 
@@ -373,7 +373,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             Projector1.enabled = false;
         else
             Projector2.enabled = false;
-        photonView.RPC("SyncProjectorDisable", RpcTarget.Others, projectorNum);
+        photonView.RPC(nameof(SyncProjectorDisable), RpcTarget.Others, projectorNum);
     }
 
     [PunRPC]
@@ -410,16 +410,22 @@ public abstract class NController : MonoBehaviour, IEnemy
             id = mp.ID;
 
         mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
-        photonView.RPC("SyncProjectileNMM2", RpcTarget.Others, projectileName, id, position, transform.forward, projectileSpeed);
+        photonView.RPC(nameof(SyncProjectileNM), RpcTarget.Others, projectileName, id, position, transform.forward, projectileSpeed);
     }
 
     [PunRPC]
-    protected void SyncProjectileNMM2(string projectileName, int id, Vector3 position, Vector3 direction, float projectileSpeed)
+    protected void SyncProjectileNM(string projectileName, int id, Vector3 position, Vector3 direction, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", position, Quaternion.identity);
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, mp);
         mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
+    }
+
+    [PunRPC]
+    protected void SyncSetActiveHitBox(bool value)
+    {
+        Hitbox.enabled = value;
     }
 
     public void SetNearestPlayer()

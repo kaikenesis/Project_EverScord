@@ -26,7 +26,6 @@ namespace EverScord
         public EnemyHitControl EnemyHitsControl                 { get; private set; }
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
-        public PortalControl PortalController                   { get; private set; }
         public AugmentPresenter AugmentControl                  { get; private set; }
         public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
@@ -169,10 +168,6 @@ namespace EverScord
                     LevelController = levelControl;
                     break;
 
-                case PortalControl portalControl:
-                    PortalController = portalControl;
-                    break;
-
                 case AugmentPresenter augmentPresenter:
                     AugmentControl = augmentPresenter;
                     break;
@@ -211,24 +206,6 @@ namespace EverScord
         {
             SetLevelIndex(0);
             Instance.StartCoroutine(LevelControl.LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
-        }
-
-        [PunRPC]
-        public void SyncPrepareNextLevel()
-        {
-            StartCoroutine(LevelController.PrepareNextLevel());
-        }
-
-        [PunRPC]
-        public void SyncProgress(float changeAmount)
-        {
-            LevelController.ChangeCurrentProgress(changeAmount);
-        }
-
-        [PunRPC]
-        public void SyncEnablePortal()
-        {
-            PortalController.SetPortalCollider(true);
         }
 
         private void OnGUI()

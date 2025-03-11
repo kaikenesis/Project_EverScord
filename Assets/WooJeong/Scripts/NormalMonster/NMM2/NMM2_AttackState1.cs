@@ -13,7 +13,7 @@ public class NMM2_AttackState1 : NAttackState
     {
         yield return Run();
         monsterController.PlayAnimation("Wait");
-        yield return project = StartCoroutine(monsterController.ProjectAttackRange(1));
+        //yield return project = StartCoroutine(monsterController.ProjectAttackRange(1));
 
         monsterController.PlayAnimation("Attack1");
         float time = monsterController.clipDict["Attack1"];
@@ -38,7 +38,7 @@ public class NMM2_AttackState1 : NAttackState
                 yield break;
             }
 
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
     }
 

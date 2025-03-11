@@ -1,7 +1,7 @@
+using System;
+using EverScord.Character;
 using EverScord.Effects;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BossShield : MonoBehaviour, IEnemy
@@ -22,7 +22,7 @@ public class BossShield : MonoBehaviour, IEnemy
         HP = maxHP;
     }
 
-    public void DecreaseHP(float hp)
+    public void DecreaseHP(float hp, CharacterControl attacker)
     {
         HP -= hp;
     }

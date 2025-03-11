@@ -58,10 +58,12 @@ namespace EverScord.Skill
             float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
 
             IEnemy enemy = closestTarget.GetComponent<IEnemy>();
-            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(calculatedDamage, enemy);
 
             if (activator.CharacterPhotonView.IsMine)
+            {
+                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
                 enemy.StunMonster(skill.StunDuration);
+            }
         }
 
         public override void SupportAction()
@@ -78,7 +80,7 @@ namespace EverScord.Skill
             // Start Coroutine and increase hp for 3 seconds, set particle to loop
 
             if (activator.CharacterPhotonView.IsMine)
-                targetPlayer.IncreaseHP(skill.HealAmount, true);
+                targetPlayer.IncreaseHP(activator, skill.HealAmount, true);
         }
 
         private void TeleportPlayer()

@@ -1,3 +1,4 @@
+using EverScord.Character;
 using EverScord.Effects;
 using Photon.Pun;
 using System.Collections;
@@ -64,7 +65,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         effectParticle.Pause();
     }
 
-    public void DecreaseHP(float hp)
+    public void DecreaseHP(float hp, CharacterControl attacker)
     {
         photonView.RPC("SyncStoneHP", RpcTarget.All);
     }

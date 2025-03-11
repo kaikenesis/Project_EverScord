@@ -21,5 +21,23 @@ namespace EverScord.Armor
             Cooldown,
             ReloadSpeed,
         };
+
+        public float GetStat(BonusType bonusType)
+        {
+            switch (bonusType)
+            {
+                case BonusType.MoveSpeed:
+                    return MoveSpeed;
+
+                case BonusType.Cooldown:
+                    return Cooldown;
+
+                case BonusType.ReloadSpeed:
+                    return ReloadSpeed;
+
+                default:
+                    return -1;
+            }
+        }
     }
 }
