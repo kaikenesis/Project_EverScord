@@ -240,7 +240,7 @@ namespace EverScord.Skill
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedImpact, enemy);
 
                     if (enemy is BossRPC boss)
-                        boss.SetDebuff(activator, BossDebuff.SLOW, Skill.SlowDuration, Skill.SlowedAmount);
+                        boss.SetDebuff(activator, EBossDebuff.SLOW, Skill.SlowDuration, Skill.SlowedAmount);
                 }
                 else
                 {

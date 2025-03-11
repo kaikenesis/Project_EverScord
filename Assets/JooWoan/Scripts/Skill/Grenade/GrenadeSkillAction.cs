@@ -36,7 +36,7 @@ namespace EverScord.Skill
                 GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
 
                 if (enemy is BossRPC boss)
-                    boss.SetDebuff(activator, BossDebuff.POISON, Skill.PoisonedDuration, Skill.PoisonDamage);
+                    boss.SetDebuff(activator, EBossDebuff.POISON, Skill.PoisonedDuration, Skill.PoisonDamage);
             }
         }
 
