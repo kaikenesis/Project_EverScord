@@ -598,7 +598,7 @@ namespace EverScord.Character
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
 
             if (activator.CharacterPhotonView.IsMine)
-                dealtHeal += amount;
+                activator.IncreaseDealtHeal(amount);
 
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
             {
@@ -610,6 +610,11 @@ namespace EverScord.Character
         public void IncreaseDealtDamage(float amount)
         {
             dealtDamage += amount;
+        }
+
+        public void IncreaseDealtHeal(float amount)
+        {
+            dealtHeal += amount;
         }
 
         public void IncreaseKillCount()
