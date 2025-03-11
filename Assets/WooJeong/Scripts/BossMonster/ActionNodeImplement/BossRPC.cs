@@ -16,8 +16,8 @@ public class BossRPC : MonoBehaviour, IEnemy
     [SerializeField] private BossData bossData;
     [SerializeField] private GameObject laserPoint;
     [SerializeField] private GameObject projectorObj_Pattern4;
-    private SRPLineRegionProjector projectorPattern4;
     [SerializeField] private GameObject projectorObj_Pattern5;
+    private SRPLineRegionProjector projectorPattern4;
     private SRPArcRegionProjector projectorPattern5;
 
     [SerializeField] private GameObject fogPlane;
@@ -34,8 +34,14 @@ public class BossRPC : MonoBehaviour, IEnemy
     private BossDebuffUI bossDebuffUI;
     private BlinkEffect blinkEffect;
 
+    private float hp = 0;
+    private float maxHP = 0;
+    private int phase = 1;
+
     private void Awake()
     {
+        hp = bossData.MaxHP;
+        phase = bossData.Phase;
         hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
@@ -315,8 +321,22 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncBossMonsterHP(float hp, int attackerID)
     {
-        bossData.ReduceHp(hp, attackerID);
+        ReduceHP(hp, attackerID);
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
+    }
+
+    private void ReduceHP(float decrease, int attackerID)
+    {
+        hp -= decrease;
+        if (hp < 0)
+            hp = 0;
+
+        CharacterControl attacker = GameManager.Instance.PlayerDict[attackerID];
+
+        if (attacker.CharacterPhotonView.IsMine && hp == 0 && phase == 2)
+            attacker.IncreaseKillCount();
+
+        Debug.Log(decrease + " 데미지, 남은 체력 : " + hp);
     }
 
     public void PhaseUp()
@@ -327,8 +347,19 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private void SyncPhaseUp()
     {
-        bossData.PhaseUp();
+        phase++;
+        hp = bossData.MaxHP_Phase2;
+        maxHP = bossData.MaxHP_Phase2;
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
+    }
+
+    public bool IsUnderHP(float hp)
+    {
+        if (hp > maxHP / 100 * hp)
+        {
+            return false;
+        }
+        return true;
     }
 
     public void LaserEnable(float enableTime)
