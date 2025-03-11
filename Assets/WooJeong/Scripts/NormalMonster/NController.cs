@@ -211,9 +211,10 @@ public abstract class NController : MonoBehaviour, IEnemy
         ma.Setup(width, projectTime, addressableKey, attackDamage);
     }
 
-    public void DecreaseHP(float hp, CharacterControl attacker)
+    public void DecreaseHP(float damage, CharacterControl attacker)
     {
-        this.HP -= hp;
+        Debug.Log("Monster hitted");
+        this.HP -= damage;
         if (this.HP <= 0)
         {
             isDead = true;
@@ -221,20 +222,20 @@ public abstract class NController : MonoBehaviour, IEnemy
         }
 
         if (monsterHealthBar != null)
-            monsterHealthBar.UpdateHealth(hp);
+            monsterHealthBar.UpdateHealth(damage);
 
-        photonView.RPC(nameof(SyncMonsterHP), RpcTarget.Others, hp);
+        photonView.RPC(nameof(SyncMonsterHP), RpcTarget.Others, damage);
     }
 
     [PunRPC]
-    protected void SyncMonsterHP(float hp)
+    protected void SyncMonsterHP(float damage)
     {
-        this.HP = hp;
+        this.HP -= damage;
         if (this.HP <= 0)
             isDead = true;
 
         if (monsterHealthBar != null)
-            monsterHealthBar.UpdateHealth(hp);
+            monsterHealthBar.UpdateHealth(damage);
     }
 
     public void StunMonster(float stunTime)
@@ -312,12 +313,9 @@ public abstract class NController : MonoBehaviour, IEnemy
         {
             SetHealthBar();
             photonView.RPC(nameof(SyncSetHealthBar), RpcTarget.Others);
-            healthBarObject.SetActive(true);
         }
         photonView.RPC(nameof(SyncIsDead), RpcTarget.All, false);
         photonView.RPC(nameof(SyncHealthBarEnable), RpcTarget.All);
-        HP = monsterData.HP;
-        photonView.RPC(nameof(SyncMonsterHP), RpcTarget.Others, HP);
         LastAttack = 0;
         WaitState();
     }
@@ -337,6 +335,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncHealthBarEnable()
     {
+        HP = monsterData.HP;
         healthBarObject.SetActive(true);
         monsterHealthBar.InitHealthBar(monsterData.HP);
     }
