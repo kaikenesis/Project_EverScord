@@ -222,12 +222,26 @@ public abstract class NController : MonoBehaviour, IEnemy
 
         if (monsterHealthBar != null)
             monsterHealthBar.UpdateHealth(hp);
+
+        photonView.RPC(nameof(SyncMonsterHP), RpcTarget.Others, hp);
+    }
+
+    [PunRPC]
+    protected void SyncMonsterHP(float hp)
+    {
+        this.HP = hp;
+        if (this.HP <= 0)
+            isDead = true;
+
+        if (monsterHealthBar != null)
+            monsterHealthBar.UpdateHealth(hp);
     }
 
     public void StunMonster(float stunTime)
     {
         photonView.RPC(nameof(SyncMonsterStun), RpcTarget.All, stunTime);
     }
+    
 
     [PunRPC]
     protected void SyncMonsterStun(float stunTime)
