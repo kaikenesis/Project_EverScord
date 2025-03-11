@@ -85,6 +85,46 @@ namespace EverScord.FileIO
             return list;
         }
 
+        public static List<IDictionary<string, string>> ReadStatSheet(string assetID)
+        {
+            var list = new List<IDictionary<string, string>>();
+            TextAsset data = ResourceManager.Instance.GetAsset<TextAsset>(assetID);
+
+            var lines = Regex.Split(data.text, LINE_SPLIT);
+
+            if (lines.Length <= 2)
+                return list;
+            
+            List<string[]> grid = new();
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var values = Regex.Split(lines[i], SPLIT);
+                grid.Add(values);
+            }
+
+            int headerLength = grid[1].Length;
+
+            for (int j = 1; j < headerLength; j++)
+            {
+                var entry = new Dictionary<string, string>();
+
+                for (int i = 2; i < grid.Count; i++)
+                {
+                    if (j >= grid[i].Length)
+                        continue;
+                    
+                    string header = TrimCell(grid[i][0]);
+                    string value = TrimCell(grid[i][j]);
+                    entry[header] = value;
+                }
+
+                list.Add(entry);
+            }
+
+            return list;
+        }
+
         private static string TrimCell(string value)
         {
             return value.TrimStart(TRIM_CHARS).TrimEnd(TRIM_CHARS).Replace("\\", "");

@@ -1,7 +1,6 @@
-
 using System.Collections.Generic;
 
-namespace EverScord.Skill
+namespace EverScord
 {
     public struct CharacterSkillInfo
     {
@@ -13,7 +12,7 @@ namespace EverScord.Skill
 
         public float skillCoefficient;
         public float skillDamage;
-        public float skillDps;
+        public float skillDotDamage;
         public float skillShield;
         //public int hitType;
 
