@@ -38,7 +38,7 @@ public class NMM2_AttackState1 : NAttackState
                 yield break;
             }
 
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
     }
 
