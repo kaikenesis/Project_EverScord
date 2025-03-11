@@ -18,12 +18,12 @@ namespace EverScord
 
         private void Awake()
         {
-            SkillAction.OnUsedSkill += HandleUsedSkill;
+            SkillTimer.SubscribeOnCooldown(HandleUsedSkill);
         }
 
         private void OnDestroy()
         {
-            SkillAction.OnUsedSkill -= HandleUsedSkill;
+            SkillTimer.UnsubscribeOnCooldown(HandleUsedSkill);
         }
 
         public void Initialize(int type, Sprite skillSourceImg, Sprite btnSourceImg)

@@ -21,5 +21,23 @@ namespace EverScord.Armor
             Defense,
             HealthRegeneration,
         };
+
+        public float GetStat(BonusType bonusType)
+        {
+            switch (bonusType)
+            {
+                case BonusType.Health:
+                    return Health;
+
+                case BonusType.Defense:
+                    return Defense;
+
+                case BonusType.HealthRegeneration:
+                    return HealthRegeneration;
+
+                default:
+                    return -1;
+            }
+        }
     }
 }

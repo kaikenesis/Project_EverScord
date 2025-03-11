@@ -11747,10 +11747,10 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   <AugmentCursorIcon>k__BackingField:
-    m_AssetGUID: 214d561cb29302b4988cd5837391c59c
+    m_AssetGUID: b90698a5d27a5eb47b65b8eb282f5546
     m_SubObjectName: 
     m_SubObjectType: 
-    m_EditorAssetChanged: 1
+    m_EditorAssetChanged: 0
   <HealEffect>k__BackingField:
     m_AssetGUID: 2900d1807ba4af04687b8e58bf0f0f85
     m_SubObjectName: 
@@ -12210,6 +12210,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d538046acb6244cbdcd95f4932936e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &530787491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530787486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 41
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &532648975
 GameObject:
   m_ObjectHideFlags: 0
@@ -18977,18 +18999,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2057764309}
     m_Modifications:
-    - target: {fileID: 1409612709447654985, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-      propertyPath: m_RenderMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2342019967957374983, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-      propertyPath: uiCanvas
-      value: 
-      objectReference: {fileID: 1113726317}
-    - target: {fileID: 2342019967957374983, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-      propertyPath: selectTimeLimit
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 3964615265655247520, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
       propertyPath: m_Name
       value: AugmentCanvas
@@ -19085,11 +19095,6 @@ PrefabInstance:
 --- !u!224 &1113726316 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4212752072324433900, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
-  m_PrefabInstance: {fileID: 1113726315}
-  m_PrefabAsset: {fileID: 0}
---- !u!223 &1113726317 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 1409612709447654985, guid: c740e9684a73dfc49845d6f06ca93481, type: 3}
   m_PrefabInstance: {fileID: 1113726315}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1129453333
@@ -21445,6 +21450,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1547650009}
   - component: {fileID: 1547650010}
+  - component: {fileID: 1547650011}
   m_Layer: 0
   m_Name: LevelControl
   m_TagString: Untagged
@@ -21500,6 +21506,28 @@ MonoBehaviour:
     LoopBgm: {fileID: 0}
   - Level: {fileID: 1444675646}
     LoopBgm: {fileID: 0}
+--- !u!114 &1547650011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547650008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 40
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1587413783
 GameObject:
   m_ObjectHideFlags: 0
@@ -28603,6 +28631,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGameUI
       objectReference: {fileID: 0}
+    - target: {fileID: 2128375665284905751, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3254376632951464756, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: minimapBackgroundUI
       value: 
@@ -28693,15 +28725,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.488
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5207724296103116472, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.488
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5365646518902323504, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_AnchorMax.x
@@ -28992,7 +29024,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2619601317213053651, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 530787491}
   m_SourcePrefab: {fileID: 100100000, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
 --- !u!1001 &8328645704140777150
 PrefabInstance:
