@@ -27,7 +27,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private PhotonView photonView;
     private Animator animator;
-    private BoxCollider hitBox;
+    private CapsuleCollider hitBox;
     private UIMarker uiMarker;
     public NavMeshAgent BossNavMeshAgent { get; private set; }
     private BossDebuffSystem bossDebuffSystem;
@@ -46,7 +46,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         hp = bossData.MaxHP;
         maxHP = bossData.MaxHP;
         phase = bossData.Phase;
-        hitBox = GetComponent<BoxCollider>();
+        hitBox = GetComponent<CapsuleCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
         uiMarker = gameObject.AddComponent<UIMarker>();

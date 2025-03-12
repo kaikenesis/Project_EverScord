@@ -1,3 +1,4 @@
+using DTT.AreaOfEffectRegions;
 using EverScord.Character;
 using EverScord.Effects;
 using Photon.Pun;
@@ -11,8 +12,9 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     private int HP = 30;
     private int MaxHP = 30;
     private float attackDamage;
-    private DecalProjector projector;
-    private BoxCollider boxCollider;
+    [SerializeField] GameObject circleProjectorObject;
+    [SerializeField] SRPCircleRegionProjector circleProjector;
+    private SphereCollider sphereCollider;
     private float projectTime;
     GameObject effect;
     private string effectAddressableKey;
@@ -23,11 +25,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
-        projector = gameObject.AddComponent<DecalProjector>();
-        projector.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
-        boxCollider = gameObject.AddComponent<BoxCollider>();
-        //capCollider.isTrigger = true;
-        projector.renderingLayerMask = 2;
+        sphereCollider = gameObject.AddComponent<SphereCollider>();
     }
 
     public void Setup(float width, float projectTime, string effectAddressableKey, float attackDamage)
@@ -36,22 +34,19 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         this.projectTime = projectTime;
         this.effectAddressableKey = effectAddressableKey;
         this.attackDamage = attackDamage;
-        projector.size = new Vector3(width, width, width);
-        boxCollider.size = new Vector3(width, width, width);
+        circleProjector.Radius = width / 2;
+        sphereCollider.radius = width / 2;
 
-        gameObject.transform.Rotate(90, 0, 0);
-        projector.enabled = false;
-        boxCollider.enabled = false;
+        circleProjectorObject.SetActive(false);
+        sphereCollider.enabled = false;
         StartCoroutine(Attack());
     }
 
     public IEnumerator Attack()
     {
-        projector.enabled = true;
-        yield return new WaitForSeconds(projectTime);
-        projector.enabled = false;
+        yield return StartCoroutine(ProjectCircle(1f));
 
-        boxCollider.enabled = true;
+        sphereCollider.enabled = true;
         effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
         effectParticle = effect.GetComponent<ParticleSystem>();
 
@@ -65,6 +60,25 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         effectParticle.Pause();
     }
 
+    private IEnumerator ProjectCircle(float duration)
+    {
+        circleProjectorObject.SetActive(true);
+        circleProjector.FillProgress = 0;
+        float t = 0f;
+        while (true)
+        {
+            t += Time.deltaTime;
+            if (t >= duration)
+            {
+                circleProjectorObject.SetActive(false);
+                yield break;
+            }
+            circleProjector.FillProgress = t / duration;
+            circleProjector.UpdateProjectors();
+            yield return null;
+        }
+    }
+
     public void DecreaseHP(float hp, CharacterControl attacker)
     {
         photonView.RPC("SyncStoneHP", RpcTarget.All);
@@ -76,7 +90,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         HP--;
         if (HP <= 0)
         {
-            boxCollider.enabled = false;
+            sphereCollider.enabled = false;
             effectParticle.Play();
             yield return new WaitForSeconds(effectParticle.main.duration - 1f);
             ResourceManager.Instance.ReturnToPool(gameObject, "BossMonsterStoneAttack");
