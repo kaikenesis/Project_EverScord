@@ -6171,6 +6171,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8922911950917756480, guid: 64a7c4c0722d5b745bcd62305478345c, type: 3}
       insertIndex: 9
       addedObject: {fileID: 382531342}
+    - targetCorrespondingSourceObject: {fileID: 8922911950917756480, guid: 64a7c4c0722d5b745bcd62305478345c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2108702558}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3596672191723822989, guid: 64a7c4c0722d5b745bcd62305478345c, type: 3}
       insertIndex: -1
@@ -29340,6 +29343,74 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5429733962934123020, guid: 3caadb2cec4afea40bea3f832b9177c0, type: 3}
   m_PrefabInstance: {fileID: 2063725047}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2108702557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2108702558}
+  - component: {fileID: 2108702559}
+  - component: {fileID: 2108702560}
+  m_Layer: 0
+  m_Name: BossSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2108702558
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108702557}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 362440731}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2108702559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108702557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c671a54fb4f71974b8c2381051c39646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnTimer: 5
+--- !u!114 &2108702560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108702557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 40
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &2131212556
 PrefabInstance:
   m_ObjectHideFlags: 0

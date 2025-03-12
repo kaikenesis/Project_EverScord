@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern05_Imp : ActionNodeImplement
+public class BossPattern05_Imp : AttackNodeImplement
 {
     private float attackRadius = 10;
 

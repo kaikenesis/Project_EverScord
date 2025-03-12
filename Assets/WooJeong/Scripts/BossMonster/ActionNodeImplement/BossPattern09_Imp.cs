@@ -4,9 +4,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern09_Imp : ActionNodeImplement
+public class BossPattern09_Imp : AttackNodeImplement
 {
     protected int attackCount = 30;
+    protected int failurePhase = 2;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        attackableHP = 40;
+    }
+
+    public override NodeState Evaluate()
+    {
+        if (bossRPC.Phase == failurePhase)
+            return NodeState.FAILURE;
+        return base.Evaluate();
+    }
 
     protected override IEnumerator Act()
     {

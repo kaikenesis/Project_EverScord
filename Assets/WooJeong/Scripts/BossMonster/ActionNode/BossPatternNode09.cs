@@ -3,26 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern09")]
-public class BossPatternNode09 : BAttackPatternNode
+public class BossPatternNode09 : BActionNode
 {
     public override void Setup(GameObject gameObject)
     {
-        bossData = GetValue<BossData>("BossData");
         actionNodeImplement = gameObject.AddComponent<BossPattern09_Imp>();
         base.Setup(gameObject);
-    }
-
-    public override NodeState Evaluate()
-    {
-        if (bossData.Phase == 2)
-            return NodeState.FAILURE;
-
-        if (attackable == false && bossData.IsUnderHP(40))
-        {
-            attackable = true;
-            isRunning = true;
-            state = actionNodeImplement.Evaluate();
-        }
-        return base.Evaluate();
     }
 }

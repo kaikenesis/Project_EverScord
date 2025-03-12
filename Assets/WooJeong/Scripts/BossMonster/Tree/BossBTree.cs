@@ -4,14 +4,14 @@ using UnityEngine.AI;
 
 public class BossBTree : BTree
 {
-    [SerializeField] private BossData bossData;
+    private BossRPC bossRPC;
 
     protected override void SetupTree()
     {
+        bossRPC = GetComponent<BossRPC>();
         root.Init();
         root.CreateBlackboard();
-        bossData.ResetParams();
-        root.SetValue("BossData", bossData);
+        root.SetValue("BossRPC", bossRPC);
         root.Setup(gameObject);
     }
 }

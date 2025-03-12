@@ -5,27 +5,29 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/Composite/ParallelNodeAttCool")]
 public class BParallelNodeAttCool : BehaviorNode
 {
-    private int completeFirst = -1;
+    private int completeFirst = 0;
     private int completeCount = 0;
+
     public override NodeState Evaluate()
     {
+        Debug.Log(completeFirst);
         switch (completeFirst)
         {
-            case -1:
+            case 0:
             {
-                for (int i = start; i < children.Count; i++)
+                for (int i = 0; i < children.Count; i++)
                 {
                     NodeState temp = children[i].Evaluate();
 
                     if (temp == NodeState.SUCCESS)
                     {
-                        completeFirst = i;
+                        completeFirst = i + 1;
                         completeCount++;
                     }
                 }
                 break;
             }
-            case 0:
+            case 1:
             {
                 NodeState temp = children[1].Evaluate();
                 if (temp == NodeState.SUCCESS)
@@ -34,7 +36,7 @@ public class BParallelNodeAttCool : BehaviorNode
                 }
                 break;
             }
-            case 1:
+            case 2:
             {
                 NodeState temp = children[0].Evaluate();
                 if (temp == NodeState.SUCCESS)
@@ -49,7 +51,7 @@ public class BParallelNodeAttCool : BehaviorNode
             return NodeState.RUNNING;
 
         completeCount = 0;
-        completeFirst = -1;
+        completeFirst = 0;
         return NodeState.SUCCESS;
     }
 }
