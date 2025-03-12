@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1990559276000030308
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5397306397400259692}
+  - component: {fileID: 7214696668832528012}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5397306397400259692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990559276000030308}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.6803107, y: -51.291138, z: -45.74781}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7214696668832528012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990559276000030308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaf6f9682200edb4190aa1b2493bc245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSourcePoolSize: 10
+  audioMixer: {fileID: 24100000, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  bgmMixerGroup: {fileID: -6401502754427143351, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  sfxMixerGroup: {fileID: 212523408940636938, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  uiMixerGroup: {fileID: 4385197008514675891, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  soundClips:
+  - name: LobbyBGM
+    clip: {fileID: 8300000, guid: dc70f0b7b6471a64c8ce058f2dda2009, type: 3}
+    category: 0
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: InGameBGM01
+    clip: {fileID: 8300000, guid: 976038b8a40b9714da7db30d6a853343, type: 3}
+    category: 0
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: InGameBGM02
+    clip: {fileID: 8300000, guid: 602b336d91413af4a9905f8be6dc6731, type: 3}
+    category: 0
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: Button
+    clip: {fileID: 8300000, guid: 0d727a0669653f54191bd25a0f87d969, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: ButtonGameStart
+    clip: {fileID: 8300000, guid: 8b9187a5b3522504fa892a8ad77611bf, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: Clear_Defeat
+    clip: {fileID: 8300000, guid: dc5e9d7309b98e44ea595f1e047d18ae, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: Clear_Win
+    clip: {fileID: 8300000, guid: 7193e601d696c824597eb93f9ef92f0b, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: BossPattern04
+    clip: {fileID: 8300000, guid: 858f367193a04fe479f97fc94ec8d459, type: 3}
+    category: 1
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: BossPattern06
+    clip: {fileID: 8300000, guid: 771524986c1ca2443b65fdbee0959c99, type: 3}
+    category: 1
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0

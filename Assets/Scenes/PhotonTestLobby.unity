@@ -3155,21 +3155,63 @@ MonoBehaviour:
   - name: LobbyBGM
     clip: {fileID: 8300000, guid: dc70f0b7b6471a64c8ce058f2dda2009, type: 3}
     category: 0
-    volume: 0
+    volume: 1
     loop: 1
     pitch: 0.1
     spatialBlend: 0
   - name: InGameBGM01
     clip: {fileID: 8300000, guid: 976038b8a40b9714da7db30d6a853343, type: 3}
     category: 0
-    volume: 0
+    volume: 1
     loop: 1
     pitch: 0.1
     spatialBlend: 0
   - name: InGameBGM02
     clip: {fileID: 8300000, guid: 602b336d91413af4a9905f8be6dc6731, type: 3}
     category: 0
-    volume: 0
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: Button
+    clip: {fileID: 8300000, guid: 0d727a0669653f54191bd25a0f87d969, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: ButtonGameStart
+    clip: {fileID: 8300000, guid: 8b9187a5b3522504fa892a8ad77611bf, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: Clear_Defeat
+    clip: {fileID: 8300000, guid: dc5e9d7309b98e44ea595f1e047d18ae, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: Clear_Win
+    clip: {fileID: 8300000, guid: 7193e601d696c824597eb93f9ef92f0b, type: 3}
+    category: 2
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: BossPattern04
+    clip: {fileID: 8300000, guid: 858f367193a04fe479f97fc94ec8d459, type: 3}
+    category: 1
+    volume: 1
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: BossPattern06
+    clip: {fileID: 8300000, guid: 771524986c1ca2443b65fdbee0959c99, type: 3}
+    category: 1
+    volume: 1
     loop: 1
     pitch: 0.1
     spatialBlend: 0
