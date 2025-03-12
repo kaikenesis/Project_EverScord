@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace EverScord
@@ -6,6 +7,8 @@ namespace EverScord
     public class ArmorData : ScriptableObject
     {
         [SerializeField] private Armor[] armors;
+
+        public Action OnLevelUpArmor;
 
         public Armor[] Armors
         {
@@ -36,13 +39,21 @@ namespace EverScord
             public int CurLevel
             {
                 get { return curLevel; }
-                private set { curLevel = value; }
+                set { curLevel = value; }
             }
 
             public Sprite[] SourceImg
             {
                 get { return sourceImg; }
                 private set { sourceImg = value; }
+            }
+        }
+
+        private void LevelUpArmor()
+        {
+            foreach (var armor in armors)
+            {
+                armor.CurLevel++;
             }
         }
     }
