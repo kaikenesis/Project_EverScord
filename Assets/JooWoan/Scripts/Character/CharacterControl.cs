@@ -28,9 +28,9 @@ namespace EverScord.Character
         [SerializeField] private float bodyRotateSpeed;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currentHealth;
-        [SerializeField] private float killCount;
         [SerializeField] private float dealtDamage;
         [SerializeField] private float dealtHeal;
+        [SerializeField] private int killCount;
 
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius;
@@ -79,6 +79,9 @@ namespace EverScord.Character
         public CharacterController Controller => controller;
         public Vector3 LookDir => lookDir;
         public float CharacterSpeed => speed;
+        public int KillCount => killCount;
+        public float DealtDamage => dealtDamage;
+        public float DealtHeal => dealtHeal;
 
         public static Action OnPhotonViewListUpdated = delegate { };
         public static Action<int, bool, Vector3> OnCheckAlive = delegate { };
@@ -1001,6 +1004,16 @@ namespace EverScord.Character
                 return;
 
             debuff.DecreaseCount();
+        }
+
+        [PunRPC]
+        public void SyncPlayerResult(int killCount, float dealtDamage, float dealtHeal)
+        {
+            this.killCount = killCount;
+            this.dealtDamage = dealtDamage;
+            this.dealtHeal = dealtHeal;
+
+            GameManager.Instance.ResultControl.IncreaseReadyCount();
         }
 
         [PunRPC]

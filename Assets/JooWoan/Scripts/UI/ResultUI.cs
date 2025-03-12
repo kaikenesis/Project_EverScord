@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -5,17 +6,24 @@ namespace EverScord.UI
 {
     public class ResultUI : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI killCountText;
-        [SerializeField] private TextMeshProUGUI dealtDamageText;
-        [SerializeField] private TextMeshProUGUI dealtHealText;
+        [SerializeField] private ResultSlot killSlot;
+        [SerializeField] private ResultSlot damageSlot;
+        [SerializeField] private ResultSlot healSlot;
         [SerializeField] private TextMeshProUGUI usernameText;
 
-        public void Init(int killCount, float dealtDamage, float dealtHeal, string username)
+        void OnEnable()
         {
-            killCountText.text = $"{killCount}";
-            dealtDamageText.text = $"{dealtDamage}";
-            dealtHealText.text = $"{dealtHeal}";
-            usernameText.text = username;
+            DOTweenAnimation[] tweens = usernameText.GetComponentsInChildren<DOTweenAnimation>();
+
+            for (int i = 0; i < tweens.Length; i++)
+                tweens[i].DORewind();
+        }
+
+        public void Init(int killCount, float dealtDamage, float dealtHeal)
+        {
+            killSlot.Init(killCount);
+            damageSlot.Init(dealtDamage);
+            healSlot.Init(dealtHeal);
         }
     }
 }

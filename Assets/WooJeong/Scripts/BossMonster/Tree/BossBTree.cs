@@ -10,7 +10,6 @@ public class BossBTree : BTree
     {
         root.Init();
         root.CreateBlackboard();
-        bossData.ResetParams();
         root.SetValue("BossData", bossData);
         root.Setup(gameObject);
     }
