@@ -12,6 +12,7 @@ public class BossPattern04_Imp : ActionNodeImplement
     protected override void Awake()
     {
         base.Awake();
+        attackableHP = 90;
         boxCollider = transform.AddComponent<BoxCollider>();
         boxCollider.size = new Vector3(2, 1, 3);
         boxCollider.center = new Vector3(0, 1, 1.5f);

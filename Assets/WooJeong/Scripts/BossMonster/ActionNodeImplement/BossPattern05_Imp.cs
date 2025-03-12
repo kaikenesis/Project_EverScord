@@ -7,14 +7,19 @@ using UnityEngine;
 public class BossPattern05_Imp : ActionNodeImplement
 {
     private float attackRadius = 10;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        attackableHP = 80;
+    }
+
     protected override IEnumerator Act()
     {
-        // Vector3 projectorPos = transform.position + (transform.forward * Mathf.Sqrt(attackRadius * attackRadius)/2);
         bossRPC.PlayAnimation("Idle");
         bossRPC.PlayAnimation("StandingAttack");
         yield return bossRPC.ProjectEnable(5, 1f);
         bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);
-        //yield return new WaitForSeconds(0.5f);
         //충돌 판정
         foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
         {

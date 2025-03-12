@@ -3117,6 +3117,77 @@ Transform:
   - {fileID: 19080613}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1937535699
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1937535701}
+  - component: {fileID: 1937535700}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1937535700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937535699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaf6f9682200edb4190aa1b2493bc245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSourcePoolSize: 10
+  audioMixer: {fileID: 24100000, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  bgmMixerGroup: {fileID: -6401502754427143351, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  sfxMixerGroup: {fileID: 212523408940636938, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  uiMixerGroup: {fileID: 4385197008514675891, guid: b0e04c8e366279e4b9f6fd1416feb6fe, type: 2}
+  soundClips:
+  - name: LobbyBGM
+    clip: {fileID: 8300000, guid: dc70f0b7b6471a64c8ce058f2dda2009, type: 3}
+    category: 0
+    volume: 0
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: InGameBGM01
+    clip: {fileID: 8300000, guid: 976038b8a40b9714da7db30d6a853343, type: 3}
+    category: 0
+    volume: 0
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+  - name: InGameBGM02
+    clip: {fileID: 8300000, guid: 602b336d91413af4a9905f8be6dc6731, type: 3}
+    category: 0
+    volume: 0
+    loop: 1
+    pitch: 0.1
+    spatialBlend: 0
+--- !u!4 &1937535701
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937535699}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.6803107, y: -51.291138, z: -45.74781}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1989719755
 GameObject:
   m_ObjectHideFlags: 0
@@ -5657,3 +5728,4 @@ SceneRoots:
   - {fileID: 1837890855}
   - {fileID: 640070242}
   - {fileID: 280683301}
+  - {fileID: 1937535701}
