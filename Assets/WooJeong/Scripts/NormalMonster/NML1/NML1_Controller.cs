@@ -1,3 +1,4 @@
+using DTT.AreaOfEffectRegions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,12 +7,15 @@ using UnityEngine.Rendering.Universal;
 public class NML1_Controller : NController
 {
     private float chargeRange;
+    public GameObject LineIndicator;
+    public SRPLineRegionProjector LineProjector;
 
-    public float ChargeRange { get { return chargeRange; } }
+    public float ChargeRange { get { return chargeRange; } }    
 
     protected override void Setup()
     {
         monsterType = MonsterType.LARGE;
+        LineProjector = LineIndicator.GetComponent<SRPLineRegionProjector>();
         runState = gameObject.AddComponent<NML1_RunState>();
         attackState1 = gameObject.AddComponent<NML1_AttackState1>();
         attackState2 = gameObject.AddComponent<NML1_AttackState2>();

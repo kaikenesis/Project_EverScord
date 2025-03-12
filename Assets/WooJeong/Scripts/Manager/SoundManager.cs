@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using EverScord;
+using DG.Tweening;
 
 public class SoundManager : Singleton<SoundManager>
 {
@@ -30,6 +31,7 @@ public class SoundManager : Singleton<SoundManager>
 
     public enum SoundCategory
     {
+        Master,
         BGM,
         SFX,
         UI
@@ -110,7 +112,7 @@ public class SoundManager : Singleton<SoundManager>
         source.loop = clip.loop;
         source.pitch = clip.pitch;
         source.spatialBlend = clip.spatialBlend;
-
+        
         switch (clip.category)
         {
             case SoundCategory.BGM:
@@ -222,21 +224,7 @@ public class SoundManager : Singleton<SoundManager>
         // 볼륨을 데시벨로 변환 (0-1 값을 사용)
         float volumeDB = volumePercent <= 0 ? MIN_VOLUME_DB : Mathf.Log10(volumePercent) * 20;
 
-        string paramName = "";
-        switch (category)
-        {
-            case SoundCategory.BGM:
-                paramName = "BGMVolume";
-                break;
-            case SoundCategory.SFX:
-                paramName = "SFXVolume";
-                break;
-            case SoundCategory.UI:
-                paramName = "UIVolume";
-                break;
-        }
-
-        audioMixer.SetFloat(paramName, volumeDB);
+        audioMixer.SetFloat(category.ToString(), volumeDB);
         //SaveVolumeSettings(category, volumePercent);
     }
 
@@ -248,6 +236,7 @@ public class SoundManager : Singleton<SoundManager>
 
     private void LoadVolumeSettings()
     {
+        SetVolume(SoundCategory.Master, PlayerPrefs.GetFloat("MasterVolume", 1.0f));
         SetVolume(SoundCategory.BGM, PlayerPrefs.GetFloat("BGMVolume", 1.0f));
         SetVolume(SoundCategory.SFX, PlayerPrefs.GetFloat("SFXVolume", 1.0f));
         SetVolume(SoundCategory.UI, PlayerPrefs.GetFloat("UIVolume", 1.0f));
@@ -255,6 +244,7 @@ public class SoundManager : Singleton<SoundManager>
 
     public void ResetVolumeSettings()
     {
+        PlayerPrefs.DeleteKey("MasterVolume");
         PlayerPrefs.DeleteKey("BGMVolume");
         PlayerPrefs.DeleteKey("SFXVolume");
         PlayerPrefs.DeleteKey("UIVolume");

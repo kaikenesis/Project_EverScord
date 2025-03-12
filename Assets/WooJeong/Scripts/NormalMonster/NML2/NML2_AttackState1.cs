@@ -12,7 +12,6 @@ public class NML2_AttackState1 : NAttackState
     protected override IEnumerator Attack()
     {
         Fire();
-        //monsterController.Animator.CrossFade("Attack1", 0.3f, -1, 0);
         monsterController.PlayAnimation("Attack1");
 
         float time = monsterController.clipDict["Attack1"]
