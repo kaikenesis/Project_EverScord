@@ -1,25 +1,29 @@
-using EverScord.Character;
-using Photon.Pun;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
+using EverScord.Character;
+using DG.Tweening;
 
 namespace EverScord.UI
 {
     public class ResultPresenter : MonoBehaviour
     {
+        private const float SHOW_RESULT_INTERVAL = 0.1f;
+
         [SerializeField] private GameObject uiHub, ingameUiHub;
         [SerializeField] private PhotonView photonView;
         [SerializeField] private List<ResultUI> resultUIList;
         [SerializeField] private GameObject nedPrefab, uniPrefab, usPrefab;
         [SerializeField] private List<Transform> positionList;
+        [SerializeField] private DOTweenAnimation buttonTween, titleTween;
 
         private static int readyPlayerCount = 0;
         
         void Awake()
         {
             GameManager.Instance.InitControl(this);
-            SetResultUI(false);
         }
 
         void Update()
@@ -28,6 +32,11 @@ namespace EverScord.UI
             {
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncPlayerResults), RpcTarget.All);
+            }
+
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                StartCoroutine(ShowResults());
             }
         }
 
@@ -56,7 +65,7 @@ namespace EverScord.UI
 
                 CharacterControl player = playerList[i];
                 SpawnPlayerPrefab(player.CharacterType, i);
-                resultUIList[i].Init(player.KillCount, player.DealtDamage, player.DealtHeal);
+                resultUIList[i].Init(player.KillCount, player.DealtDamage, player.DealtHeal, player.Nickname);
             }
         }
 
@@ -84,18 +93,30 @@ namespace EverScord.UI
             spawnedPrefab.transform.localRotation = spawnPoint.transform.localRotation;
         }
 
-        private void SetResultUI(bool state)
+        public IEnumerator ShowResults()
         {
-            for (int i = 0; i < resultUIList.Count; i++)
-                resultUIList[i].gameObject.SetActive(state);
-        }
+            PlayerUI.SetCursor(CursorType.UIFOCUS);
 
-        public void ShowResults()
-        {
-            SetupUI();
             ingameUiHub.SetActive(false);
             uiHub.SetActive(true);
-            SetResultUI(true);
+
+            buttonTween.DORewind();
+            buttonTween.DOPlay();
+
+            titleTween.DORewind();
+            titleTween.DOPlay();
+
+            yield return new WaitForSeconds(0.5f);
+
+            for (int i = 0; i < resultUIList.Count; i++)
+                resultUIList[i].gameObject.SetActive(false);
+
+            for (int i = 0; i < resultUIList.Count; i++)
+            {
+                resultUIList[i].gameObject.SetActive(true);
+                resultUIList[i].PlayTween();
+                yield return new WaitForSeconds(SHOW_RESULT_INTERVAL);
+            }
         }
 
         public void IncreaseReadyCount()
@@ -104,7 +125,12 @@ namespace EverScord.UI
             if (readyPlayerCount == GameManager.Instance.PlayerDict.Count)
             {
                 readyPlayerCount = 0;
-                ShowResults();
+
+                if (gameObject.activeSelf)
+                {
+                    SetupUI();
+                    StartCoroutine(ShowResults());
+                }
             }
         }
 
@@ -113,7 +139,15 @@ namespace EverScord.UI
         {
             CharacterControl player = CharacterControl.CurrentClientCharacter;
             PhotonView photonView = player.CharacterPhotonView;
-            photonView.RPC(nameof(player.SyncPlayerResult), RpcTarget.All, player.KillCount, player.DealtDamage, player.DealtHeal);
+
+            photonView.RPC(
+                nameof(player.SyncPlayerResult),
+                RpcTarget.All,
+                player.KillCount,
+                player.DealtDamage,
+                player.DealtHeal,
+                PhotonNetwork.NickName
+            );
         }
     }
 }

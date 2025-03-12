@@ -9,21 +9,30 @@ namespace EverScord.UI
         [SerializeField] private ResultSlot killSlot;
         [SerializeField] private ResultSlot damageSlot;
         [SerializeField] private ResultSlot healSlot;
-        [SerializeField] private TextMeshProUGUI usernameText;
+        [SerializeField] private TextMeshProUGUI nicknameText;
 
-        void OnEnable()
+        private DOTweenAnimation[] tweens;
+
+        void Awake()
         {
-            DOTweenAnimation[] tweens = usernameText.GetComponentsInChildren<DOTweenAnimation>();
-
-            for (int i = 0; i < tweens.Length; i++)
-                tweens[i].DORewind();
+            tweens = GetComponentsInChildren<DOTweenAnimation>();
         }
 
-        public void Init(int killCount, float dealtDamage, float dealtHeal)
+        public void Init(int killCount, float dealtDamage, float dealtHeal, string nickname)
         {
             killSlot.Init(killCount);
             damageSlot.Init(dealtDamage);
             healSlot.Init(dealtHeal);
+            nicknameText.text = nickname;
+        }
+
+        public void PlayTween()
+        {
+            for (int i = 0; i < tweens.Length; i++)
+            {
+                tweens[i].DORewind();
+                tweens[i].DOPlay();
+            }
         }
     }
 }
