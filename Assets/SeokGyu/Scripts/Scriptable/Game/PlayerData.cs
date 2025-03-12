@@ -32,6 +32,7 @@ namespace EverScord
         public EJob job = EJob.Dealer;
         public EDifficulty difficulty = EDifficulty.Normal;
         public int money = 0;
+        public string nickName;
         private int defaultMoney = 100;
 
         public void Initialize()

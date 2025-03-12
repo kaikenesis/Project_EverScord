@@ -142,6 +142,7 @@ namespace EverScord
         public void UpdateUserName(string newName)
         {
             PhotonNetwork.NickName = newName;
+            PlayerData.nickName = newName;
         }
 
         public void UpdateMoney(int cost)

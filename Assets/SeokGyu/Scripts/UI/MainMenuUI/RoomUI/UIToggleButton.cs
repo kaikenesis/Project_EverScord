@@ -4,9 +4,9 @@ namespace EverScord
 {
     public class UIToggleButton : MonoBehaviour
     {
-        [SerializeField] private GameObject[] toggleObject;
+        [SerializeField] protected GameObject[] toggleObject;
 
-        public void ToggleObject()
+        public virtual void ToggleObject()
         {
             for (int i = 0; i < toggleObject.Length; i++)
             {
