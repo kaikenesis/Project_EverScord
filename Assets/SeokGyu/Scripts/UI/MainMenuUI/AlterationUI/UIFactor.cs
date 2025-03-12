@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EverScord
 {
     public class UIFactor : MonoBehaviour
     {
-        [SerializeField] private FactorPanel[] panels;
         [SerializeField] private Transform containor;
         [SerializeField] private GameObject factorPanel;
         [SerializeField] private GameObject optionPanel;
@@ -14,8 +14,7 @@ namespace EverScord
 
         public static Action<int, int> OnRequestUnlock = delegate { };
         public static Action<int, int> OnRequestReroll = delegate { };
-        public static Action<int, int, Color, string, float> OnApplyOption = delegate { };
-        public static Action<int, int, Color, string, float> OnApplyConfirmedOption = delegate { };
+        public static Action<int, int, string, float, Sprite, Color> OnApplyOption = delegate { };
 
         private void Awake()
         {
@@ -23,7 +22,7 @@ namespace EverScord
             UIPopUpWindow.OnAcceptReroll += HandleAcceptReroll;
             UIPopUpWindow.OnApplyOption += HandleApplyOption;
             UIFactorSlot.OnClickedSlot += HandleClickedSlot;
-            UIFactorOptionList.OnApplyOption += HandleApplyOption;
+            UIFactorOption.OnSelectOption += HandleSelectOption;
 
             Init();
         }
@@ -34,7 +33,7 @@ namespace EverScord
             UIPopUpWindow.OnAcceptReroll -= HandleAcceptReroll;
             UIPopUpWindow.OnApplyOption -= HandleApplyOption;
             UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
-            UIFactorOptionList.OnApplyOption -= HandleApplyOption;
+            UIFactorOption.OnSelectOption -= HandleSelectOption;
         }
 
         #region Handle Methods
@@ -50,12 +49,7 @@ namespace EverScord
 
         private void HandleApplyOption()
         {
-            OnApplyOption?.Invoke(selectType, selectIndex, new Color(), "", 0.0f);
-        }
-
-        private void HandleApplyOption(Color newColor, string newName, float newValue)
-        {
-            OnApplyOption.Invoke(selectType, selectIndex, newColor, newName, newValue);
+            OnApplyOption?.Invoke(selectType, selectIndex, "", 0.0f, null, new Color());
         }
 
         private void HandleClickedSlot(int type, int slotNum)
@@ -63,47 +57,33 @@ namespace EverScord
             selectType = type;
             selectIndex = slotNum;
         }
+
+        private void HandleSelectOption(int typeNum, int optionNum, float value)
+        {
+            FactorData datas = GameManager.Instance.FactorDatas[typeNum];
+            string optionName = datas.OptionDatas[optionNum].Name;
+            Sprite sourceImg = datas.OptionDatas[optionNum].SourceImg;
+            Color optionImgColor = datas.OptionDatas[optionNum].ImgColor;
+
+            AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
+            List<int> optionNums = panelData.OptionNum;
+            optionNums[selectIndex] = optionNum;
+
+            List<float> valueNums = panelData.ValueNum;
+            valueNums[selectIndex] = value;
+
+            OnApplyOption?.Invoke(selectType, selectIndex, optionName, value, sourceImg, optionImgColor);
+        }
         #endregion // Handle Methods
 
         private void Init()
         {
-            for (int i = 0; i < panels.Length; i++)
+            int count = GameManager.Instance.FactorDatas.Length;
+            for (int i = 0; i < count; i++)
             {
+                FactorData data = GameManager.Instance.FactorDatas[i];
                 UIFactorPanel panel = Instantiate(factorPanel, containor).GetComponent<UIFactorPanel>();
-                panel.Initialize((int)panels[i].Type, panels[i].SlotCount, panels[i].ConfirmedCount);
-            }
-        }
-
-        [System.Serializable]
-        public class FactorPanel
-        {
-            public enum EType
-            {
-                ALPHA,
-                BETA,
-                MAX
-            }
-
-            [SerializeField] private EType type;
-            [SerializeField] private int slotCount;
-            [SerializeField] private int confirmedCount;
-
-            public EType Type
-            {
-                get { return type; }
-                private set { type = value; }
-            }
-
-            public int SlotCount
-            {
-                get { return slotCount; }
-                private set {  slotCount = value; }
-            }
-
-            public int ConfirmedCount
-            {
-                get { return confirmedCount; }
-                private set { confirmedCount = value; }
+                panel.Initialize((int)data.Type, data.SlotCount, data.ConfirmedCount);
             }
         }
     }

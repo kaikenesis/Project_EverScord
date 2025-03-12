@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -33,6 +34,7 @@ namespace EverScord
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
         public static int CurrentLevelIndex                     { get; private set; }
+        public AlterationData PlayerAlterationData              { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
@@ -95,6 +97,8 @@ namespace EverScord
 
         private IDictionary<int, CharacterControl> playerDict;
 
+        public static Action<int> OnUpdatedMoney = delegate { };
+
         public static GameManager Instance
         {
             get
@@ -128,6 +132,7 @@ namespace EverScord
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
+            PlayerAlterationData = new AlterationData(factorDatas.Length);
 
             View.ViewID = 999;
             CurrentLevelIndex = -1;
@@ -141,6 +146,13 @@ namespace EverScord
         public void UpdateUserName(string newName)
         {
             PhotonNetwork.NickName = newName;
+            PlayerData.nickName = newName;
+        }
+
+        public void UpdateMoney(int cost)
+        {
+            playerData.UpdateMoney(cost);
+            OnUpdatedMoney?.Invoke(PlayerData.money);
         }
 
         public void InitControl(object control)
@@ -220,7 +232,7 @@ namespace EverScord
             {
                 if (GUI.Button(new Rect(200, 0, 120, 60), "Show Me The Money"))
                 {
-                    playerData.IncreaseMoney(10000);
+                    UpdateMoney(10000);
                 }
 
                 if (GUI.Button(new Rect(200, 70, 120, 60), "Play"))

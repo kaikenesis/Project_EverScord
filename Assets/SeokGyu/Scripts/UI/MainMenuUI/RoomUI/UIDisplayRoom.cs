@@ -11,7 +11,6 @@ namespace EverScord
         [SerializeField] private UIRoomPlayer uiRoomPlayerPrefab;
         [SerializeField] private GameObject roomContainer;
         [SerializeField] private GameObject inviteButton;
-        [SerializeField] private GameObject sendInvite;
         [SerializeField] private GameObject[] hideObjects;
         [SerializeField] private GameObject[] showObjects;
         [SerializeField] private Button[] singleOnlyButtons;

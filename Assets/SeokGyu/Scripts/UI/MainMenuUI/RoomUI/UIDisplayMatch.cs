@@ -49,7 +49,7 @@ namespace EverScord
 
             seconds = 0;
             minutes = 0;
-            timerText.text = $"경과 시간 : {minutes}:{seconds}";
+            timerText.text = $"경과시간 {minutes} : {seconds}";
             
             gameObject.SetActive(false);
         }
@@ -79,7 +79,7 @@ namespace EverScord
                     seconds = 0;
                 }
 
-                timerText.text = $"WaitTime : {minutes}.{seconds}";
+                timerText.text = $"경과시간 {minutes} : {seconds}";
 
                 seconds++;
 

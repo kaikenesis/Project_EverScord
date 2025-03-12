@@ -1,5 +1,4 @@
 using Photon.Pun;
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -13,19 +12,17 @@ namespace EverScord
         private void Awake()
         {
             // 보유 재화에 변화가 생길때도 UpdateInfo호출
+            GameManager.OnUpdatedMoney += HandleUpdateMoney;
             PhotonConnector.OnLogin += HandleLogin;
             UIChangeName.OnChangeName += HandleChangeName;
-            UIFactorSlot.OnDecreaseMoney += HandleUpdateMoney;
 
             Initialize();
-            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
             PhotonConnector.OnLogin -= HandleLogin;
             UIChangeName.OnChangeName -= HandleChangeName;
-            UIFactorSlot.OnDecreaseMoney -= HandleUpdateMoney;
         }
 
         private void Initialize()
@@ -55,12 +52,12 @@ namespace EverScord
 
         private void UpdateName(string newName)
         {
-            nickName.text = $"닉네임 : {newName}";
+            nickName.text = $"{newName}";
         }
 
         private void UpdateMoney(int money)
         {
-            this.money.text = $"재화 : {money}";
+            this.money.text = $"{money}";
         }
     }
 }
