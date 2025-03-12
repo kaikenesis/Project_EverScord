@@ -1,3 +1,4 @@
+using DTT.AreaOfEffectRegions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,8 @@ using UnityEngine.Rendering.Universal;
 
 public class NML1_Controller : NController
 {
-    private float chargeRange;
-
-    public float ChargeRange { get { return chargeRange; } }
+    public GameObject LineIndicator;
+    public SRPLineRegionProjector LineProjector;
 
     protected override void Setup()
     {
@@ -18,16 +18,6 @@ public class NML1_Controller : NController
         waitState = gameObject.AddComponent<NML1_WaitState>();
         stunState = gameObject.AddComponent<NML1_StunState>();
         deathState = gameObject.AddComponent<NML1_DeathState>();
-
-        var temp = monsterData as NML1_Data;
-        chargeRange = temp.ChargeRange;
-
-        Projector2.size = new Vector3(monsterData.AttackRangeX2,
-                              monsterData.AttackRangeY2,
-                              chargeRange);
-
-        Projector2.pivot = new Vector3(0, transform.position.y,
-                                       chargeRange / 2);
     }
 
     protected override void SetHealthBar()

@@ -3,10 +3,17 @@ using System.Collections;
 using EverScord.Character;
 using UnityEngine;
 
-public class BossPattern12_Imp : ActionNodeImplement
+public class BossPattern12_Imp : AttackNodeImplement
 {
     private float attackDamage = 10;
     private float attackWidth = 3;
+
+    public override NodeState Evaluate()
+    {
+        if (bossRPC.Phase == 1)
+            return NodeState.FAILURE;
+        return base.Evaluate();
+    }
 
     protected override IEnumerator Act()
     {

@@ -12667,7 +12667,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: m_Name
@@ -20033,7 +20037,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: m_Name
@@ -20629,7 +20637,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: spawnTimer
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6377856683032125126, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: sceneViewId
@@ -31039,6 +31051,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2057764309}
     m_Modifications:
+    - target: {fileID: 969402012035721585, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2128375665284905751, guid: ce3f987c5fc7daf4ba707fdbfc936747, type: 3}
       propertyPath: m_Name
       value: InGameUI
@@ -31358,7 +31374,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: spawnTimer
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: maxSpawnCount

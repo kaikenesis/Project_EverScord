@@ -1,8 +1,8 @@
-using Photon.Pun.Demo.Procedural;
 using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
@@ -10,10 +10,10 @@ namespace EverScord
     {
         [SerializeField] private GameObject factor;
         [SerializeField] private Transform containor;
+        [SerializeField] private Image titleImg;
         [SerializeField] private TMP_Text text;
-
-        private int panelTypeNum;
         private List<UIFactorSlot> slots = new List<UIFactorSlot>();
+        private int panelTypeNum;
 
         public static Action<int> OnUnlockFactor = delegate { };
         public static Action<int> OnRerollFactor = delegate { };
@@ -59,21 +59,24 @@ namespace EverScord
 
                 UIFactorSlot slot = obj.GetComponent<UIFactorSlot>();
                 slot.Initialize(typeNum, bConfirmed, i);
+
                 slots.Add(slot);
             }
         }
 
         private void SetTitle(int typeNum)
         {
+            titleImg.sprite = GameManager.Instance.FactorDatas[typeNum].TitleSourceImg;
+            text.color = GameManager.Instance.FactorDatas[typeNum].TitleTextColor;
             panelTypeNum = typeNum;
 
             switch (typeNum)
             {
                 case 0:
-                    text.text = "Alpha";
+                    text.text = "알파";
                     break;
                 case 1:
-                    text.text = "Beta";
+                    text.text = "베타";
                     break;
             }
         }

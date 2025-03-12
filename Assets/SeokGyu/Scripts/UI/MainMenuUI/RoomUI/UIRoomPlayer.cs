@@ -9,13 +9,17 @@ namespace EverScord
     public class UIRoomPlayer : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private TMP_Text nameText;
-        [SerializeField] private Outline outline;
+        [SerializeField] private Sprite master;
+        [SerializeField] private Sprite guest;
+        private Image image;
 
         public static Action<bool, string, Vector2> OnDisplayPartyOption = delegate { };
 
         private void Awake()
         {
             UIInputController.OnClickedPlayerUI += HandleClickedPlayerUI;
+
+            image = GetComponent<Image>();
         }
 
         private void OnDestroy()
@@ -30,7 +34,15 @@ namespace EverScord
 
         public void Initialize(string name, bool bMaster)
         {
-            outline.enabled = bMaster;
+            if(bMaster)
+            {
+                image.sprite = master;
+            }
+            else
+            {
+                image.sprite = guest;
+            }
+
             nameText.text = name;
         }
         
@@ -44,6 +56,11 @@ namespace EverScord
                     }
                     break;
             }
+        }
+
+        private void OnUpdatedPortrait()
+        {
+            
         }
     }
 }

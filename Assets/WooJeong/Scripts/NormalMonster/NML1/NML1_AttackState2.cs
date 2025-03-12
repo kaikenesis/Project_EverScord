@@ -1,5 +1,7 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class NML1_AttackState2 : NAttackState
@@ -7,16 +9,13 @@ public class NML1_AttackState2 : NAttackState
     private Vector3 moveVector;
     private Vector3 startVector;
     private float chargeRange;
-
+    private NML1_Controller controller;    
 
     protected override void Setup()
     {
         monsterController = GetComponent<NML1_Controller>();
-    }
-
-    private void Start()
-    {
-        var temp = monsterController as NML1_Controller;
+        controller = monsterController as NML1_Controller;
+        var temp = controller.monsterData as NML1_Data;
         chargeRange = temp.ChargeRange;
     }
 
@@ -24,7 +23,9 @@ public class NML1_AttackState2 : NAttackState
     {
         startVector = transform.position;
         moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
+        //yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
+        controller.PhotonView.RPC(nameof(SyncProjectLineIndicator), RpcTarget.All, 1.0f);
+        yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
         
@@ -44,7 +45,27 @@ public class NML1_AttackState2 : NAttackState
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             transform.position = Vector3.Lerp(startVector, endPoint, t / duration);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
+        }
+    }
+
+    [PunRPC]
+    private IEnumerator SyncProjectLineIndicator(float duration)
+    {
+        controller.LineIndicator.SetActive(true);
+        controller.LineProjector.FillProgress = 0;
+        float t = 0f;
+        while (true) 
+        {
+            t += Time.deltaTime;
+            if(t >= duration)
+            {
+                controller.LineIndicator.SetActive(false);
+                yield break;
+            }
+            controller.LineProjector.FillProgress = t / duration;
+            controller.LineProjector.UpdateProjectors();
+            yield return null;
         }
     }
 }

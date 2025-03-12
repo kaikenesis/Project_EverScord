@@ -3,14 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern06_Imp : ActionNodeImplement
+public class BossPattern06_Imp : AttackNodeImplement
 {
     private float laserLifeTime = 3.5f;
+    protected int failurePhase = 2;
 
     protected override void Awake()
     {
         base.Awake();
-        attackableHP = 80;
+        attackableHP = 70;
+    }
+
+    public override NodeState Evaluate()
+    {
+        if (bossRPC.Phase == failurePhase)
+            return NodeState.FAILURE;
+        return base.Evaluate();
     }
 
     protected override IEnumerator Act()

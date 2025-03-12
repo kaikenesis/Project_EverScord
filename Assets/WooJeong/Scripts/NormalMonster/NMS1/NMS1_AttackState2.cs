@@ -11,7 +11,6 @@ public class NMS1_AttackState2 : NAttackState
     
     protected override IEnumerator Attack()
     {
-        //yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
         monsterController.BoxCollider2.enabled = true;

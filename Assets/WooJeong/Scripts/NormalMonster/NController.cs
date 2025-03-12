@@ -36,8 +36,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected LayerMask playerLayer;
     protected MonsterType monsterType;
 
-    public DecalProjector Projector1 { get; protected set; }
-    public DecalProjector Projector2 { get; protected set; }
     public BoxCollider Hitbox { get; protected set; }
     public BoxCollider BoxCollider1 { get; protected set; }
     public BoxCollider BoxCollider2 { get; protected set; }
@@ -69,23 +67,16 @@ public abstract class NController : MonoBehaviour, IEnemy
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
         Hitbox = GetComponent<BoxCollider>();
-        Projector1 = gameObject.AddComponent<DecalProjector>();
-        Projector2 = gameObject.AddComponent<DecalProjector>();
+
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
         BoxCollider2 = gameObject.AddComponent<BoxCollider>();
         uiMarker = gameObject.AddComponent<UIMarker>();
         uiMarker.Initialize(PointMarkData.EType.Monster);
-        ProjectorSetup();
+        ColliderSetup();
 
         blinkEffect = BlinkEffect.Create(this);
         dissolveEffect = DissolveEffect.Create(this);
 
-        Projector1.enabled = false;
-        Projector2.enabled = false;
-        BoxCollider1.isTrigger = true;
-        BoxCollider2.isTrigger = true;
-        BoxCollider1.enabled = false;
-        BoxCollider2.enabled = false;
 
         foreach (AnimationClip clip in Animator.runtimeAnimatorController.animationClips)
         {
@@ -100,26 +91,9 @@ public abstract class NController : MonoBehaviour, IEnemy
         playerLayer = LayerMask.GetMask("Player");
         SetNearestPlayer();
     }
-    protected void ProjectorSetup()
+
+    protected void ColliderSetup()
     {
-        Projector1.renderingLayerMask = 2;
-        Projector1.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
-        Projector2.renderingLayerMask = 2;
-        Projector2.material = ResourceManager.Instance.GetAsset<Material>("DecalRedSquare");
-        Projector1.size = new Vector3(monsterData.AttackRangeX1,
-                                      monsterData.AttackRangeY1,
-                                      monsterData.AttackRangeZ1);
-
-        Projector1.pivot = new Vector3(0, transform.position.y,
-                                       monsterData.AttackRangeZ1 / 2);
-
-        Projector2.size = new Vector3(monsterData.AttackRangeX2,
-                                      monsterData.AttackRangeY2,
-                                      monsterData.AttackRangeZ2);
-
-        Projector2.pivot = new Vector3(0, transform.position.y,
-                                       monsterData.AttackRangeZ2 / 2);
-
         BoxCollider1.center = new Vector3(0, transform.position.y,
                                           monsterData.AttackRangeZ1 / 2);
 
@@ -133,6 +107,11 @@ public abstract class NController : MonoBehaviour, IEnemy
         BoxCollider2.size = new Vector3(monsterData.AttackRangeX2,
                                         monsterData.AttackRangeY2,
                                         monsterData.AttackRangeZ2);
+
+        BoxCollider1.isTrigger = true;
+        BoxCollider2.isTrigger = true;
+        BoxCollider1.enabled = false;
+        BoxCollider2.enabled = false;
     }
 
     private void Start()
@@ -142,7 +121,16 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     private void OnEnable()
     {
+        isDead = false;
+        LastAttack = 0;
         uiMarker.SetActivate(true);
+        HP = monsterData.HP;
+        if (healthBarObject == null)
+        {
+            SetHealthBar();
+        }
+        healthBarObject.SetActive(true);
+        monsterHealthBar.InitHealthBar(monsterData.HP);
     }
 
     private void OnDisable()
@@ -309,14 +297,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void StartFSM()
     {
-        if (healthBarObject == null)
-        {
-            SetHealthBar();
-            photonView.RPC(nameof(SyncSetHealthBar), RpcTarget.Others);
-        }
-        photonView.RPC(nameof(SyncIsDead), RpcTarget.All, false);
-        photonView.RPC(nameof(SyncHealthBarEnable), RpcTarget.All);
-        LastAttack = 0;
+        SetActiveHitbox(true);
         WaitState();
     }
 
@@ -324,20 +305,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void SyncIsDead(bool value)
     {
         isDead = value;
-    }
-
-    [PunRPC]
-    protected void SyncSetHealthBar()
-    {
-        SetHealthBar();
-    }
-
-    [PunRPC]
-    protected void SyncHealthBarEnable()
-    {
-        HP = monsterData.HP;
-        healthBarObject.SetActive(true);
-        monsterHealthBar.InitHealthBar(monsterData.HP);
     }
 
     public void PlayAnimation(string animationName)
@@ -352,47 +319,6 @@ public abstract class NController : MonoBehaviour, IEnemy
         Animator.CrossFade(animationName, 0.3f, -1, 0);
     }
 
-    public virtual IEnumerator ProjectAttackRange(int attackNum)
-    {
-        DecalProjector projector;
-        if (attackNum == 1)
-            projector = Projector1;
-        else
-            projector = Projector2;
-
-        photonView.RPC(nameof(SyncProjectorEnable), RpcTarget.Others, attackNum);
-        projector.enabled = true;
-        yield return new WaitForSeconds(monsterData.ProjectionTime);
-        photonView.RPC(nameof(SyncProjectorDisable), RpcTarget.Others, attackNum);
-        projector.enabled = false;
-    }
-
-    public void ProjectorDisable(int projectorNum)
-    {
-        if (projectorNum == 1)
-            Projector1.enabled = false;
-        else
-            Projector2.enabled = false;
-        photonView.RPC(nameof(SyncProjectorDisable), RpcTarget.Others, projectorNum);
-    }
-
-    [PunRPC]
-    protected void SyncProjectorEnable(int projectorNum)
-    {
-        if (projectorNum == 1)
-            Projector1.enabled = true;
-        else
-            Projector2.enabled = true;
-    }
-    
-    [PunRPC]
-    protected void SyncProjectorDisable(int projectorNum)
-    {
-        if (projectorNum == 1)
-            Projector1.enabled = false;
-        else
-            Projector2.enabled = false;
-    }
     public void Fire(string projectileName)
     {
         Vector3 position = transform.position + transform.forward * 2;
@@ -420,6 +346,11 @@ public abstract class NController : MonoBehaviour, IEnemy
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, mp);
         mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
+    }
+
+    public void SetActiveHitbox(bool value)
+    {
+        photonView.RPC(nameof(SyncSetActiveHitBox), RpcTarget.All, value);
     }
 
     [PunRPC]

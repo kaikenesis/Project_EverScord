@@ -4,7 +4,7 @@ using EverScord.FileIO;
 
 namespace EverScord
 {
-    public class AlterationData : MonoBehaviour
+    public class AlterationParsedData : MonoBehaviour
     {
         private static IDictionary<string, AlterationInfo> alterationDict = new Dictionary<string, AlterationInfo>();
         public static IDictionary<string, AlterationInfo> AlterationDict => alterationDict;

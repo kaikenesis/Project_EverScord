@@ -1,12 +1,14 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
     public class UIFactorOption : MonoBehaviour
     {
         [SerializeField] private TMP_Text nameText;
+        [SerializeField] private Image optionIcon;
         private float value;
         private int optionNum;
         private int typeNum;
@@ -15,7 +17,8 @@ namespace EverScord
 
         public void Initialize(string name, float value, int optionNum, int typeNum)
         {
-            nameText.text = name;
+            nameText.text = $"{name} {value}%";
+            optionIcon.sprite = GameManager.Instance.FactorDatas[typeNum].OptionDatas[optionNum].SourceImg;
             this.value = value;
             this.optionNum = optionNum;
             this.typeNum = typeNum;
@@ -23,8 +26,6 @@ namespace EverScord
 
         public void OnClicked()
         {
-            // 선택한 옵션 최대수치 적용
-            //Debug.Log($"MaxValue : {value}");
             OnSelectOption?.Invoke(typeNum, optionNum, value);
         }
     }

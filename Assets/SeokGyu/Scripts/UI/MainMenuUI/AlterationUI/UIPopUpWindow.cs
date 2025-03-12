@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
@@ -23,12 +24,18 @@ namespace EverScord
             MAX
         }
 
+        [SerializeField] private GameObject requireUI;
+        [SerializeField] private TMP_Text requireText;
+        [SerializeField] private GameObject compareUI;
+        [SerializeField] private TMP_Text beforeOption;
+        [SerializeField] private TMP_Text afterOption;
         [SerializeField] private TMP_Text mainMessage;
         [SerializeField] private TMP_Text subMessage;
         [SerializeField] private TMP_Text acceptText;
-        [SerializeField] private TMP_Text refuseText;
+        [SerializeField] private TMP_Text cancelText;
         [SerializeField] private PopUpWindowData data;
-        private EType curWindowType = EType.None;
+        private RectTransform rectTransform;
+        private EType curType = EType.None;
         private bool bCanAccept = false;
 
         public static Action OnAcceptUnlock = delegate { };
@@ -40,6 +47,8 @@ namespace EverScord
             UIFactorPanel.OnUnlockFactor += HandleUnlockFactor;
             UIFactorPanel.OnRerollFactor += HandleRerollFactor;
             UIFactorSlot.OnRequestApplyOption += HandleRequestApplyOption;
+
+            rectTransform = GetComponent<RectTransform>();
 
             gameObject.SetActive(false);
         }
@@ -71,90 +80,100 @@ namespace EverScord
 
         private void DisplayUnlockFactor(int cost)
         {
-            // mainMsg, subMsg, acceptText, cancelText, 요구 money, 현재 money 데이터로 분리 필요
             gameObject.SetActive(true);
-            curWindowType = EType.Unlock;
-            int money;
-            if (GameManager.Instance.PlayerData != null)
-                money = GameManager.Instance.PlayerData.money;
-            else
-                money = -1;
+            requireUI.SetActive(true);
+            compareUI.SetActive(false);
+            subMessage.gameObject.SetActive(false);
+            curType = EType.Unlock;
+            int money = GameManager.Instance.PlayerData.money;
+            rectTransform.sizeDelta = new Vector2(890f, 560f);
+
+            cancelText.transform.parent.GetComponent<Button>().interactable = true;
+            PopUpWindowData.Message msg = data.Messages[(int)curType - 1];
+            SetMessage(msg.MainMessage, msg.SubMessage, msg.AcceptText, msg.CancelText);
 
             if (money < cost)
             {
-                SetMessage($"필요한 재화 : {cost}\n 개방하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
+                requireText.text = $"<color=red>{money}</color> / {cost}";
                 bCanAccept = false;
             }
             else
             {
-                SetMessage($"필요한 재화 : {cost}\n 개방하시겠습니까?", $"보유 재화 : {money}");
+                requireText.text = $"{money} / {cost}";
                 bCanAccept = true;
             }
-
-            acceptText.text = "개방";
-            refuseText.text = "취소";
         }
 
         private void DisplayRerollFactor(int cost)
         {
             gameObject.SetActive(true);
-            curWindowType = EType.Reroll;
-            int money;
-            if (GameManager.Instance.PlayerData != null)
-                money = GameManager.Instance.PlayerData.money;
-            else
-                money = -1;
+            requireUI.SetActive(true);
+            compareUI.SetActive(false);
+            subMessage.gameObject.SetActive(false);
+            curType = EType.Reroll;
+            int money = GameManager.Instance.PlayerData.money;
+            rectTransform.sizeDelta = new Vector2(890f, 560f);
+
+            cancelText.transform.parent.GetComponent<Button>().interactable = true;
+            PopUpWindowData.Message msg = data.Messages[(int)curType - 1];
+            SetMessage(msg.MainMessage, msg.SubMessage, msg.AcceptText, msg.CancelText);
 
             if (money < cost)
             {
-                SetMessage($"필요한 재화 : {cost}\n 개조하시겠습니까?", $"보유 재화 : <color=red>{money}</color>");
+                requireText.text = $"<color=red>{money}</color> / {cost}";
                 bCanAccept = false;
             }
             else
             {
-                SetMessage($"필요한 재화 : {cost}\n 개조하시겠습니까?", $"보유 재화 : {money}");
+                requireText.text = $"{money} / {cost}";
                 bCanAccept = true;
             }
-
-            acceptText.text = "개조";
-            refuseText.text = "취소";
         }
 
         private void DisplayApplyOption(string curName, float curValue, string newName, float newValue)
         {
             gameObject.SetActive(true);
-            curWindowType = EType.Apply;
+            requireUI.SetActive(false);
+            compareUI.SetActive(true);
+            subMessage.gameObject.SetActive(true);
+            curType = EType.Apply;
+            rectTransform.sizeDelta = new Vector2(1040f, 680f);
 
-            if(curName == "" || curValue == 0)
+            cancelText.transform.parent.GetComponent<Button>().interactable = true;
+            PopUpWindowData.Message msg = data.Messages[(int)curType - 1];
+            SetMessage(msg.MainMessage, msg.SubMessage, msg.AcceptText, msg.CancelText);
+            
+            afterOption.text = $"{newName}\n{newValue}%";
+
+            if (curName == "" || curValue == 0)
             {
-                mainMessage.text = $"현재 : X\n적용 후 : {newName}, {newValue}\n적용하시겠습니까?";
+                beforeOption.text = "없음";
+                cancelText.transform.parent.GetComponent<Button>().interactable = false;
             }
             else
             {
-                mainMessage.text = $"현재 : {curName}, {curValue}\n적용 후 : {newName}, {newValue}\n적용하시겠습니까?";
+                beforeOption.text = $"{curName}\n{curValue}%";
             }
-            subMessage.text = "";
-
-            acceptText.text = "적용";
-            refuseText.text = "유지";
         }
 
-        private void SetMessage(string mainMessage, string subMessage)
+        private void SetMessage(string mainMsg, string subMsg, string acceptMsg, string cancelMsg)
         {
-            this.mainMessage.text = mainMessage;
-            this.subMessage.text = subMessage;
+            mainMessage.text = mainMsg;
+            subMessage.text = subMsg;
+            acceptText.text = acceptMsg;
+            cancelText.text = cancelMsg;
         }
 
         public void OnAccepted()
         {
-            switch(curWindowType)
+            switch(curType)
             {
                 case EType.Unlock:
                     {
                         if (bCanAccept == true)
                         {
                             OnAcceptUnlock?.Invoke();
-                            curWindowType = EType.None;
+                            curType = EType.None;
                             gameObject.SetActive(false);
                         }
                     }
@@ -170,7 +189,7 @@ namespace EverScord
                 case EType.Apply:
                     {
                         OnApplyOption?.Invoke();
-                        curWindowType = EType.None;
+                        curType = EType.None;
                         gameObject.SetActive(false);
                     }
                     break;
@@ -179,7 +198,7 @@ namespace EverScord
 
         public void OnCancled()
         {
-            curWindowType = EType.None;
+            curType = EType.None;
             gameObject.SetActive(false);
         }
     }

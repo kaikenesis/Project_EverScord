@@ -13,13 +13,18 @@ MonoBehaviour:
   m_Name: CostData
   m_EditorClassIdentifier: 
   slotCostDatas:
-  - unlock: 5
-    reroll: 1
-  - unlock: 10
-    reroll: 2
-  - unlock: 15
-    reroll: 3
-  - unlock: 999
-    reroll: 4
+  - unlock: 50
+    reroll: 30
+  - unlock: 100
+    reroll: 50
+  - unlock: 150
+    reroll: 75
+  - unlock: 200
+    reroll: 100
   - unlock: 999
     reroll: 5
+  stageRewardDatas:
+  - money: 30
+  - money: 60
+  - money: 90
+  - money: 120

@@ -7,15 +7,18 @@ using UnityEngine;
 
 public class NMM1_AttackState2 : NAttackState
 {
+    NMM1_Controller controller;
+
     protected override void Setup()
     {
         monsterController = GetComponent<NMM1_Controller>();
+        controller = monsterController as NMM1_Controller;
     }
 
     protected override IEnumerator Attack()
     {
-        yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
-
+        controller.ProjectLineIndicator(1f);
+        yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
         

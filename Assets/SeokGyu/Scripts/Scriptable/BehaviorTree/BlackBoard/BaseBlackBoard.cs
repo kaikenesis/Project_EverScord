@@ -21,7 +21,6 @@ namespace EverScord
             else
             {
                 boolValues.Add(key, value);
-                Debug.Log($"{key} : {value}");
             }
         }
 
@@ -35,7 +34,6 @@ namespace EverScord
             else
             {
                 intValues.Add(key, value);
-                Debug.Log($"{key} : {value}");
             }
         }
 
@@ -49,7 +47,6 @@ namespace EverScord
             else
             {
                 floatValues.Add(key, value);
-                Debug.Log($"{key} : {value}");
             }
         }
 
@@ -63,7 +60,6 @@ namespace EverScord
             else
             {
                 objectValues.Add(key, value);
-                Debug.Log($"{key} : {value}");
             }
         }
 
@@ -76,7 +72,6 @@ namespace EverScord
             }
 
             value = boolValues[key];
-            //Debug.Log($"{boolValues[key]}");
         }
 
         public void GetValue(string key, out int value)
@@ -88,7 +83,6 @@ namespace EverScord
             }
 
             value = intValues[key];
-            Debug.Log($"{intValues[key]}");
         }
 
         public void GetValue(string key, out float value)
@@ -100,7 +94,6 @@ namespace EverScord
             }
 
             value = floatValues[key];
-            //Debug.Log($"{floatValues[key]}");
         }
 
         public void GetValue<T>(string key, out T value) where T : class
@@ -112,7 +105,6 @@ namespace EverScord
             }
 
             value = objectValues[key] as T;
-            Debug.Log($"{objectValues[key]}");
         }
     }
 }

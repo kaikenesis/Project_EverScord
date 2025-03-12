@@ -8,8 +8,6 @@ public class BossMove : BActionNode
     public override void Setup(GameObject gameObject)
     {        
         actionNodeImplement = gameObject.AddComponent<BossMove_Imp>();
-        BossData bossData = GetValue<BossData>("BossData");
-        actionNodeImplement.Setup(bossData);
         base.Setup(gameObject);
     }
 }

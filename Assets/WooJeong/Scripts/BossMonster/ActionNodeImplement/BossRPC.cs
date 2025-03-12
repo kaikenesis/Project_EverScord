@@ -27,7 +27,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private PhotonView photonView;
     private Animator animator;
-    private BoxCollider hitBox;
+    private CapsuleCollider hitBox;
     private UIMarker uiMarker;
     public NavMeshAgent BossNavMeshAgent { get; private set; }
     private BossDebuffSystem bossDebuffSystem;
@@ -37,12 +37,16 @@ public class BossRPC : MonoBehaviour, IEnemy
     private float hp = 0;
     private float maxHP = 0;
     private int phase = 1;
+    public float HP => hp;
+    public int Phase => phase;
+
 
     private void Awake()
     {
         hp = bossData.MaxHP;
+        maxHP = bossData.MaxHP;
         phase = bossData.Phase;
-        hitBox = GetComponent<BoxCollider>();
+        hitBox = GetComponent<CapsuleCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
         uiMarker = gameObject.AddComponent<UIMarker>();
@@ -353,9 +357,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
 
-    public bool IsUnderHP(float hp)
+    public bool IsUnderHP(float ratio)
     {
-        if (hp > maxHP / 100 * hp)
+        if (hp > maxHP / 100 * ratio)
         {
             return false;
         }

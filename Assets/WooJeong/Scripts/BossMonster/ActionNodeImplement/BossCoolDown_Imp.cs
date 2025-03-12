@@ -20,6 +20,7 @@ public class BossCoolDown_Imp : ActionNodeImplement
             yield return new WaitForSeconds(coolDown1);
             isEnd = true;
             action = null;
+            Debug.Log("CoolDown end");
             yield break;
         }
         yield return new WaitForSeconds(coolDown2);

@@ -11,7 +11,6 @@ public class NML1_AttackState1 : NAttackState
     
     protected override IEnumerator Attack()
     {
-        //yield return project = StartCoroutine(monsterController.ProjectAttackRange(1));
         monsterController.PlayAnimation("Attack1");
         float time = monsterController.clipDict["Attack1"];
 

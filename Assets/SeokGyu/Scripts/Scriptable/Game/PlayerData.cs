@@ -32,6 +32,7 @@ namespace EverScord
         public EJob job = EJob.Dealer;
         public EDifficulty difficulty = EDifficulty.Normal;
         public int money = 0;
+        public string nickName;
         private int defaultMoney = 100;
 
         public void Initialize()
@@ -42,16 +43,11 @@ namespace EverScord
             money = defaultMoney;
         }
 
-        public void DecreaseMoney(int cost)
-        {
-            money -= cost;
-            if (money < 0) money = 0;
-        }
-
-        public void IncreaseMoney(int cost)
+        public void UpdateMoney(int cost)
         {
             money += cost;
             if (money > maxMoney) money = maxMoney;
+            else if (money < 0) money = 0;
         }
     }
 }

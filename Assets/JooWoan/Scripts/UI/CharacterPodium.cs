@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Character;
 using Photon.Pun;
+using System;
 
 namespace EverScord.UI
 {
@@ -14,6 +15,8 @@ namespace EverScord.UI
 
         private Transform currentCharacter;
         private InputInfo playerInput;
+
+        public static Action OnUpdatedCharacter = delegate { };
 
         private void Awake()
         {
@@ -107,6 +110,7 @@ namespace EverScord.UI
 
             GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Uni;
             SwitchPlayer(PlayerData.ECharacter.Uni);
+            OnUpdatedCharacter?.Invoke();
         }
 
         public void SetCharacterNed()

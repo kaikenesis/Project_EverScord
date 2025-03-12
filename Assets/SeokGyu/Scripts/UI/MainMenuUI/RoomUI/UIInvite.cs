@@ -19,7 +19,7 @@ namespace EverScord
             this.friendName = friendName;
             this.roomName = roomName;
 
-            friendNameText.SetText($"{friendName} 님이\n파티에 초대하셨습니다.");
+            friendNameText.SetText($"{friendName} 님이 파티에 초대했습니다.");
         }
 
         public void AcceptInvite()

@@ -21,5 +21,11 @@ namespace EverScord
             jobImg.sprite = GameManager.Instance.InGameUIData.JodDatas[(int)job].IconSourceImg;
             this.photonViewID = photonViewID;
         }
+
+        private void UpdatedIcon(int pvID)
+        {
+            PlayerData.EJob curJob = GameManager.Instance.PlayerData.job;
+            jobImg.sprite = GameManager.Instance.InGameUIData.JodDatas[(int)curJob].IconSourceImg;
+        }
     }
 }

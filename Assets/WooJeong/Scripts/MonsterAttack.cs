@@ -1,3 +1,4 @@
+using DTT.AreaOfEffectRegions;
 using EverScord.Character;
 using System.Collections;
 using UnityEngine;
@@ -6,18 +7,16 @@ using UnityEngine.Rendering.Universal;
 public class MonsterAttack : MonoBehaviour
 {
     private float attackDamage;
-    private DecalProjector projector;
+    [SerializeField] GameObject circleProjectorObject;
+    [SerializeField] SRPCircleRegionProjector circleProjector;
     private CapsuleCollider capCollider;
     private float projectTime;
     private string effectAddressableKey;
 
     private void Awake()
     {
-        projector = gameObject.AddComponent<DecalProjector>();
-        projector.material = ResourceManager.Instance.GetAsset<Material>("DecalRedCircle");
         capCollider = gameObject.AddComponent<CapsuleCollider>();
         capCollider.isTrigger = true;
-        projector.renderingLayerMask = 2;
     }
 
     public void Setup(float width, float projectTime, string effectAddressableKey, float attackDamage)
@@ -25,11 +24,10 @@ public class MonsterAttack : MonoBehaviour
         this.projectTime = projectTime;
         this.effectAddressableKey = effectAddressableKey;
         this.attackDamage = attackDamage;
-        projector.size = new Vector3(width, width, width);
+        circleProjector.Radius = width;
         capCollider.radius = width/2;
 
-        gameObject.transform.Rotate(90, 0, 0);
-        projector.enabled = false;
+        circleProjectorObject.SetActive(false);
         capCollider.enabled = false;
 
         StartCoroutine(Attack());
@@ -37,9 +35,7 @@ public class MonsterAttack : MonoBehaviour
 
     public IEnumerator Attack()
     {
-        projector.enabled = true;
-        yield return new WaitForSeconds(projectTime);
-        projector.enabled = false;
+        yield return StartCoroutine(ProjectCircle(projectTime));
 
         capCollider.enabled = true;
         GameObject effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
@@ -50,6 +46,25 @@ public class MonsterAttack : MonoBehaviour
         ResourceManager.Instance.ReturnToPool(effect, effectAddressableKey);
 
         ResourceManager.Instance.ReturnToPool(gameObject, "MonsterAttack");
+    }
+
+    private IEnumerator ProjectCircle(float duration)
+    {
+        circleProjectorObject.SetActive(true);
+        circleProjector.FillProgress = 0;
+        float t = 0f;
+        while (true)
+        {
+            t += Time.deltaTime;
+            if (t >= duration)
+            {
+                circleProjectorObject.SetActive(false);
+                yield break;
+            }
+            circleProjector.FillProgress = t / duration;
+            circleProjector.UpdateProjectors();
+            yield return null;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
