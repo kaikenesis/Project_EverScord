@@ -15,14 +15,17 @@ public class NML1_AttackState2 : NAttackState
     {
         monsterController = GetComponent<NML1_Controller>();
         controller = monsterController as NML1_Controller;
-        chargeRange = controller.ChargeRange;
+        var temp = controller.monsterData as NML1_Data;
+        chargeRange = temp.ChargeRange;
     }
 
     protected override IEnumerator Attack()
     {
         startVector = transform.position;
         moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
+        //yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
+        controller.PhotonView.RPC(nameof(SyncProjectLineIndicator), RpcTarget.All, 1.0f);
+        yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
         
@@ -47,13 +50,21 @@ public class NML1_AttackState2 : NAttackState
     }
 
     [PunRPC]
-    private IEnumerator ProjectLineIndicator(float duration)
+    private IEnumerator SyncProjectLineIndicator(float duration)
     {
         controller.LineIndicator.SetActive(true);
         controller.LineProjector.FillProgress = 0;
-        for (float t = 0f; t < duration; t += Time.deltaTime)
+        float t = 0f;
+        while (true) 
         {
+            t += Time.deltaTime;
+            if(t >= duration)
+            {
+                controller.LineIndicator.SetActive(false);
+                yield break;
+            }
             controller.LineProjector.FillProgress = t / duration;
+            controller.LineProjector.UpdateProjectors();
             yield return null;
         }
     }
