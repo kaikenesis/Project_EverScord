@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern07_Imp : ActionNodeImplement
+public class BossPattern07_Imp : AttackNodeImplement
 {
     private float attackDamage = 1;
     //private float attackRadius = 100;
@@ -16,6 +16,20 @@ public class BossPattern07_Imp : ActionNodeImplement
     private Vector3 safePos = Vector3.zero;
     private float safeStartDistance = 4;
     private float randomRange = 10;
+    protected int failurePhase = 2;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        attackableHP = 60;
+    }
+
+    public override NodeState Evaluate()
+    {
+        if (bossRPC.Phase == failurePhase)
+            return NodeState.FAILURE;
+        return base.Evaluate();
+    }
 
     protected override IEnumerator Act()
     {

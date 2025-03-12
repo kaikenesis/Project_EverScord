@@ -6,7 +6,7 @@ public class BossDeath_Imp : ActionNodeImplement
 {
     protected override IEnumerator Act()
     {
-        if (bossData.Phase == 1)
+        if (bossRPC.Phase == 1)
         {
             bossRPC.PlayAnimation("Roar");
             yield return new WaitForSeconds(bossRPC.clipDict["Roar"]);

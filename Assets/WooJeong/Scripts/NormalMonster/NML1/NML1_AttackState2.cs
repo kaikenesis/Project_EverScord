@@ -1,5 +1,7 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class NML1_AttackState2 : NAttackState
@@ -7,17 +9,13 @@ public class NML1_AttackState2 : NAttackState
     private Vector3 moveVector;
     private Vector3 startVector;
     private float chargeRange;
-
+    private NML1_Controller controller;    
 
     protected override void Setup()
     {
         monsterController = GetComponent<NML1_Controller>();
-    }
-
-    private void Start()
-    {
-        var temp = monsterController as NML1_Controller;
-        chargeRange = temp.ChargeRange;
+        controller = monsterController as NML1_Controller;
+        chargeRange = controller.ChargeRange;
     }
 
     protected override IEnumerator Attack()
@@ -44,7 +42,19 @@ public class NML1_AttackState2 : NAttackState
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             transform.position = Vector3.Lerp(startVector, endPoint, t / duration);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
+        }
+    }
+
+    [PunRPC]
+    private IEnumerator ProjectLineIndicator(float duration)
+    {
+        controller.LineIndicator.SetActive(true);
+        controller.LineProjector.FillProgress = 0;
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            controller.LineProjector.FillProgress = t / duration;
+            yield return null;
         }
     }
 }

@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern08_Imp : ActionNodeImplement
+public class BossPattern08_Imp : AttackNodeImplement
 {
     private float projectileSpeed = 20f;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        attackableHP = 50;
+    }
 
     protected override IEnumerator Act()
     {
@@ -30,6 +36,7 @@ public class BossPattern08_Imp : ActionNodeImplement
         bossRPC.PlayAnimation("Idle");
 
         isEnd = true;
+        action = null;
     }
 
 }

@@ -7,18 +7,16 @@ using UnityEngine.AI;
 public class BossMove_Imp : ActionNodeImplement
 {
     private NavMeshAgent navMeshAgent;
+    protected LayerMask playerLayer;
+    protected GameObject player;
 
     protected override void Awake()
     {
         base.Awake();
         navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
-    }
-
-    public override void Setup(BossData bossData)
-    {
-        base.Setup(bossData);
-        navMeshAgent.speed = bossData.Speed;
-        navMeshAgent.stoppingDistance = bossData.StopDistance;
+        navMeshAgent.speed = bossRPC.BossMonsterData.Speed;
+        navMeshAgent.stoppingDistance = bossRPC.BossMonsterData.StopDistance;
+        playerLayer = LayerMask.GetMask("Player");
     }
 
     public override NodeState Evaluate()
@@ -43,6 +41,7 @@ public class BossMove_Imp : ActionNodeImplement
 
     protected override IEnumerator Act()
     {
+        Debug.Log("Move Start");
         bossRPC.PlayAnimation("Walk");
         navMeshAgent.enabled = true;
         while (true)
@@ -58,6 +57,7 @@ public class BossMove_Imp : ActionNodeImplement
             LookPlayer();
             if (distance < navMeshAgent.stoppingDistance && IsLookPlayer(navMeshAgent.stoppingDistance + 1))
             {
+                Debug.Log("Move end");
                 navMeshAgent.enabled = false;
                 isEnd = true;
                 action = null;
@@ -86,9 +86,7 @@ public class BossMove_Imp : ActionNodeImplement
                 nearPlayer = player.gameObject;
             }
         }
-        if (nearPlayer != null) 
-            player = nearPlayer;
-        //else
+        player = nearPlayer;
     }
 
     private float CalcDistance()
@@ -101,5 +99,26 @@ public class BossMove_Imp : ActionNodeImplement
         }
 
         return 0;
+    }
+
+    public void LookPlayer()
+    {
+        if (player != null)
+        {
+            Vector3 dir = player.transform.position - transform.position;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 20);
+            transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
+        }
+    }
+
+    public bool IsLookPlayer(float distance)
+    {
+        Vector3 start = new(transform.position.x, transform.position.y + 0.3f, transform.position.z);
+        if (Physics.Raycast(start, transform.forward, distance, playerLayer))
+        {
+            return true;
+        }
+        Debug.DrawRay(start, transform.forward * distance, Color.red);
+        return false;
     }
 }

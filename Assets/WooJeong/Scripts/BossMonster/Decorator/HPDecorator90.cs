@@ -7,7 +7,9 @@ public class HPDecorator90 : BDecoratorNode
 {
     public override NodeState Evaluate()
     {
-        if (bossData.HP > bossData.MaxHP / 100 * 90)
+        if (bossRPC.Phase == 2)
+            return NodeState.FAILURE;
+        if (!bossRPC.IsUnderHP(90))
         {
             state = children[0].Evaluate();
             return state;
@@ -17,7 +19,6 @@ public class HPDecorator90 : BDecoratorNode
             state = children[0].Evaluate();
             return state;
         }
-
         return NodeState.FAILURE;
     }
 }

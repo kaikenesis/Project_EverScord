@@ -37,10 +37,14 @@ public class BossRPC : MonoBehaviour, IEnemy
     private float hp = 0;
     private float maxHP = 0;
     private int phase = 1;
+    public float HP => hp;
+    public int Phase => phase;
+
 
     private void Awake()
     {
         hp = bossData.MaxHP;
+        maxHP = bossData.MaxHP;
         phase = bossData.Phase;
         hitBox = GetComponent<BoxCollider>();
         photonView = GetComponent<PhotonView>();
@@ -353,9 +357,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
 
-    public bool IsUnderHP(float hp)
+    public bool IsUnderHP(float ratio)
     {
-        if (hp > maxHP / 100 * hp)
+        if (hp > maxHP / 100 * ratio)
         {
             return false;
         }

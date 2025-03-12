@@ -9,27 +9,21 @@ public class BossPattern01_Imp : ActionNodeImplement
 
     public override NodeState Evaluate()
     {
-        int random = Random.Range(0, 10);
-        if (random <= 5)
+        if(isEnd == false && action == null)
         {
-            return NodeState.FAILURE;
+            int random = Random.Range(0, 10);
+            if (random < 5)
+            {
+                return NodeState.FAILURE;
+            }
         }
 
-        if (isEnd)
-        {
-            isEnd = false;
-            action = null;
-            return NodeState.SUCCESS;
-        }
-
-        if (action == null)
-            action = StartCoroutine(Act());
-
-        return NodeState.RUNNING;
+        return base.Evaluate();
     }
 
     protected override IEnumerator Act()
     {
+        Debug.Log("Attack1");
         bossRPC.PlayAnimation("Shoot");
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < 7; i++)
@@ -43,5 +37,6 @@ public class BossPattern01_Imp : ActionNodeImplement
         bossRPC.PlayAnimation("Idle");
 
         isEnd = true;
+        action = null;
     }
 }

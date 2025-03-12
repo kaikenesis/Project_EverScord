@@ -8,8 +8,6 @@ public class BoosCoolDownNode : BActionNode
     public override void Setup(GameObject gameObject)
     {
         actionNodeImplement = gameObject.AddComponent<BossCoolDown_Imp>();
-        BossData bossData = GetValue<BossData>("BossData");
-        actionNodeImplement.Setup(bossData);
         base.Setup(gameObject);
     }
     

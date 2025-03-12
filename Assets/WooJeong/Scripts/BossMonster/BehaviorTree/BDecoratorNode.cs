@@ -4,11 +4,11 @@ using UnityEngine;
 
 public abstract class BDecoratorNode : BehaviorNode
 {
-    protected BossData bossData;
+    protected BossRPC bossRPC;
 
     public override void Setup(GameObject gameObject)
     {
-        bossData = GetValue<BossData>("BossData");
+        bossRPC = GetValue<BossRPC>("BossRPC");
         base.Setup(gameObject);
     }
 }

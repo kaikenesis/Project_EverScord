@@ -11,5 +11,6 @@ public class BossPattern13_Imp : BossPattern07_Imp
         base.Awake();
         safeRange = 5f;
         safeScale = 0.5f;
+        failurePhase = 1;
     }
 }
