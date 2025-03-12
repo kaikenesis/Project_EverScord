@@ -9,6 +9,7 @@ namespace EverScord
         public const string PARAM_ISRELOADING = "isReloading";
         public const string PARAM_HORIZONTAL = "Horizontal";
         public const string PARAM_VERTICAL = "Vertical";
+        public const string PARAM_WAITHABIT = "habitTrigger";
 
         // Input GetAxis
         public const string INPUT_HORIZONTAL = "Horizontal";
