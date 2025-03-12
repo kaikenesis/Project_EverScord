@@ -100,6 +100,7 @@ namespace EverScord.Character
         private Vector3 remoteMouseRayHitPos;
         private LayerMask groundAndEnemyLayer;
         private InputInfo playerInputInfo = new InputInfo();
+        private Coroutine deathCoroutine;
 
         public float CurrentHealth
         {
@@ -115,7 +116,7 @@ namespace EverScord.Character
                 // Change Health UI
 
                 if (!IsDead && currentHealth <= 0)
-                    StartCoroutine(HandleDeath());
+                    deathCoroutine = StartCoroutine(HandleDeath());
                 
                 if (previousIsLowHealth != afterIsLowHealth)
                     BlinkEffects.LoopBlink(IsLowHealth);
@@ -657,6 +658,11 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
+            if (deathCoroutine != null)
+                StopCoroutine(deathCoroutine);
+            
+            yield return new WaitForEndOfFrame();
+
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 

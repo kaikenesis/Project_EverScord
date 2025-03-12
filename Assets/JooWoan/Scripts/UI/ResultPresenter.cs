@@ -40,6 +40,11 @@ namespace EverScord.UI
             }
         }
 
+        public void TransitionResults()
+        {
+            photonView.RPC(nameof(SyncPlayerResults), RpcTarget.All);
+        }
+
         private void SetupUI()
         {
             List<CharacterControl> playerList = GameManager.Instance.PlayerDict.Values.ToList();
@@ -97,7 +102,7 @@ namespace EverScord.UI
         {
             PlayerUI.SetCursor(CursorType.UIFOCUS);
 
-            ingameUiHub.SetActive(false);
+            ingameUiHub.SetActive(false); ////
             uiHub.SetActive(true);
 
             buttonTween.DORewind();

@@ -15,7 +15,7 @@ namespace EverScord.UI
 
         void Awake()
         {
-            tweens = GetComponentsInChildren<DOTweenAnimation>();
+            tweens = GetComponentsInChildren<DOTweenAnimation>(true);
         }
 
         public void Init(int killCount, float dealtDamage, float dealtHeal, string nickname)
