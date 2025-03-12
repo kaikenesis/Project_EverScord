@@ -11,6 +11,8 @@ namespace EverScord
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private Sprite master;
         [SerializeField] private Sprite guest;
+        [SerializeField] private Image portraitImage;
+        [SerializeField] private Image jobIcon;
         private Image image;
 
         public static Action<bool, string, Vector2> OnDisplayPartyOption = delegate { };
@@ -32,7 +34,7 @@ namespace EverScord
             OnDisplayPartyOption?.Invoke(bVisible, nameText.text, mousePos);
         }
 
-        public void Initialize(string name, bool bMaster)
+        public void Initialize(string name, bool bMaster, int characterNum, int jobNum)
         {
             if(bMaster)
             {
@@ -43,6 +45,8 @@ namespace EverScord
                 image.sprite = guest;
             }
 
+            portraitImage.sprite = GameManager.Instance.InGameUIData.CharacterDatas[characterNum].PortraitSourceImg;
+            jobIcon.sprite = GameManager.Instance.InGameUIData.JodDatas[jobNum].IconSourceImg;
             nameText.text = name;
         }
         
@@ -56,11 +60,6 @@ namespace EverScord
                     }
                     break;
             }
-        }
-
-        private void OnUpdatedPortrait()
-        {
-            
         }
     }
 }

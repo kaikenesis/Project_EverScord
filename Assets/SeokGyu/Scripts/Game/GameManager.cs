@@ -94,10 +94,12 @@ namespace EverScord
         {
             get { return pointMarkData; }
         }
-
         private IDictionary<int, CharacterControl> playerDict;
+        //private Dictionary<int, PlayerData> roomPlayerDict = new Dictionary<int, PlayerData>();
+        //public Dictionary<int, PlayerData> RoomPlayerDict;
 
         public static Action<int> OnUpdatedMoney = delegate { };
+        public static Action<string> OnUpdatePlayerData = delegate { };
 
         public static GameManager Instance
         {
@@ -147,6 +149,11 @@ namespace EverScord
         {
             PhotonNetwork.NickName = newName;
             PlayerData.nickName = newName;
+        }
+
+        public void UpdatePlayerData()
+        {
+            View.RPC(nameof(ChangePlayerData), RpcTarget.All, playerData.nickName);
         }
 
         public void UpdateMoney(int cost)
@@ -224,6 +231,12 @@ namespace EverScord
         {
             SetLevelIndex(0);
             Instance.StartCoroutine(LevelControl.LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
+        }
+
+        [PunRPC]
+        private void ChangePlayerData(string nickName)
+        {
+            OnUpdatePlayerData?.Invoke(nickName);
         }
 
         private void OnGUI()

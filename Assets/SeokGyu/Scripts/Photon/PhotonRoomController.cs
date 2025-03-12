@@ -192,7 +192,7 @@ namespace EverScord
 
         #region PunRPC Methods
         [PunRPC]
-        private void SetLevel(PlayerData.EDifficulty newLevel)
+        private void SetLevel(EDifficulty newLevel)
         {
             GameManager.Instance.PlayerData.difficulty = newLevel;
         }
@@ -253,6 +253,20 @@ namespace EverScord
         private void SetPlayerRole()
         {
             PlayerData data = GameManager.Instance.PlayerData;
+
+            switch(data.character)
+            {
+                case ECharacter.Ned:
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", "Ned" } });
+                    break;
+                case ECharacter.Uni:
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", "Uni" } });
+                    break;
+                case ECharacter.Us:
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", "Us" } });
+                    break;
+            }
+
             switch(data.job)
             {
                 case EJob.Dealer:
@@ -263,7 +277,7 @@ namespace EverScord
                     break;
             }
 
-            switch(data.difficulty)
+            switch (data.difficulty)
             {
                 case EDifficulty.Normal:
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "NORMAL" } });

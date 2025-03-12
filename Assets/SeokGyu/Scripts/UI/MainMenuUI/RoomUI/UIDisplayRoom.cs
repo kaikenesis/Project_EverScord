@@ -17,6 +17,7 @@ namespace EverScord
         [SerializeField] private Button[] masterOnlyButtons;
         [SerializeField] private Button[] gameSettingButtons;
         private UIRoomPlayer[] uiRoomPlayers;
+        private List<string> playerNames = new List<string>();
 
         public static Action OnLeaveRoom = delegate { };
         public static Action OnVisibleObject = delegate { };
@@ -28,6 +29,7 @@ namespace EverScord
             PhotonRoomController.OnDisplayPlayers += HandleDisplayPlayers;
             PhotonRoomController.OnUpdateRoom += HandleUpdateRoom;
             PhotonMatchController.OnUpdateUI += HandleUpdateUI;
+            GameManager.OnUpdatePlayerData += HandleUpdatePortrait;
 
             Init();
         }
@@ -88,14 +90,18 @@ namespace EverScord
 
         private void HandleDisplayPlayers(List<string> players)
         {
+            playerNames = players;
             int i = 0;
             for (i = 0; i < players.Count; i++)
             {
                 bool bMaster = false;
-                uiRoomPlayers[i].gameObject.SetActive(true);
                 if (PhotonNetwork.MasterClient.NickName == players[i])
                     bMaster = true;
-                uiRoomPlayers[i].Initialize(players[i], bMaster);
+
+                SyncPortrait(i, players[i], bMaster, 0, 0);
+                
+                uiRoomPlayers[i].gameObject.SetActive(true);
+                
             }
 
             for (; i < 3; i++)
@@ -130,6 +136,21 @@ namespace EverScord
         private void HandleUpdateUI(bool bActive)
         {
             SetActiveGameUI(bActive);
+        }
+
+        private void HandleUpdatePortrait(string nickName)
+        {
+            for (int i = 0; i < uiRoomPlayers.Length; i++)
+            {
+                if (uiRoomPlayers[i].gameObject.activeSelf == false)
+                    break;
+            }
+        }
+
+        [PunRPC]
+        private void SyncPortrait(int playerNum, string name, bool bMaster, int characterNum, int jobNum)
+        {
+            uiRoomPlayers[playerNum].Initialize(name, bMaster, characterNum, jobNum);
         }
         #endregion // Handle Methods
 
@@ -178,28 +199,11 @@ namespace EverScord
             else if(inviteButton.activeSelf == true)
             {
                 inviteButton.SetActive(false);
-                if (bActive == false)
-                {
-                    InitToggleButtons(inviteButton);
-                }
             }
 
             for (int i = 0; i < gameSettingButtons.Length; i++)
             {
                 gameSettingButtons[i].interactable = bActive;
-                if(bActive == false)
-                {
-                    InitToggleButtons(gameSettingButtons[i].gameObject);
-                }
-            }
-        }
-
-        private void InitToggleButtons(GameObject gameObject)
-        {
-            UIToggleButton uiToggle = gameObject.gameObject.GetComponent<UIToggleButton>();
-            if (uiToggle != null)
-            {
-                //uiToggle.Init();
             }
         }
 

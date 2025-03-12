@@ -6,6 +6,7 @@ namespace EverScord
     public class UIJobIcon : MonoBehaviour
     {
         [SerializeField] private Image jobImg;
+
         private int photonViewID;
 
         private void Awake()

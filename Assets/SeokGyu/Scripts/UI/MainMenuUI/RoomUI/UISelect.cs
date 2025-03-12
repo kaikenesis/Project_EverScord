@@ -28,6 +28,7 @@ namespace EverScord
 
             GameManager.Instance.PlayerData.job = PlayerData.EJob.Dealer;
             OnChangeUserData?.Invoke();
+            GameManager.Instance.UpdatePlayerData();
         }
 
         public void SelectHealer()
@@ -36,6 +37,7 @@ namespace EverScord
 
             GameManager.Instance.PlayerData.job = PlayerData.EJob.Healer;
             OnChangeUserData?.Invoke();
+            GameManager.Instance.UpdatePlayerData();
         }
 
         public void SelectStoryMode()
