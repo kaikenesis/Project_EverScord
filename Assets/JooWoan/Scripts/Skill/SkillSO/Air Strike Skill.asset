@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Air Strike Skill
   m_EditorClassIdentifier: 
   Name: AirStrikeSkill
-  BaseDamage: 35
+  BaseDamage: 2000
   BaseHeal: 35
   Cooldown: 6
   SkillPrefab: {fileID: 9206839705790505796, guid: b94dba4e8d436744990975e61affce7a, type: 3}
@@ -27,7 +27,7 @@ MonoBehaviour:
   <Gravity>k__BackingField: 45
   <ExplosionRadius>k__BackingField: 4
   <ExplosionInterval>k__BackingField: 0.05
-  <FlameBaseDamage>k__BackingField: 2
+  <FlameBaseDamage>k__BackingField: 100
   <HealBaseAmount>k__BackingField: 1
   <ZoneDuration>k__BackingField: 5
   <ZoneInfluenceInterval>k__BackingField: 0.5
