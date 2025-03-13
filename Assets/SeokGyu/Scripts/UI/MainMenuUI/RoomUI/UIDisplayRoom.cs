@@ -17,7 +17,6 @@ namespace EverScord
         [SerializeField] private Button[] masterOnlyButtons;
         [SerializeField] private Button[] gameSettingButtons;
         private UIRoomPlayer[] uiRoomPlayers;
-        private List<string> playerNames = new List<string>();
 
         public static Action OnLeaveRoom = delegate { };
         public static Action OnVisibleObject = delegate { };
@@ -29,7 +28,6 @@ namespace EverScord
             PhotonRoomController.OnDisplayPlayers += HandleDisplayPlayers;
             PhotonRoomController.OnUpdateRoom += HandleUpdateRoom;
             PhotonMatchController.OnUpdateUI += HandleUpdateUI;
-            GameManager.OnUpdatePlayerData += HandleUpdatePortrait;
 
             Init();
         }
@@ -88,9 +86,8 @@ namespace EverScord
             OnHideObjects();
         }
 
-        private void HandleDisplayPlayers(List<string> players)
+        private void HandleDisplayPlayers(List<string> players, List<Tuple<int,int>> typeDatas)
         {
-            playerNames = players;
             int i = 0;
             for (i = 0; i < players.Count; i++)
             {
@@ -98,10 +95,8 @@ namespace EverScord
                 if (PhotonNetwork.MasterClient.NickName == players[i])
                     bMaster = true;
 
-                SyncPortrait(i, players[i], bMaster, 0, 0);
-                
+                uiRoomPlayers[i].Initialize(players[i], bMaster, typeDatas[i].Item1, typeDatas[i].Item2);
                 uiRoomPlayers[i].gameObject.SetActive(true);
-                
             }
 
             for (; i < 3; i++)
@@ -136,21 +131,6 @@ namespace EverScord
         private void HandleUpdateUI(bool bActive)
         {
             SetActiveGameUI(bActive);
-        }
-
-        private void HandleUpdatePortrait(string nickName)
-        {
-            for (int i = 0; i < uiRoomPlayers.Length; i++)
-            {
-                if (uiRoomPlayers[i].gameObject.activeSelf == false)
-                    break;
-            }
-        }
-
-        [PunRPC]
-        private void SyncPortrait(int playerNum, string name, bool bMaster, int characterNum, int jobNum)
-        {
-            uiRoomPlayers[playerNum].Initialize(name, bMaster, characterNum, jobNum);
         }
         #endregion // Handle Methods
 

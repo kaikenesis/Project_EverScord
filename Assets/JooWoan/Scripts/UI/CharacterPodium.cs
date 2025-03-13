@@ -16,6 +16,8 @@ namespace EverScord.UI
         private Transform currentCharacter;
         private InputInfo playerInput;
 
+        public static Action OnChangeCharacter = delegate { };
+
         private void Awake()
         {
             UIDisplayRoom.OnVisibleObject += HandleVisibleObject;
@@ -117,7 +119,7 @@ namespace EverScord.UI
 
             GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Uni;
             SwitchPlayer(PlayerData.ECharacter.Uni);
-            GameManager.Instance.UpdatePlayerData();
+            OnChangeCharacter?.Invoke();
         }
 
         public void SetCharacterNed()
@@ -126,7 +128,7 @@ namespace EverScord.UI
 
             GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Ned;
             SwitchPlayer(PlayerData.ECharacter.Ned);
-            GameManager.Instance.UpdatePlayerData();
+            OnChangeCharacter?.Invoke();
         }
 
         public void SetCharacterUs()
@@ -135,7 +137,7 @@ namespace EverScord.UI
 
             GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Us;
             SwitchPlayer(PlayerData.ECharacter.Us);
-            GameManager.Instance.UpdatePlayerData();
+            OnChangeCharacter?.Invoke();
         }
 
         [System.Serializable]

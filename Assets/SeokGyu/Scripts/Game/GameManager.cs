@@ -95,8 +95,6 @@ namespace EverScord
             get { return pointMarkData; }
         }
         private IDictionary<int, CharacterControl> playerDict;
-        //private Dictionary<int, PlayerData> roomPlayerDict = new Dictionary<int, PlayerData>();
-        //public Dictionary<int, PlayerData> RoomPlayerDict;
 
         public static Action<int> OnUpdatedMoney = delegate { };
         public static Action<string> OnUpdatePlayerData = delegate { };
@@ -148,12 +146,6 @@ namespace EverScord
         public void UpdateUserName(string newName)
         {
             PhotonNetwork.NickName = newName;
-            PlayerData.nickName = newName;
-        }
-
-        public void UpdatePlayerData()
-        {
-            View.RPC(nameof(ChangePlayerData), RpcTarget.All, playerData.nickName);
         }
 
         public void UpdateMoney(int cost)

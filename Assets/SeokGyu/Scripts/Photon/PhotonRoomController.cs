@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using WebSocketSharp;
 using static EverScord.PlayerData;
+using EverScord.UI;
 
 namespace EverScord
 {
@@ -16,7 +17,7 @@ namespace EverScord
 
         public static Action OnJoinRoom = delegate { };
         public static Action OnRoomLeft = delegate { };
-        public static Action<List<string>> OnDisplayPlayers = delegate { };
+        public static Action<List<string>, List<Tuple<int, int>>> OnDisplayPlayers = delegate { };
         public static Action OnMatchSoloPlay = delegate { };
         public static Action OnMatchMultiPlay = delegate { };
         public static Action OnUpdateRoom = delegate { };
@@ -35,6 +36,7 @@ namespace EverScord
             UISelect.OnGameStart += HandleGameStart;
             UIPartyOption.OnClickedExit += HandleClickedExit;
             UIChangeName.OnChangeName += HandleChangeName;
+            CharacterPodium.OnChangeCharacter += HandleChangeUserData;
 
             inviteRoomName = "";
             pv = GetComponent<PhotonView>();
@@ -52,6 +54,7 @@ namespace EverScord
             UISelect.OnGameStart -= HandleGameStart;
             UIPartyOption.OnClickedExit -= HandleClickedExit;
             UIChangeName.OnChangeName -= HandleChangeName;
+            CharacterPodium.OnChangeCharacter -= HandleChangeUserData;
         }
 
         #region Handle Methods
@@ -238,54 +241,41 @@ namespace EverScord
             List<string> playerList = new List<string>();
             Dictionary<int, Player> players = PhotonNetwork.CurrentRoom.Players;
             int key = 0;
+            List<Tuple<int, int>> playerData = new List<Tuple<int, int>>();
 
             for (int i = 1; i <= players.Count; key++)
             {
                 if (players.ContainsKey(key) == true)
                 {
                     playerList.Add(players[key].NickName);
+
+                    int characterNum = 0;
+                    int jobNum = 0;
+
+                    if (players[key].CustomProperties.ContainsKey("Character"))
+                    {
+                        characterNum = (int)players[key].CustomProperties["Character"];
+                    }
+                    if (players[key].CustomProperties.ContainsKey("Job"))
+                    {
+                        jobNum = (int)players[key].CustomProperties["Job"];
+                    }
+
+                    playerData.Add(new Tuple<int, int>(characterNum, jobNum));
+
                     i++;
                 }
             }
 
-            OnDisplayPlayers?.Invoke(playerList);
+            OnDisplayPlayers?.Invoke(playerList, playerData);
         }
         private void SetPlayerRole()
         {
             PlayerData data = GameManager.Instance.PlayerData;
 
-            switch(data.character)
-            {
-                case ECharacter.Ned:
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", "Ned" } });
-                    break;
-                case ECharacter.Uni:
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", "Uni" } });
-                    break;
-                case ECharacter.Us:
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", "Us" } });
-                    break;
-            }
-
-            switch(data.job)
-            {
-                case EJob.Dealer:
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "DEALER" } });
-                    break;
-                case EJob.Healer:
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", "HEALER" } });
-                    break;
-            }
-
-            switch (data.difficulty)
-            {
-                case EDifficulty.Normal:
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "NORMAL" } });
-                    break;
-                case EDifficulty.Hard:
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", "HARD" } });
-                    break;
-            }
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", (int)data.character } });
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", (int)data.job } });
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", (int)data.difficulty } });
         }
         private void UpdateRoomCondition()
         {
@@ -295,27 +285,37 @@ namespace EverScord
 
             Dictionary<int, Player> players = PhotonNetwork.CurrentRoom.Players;
             int key = 0;
+            
 
             for (int i = 0; i < players.Count; key++)
             {
-                if (players.ContainsKey(key) && players[key].CustomProperties.ContainsKey("Job"))
+                if (players.ContainsKey(key) == true)
                 {
-                    string playerJob = (string)players[key].CustomProperties["Job"];
+                    if (players[key].CustomProperties.ContainsKey("Job"))
+                    {
+                        int jobNum = (int)players[key].CustomProperties["Job"];
 
-                    if (playerJob == "DEALER")
-                        curDealers++;
-                    else if (playerJob == "HEALER")
-                        curHealers++;
-
+                        switch (jobNum)
+                        {
+                            case 0:
+                                curDealers++;
+                                break;
+                            case 1:
+                                curHealers++;
+                                break;
+                        }
+                    }
                     i++;
                 }
             }
+
             roomProperties["DEALER"] = curDealers;
             roomProperties["HEALER"] = curHealers;
             roomProperties["LEVEL"] = GameManager.Instance.PlayerData.difficulty;
 
             PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
-            
+
+            DisplayRoomPlayers();
             DebugRoomProperties();
         }
         private bool IsCanStart()
@@ -411,17 +411,10 @@ namespace EverScord
             Debug.Log($"{targetPlayer} Properties Update");
             UpdateRoomCondition();
             OnCheckGame?.Invoke();
-            switch(GameManager.Instance.PhotonData.state)
-            {
-                case PhotonData.EState.NONE:
-                    {
-                        // ���� �� �ο��� max�϶� ���������� Ȯ���ϰ� �÷��̰� �Ұ����ϸ� �ý��۸޽��� ��� ( �ϴ��� ����x����)
-                    }
-                    break;
-            }
         }
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
+            Debug.Log("MasterSwitch");
         }
 
         #endregion
