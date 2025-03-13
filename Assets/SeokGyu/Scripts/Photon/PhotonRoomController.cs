@@ -315,7 +315,15 @@ namespace EverScord
 
             PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
 
-            DisplayRoomPlayers();
+            switch (GameManager.Instance.PhotonData.state)
+            {
+                case PhotonData.EState.NONE:
+                    {
+                        DisplayRoomPlayers();
+                    }
+                    break;
+            }
+
             DebugRoomProperties();
         }
         private bool IsCanStart()
@@ -399,7 +407,6 @@ namespace EverScord
             {
                 case PhotonData.EState.NONE:
                     {
-                        DisplayRoomPlayers();
                         OnUpdateRoom?.Invoke();
                     }
                     break;
