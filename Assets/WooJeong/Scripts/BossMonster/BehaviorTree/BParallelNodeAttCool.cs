@@ -10,7 +10,6 @@ public class BParallelNodeAttCool : BehaviorNode
 
     public override NodeState Evaluate()
     {
-        Debug.Log(completeFirst);
         switch (completeFirst)
         {
             case 0:
