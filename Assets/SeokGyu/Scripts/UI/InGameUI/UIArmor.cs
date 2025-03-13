@@ -21,6 +21,7 @@ namespace EverScord
         {
             GameManager.Instance.AugmentControl.SubscribeOnEnhanced(GameManager.Instance.ArmorData.LevelUpArmors);
             GameManager.Instance.ArmorData.SubscribeOnLevelUp(UpdateArmorUI);
+            GameManager.Instance.ArmorData.ResetArmorLevel();
         }
 
         private void Initialize()

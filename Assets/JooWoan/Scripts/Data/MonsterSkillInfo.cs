@@ -6,7 +6,6 @@ namespace EverScord
     {
         public string tag;
         public string name;
-        // public int skillType;
         public float cooldown;
         public float skillRange;
         public List<float> skillSizes;

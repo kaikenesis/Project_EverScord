@@ -4,17 +4,12 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class MonsterData : MonoBehaviour
+    public class MonsterData : IData
     {
         private static IDictionary<string, MonsterSkillInfo> monsterInfoDict = new Dictionary<string, MonsterSkillInfo>();
         public static IDictionary<string, MonsterSkillInfo> MonsterInfoDict => monsterInfoDict;
 
-        void Awake()
-        {
-            Init();
-        }
-
-        private void Init()
+        public void Init()
         {
             var sheet = CSVReader.ReadDataSheet("MonsterSheet");
 

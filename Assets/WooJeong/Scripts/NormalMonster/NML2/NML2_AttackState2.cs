@@ -30,9 +30,9 @@ public class NML2_AttackState2 : NAttackState
     {
         monsterController.InstantiateMonsterAttack(
             monsterController.player.transform.position,
-            monsterController.monsterData.AttackRangeX2,
+            monsterController.monsterData.Skill02_RangeX,
             monsterController.monsterData.ProjectionTime,
             "NML2_A2_Effect",
-            monsterController.monsterData.AttackDamage2);
+            monsterController.monsterData.Skill02_Damage);
     }
 }

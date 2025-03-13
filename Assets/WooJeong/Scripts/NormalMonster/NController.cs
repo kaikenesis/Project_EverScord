@@ -17,7 +17,7 @@ public enum MonsterType
 
 public abstract class NController : MonoBehaviour, IEnemy
 {
-    [SerializeField] public NMonsterData monsterData;
+    public NMonsterData monsterData;
 
     public float HP {  get; private set; }
     private const float SMALL_SIZE = 2f;
@@ -95,18 +95,18 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void ColliderSetup()
     {
         BoxCollider1.center = new Vector3(0, transform.position.y,
-                                          monsterData.AttackRangeZ1 / 2);
+                                          monsterData.Skill01_RangeZ / 2);
 
-        BoxCollider1.size = new Vector3(monsterData.AttackRangeX1,
-                                        monsterData.AttackRangeY1,
-                                        monsterData.AttackRangeZ1);
+        BoxCollider1.size = new Vector3(monsterData.Skill01_RangeX,
+                                        monsterData.Skill01_RangeY,
+                                        monsterData.Skill01_RangeZ);
 
         BoxCollider2.center = new Vector3(0, transform.position.y,
-                                        monsterData.AttackRangeZ2 / 2);
+                                        monsterData.Skill02_RangeZ / 2);
 
-        BoxCollider2.size = new Vector3(monsterData.AttackRangeX2,
-                                        monsterData.AttackRangeY2,
-                                        monsterData.AttackRangeZ2);
+        BoxCollider2.size = new Vector3(monsterData.Skill02_RangeX,
+                                        monsterData.Skill02_RangeY,
+                                        monsterData.Skill02_RangeZ);
 
         BoxCollider1.isTrigger = true;
         BoxCollider2.isTrigger = true;
@@ -299,12 +299,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         SetActiveHitbox(true);
         WaitState();
-    }
-
-    [PunRPC]
-    protected void SyncIsDead(bool value)
-    {
-        isDead = value;
     }
 
     public void PlayAnimation(string animationName)

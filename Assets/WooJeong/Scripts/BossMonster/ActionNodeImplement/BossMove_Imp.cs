@@ -14,7 +14,7 @@ public class BossMove_Imp : ActionNodeImplement
     {
         base.Awake();
         navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
-        navMeshAgent.speed = bossRPC.BossMonsterData.Speed;
+        navMeshAgent.speed = bossRPC.BossMonsterData.Speed1;
         navMeshAgent.stoppingDistance = bossRPC.BossMonsterData.StopDistance;
         playerLayer = LayerMask.GetMask("Player");
     }

@@ -76,7 +76,7 @@ public abstract class NAttackState : MonoBehaviour, IState
 
     public virtual void Exit()
     {
-        if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
+        if (monsterController.CalcDistance() > monsterController.monsterData.Skill01_RangeZ)
         {
             ExitToRun();
         }

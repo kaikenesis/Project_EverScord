@@ -4,17 +4,12 @@ using EverScord.FileIO;
 
 namespace EverScord
 {
-    public class AlterationParsedData : MonoBehaviour
+    public class AlterationParsedData : IData
     {
         private static IDictionary<string, AlterationInfo> alterationDict = new Dictionary<string, AlterationInfo>();
         public static IDictionary<string, AlterationInfo> AlterationDict => alterationDict;
 
-        void Awake()
-        {
-            Init();
-        }
-
-        private void Init()
+        public void Init()
         {
             var sheet = CSVReader.ReadDataSheet("AlterationSheet");
 

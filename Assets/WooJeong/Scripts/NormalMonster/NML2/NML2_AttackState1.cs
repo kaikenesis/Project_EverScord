@@ -29,7 +29,7 @@ public class NML2_AttackState1 : NAttackState
         GameObject player2 = null;
         foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
         {
-            if((player.PlayerTransform.position - transform.position).magnitude <= monsterController.monsterData.AttackRangeX1
+            if((player.PlayerTransform.position - transform.position).magnitude <= monsterController.monsterData.Skill01_RangeX
                 && player.gameObject != monsterController.player)
             {
                 player2 = player.gameObject;
@@ -39,19 +39,19 @@ public class NML2_AttackState1 : NAttackState
 
         monsterController.InstantiateMonsterAttack(
             monsterController.player.transform.position,
-            monsterController.monsterData.AttackRangeX1,
+            monsterController.monsterData.Skill01_RangeX,
             monsterController.monsterData.ProjectionTime,
             "NML2_A1_Effect01",
-            monsterController.monsterData.AttackDamage1);
+            monsterController.monsterData.Skill01_Damage);
 
         if (player2 != null)
         {
             monsterController.InstantiateMonsterAttack(
                 player2.transform.position,
-                monsterController.monsterData.AttackRangeX1,
+                monsterController.monsterData.Skill01_RangeX,
                 monsterController.monsterData.ProjectionTime,
                 "NML2_A1_Effect01",
-                monsterController.monsterData.AttackDamage1);
+                monsterController.monsterData.Skill01_Damage);
         }
     }
 }

@@ -4,17 +4,12 @@ using EverScord.FileIO;
 
 namespace EverScord
 {
-    public class StatData : MonoBehaviour
+    public class StatData : IData
     {
         private static IDictionary<string, StatInfo> statInfoDict = new Dictionary<string, StatInfo>();
         public static IDictionary<string, StatInfo> StatInfoDict => statInfoDict;
 
-        void Awake()
-        {
-            Init();
-        }
-
-        private void Init()
+        public void Init()
         {
             var sheet = CSVReader.ReadStatSheet("StatSheet");
 

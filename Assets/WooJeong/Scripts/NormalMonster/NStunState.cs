@@ -48,7 +48,7 @@ public abstract class NStunState : MonoBehaviour, IState
 
     protected virtual IEnumerator RandomAttack()
     {
-        if (monsterController.CalcDistance() > monsterController.monsterData.AttackRangeZ1)
+        if (monsterController.CalcDistance() > monsterController.monsterData.Skill01_RangeZ)
         {
             ExitToRun();
             yield break;

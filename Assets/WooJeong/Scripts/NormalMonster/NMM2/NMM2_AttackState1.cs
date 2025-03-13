@@ -29,11 +29,11 @@ public class NMM2_AttackState1 : NAttackState
     protected IEnumerator Run()
     {
         monsterController.PlayAnimation("Run");
-        navMeshAgent.stoppingDistance = monsterController.monsterData.AttackRangeZ1;
+        navMeshAgent.stoppingDistance = monsterController.monsterData.Skill01_RangeZ;
         while (true)
         {
             navMeshAgent.destination = monsterController.player.transform.position;
-            if (monsterController.CalcDistance() < monsterController.monsterData.AttackRangeZ1)
+            if (monsterController.CalcDistance() < monsterController.monsterData.Skill01_RangeZ)
             {
                 yield break;
             }
@@ -48,9 +48,9 @@ public class NMM2_AttackState1 : NAttackState
         navMeshAgent = GetComponent<NavMeshAgent>();
         capsuleCollider = gameObject.AddComponent<CapsuleCollider>();
         capsuleCollider.center = new Vector3(0, 0,
-                                  monsterController.monsterData.AttackRangeZ1 / 2);
+                                  monsterController.monsterData.Skill01_RangeZ / 2);
 
-        capsuleCollider.radius = monsterController.monsterData.AttackRangeZ1/2;
+        capsuleCollider.radius = monsterController.monsterData.Skill01_RangeZ/2;
         capsuleCollider.isTrigger = true;
         capsuleCollider.enabled = false;
     }
