@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
-using UnityEngine.Rendering.PostProcessing;
+using UnityEditor;
 
 namespace EverScord
 {
@@ -31,6 +31,7 @@ namespace EverScord
         private static WaitForSeconds waitLoadScreen, waitStageTransition, waitStageFade;
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
         private static WaitForSeconds waitPointOne = new WaitForSeconds(0.1f);
+        private static float progress, maxProgress;
 
         [SerializeField] private UIProgress progressUI;
         [SerializeField] private PortalControl portalControl;
@@ -45,8 +46,6 @@ namespace EverScord
             {MonsterType.MEDIUM, 5f},
             {MonsterType.LARGE, 25f}
         };
-
-        private static float progress, maxProgress;
 
         void Awake()
         {
@@ -63,6 +62,8 @@ namespace EverScord
 
             IsBossMode = false;
             SetMaxProgress(MAX_PROGRESS);
+
+            progress = 0f;
 
             OnProgressUpdated -= portalControl.TryOpenPortal;
             OnProgressUpdated += portalControl.TryOpenPortal;
@@ -231,11 +232,12 @@ namespace EverScord
         {            
             if (!PhotonNetwork.IsConnected)
                 return;
-            
-            GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadGameLevel), RpcTarget.All);
+
+            GameManager.Instance.LoadScreen.SetTargetCamera(Camera.main);
+            GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadScene), RpcTarget.All, ConstStrings.SCENE_MAINGAME);
         }
 
-        public static IEnumerator LoadLevelAsync(string levelName)
+        public static IEnumerator LoadSceneAsync(string sceneName)
         {
             IsLoadingLevel = true;
 
@@ -246,7 +248,7 @@ namespace EverScord
             GameManager.Instance.LoadScreen.ShowScreen();
 
             if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
-                PhotonNetwork.LoadLevel(levelName);
+                PhotonNetwork.LoadLevel(sceneName);
 
             while (PhotonNetwork.LevelLoadingProgress < 0.98f)
             {

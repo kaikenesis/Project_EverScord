@@ -42,6 +42,11 @@ public class MapPattern1 : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        LevelControl.OnProgressUpdated -= ProgressCheck;
+    }
+
     private void SetActiveEffect(bool value)
     {
         effect.SetActive(value);

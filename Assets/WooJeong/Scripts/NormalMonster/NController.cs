@@ -119,6 +119,11 @@ public abstract class NController : MonoBehaviour, IEnemy
         LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
+    private void OnDestroy()
+    {
+        LevelControl.OnProgressUpdated -= ProgressCheck;
+    }
+
     private void OnEnable()
     {
         isDead = false;
@@ -207,6 +212,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         {
             isDead = true;
             attacker.IncreaseKillCount();
+            DeathAftermath();
         }
 
         if (monsterHealthBar != null)
@@ -220,7 +226,10 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         this.HP -= damage;
         if (this.HP <= 0)
+        {
             isDead = true;
+            DeathAftermath();
+        }
 
         if (monsterHealthBar != null)
             monsterHealthBar.UpdateHealth(damage);
@@ -246,7 +255,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     }
 
     [PunRPC]
-    public void SyncDeathAftermath()
+    public void DeathAftermath()
     {
         DeathGlitter();
         healthBarObject.SetActive(false);

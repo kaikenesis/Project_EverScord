@@ -113,8 +113,6 @@ namespace EverScord.Character
 
                 bool afterIsLowHealth = IsLowHealth;
 
-                // Change Health UI
-
                 if (!IsDead && currentHealth <= 0)
                     deathCoroutine = StartCoroutine(HandleDeath());
                 
@@ -651,7 +649,10 @@ namespace EverScord.Character
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
             EnableReviveCircle(true);
-            
+
+            if (PhotonNetwork.IsMasterClient)
+                GameManager.Instance.GameOverController.CheckGameOver();
+
             if (PhotonNetwork.IsConnected && photonView.IsMine)
                 photonView.RPC(nameof(SyncReviveCircle), RpcTarget.Others, true);
         }

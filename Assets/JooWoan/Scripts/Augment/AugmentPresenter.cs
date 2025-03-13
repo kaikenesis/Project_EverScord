@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Photon.Pun;
 using EverScord.UI;
 using EverScord.Armor;
 using EverScord.Character;
 
 using Random = UnityEngine.Random;
 using ArmorType = EverScord.ArmorData.Armor.EType;
-using Photon.Pun;
 
 namespace EverScord.Augment
 {
@@ -58,6 +58,9 @@ namespace EverScord.Augment
         {
             augmentData.Init();
             uiHub.SetActive(false);
+
+            enhanceIndex = 0;
+            enhanceCount = 0;
 
             GameManager.Instance.InitControl(this);
         }

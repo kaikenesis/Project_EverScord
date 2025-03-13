@@ -22,6 +22,8 @@ namespace EverScord
 
         private List<RectTransform> bannerList = new();
         private List<Image> bannerImages = new();
+        private Camera targetCam;
+
         private float accumulated = 0f;
         private float barVelocity;
         private float initialRectWidth;
@@ -103,10 +105,15 @@ namespace EverScord
             DOTween.Play(ConstStrings.TWEEN_SHOW_SCREEN);
         }
 
-        public void SetMainCamera(bool state)
+        public void SetTargetCamera(Camera cam)
         {
-            if (Camera.main)
-                Camera.main.enabled = state;
+            targetCam = cam;
+        }
+
+        public void DisableCam() // Coverscreen tween callback
+        {
+            if (targetCam)
+                targetCam.enabled = false;
         }
 
         public void SetProgress(float amount)

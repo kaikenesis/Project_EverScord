@@ -30,6 +30,7 @@ namespace EverScord
         public EnemyHitControl EnemyHitsControl                 { get; private set; }
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
+        public GameOverControl GameOverController               { get; private set; }
         public AugmentPresenter AugmentControl                  { get; private set; }
         public ResultPresenter ResultControl                    { get; private set; }
         public static PhotonView View                           { get; private set; }
@@ -194,6 +195,10 @@ namespace EverScord
                     ResultControl = resultPresenter;
                     break;
 
+                case GameOverControl gameoverControl:
+                    GameOverController = gameoverControl;
+                    break;
+
                 default:
                     break;
             }
@@ -224,10 +229,10 @@ namespace EverScord
         }
 
         [PunRPC]
-        public void SyncLoadGameLevel()
+        public void SyncLoadScene(string sceneName)
         {
             SetLevelIndex(0);
-            Instance.StartCoroutine(LevelControl.LoadLevelAsync(ConstStrings.SCENE_MAINGAME));
+            Instance.StartCoroutine(LevelControl.LoadSceneAsync(sceneName));
         }
 
         private void OnGUI()

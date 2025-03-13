@@ -29,6 +29,11 @@ public class BossSpawner : MonoBehaviour
         LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
+    private void OnDestroy()
+    {
+        LevelControl.OnProgressUpdated -= ProgressCheck;
+    }
+
     private void ProgressCheck(float currentProgress)
     {
         if(currentProgress == 1)

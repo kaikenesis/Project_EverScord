@@ -286,7 +286,7 @@ MonoBehaviour:
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
   delay: 0
-  duration: 1
+  duration: 1.5
   easeType: 18
   easeCurve:
     serializedVersion: 2
@@ -14063,6 +14063,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiHub: {fileID: 2006123361}
   ingameUiHub: {fileID: 1034619282614934498}
+  victoryText: {fileID: 308259488}
+  defeatText: {fileID: 1722118602}
   photonView: {fileID: 747628673}
   resultUIList:
   - {fileID: 2063725049}
@@ -14078,6 +14080,7 @@ MonoBehaviour:
   buttonTween: {fileID: 1980267726}
   titleTween: {fileID: 1178182280}
   blackTween: {fileID: 20165641}
+  lobbyButton: {fileID: 1290625882}
 --- !u!114 &747628673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14400,6 +14403,7 @@ GameObject:
   - component: {fileID: 854999680}
   - component: {fileID: 854999679}
   - component: {fileID: 854999681}
+  - component: {fileID: 854999682}
   m_Layer: 0
   m_Name: GameOverScreen
   m_TagString: Untagged
@@ -14485,11 +14489,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e5df58dd51c3b043b4104df7495175d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  photonView: {fileID: 854999682}
   uiHub: {fileID: 1766861380}
   victoryText: {fileID: 354340837}
   defeatText: {fileID: 2086155084}
   textAnim: {fileID: 1766861382}
   transitionClip: {fileID: 7400000, guid: 3262e67ed26b1af4db1f69194c7cc72e, type: 2}
+--- !u!114 &854999682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854999676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 44
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!64 &873972192
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -21013,7 +21040,7 @@ GameObject:
   - component: {fileID: 1290625883}
   - component: {fileID: 1290625882}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

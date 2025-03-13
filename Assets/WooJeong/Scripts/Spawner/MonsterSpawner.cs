@@ -35,6 +35,11 @@ public class MonsterSpawner : MonoBehaviour
         spawn = StartCoroutine(Spawn());
     }
 
+    private void OnDestroy()
+    {
+        LevelControl.OnProgressUpdated -= ProgressCheck;
+    }
+
     protected void ProgressCheck(float currentProgress)
     {
         if (currentProgress == 1)

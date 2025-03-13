@@ -41,6 +41,11 @@ public class MapPattern2 : MonoBehaviour
         StartCoroutine(Spawn());
     }
 
+    private void OnDestroy()
+    {
+        LevelControl.OnProgressUpdated -= ProgressCheck;
+    }
+
     private IEnumerator Spawn()
     {
         if (!PhotonNetwork.IsMasterClient)

@@ -30,6 +30,11 @@ public class MapPattern3 : MonoBehaviour
         StartCoroutine(Spawn());
     }
 
+    private void OnDestroy()
+    {
+        LevelControl.OnProgressUpdated -= ProgressCheck;
+    }
+
     protected void ProgressCheck(float currentProgress)
     {
         if (currentProgress == 1)

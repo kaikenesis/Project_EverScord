@@ -344,6 +344,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         {
             isDead = true;
             attacker.IncreaseKillCount();
+            GameManager.Instance.GameOverController.ShowGameover(true);
         }
 
         Debug.Log(decrease + " 데미지, 남은 체력 : " + hp);
