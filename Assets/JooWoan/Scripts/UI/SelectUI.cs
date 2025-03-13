@@ -5,12 +5,16 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using EverScord.Augment;
 
+using ArmorType = EverScord.ArmorData.Armor.EType;
+
 namespace EverScord.UI
 {
     public class SelectUI : MonoBehaviour
     {
         [SerializeField] private Transform slotParent;
         [SerializeField] private Color selectedSlotColor;
+        [SerializeField] private Image iconImage;
+        [SerializeField] private ArmorType armorType;
 
         private Color32 initialColor;
         private List<TextMeshProUGUI> slotTexts = new();
@@ -26,6 +30,8 @@ namespace EverScord.UI
             
             if (slotImages.Length > 0)
                 initialColor = slotImages[0].color;
+
+            iconImage.sprite = AugmentPresenter.GetArmorIcon(armorType, 1);
         }
 
         public void Init(UnityAction listener)
