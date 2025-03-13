@@ -68,7 +68,7 @@ namespace EverScord.UI
         public void TransitionResults(bool isVictory)
         {
             this.isVictory = isVictory;
-            photonView.RPC(nameof(SyncPlayerResults), RpcTarget.All);
+            SyncPlayerResults();
         }
 
         private void SetupUI()
@@ -211,7 +211,6 @@ namespace EverScord.UI
             GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadScene), RpcTarget.All, ConstStrings.SCENE_LOBBY);
         }
 
-        [PunRPC]
         private void SyncPlayerResults()
         {
             CharacterControl player = CharacterControl.CurrentClientCharacter;
