@@ -240,7 +240,7 @@ namespace EverScord
             GameManager.Instance.LoadScreen.CoverScreen();
             yield return waitOneSec;
 
-            GameManager.Instance.LoadScreen.ResetState();
+            GameManager.Instance.LoadScreen.ResetProgress();
             GameManager.Instance.LoadScreen.ImageHub.SetActive(true);
             GameManager.Instance.LoadScreen.ShowScreen();
 

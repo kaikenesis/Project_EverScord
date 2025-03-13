@@ -91,9 +91,11 @@ namespace EverScord.UI
                 }
             }
 
+            int middleIndex = playerList.Count / 2;
+
             var temp = playerList[currentClientIndex];
             playerList.RemoveAt(currentClientIndex);
-            playerList.Insert(1, temp);
+            playerList.Insert(middleIndex, temp);
 
             for (int i = 0; i < playerList.Count; i++)
             {

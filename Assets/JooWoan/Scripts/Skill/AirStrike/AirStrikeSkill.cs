@@ -18,8 +18,9 @@ namespace EverScord.Skill
         [field: SerializeField] public float AirCraftTravelDistance                         { get; private set; }
         [field: SerializeField] public GameObject AircraftPrefab                            { get; private set; }
         [field: SerializeField] public Color32 AirStrikeMarkerColor                         { get; private set; }
+        [field: SerializeField] public AssetReferenceGameObject ExplosionEffectReference    { get; private set; }
+        [field: SerializeField] public AssetReferenceGameObject HealExplosionReference     { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject BombEffectReference         { get; private set; }
-        [field: SerializeField] public AssetReferenceGameObject HealBombEffectReference     { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject FlameEffectReference        { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject HealZoneEffectReference     { get; private set; }
     }
