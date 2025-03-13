@@ -20,7 +20,7 @@ public class BossData : ScriptableObject, IData
 
     [field: SerializeField] public float StopDistance { get; protected set; }
 
-    [field: SerializeField] public ScriptableObject[] SkillDatas { get; protected set; }
+    [field: SerializeField] public BossSkillData[] SkillDatas { get; protected set; }
 
     public void Init()
     {

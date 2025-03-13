@@ -165,7 +165,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         jumpEffect.Play();
     }
 
-    public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
+    public void FireBossProjectile(Vector3 position, Vector3 direction, float damage, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
@@ -178,17 +178,17 @@ public class BossRPC : MonoBehaviour, IEnemy
         else
             id = mp.ID;
 
-        mp.Setup("BossProjectile", id, position, direction, projectileSpeed);
-        photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, projectileSpeed);
+        mp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed);
+        photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, damage, projectileSpeed);
     }
 
     [PunRPC]
-    public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float projectileSpeed)
+    public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float damage, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile bp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, bp);
-        bp.Setup("BossProjectile", id, position, direction, projectileSpeed);
+        bp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed);
     }
 
     private IEnumerator FillAmountProjector(int projectorNum, float time)

@@ -5,6 +5,12 @@ using UnityEngine;
 public class NMS2_AttackState1 : NAttackState
 {
     NMS2_Controller controller;
+    private float damage;
+
+    private void Start()
+    {
+        damage = monsterController.monsterData.Skill02_Damage;
+    }
 
     protected override IEnumerator Attack()
     {
@@ -20,7 +26,7 @@ public class NMS2_AttackState1 : NAttackState
         time -= 4f;
         for (int i = 0; i < attackCount; i++)
         {
-            monsterController.Fire("NMM2_Projectile");
+            monsterController.Fire("NMM2_Projectile", damage);
             yield return new WaitForSeconds(time / attackCount);
         }
         yield return new WaitForSeconds(3);

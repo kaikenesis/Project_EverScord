@@ -6,6 +6,12 @@ using UnityEngine;
 public class BossPattern02_Imp : ActionNodeImplement
 {
     private float projectileSpeed = 20f;
+    private float damage;
+
+    private void Start()
+    {
+        damage = bossRPC.BossMonsterData.SkillDatas[1].SkillDamage;
+    }
 
     protected override IEnumerator Act()
     {
@@ -17,9 +23,9 @@ public class BossPattern02_Imp : ActionNodeImplement
             Vector3 direction = Quaternion.AngleAxis(-30, Vector3.up) * transform.forward;
             Vector3 direction2 = Quaternion.AngleAxis(30, Vector3.up) * transform.forward;
             Vector3 pos = transform.position + transform.forward * 2;
-            bossRPC.FireBossProjectile(pos, direction, projectileSpeed);
-            bossRPC.FireBossProjectile(pos, transform.forward, projectileSpeed);
-            bossRPC.FireBossProjectile(pos, direction2, projectileSpeed);
+            bossRPC.FireBossProjectile(pos, direction, damage, projectileSpeed);
+            bossRPC.FireBossProjectile(pos, transform.forward, damage, projectileSpeed);
+            bossRPC.FireBossProjectile(pos, direction2, damage, projectileSpeed);
 
             yield return new WaitForSeconds(0.14f);
         }

@@ -13,6 +13,7 @@ public class MonsterProjectile : MonoBehaviour
     private float speed;
     private int lifeTime = 2;
     private float curTime = 0;
+    private float damage;
     private Coroutine move;
 
     public bool IsDestroyed {  get; private set; }
@@ -28,10 +29,11 @@ public class MonsterProjectile : MonoBehaviour
         this.IsDestroyed = isDestroyed;
     }
 
-    public void Setup(string projectileName, int id, Vector3 position, Vector3 direction, float speed)
+    public void Setup(string projectileName, int id, Vector3 position, Vector3 direction, float damage, float speed)
     {
         this.ProjectileName = projectileName;
         ID = id;
+        this.damage = damage;
         IsDestroyed = false;
         transform.position = position;
         transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
@@ -63,7 +65,7 @@ public class MonsterProjectile : MonoBehaviour
         if(other.gameObject.CompareTag("Player"))
         {
             CharacterControl controller = other.GetComponent<CharacterControl>();
-            controller.DecreaseHP(10);
+            controller.DecreaseHP(damage);
             StopCoroutine(move);
             IsDestroyed = true;
         }

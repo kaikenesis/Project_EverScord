@@ -313,7 +313,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         Animator.CrossFade(animationName, 0.3f, -1, 0);
     }
 
-    public void Fire(string projectileName)
+    public void Fire(string projectileName, float damage)
     {
         Vector3 position = transform.position + transform.forward * 2;
         float projectileSpeed = 20;
@@ -329,17 +329,17 @@ public abstract class NController : MonoBehaviour, IEnemy
         else
             id = mp.ID;
 
-        mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
-        photonView.RPC(nameof(SyncProjectileNM), RpcTarget.Others, projectileName, id, position, transform.forward, projectileSpeed);
+        mp.Setup(projectileName, id, position, transform.forward, damage, projectileSpeed);
+        photonView.RPC(nameof(SyncProjectileNM), RpcTarget.Others, projectileName, id, position, transform.forward, damage, projectileSpeed);
     }
 
     [PunRPC]
-    protected void SyncProjectileNM(string projectileName, int id, Vector3 position, Vector3 direction, float projectileSpeed)
+    protected void SyncProjectileNM(string projectileName, int id, Vector3 position, Vector3 direction, float damage, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", position, Quaternion.identity);
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, mp);
-        mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
+        mp.Setup(projectileName, id, position, transform.forward, damage, projectileSpeed);
     }
 
     public void SetActiveHitbox(bool value)
