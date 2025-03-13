@@ -17,13 +17,16 @@ namespace EverScord.UI
         [SerializeField] private List<ResultUI> resultUIList;
         [SerializeField] private GameObject nedPrefab, uniPrefab, usPrefab;
         [SerializeField] private List<Transform> positionList;
-        [SerializeField] private DOTweenAnimation buttonTween, titleTween;
+        [SerializeField] private DOTweenAnimation buttonTween, titleTween, blackTween;
 
         private static int readyPlayerCount = 0;
         
         void Awake()
         {
             GameManager.Instance.InitControl(this);
+
+            uiHub.SetActive(false);
+            blackTween.gameObject.SetActive(true);
         }
 
         void Update()
@@ -102,8 +105,11 @@ namespace EverScord.UI
         {
             PlayerUI.SetCursor(CursorType.UIFOCUS);
 
-            ingameUiHub.SetActive(false); ////
+            ingameUiHub.SetActive(false);
             uiHub.SetActive(true);
+
+            blackTween.DORewind();
+            blackTween.DOPlay();
 
             buttonTween.DORewind();
             buttonTween.DOPlay();

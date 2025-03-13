@@ -42,8 +42,7 @@ namespace EverScord.UI
             yield return new WaitForSeconds(transitionClip.length);
 
             GameManager.Instance.ResultControl.TransitionResults();
-
-            // fade in result canvas
+            yield return new WaitForSeconds(1.5f);
 
             uiHub.SetActive(false);
         }

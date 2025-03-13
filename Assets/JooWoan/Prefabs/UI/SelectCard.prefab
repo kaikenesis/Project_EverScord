@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: fd026d60916e6724980ed83821abc6ef, type: 2}
-  m_Color: {r: 0.21176471, g: 1, b: 0.07058824, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -467,6 +467,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotParent: {fileID: 334482245255003133}
   selectedSlotColor: {r: 0.9843137, g: 0.88235295, b: 0.5058824, a: 1}
+  iconImage: {fileID: 8096302511316542658}
+  armorType: 0
 --- !u!222 &3993219831453960499
 CanvasRenderer:
   m_ObjectHideFlags: 0

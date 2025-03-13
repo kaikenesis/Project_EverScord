@@ -8,6 +8,7 @@ using EverScord.Armor;
 using EverScord.Character;
 
 using Random = UnityEngine.Random;
+using ArmorType = EverScord.ArmorData.Armor.EType;
 using Photon.Pun;
 
 namespace EverScord.Augment
@@ -34,8 +35,6 @@ namespace EverScord.Augment
         [SerializeField] private Button upgradeBtn;
         [SerializeField] private float selectTimeLimit;
         [SerializeField] private ArmorUpgradeIcon helmetUpgradeIcons, vestUpgradeIcons, shoeUpgradeIcons;
-        [SerializeField] private List<Sprite> helmetIcons, vestIcons, shoeIcons;
-        [SerializeField] private Color greenIconColor, deafultIconColor;
 
         private List<string> helmetAugmentTags = new();
         private List<string> vestAugmentTags = new();
@@ -383,22 +382,14 @@ namespace EverScord.Augment
             if (!isEnabled || enhanceCount == 0)
                 return;
 
-            List<Sprite>[] armorIcons = { helmetIcons, vestIcons, shoeIcons };
+            ArmorType[] armorTypes = { ArmorType.Head, ArmorType.Chest, ArmorType.Foot };
             ArmorUpgradeIcon[] upgradeIcons = { helmetUpgradeIcons, vestUpgradeIcons, shoeUpgradeIcons };
 
-            for (int i = 0; i < armorIcons.Length; i++)
+            for (int i = 0; i < armorTypes.Length; i++)
             {
-                if (armorIcons[i].Count <= 0 || enhanceCount >= armorIcons[i].Count)
-                    continue;
-
-                upgradeIcons[i].PreviousIcon.color = deafultIconColor;
-                upgradeIcons[i].NextIcon.color = deafultIconColor;
-
-                if (enhanceCount == 1)
-                    upgradeIcons[i].PreviousIcon.color = greenIconColor;
-
-                upgradeIcons[i].PreviousIcon.sprite = armorIcons[i][enhanceCount - 1];
-                upgradeIcons[i].NextIcon.sprite = armorIcons[i][enhanceCount];
+                ArmorType type = (ArmorType)i;
+                upgradeIcons[i].PreviousIcon.sprite = GetArmorIcon(type, enhanceCount);
+                upgradeIcons[i].NextIcon.sprite     = GetArmorIcon(type, enhanceCount + 1);
             }
         }
 
@@ -407,6 +398,19 @@ namespace EverScord.Augment
             helmetSelectUI.gameObject.SetActive(isEnabled);
             vestSelectUI.gameObject.SetActive(isEnabled);
             shoesSelectUI.gameObject.SetActive(isEnabled);
+        }
+
+        public static Sprite GetArmorIcon(ArmorType type, int curLevel)
+        {
+            ArmorData.Armor[] armors = GameManager.Instance.ArmorData.Armors;
+
+            for (int i = 0; i < armors.Length; i++)
+            {
+                if (type == armors[i].ArmorType)
+                    return armors[i].SourceImg[curLevel];
+            }
+
+            return null;
         }
     }
 
