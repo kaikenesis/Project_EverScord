@@ -17,7 +17,7 @@ public enum MonsterType
 
 public abstract class NController : MonoBehaviour, IEnemy
 {
-    [SerializeField] public NMonsterData monsterData;
+    public NMonsterData monsterData;
 
     public float HP {  get; private set; }
     private const float SMALL_SIZE = 2f;
@@ -95,18 +95,18 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void ColliderSetup()
     {
         BoxCollider1.center = new Vector3(0, transform.position.y,
-                                          monsterData.AttackRangeZ1 / 2);
+                                          monsterData.Skill01_RangeZ / 2);
 
-        BoxCollider1.size = new Vector3(monsterData.AttackRangeX1,
-                                        monsterData.AttackRangeY1,
-                                        monsterData.AttackRangeZ1);
+        BoxCollider1.size = new Vector3(monsterData.Skill01_RangeX,
+                                        monsterData.Skill01_RangeY,
+                                        monsterData.Skill01_RangeZ);
 
         BoxCollider2.center = new Vector3(0, transform.position.y,
-                                        monsterData.AttackRangeZ2 / 2);
+                                        monsterData.Skill02_RangeZ / 2);
 
-        BoxCollider2.size = new Vector3(monsterData.AttackRangeX2,
-                                        monsterData.AttackRangeY2,
-                                        monsterData.AttackRangeZ2);
+        BoxCollider2.size = new Vector3(monsterData.Skill02_RangeX,
+                                        monsterData.Skill02_RangeY,
+                                        monsterData.Skill02_RangeZ);
 
         BoxCollider1.isTrigger = true;
         BoxCollider2.isTrigger = true;
@@ -310,12 +310,6 @@ public abstract class NController : MonoBehaviour, IEnemy
         WaitState();
     }
 
-    [PunRPC]
-    protected void SyncIsDead(bool value)
-    {
-        isDead = value;
-    }
-
     public void PlayAnimation(string animationName)
     {
         Animator.CrossFade(animationName, 0.3f, -1, 0);
@@ -328,7 +322,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         Animator.CrossFade(animationName, 0.3f, -1, 0);
     }
 
-    public void Fire(string projectileName)
+    public void Fire(string projectileName, float damage)
     {
         Vector3 position = transform.position + transform.forward * 2;
         float projectileSpeed = 20;
@@ -344,17 +338,17 @@ public abstract class NController : MonoBehaviour, IEnemy
         else
             id = mp.ID;
 
-        mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
-        photonView.RPC(nameof(SyncProjectileNM), RpcTarget.Others, projectileName, id, position, transform.forward, projectileSpeed);
+        mp.Setup(projectileName, id, position, transform.forward, damage, projectileSpeed);
+        photonView.RPC(nameof(SyncProjectileNM), RpcTarget.Others, projectileName, id, position, transform.forward, damage, projectileSpeed);
     }
 
     [PunRPC]
-    protected void SyncProjectileNM(string projectileName, int id, Vector3 position, Vector3 direction, float projectileSpeed)
+    protected void SyncProjectileNM(string projectileName, int id, Vector3 position, Vector3 direction, float damage, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", position, Quaternion.identity);
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, mp);
-        mp.Setup(projectileName, id, position, transform.forward, projectileSpeed);
+        mp.Setup(projectileName, id, position, transform.forward, damage, projectileSpeed);
     }
 
     public void SetActiveHitbox(bool value)

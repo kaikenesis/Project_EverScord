@@ -4,17 +4,12 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class SkillData : MonoBehaviour
+    public class SkillData : IData
     {
         private static IDictionary<string, CharacterSkillInfo> skillInfoDict = new Dictionary<string, CharacterSkillInfo>();
         public static IDictionary<string, CharacterSkillInfo> SkillInfoDict => skillInfoDict;
 
-        void Awake()
-        {
-            Init();
-        }
-
-        private void Init()
+        public void Init()
         {
             var sheet = CSVReader.ReadDataSheet("SkillSheet");
 

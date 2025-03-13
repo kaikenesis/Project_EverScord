@@ -41,7 +41,7 @@ public class NML1_AttackState2 : NAttackState
 
     private IEnumerator Charge(float duration)
     {
-        Vector3 endPoint = startVector + moveVector * (chargeRange - monsterController.monsterData.AttackRangeZ2);
+        Vector3 endPoint = startVector + moveVector * (chargeRange - monsterController.monsterData.Skill02_RangeZ);
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             transform.position = Vector3.Lerp(startVector, endPoint, t / duration);

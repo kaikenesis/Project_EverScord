@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class BossPattern04_Imp : AttackNodeImplement
+public class BossPattern03_Imp : AttackNodeImplement
 {
     private float chargeRange = 10;
     private BoxCollider boxCollider;

@@ -6,6 +6,12 @@ public class BossPattern01_Imp : ActionNodeImplement
 {
     //private float projectileSize = 1;
     private float projectileSpeed = 20f;
+    private float damage;
+
+    private void Start()
+    {
+        damage = bossRPC.BossMonsterData.SkillDatas[0].SkillDamage;
+    }
 
     public override NodeState Evaluate()
     {
@@ -30,7 +36,7 @@ public class BossPattern01_Imp : ActionNodeImplement
         {
             Vector3 pos = transform.position + transform.forward * 2;
 
-            bossRPC.FireBossProjectile(pos, transform.forward, projectileSpeed);
+            bossRPC.FireBossProjectile(pos, transform.forward, damage, projectileSpeed);
             yield return new WaitForSeconds(0.14f);
         }
         yield return new WaitForSeconds(0.5f);

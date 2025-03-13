@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace EverScord
@@ -36,13 +37,43 @@ namespace EverScord
             public int CurLevel
             {
                 get { return curLevel; }
-                private set { curLevel = value; }
+                set { curLevel = value; }
             }
 
             public Sprite[] SourceImg
             {
                 get { return sourceImg; }
                 private set { sourceImg = value; }
+            }
+        }
+        
+        public Action OnLevelUpArmor;
+
+        public void SubscribeOnLevelUp(Action action)
+        {
+            OnLevelUpArmor -= action;
+            OnLevelUpArmor += action;
+        }
+
+        public void UnSubscribeOnLevelUp(Action action)
+        {
+            OnLevelUpArmor -= action;
+        }
+
+        public void LevelUpArmors()
+        {
+            foreach (var armor in armors)
+            {
+                armor.CurLevel++;
+            }
+            OnLevelUpArmor?.Invoke();
+        }
+
+        public void ResetArmorLevel()
+        {
+            foreach (var armor in armors)
+            {
+                armor.CurLevel = 1;
             }
         }
     }

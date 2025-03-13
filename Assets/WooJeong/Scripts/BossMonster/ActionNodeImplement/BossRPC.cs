@@ -34,20 +34,22 @@ public class BossRPC : MonoBehaviour, IEnemy
     private BossDebuffUI bossDebuffUI;
     private BlinkEffect blinkEffect;
 
-    private float hp = 0;
-    private float maxHP = 0;
-    private int phase = 1;
-    public float HP => hp;
-    public int Phase => phase;
+    //cur stat
+    private float defense = 0;
+    private float speed = 0;
+
+    public float HP { get; private set; }
+    public float MaxHP { get; private set; }
+    public int Phase { get; private set; }
 
     private bool isDead;
 
 
     private void Awake()
     {
-        hp = bossData.MaxHP;
-        maxHP = bossData.MaxHP;
-        phase = bossData.Phase;
+        HP = bossData.MaxHP;
+        MaxHP = bossData.MaxHP;
+        Phase = 1;
         hitBox = GetComponent<CapsuleCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
@@ -163,7 +165,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         jumpEffect.Play();
     }
 
-    public void FireBossProjectile(Vector3 position, Vector3 direction, float projectileSpeed)
+    public void FireBossProjectile(Vector3 position, Vector3 direction, float damage, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
@@ -176,17 +178,17 @@ public class BossRPC : MonoBehaviour, IEnemy
         else
             id = mp.ID;
 
-        mp.Setup("BossProjectile", id, position, direction, projectileSpeed);
-        photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, projectileSpeed);
+        mp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed);
+        photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, damage, projectileSpeed);
     }
 
     [PunRPC]
-    public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float projectileSpeed)
+    public void SyncBossProjectile(int id, Vector3 position, Vector3 direction, float damage, float projectileSpeed)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile bp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, bp);
-        bp.Setup("BossProjectile", id, position, direction, projectileSpeed);
+        bp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed);
     }
 
     private IEnumerator FillAmountProjector(int projectorNum, float time)
@@ -334,20 +336,20 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void ReduceHP(float decrease, int attackerID)
     {
-        hp -= decrease;
-        if (hp < 0)
-            hp = 0;
+        HP -= decrease;
+        if (HP < 0)
+            HP = 0;
 
         CharacterControl attacker = GameManager.Instance.PlayerDict[attackerID];
 
-        if (!isDead && attacker.CharacterPhotonView.IsMine && hp == 0 && phase == 2)
+        if (!isDead && attacker.CharacterPhotonView.IsMine && HP == 0 && Phase == 2)
         {
             isDead = true;
             attacker.IncreaseKillCount();
             GameManager.Instance.GameOverController.ShowGameover(true);
         }
 
-        Debug.Log(decrease + " 데미지, 남은 체력 : " + hp);
+        Debug.Log(decrease + " 데미지, 남은 체력 : " + HP);
     }
 
     public void PhaseUp()
@@ -358,15 +360,16 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private void SyncPhaseUp()
     {
-        phase++;
-        hp = bossData.MaxHP_Phase2;
-        maxHP = bossData.MaxHP_Phase2;
+        Phase++;
+        HP = bossData.MaxHP_Phase2;
+        MaxHP = bossData.MaxHP_Phase2;
+
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
 
     public bool IsUnderHP(float ratio)
     {
-        if (hp > maxHP / 100 * ratio)
+        if (HP > MaxHP / 100 * ratio)
         {
             return false;
         }

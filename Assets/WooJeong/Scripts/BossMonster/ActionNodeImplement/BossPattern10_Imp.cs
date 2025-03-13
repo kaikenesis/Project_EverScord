@@ -3,7 +3,7 @@ using EverScord.Character;
 using System.Collections;
 using UnityEngine;
 
-public class BossPattern10_Imp : AttackNodeImplement
+public class BossPattern09_Imp : AttackNodeImplement
 {
     private float attackDamage = 10;
     private float attackWidth = 3;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern15")]
+[CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern15", order = 15)]
 public class BossPatternNode15 : BActionNode
 {
     public override void Setup(GameObject gameObject)
