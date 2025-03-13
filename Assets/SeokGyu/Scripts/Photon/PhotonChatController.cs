@@ -9,7 +9,6 @@ namespace EverScord
 {
     public class PhotonChatController : MonoBehaviour, IChatClientListener
     {
-        [SerializeField] private string nickName;
         private ChatClient chatClient;
 
         public static Action<string, string> OnRoomInvite = delegate { };

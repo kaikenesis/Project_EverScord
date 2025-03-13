@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using TMPro;
@@ -10,6 +11,9 @@ namespace EverScord
     {
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private Button cancleButton;
+        private Vector2 startPos = new Vector2(0f, 210f);
+        private Vector2 movePos = new Vector2(0f, 0f);
+        private RectTransform rectTransform;
         private int seconds;
         private int minutes;
         private bool bPlayTimer = false;
@@ -24,6 +28,8 @@ namespace EverScord
 
             seconds = 0;
             minutes = 0;
+            rectTransform = GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = startPos;
             gameObject.SetActive(false);
         }
 
@@ -38,6 +44,7 @@ namespace EverScord
         private void HandleStartTimer()
         {
             gameObject.SetActive(true);
+            rectTransform.DOAnchorPos(movePos, 1.0f, false);
 
             bPlayTimer = true;
             StartCoroutine(UpdateTimer());
@@ -45,13 +52,7 @@ namespace EverScord
 
         private void HandleStopTimer()
         {
-            bPlayTimer = false;
-
-            seconds = 0;
-            minutes = 0;
-            timerText.text = $"경과시간 {minutes} : {seconds}";
-            
-            gameObject.SetActive(false);
+            StartCoroutine(MoveAnchorPos());
         }
         private void HandleMatchComplete()
         {
@@ -85,6 +86,20 @@ namespace EverScord
 
                 yield return new WaitForSeconds(1.0f);
             }
+        }
+
+        private IEnumerator MoveAnchorPos()
+        {
+            bPlayTimer = false;
+            rectTransform.DOAnchorPos(startPos, 1.0f, false);
+
+            yield return new WaitForSeconds(1.0f);
+
+            seconds = 0;
+            minutes = 0;
+            timerText.text = $"경과시간 {minutes} : {seconds}";
+
+            gameObject.SetActive(false);
         }
     }
 }

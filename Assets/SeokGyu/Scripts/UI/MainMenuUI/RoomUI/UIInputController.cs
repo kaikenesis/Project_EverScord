@@ -54,31 +54,4 @@ public class UIInputController : MonoBehaviour
             // 우선 키입력은 보류
         }
     }
-
-    /*
-     public Stack<Func<bool>> stack;
-
-        private void Awake()
-        {
-            stack.Push(TestA);
-            stack.Peek()?.Invoke();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-            }
-        }
-
-        private bool TestA()
-        {
-            return false;
-        }
-
-        private void TestB()
-        {
-
-        }
-     */
 }

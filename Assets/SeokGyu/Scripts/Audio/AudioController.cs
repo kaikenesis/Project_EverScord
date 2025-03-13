@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 namespace EverScord
 {
@@ -17,6 +19,13 @@ namespace EverScord
         
         private bool[] isMute = new bool[3];
         private float[] audioVolumes = new float[3];
+
+        private void Awake()
+        {
+            //audioMixer.GetFloat(EAudioMixerType.Master.ToString(), out float volume);
+            //volume = Mathf.Pow(10, volume / 20f);
+            //GetComponent<Slider>().value = volume;
+        }
 
         private void SetAudioVolume(EAudioMixerType audioMixerType, float volume)
         {

@@ -86,16 +86,17 @@ namespace EverScord
             OnHideObjects();
         }
 
-        private void HandleDisplayPlayers(List<string> players)
+        private void HandleDisplayPlayers(List<string> players, List<Tuple<int,int>> typeDatas)
         {
             int i = 0;
             for (i = 0; i < players.Count; i++)
             {
                 bool bMaster = false;
-                uiRoomPlayers[i].gameObject.SetActive(true);
                 if (PhotonNetwork.MasterClient.NickName == players[i])
                     bMaster = true;
-                uiRoomPlayers[i].Initialize(players[i], bMaster);
+
+                uiRoomPlayers[i].Initialize(players[i], bMaster, typeDatas[i].Item1, typeDatas[i].Item2);
+                uiRoomPlayers[i].gameObject.SetActive(true);
             }
 
             for (; i < 3; i++)
@@ -178,28 +179,11 @@ namespace EverScord
             else if(inviteButton.activeSelf == true)
             {
                 inviteButton.SetActive(false);
-                if (bActive == false)
-                {
-                    InitToggleButtons(inviteButton);
-                }
             }
 
             for (int i = 0; i < gameSettingButtons.Length; i++)
             {
                 gameSettingButtons[i].interactable = bActive;
-                if(bActive == false)
-                {
-                    InitToggleButtons(gameSettingButtons[i].gameObject);
-                }
-            }
-        }
-
-        private void InitToggleButtons(GameObject gameObject)
-        {
-            UIToggleButton uiToggle = gameObject.gameObject.GetComponent<UIToggleButton>();
-            if (uiToggle != null)
-            {
-                //uiToggle.Init();
             }
         }
 
