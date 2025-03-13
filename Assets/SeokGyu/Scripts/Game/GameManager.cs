@@ -251,6 +251,7 @@ namespace EverScord
                     {
                         PhotonNetwork.LoadLevel("PhotonTestLobby");
                         ResourceManager.ClearAllPools();
+                        ArmorData.ResetArmorLevel();
                     }
                 }
             }

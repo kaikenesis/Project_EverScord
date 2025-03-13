@@ -8,8 +8,6 @@ namespace EverScord
     {
         [SerializeField] private Armor[] armors;
 
-        public Action OnLevelUpArmor;
-
         public Armor[] Armors
         {
             get { return armors; }
@@ -48,12 +46,34 @@ namespace EverScord
                 private set { sourceImg = value; }
             }
         }
+        
+        public Action OnLevelUpArmor;
 
-        private void LevelUpArmor()
+        public void SubscribeOnLevelUp(Action action)
+        {
+            OnLevelUpArmor -= action;
+            OnLevelUpArmor += action;
+        }
+
+        public void UnSubscribeOnLevelUp(Action action)
+        {
+            OnLevelUpArmor -= action;
+        }
+
+        public void LevelUpArmors()
         {
             foreach (var armor in armors)
             {
                 armor.CurLevel++;
+            }
+            OnLevelUpArmor?.Invoke();
+        }
+
+        public void ResetArmorLevel()
+        {
+            foreach (var armor in armors)
+            {
+                armor.CurLevel = 1;
             }
         }
     }
