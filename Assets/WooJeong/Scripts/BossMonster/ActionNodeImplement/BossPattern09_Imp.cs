@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern09_Imp : AttackNodeImplement
+public class BossPattern08_Imp : AttackNodeImplement
 {
     protected int attackCount = 30;
     protected int failurePhase = 2;

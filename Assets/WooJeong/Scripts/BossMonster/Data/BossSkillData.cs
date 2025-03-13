@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EverScord;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/Data/BossSkillData")]
+[CreateAssetMenu(menuName = "ScriptableObjects/Data/BossSkillData", order = 0)]
 public class BossSkillData : ScriptableObject, IData
 {
     public string Tag {  get; private set; }

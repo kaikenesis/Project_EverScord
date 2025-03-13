@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern06_Imp : AttackNodeImplement
+public class BossPattern05_Imp : AttackNodeImplement
 {
     private float laserLifeTime = 3.5f;
     protected int failurePhase = 2;

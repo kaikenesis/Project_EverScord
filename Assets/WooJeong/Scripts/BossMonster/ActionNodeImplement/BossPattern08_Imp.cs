@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern08_Imp : AttackNodeImplement
+public class BossPattern07_Imp : AttackNodeImplement
 {
     private float projectileSpeed = 20f;
 
