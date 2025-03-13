@@ -11,6 +11,8 @@ public class UIInputController : MonoBehaviour
     private PointerEventData m_PointerEventData;
     private EventSystem m_EventSystem;
 
+    private bool bOptionPanel;
+
     public static Action<bool, Vector2> OnClickedPlayerUI = delegate { };
 
     private void Awake()
@@ -50,8 +52,19 @@ public class UIInputController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            // ESC 입력을 받았을때 이벤트 처리, 하나씩? 한꺼번에? 한꺼번에 처리하는게 쉽긴하다..
-            // 우선 키입력은 보류
+            OnPressedEscape();
+        }
+    }
+
+    private void OnPressedEscape()
+    {
+        if(bOptionPanel)
+        {
+
+        }
+        else
+        {
+
         }
     }
 }

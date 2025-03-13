@@ -31,6 +31,7 @@ namespace EverScord
             rectTransform = GetComponent<RectTransform>();
             rectTransform.anchoredPosition = startPos;
             gameObject.SetActive(false);
+            DOTweenAnimation doTweenAnim = GetComponent<DOTweenAnimation>();
         }
 
         private void OnDestroy()

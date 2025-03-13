@@ -52,7 +52,7 @@ namespace EverScord
 
         private void UpdateName(string newName)
         {
-            nickName.text = $"{newName}";
+            nickName.text = newName;
         }
 
         private void UpdateMoney(int money)

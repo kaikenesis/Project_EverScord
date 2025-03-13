@@ -7,6 +7,7 @@ using ExitGames.Client.Photon;
 using WebSocketSharp;
 using static EverScord.PlayerData;
 using EverScord.UI;
+using Unity.VisualScripting;
 
 namespace EverScord
 {
@@ -14,6 +15,7 @@ namespace EverScord
     {
         private PhotonView pv;
         private string inviteRoomName;
+        private bool bCanStart = false;
 
         public static Action OnJoinRoom = delegate { };
         public static Action OnRoomLeft = delegate { };
@@ -32,8 +34,9 @@ namespace EverScord
             PhotonChatController.OnExile += HandleExile;
             UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
-            UISelect.OnChangeUserData += HandleChangeUserData;
             UISelect.OnGameStart += HandleGameStart;
+            UISelect.OnChangeUserData += HandleChangeUserData;
+            UISelect.OnUpdateReady += HandleChangeUserData;
             UIPartyOption.OnClickedExit += HandleClickedExit;
             UIChangeName.OnChangeName += HandleChangeName;
             CharacterPodium.OnChangeCharacter += HandleChangeUserData;
@@ -50,8 +53,9 @@ namespace EverScord
             PhotonChatController.OnExile -= HandleExile;
             UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
-            UISelect.OnChangeUserData -= HandleChangeUserData;
             UISelect.OnGameStart -= HandleGameStart;
+            UISelect.OnChangeUserData -= HandleChangeUserData;
+            UISelect.OnUpdateReady -= HandleChangeUserData;
             UIPartyOption.OnClickedExit -= HandleClickedExit;
             UIChangeName.OnChangeName -= HandleChangeName;
             CharacterPodium.OnChangeCharacter -= HandleChangeUserData;
@@ -276,6 +280,7 @@ namespace EverScord
             PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Character", (int)data.character } });
             PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Job", (int)data.job } });
             PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Level", (int)data.difficulty } });
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "Ready", data.bReady } });
         }
         private void UpdateRoomCondition()
         {
@@ -285,7 +290,7 @@ namespace EverScord
 
             Dictionary<int, Player> players = PhotonNetwork.CurrentRoom.Players;
             int key = 0;
-            
+            bCanStart = true;
 
             for (int i = 0; i < players.Count; key++)
             {
@@ -304,6 +309,11 @@ namespace EverScord
                                 curHealers++;
                                 break;
                         }
+                    }
+                    if(players[key].CustomProperties.ContainsKey("Ready"))
+                    {
+                        if (!(bool)players[key].CustomProperties["Ready"])
+                            bCanStart = false;
                     }
                     i++;
                 }
@@ -329,6 +339,7 @@ namespace EverScord
         private bool IsCanStart()
         {
             if (PhotonNetwork.InRoom == false) return false;
+            if (!bCanStart) return false;
 
             int curDealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["DEALER"];
             int curHealer = (int)PhotonNetwork.CurrentRoom.CustomProperties["HEALER"];

@@ -7,6 +7,7 @@ namespace EverScord
     {
         public static Action OnChangeUserData = delegate { };
         public static Action OnGameStart = delegate { };
+        public static Action OnUpdateReady = delegate { };
 
         public void GameStart()
         {
@@ -60,6 +61,12 @@ namespace EverScord
 
             GameManager.Instance.PlayerData.difficulty = PlayerData.EDifficulty.Hard;
             OnChangeUserData?.Invoke();
+        }
+
+        public void SetReady(bool bReady)
+        {
+            GameManager.Instance.PlayerData.bReady = bReady;
+            OnUpdateReady?.Invoke();
         }
     }
 }

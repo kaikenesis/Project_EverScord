@@ -39,7 +39,6 @@ namespace EverScord
         private void Update()
         {
             chatClient.Service();
-
         }
 
         #region Handle Methods
