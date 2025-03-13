@@ -2,16 +2,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using EverScord;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/Data/BossSkillData", order = 0)]
+[CreateAssetMenu(menuName = "ScriptableObjects/Data/BossSkillData", order = 1)]
 public class BossSkillData : ScriptableObject, IData
 {
-    public string Tag {  get; private set; }
-    public float Cooldown { get; private set; }
-    public float SkillRange { get; private set; }
-    public List<float> SkillSizes { get; private set; }
-    public float SkillDamage { get; private set; }
-    public float MaxHpBasedDamage { get; private set; }
-    public float SkillDotDamage { get; private set; }
+    [field : SerializeField] public string Tag {  get; private set; }
+    [field: SerializeField] public float Cooldown { get; private set; }
+    [field: SerializeField] public float SkillRange { get; private set; }
+    [field: SerializeField] public List<float> SkillSizes { get; private set; }
+    [field: SerializeField] public float SkillDamage { get; private set; }
+    [field: SerializeField] public float MaxHpBasedDamage { get; private set; }
+    [field: SerializeField] public float SkillDotDamage { get; private set; }
 
     public void Init()
     {

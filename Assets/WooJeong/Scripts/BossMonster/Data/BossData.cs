@@ -20,6 +20,8 @@ public class BossData : ScriptableObject, IData
 
     [field: SerializeField] public float StopDistance { get; protected set; }
 
+    [field: SerializeField] public ScriptableObject[] SkillDatas { get; protected set; }
+
     public void Init()
     {
         StatInfo stat_1 = StatData.StatInfoDict["FB_A"];
@@ -32,6 +34,6 @@ public class BossData : ScriptableObject, IData
         MaxHP_Phase2 = stat_2.health;
         BaseAttack2 = stat_2.attack;
         Defense2 = stat_2.defense;
-        Defense2 = stat_2.speed;
+        Speed2 = stat_2.speed;
     }
 }

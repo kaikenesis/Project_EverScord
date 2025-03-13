@@ -49,7 +49,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         HP = bossData.MaxHP;
         MaxHP = bossData.MaxHP;
-        Phase = bossData.Phase;
+        Phase = 1;
         hitBox = GetComponent<CapsuleCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
