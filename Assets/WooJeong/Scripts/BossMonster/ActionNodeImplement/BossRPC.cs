@@ -40,6 +40,8 @@ public class BossRPC : MonoBehaviour, IEnemy
     public float HP => hp;
     public int Phase => phase;
 
+    private bool isDead;
+
 
     private void Awake()
     {
@@ -68,6 +70,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private void OnEnable()
     {
+        isDead = false;
         uiMarker.SetActivate(true);
     }
 
@@ -337,8 +340,11 @@ public class BossRPC : MonoBehaviour, IEnemy
 
         CharacterControl attacker = GameManager.Instance.PlayerDict[attackerID];
 
-        if (attacker.CharacterPhotonView.IsMine && hp == 0 && phase == 2)
+        if (!isDead && attacker.CharacterPhotonView.IsMine && hp == 0 && phase == 2)
+        {
+            isDead = true;
             attacker.IncreaseKillCount();
+        }
 
         Debug.Log(decrease + " 데미지, 남은 체력 : " + hp);
     }

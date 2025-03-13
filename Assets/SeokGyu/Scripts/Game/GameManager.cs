@@ -24,6 +24,8 @@ namespace EverScord
         public PhotonData PhotonData { get { return photonData; } }
 
         [field: SerializeField] public LoadingScreen LoadScreen { get; private set; }
+        [field: SerializeField] public Texture2D CrossHairCursor{ get; private set; }
+        [field: SerializeField] public Texture2D UIFocusCursor  { get; private set; }
         public BulletControl BulletsControl                     { get; private set; }
         public EnemyHitControl EnemyHitsControl                 { get; private set; }
         public MonsterProjectileController ProjectileController { get; private set; }
@@ -141,6 +143,8 @@ namespace EverScord
             playerData.Initialize();
             photonData.Initialize();
             gameMode.Initialize();
+
+            PlayerUI.SetCursor(CursorType.UIFOCUS);
         }
 
         public void UpdateUserName(string newName)

@@ -47,8 +47,7 @@ namespace EverScord.UI
             if (!bloodMat) 
                 bloodMat = ResourceManager.Instance.GetAsset<Material>(AssetReferenceManager.BloodMat_ID);
             
-            if (!cursorIcon)
-                SetCursor(CursorType.BATTLE);
+            SetCursor(CursorType.BATTLE);
 
             Volume volume = CharacterCamera.Root.GetComponent<Volume>();
             VolumeProfile profile = volume.sharedProfile;
@@ -64,18 +63,18 @@ namespace EverScord.UI
             SetGrayscaleScreen(false);
         }
 
-        public void SetCursor(CursorType type, float xPos = 0.5f, float yPos = 0.5f)
+        public static void SetCursor(CursorType type, float xPos = 0.5f, float yPos = 0.5f)
         {
-            string iconID = AssetReferenceManager.CrosshairIcon_ID;
+            cursorIcon = GameManager.Instance.CrossHairCursor;
 
             switch (type)
             {
-                case CursorType.AUGMENT:
-                    iconID = AssetReferenceManager.AugmentCursorIcon_ID;
+                case CursorType.UIFOCUS:
+                    xPos = 0f; yPos = 0f;
+                    cursorIcon = GameManager.Instance.UIFocusCursor;
                     break;
             }
 
-            cursorIcon = ResourceManager.Instance.GetAsset<Texture2D>(iconID);
             Vector2 cursorCenter = new Vector2(cursorIcon.width * xPos, cursorIcon.height * yPos);
             Cursor.SetCursor(cursorIcon, cursorCenter, CursorMode.Auto);
         }
@@ -193,6 +192,6 @@ namespace EverScord.UI
     public enum CursorType
     {
         BATTLE,
-        AUGMENT,
+        UIFOCUS
     }
 }

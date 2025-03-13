@@ -25,15 +25,6 @@ namespace EverScord.UI
             HideCharacters();
         }
 
-        void Start()
-        {
-            //if(!PhotonNetwork.InRoom)
-            //{
-            //    SetCharacterTransform();
-            //    HideCharacters();
-            //}
-        }
-
         private void OnDestroy()
         {
             UIDisplayRoom.OnVisibleObject -= HandleVisibleObject;

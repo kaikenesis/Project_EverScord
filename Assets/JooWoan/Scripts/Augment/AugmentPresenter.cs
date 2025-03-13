@@ -50,6 +50,9 @@ namespace EverScord.Augment
         private float previousHelmetStatIncrease, previousVestStatIncrease, previousShoesStatIncrease;
         private int enhanceIndex = 0;
         private int enhanceCount = 0;
+
+        private Action onEnhanced;
+
         private bool isAugmentSelectMode => enhanceIndex == 0;
 
         void Awake()
@@ -72,6 +75,17 @@ namespace EverScord.Augment
             upgradeBtn.onClick.RemoveAllListeners();
         }
 
+        public void SubscribeOnEnhanced(Action subscriber)
+        {
+            onEnhanced -= subscriber;
+            onEnhanced += subscriber;
+        }
+
+        public void UnsubscribeOnEnhanced(Action subscriber)
+        {
+            onEnhanced -= subscriber;
+        }
+
         public void ShowAugmentCards()
         {
             selectedPeople = 0;
@@ -80,7 +94,7 @@ namespace EverScord.Augment
             uiHub.SetActive(true);
             augmentTimer.gameObject.SetActive(true);
 
-            player.PlayerUIControl.SetCursor(CursorType.AUGMENT, 0, 0);
+            PlayerUI.SetCursor(CursorType.UIFOCUS, 0, 0);
             player.SetState(SetCharState.ADD, CharState.SELECTING_AUGMENT);
 
             if (PhotonNetwork.IsConnected)
@@ -167,7 +181,7 @@ namespace EverScord.Augment
             DOTween.Rewind(DOTWEEN_UI_DISAPPEAR);
             DOTween.Play(DOTWEEN_UI_DISAPPEAR);
 
-            player.PlayerUIControl.SetCursor(CursorType.BATTLE);
+            PlayerUI.SetCursor(CursorType.BATTLE);
             player.SetState(SetCharState.REMOVE, CharState.SELECTING_AUGMENT);
 
             if (PhotonNetwork.IsConnected)
@@ -346,6 +360,7 @@ namespace EverScord.Augment
 
             enhanceIndex++;
             enhanceCount++;
+            onEnhanced?.Invoke();
 
             if (enhanceIndex >= helmetAugmentDict[selectedHelmetTag].Count)
                 enhanceIndex = helmetAugmentDict[selectedHelmetTag].Count - 1;

@@ -72,6 +72,7 @@ namespace EverScord.Character
         public IHelmet CharacterHelmet                                  { get; private set; }
         public IVest CharacterVest                                      { get; private set; }
         public IShoes CharacterShoes                                    { get; private set; }
+        public string Nickname                                          { get; private set; }
 
         public InputInfo PlayerInputInfo => playerInputInfo;
         public Weapon PlayerWeapon => weapon;
@@ -90,6 +91,7 @@ namespace EverScord.Character
         private static GameObject deathEffect, reviveEffect, beamEffect;
         private static ParticleSystem hitEffect1, hitEffect2;
 
+        private Action onDecreaseHealth;
         private PhotonView photonView;
         private ParticleSystem healEffect;
         private ReviveCircle reviveCircle;
@@ -97,8 +99,8 @@ namespace EverScord.Character
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
         private LayerMask groundAndEnemyLayer;
-        private Action onDecreaseHealth;
         private InputInfo playerInputInfo = new InputInfo();
+        private Coroutine deathCoroutine;
 
         public float CurrentHealth
         {
@@ -114,7 +116,7 @@ namespace EverScord.Character
                 // Change Health UI
 
                 if (!IsDead && currentHealth <= 0)
-                    StartCoroutine(HandleDeath());
+                    deathCoroutine = StartCoroutine(HandleDeath());
                 
                 if (previousIsLowHealth != afterIsLowHealth)
                     BlinkEffects.LoopBlink(IsLowHealth);
@@ -656,6 +658,11 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
+            if (deathCoroutine != null)
+                StopCoroutine(deathCoroutine);
+            
+            yield return new WaitForEndOfFrame();
+
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 
@@ -1007,11 +1014,12 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        public void SyncPlayerResult(int killCount, float dealtDamage, float dealtHeal)
+        public void SyncPlayerResult(int killCount, float dealtDamage, float dealtHeal, string nickname)
         {
             this.killCount = killCount;
             this.dealtDamage = dealtDamage;
             this.dealtHeal = dealtHeal;
+            Nickname = nickname;
 
             GameManager.Instance.ResultControl.IncreaseReadyCount();
         }
