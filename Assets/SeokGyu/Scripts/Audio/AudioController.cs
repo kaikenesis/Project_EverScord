@@ -19,12 +19,17 @@ namespace EverScord
         
         private bool[] isMute = new bool[3];
         private float[] audioVolumes = new float[3];
+        private Slider slider;
 
-        private void Awake()
+        private void OnEnable()
         {
-            //audioMixer.GetFloat(EAudioMixerType.Master.ToString(), out float volume);
-            //volume = Mathf.Pow(10, volume / 20f);
-            //GetComponent<Slider>().value = volume;
+            audioMixer.GetFloat(EAudioMixerType.Master.ToString(), out float volume);
+            volume = Mathf.Pow(10, volume / 20f);
+            if (slider == null)
+            {
+                slider = GetComponent<Slider>();
+            }
+            slider.value = volume;
         }
 
         private void SetAudioVolume(EAudioMixerType audioMixerType, float volume)
