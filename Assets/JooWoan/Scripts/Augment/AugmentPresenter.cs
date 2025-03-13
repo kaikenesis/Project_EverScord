@@ -50,6 +50,9 @@ namespace EverScord.Augment
         private float previousHelmetStatIncrease, previousVestStatIncrease, previousShoesStatIncrease;
         private int enhanceIndex = 0;
         private int enhanceCount = 0;
+
+        private Action onEnhanced;
+
         private bool isAugmentSelectMode => enhanceIndex == 0;
 
         void Awake()
@@ -70,6 +73,17 @@ namespace EverScord.Augment
             RemoveSlotSelectEvent();
             confirmBtn.GetComponent<Button>().onClick.RemoveAllListeners();
             upgradeBtn.onClick.RemoveAllListeners();
+        }
+
+        public void SubscribeOnEnhanced(Action subscriber)
+        {
+            onEnhanced -= subscriber;
+            onEnhanced += subscriber;
+        }
+
+        public void UnsubscribeOnEnhanced(Action subscriber)
+        {
+            onEnhanced -= subscriber;
         }
 
         public void ShowAugmentCards()
@@ -346,6 +360,7 @@ namespace EverScord.Augment
 
             enhanceIndex++;
             enhanceCount++;
+            onEnhanced?.Invoke();
 
             if (enhanceIndex >= helmetAugmentDict[selectedHelmetTag].Count)
                 enhanceIndex = helmetAugmentDict[selectedHelmetTag].Count - 1;
