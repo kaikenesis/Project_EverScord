@@ -62,7 +62,7 @@ namespace EverScord.UI
         {
             bloodMat.SetFloat(BLOOD_SIZE, 1f);
             bloodMat.SetInt(BLOOD_ENABLED, 0);
-            //SetGrayscaleScreen(false);
+            SetGrayscaleScreen(false);
         }
 
         public static void SetCursor(CursorType type, float xPos = 0.5f, float yPos = 0.5f)
@@ -166,11 +166,7 @@ namespace EverScord.UI
         private void SetGrayscaleScreen(bool state)
         {
             if (colorCurves)
-            {
                 colorCurves.active = state;
-
-                if (state) Debug.Log($"{state} => {colorCurves.active}");
-            }
         }
 
         public void ShowPortalNotification()
