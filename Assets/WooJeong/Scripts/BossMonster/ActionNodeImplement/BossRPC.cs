@@ -2,6 +2,7 @@ using DTT.AreaOfEffectRegions;
 using EverScord;
 using EverScord.Character;
 using EverScord.Effects;
+using EverScord.UI;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -346,7 +347,6 @@ public class BossRPC : MonoBehaviour, IEnemy
         {
             isDead = true;
             attacker.IncreaseKillCount();
-            GameManager.Instance.GameOverController.ShowGameover(true);
         }
 
         Debug.Log(decrease + " 데미지, 남은 체력 : " + HP);
@@ -360,9 +360,9 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private void SyncPhaseUp()
     {
-        Phase++;
         HP = bossData.MaxHP_Phase2;
         MaxHP = bossData.MaxHP_Phase2;
+        Phase++;
 
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
@@ -490,6 +490,11 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void Death()
     {
+        GameOverControl gameOver = GameManager.Instance.GameOverController;
+
+        if (PhotonNetwork.IsMasterClient)
+            GameManager.Instance.StartCoroutine(gameOver.ShowGameover(true, 3f));
+
         photonView.RPC("SyncBossDeath", RpcTarget.All);
     }
 

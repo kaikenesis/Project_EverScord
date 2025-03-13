@@ -50,7 +50,7 @@ namespace EverScord
             UpdateBanners();
         }
 
-        private void ResetState()
+        public void ResetState()
         {
             ImageHub.SetActive(false);
 

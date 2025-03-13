@@ -655,7 +655,7 @@ namespace EverScord.Character
 
             EnableReviveCircle(true);
 
-            if (PhotonNetwork.IsMasterClient && photonView.IsMine)
+            if (photonView.IsMine)
                 GameManager.Instance.GameOverController.CheckGameOver();
 
             if (PhotonNetwork.IsConnected && photonView.IsMine)
