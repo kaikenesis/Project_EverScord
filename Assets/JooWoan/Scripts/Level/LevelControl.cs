@@ -4,7 +4,6 @@ using System;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
-using UnityEditor;
 
 namespace EverScord
 {

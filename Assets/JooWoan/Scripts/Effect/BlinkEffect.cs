@@ -318,6 +318,15 @@ namespace EverScord.Effects
         {
             currentDefaultColor = color;
         }
+
+        public void StopAllBlinks()
+        {
+            if (blinkCoroutine != null)
+                StopCoroutine(blinkCoroutine);
+
+            if (blinkLoopCoroutine != null)
+                StopCoroutine(blinkLoopCoroutine);
+        }
     }
 
     [System.Serializable]

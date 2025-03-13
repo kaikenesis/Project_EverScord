@@ -114,9 +114,11 @@ namespace EverScord.Character
                 bool afterIsLowHealth = IsLowHealth;
 
                 if (!IsDead && currentHealth <= 0)
+                {
                     deathCoroutine = StartCoroutine(HandleDeath());
-                
-                if (previousIsLowHealth != afterIsLowHealth)
+                    BlinkEffects.StopAllBlinks();
+                }
+                else if (previousIsLowHealth != afterIsLowHealth)
                     BlinkEffects.LoopBlink(IsLowHealth);
 
                 if (photonView.IsMine)
