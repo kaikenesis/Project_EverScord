@@ -212,7 +212,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         {
             isDead = true;
             attacker.IncreaseKillCount();
-            DeathAftermath();
+            GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
         }
 
         if (monsterHealthBar != null)
@@ -228,7 +228,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         if (this.HP <= 0)
         {
             isDead = true;
-            DeathAftermath();
+            GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
         }
 
         if (monsterHealthBar != null)
@@ -259,7 +259,6 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         DeathGlitter();
         healthBarObject.SetActive(false);
-        GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
     }
 
     private void DeathGlitter()
