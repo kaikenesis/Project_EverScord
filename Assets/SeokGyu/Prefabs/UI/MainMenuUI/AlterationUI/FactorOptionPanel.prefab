@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7539353937771963683}
   - component: {fileID: 2147336184262344780}
   - component: {fileID: 999716830610745228}
-  - component: {fileID: 2868817680089461751}
   m_Layer: 5
   m_Name: Btn_Cancel
   m_TagString: Untagged
@@ -122,9 +121,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2868817680089461751}
-        m_TargetAssemblyTypeName: EverScord.UIToggleButton, Assembly-CSharp
-        m_MethodName: ToggleObject
+      - m_Target: {fileID: 792789534720735967}
+        m_TargetAssemblyTypeName: EverScord.ToggleObject, Assembly-CSharp
+        m_MethodName: OnDeactivateObjects
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -134,20 +133,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2868817680089461751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1366804592866387021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toggleObject:
-  - {fileID: 6179568988881516652}
 --- !u!1 &2053350284145204229
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,6 +889,7 @@ GameObject:
   - component: {fileID: 8207051826255615599}
   - component: {fileID: 5280998273745728893}
   - component: {fileID: 7735610527182106534}
+  - component: {fileID: 792789534720735967}
   m_Layer: 5
   m_Name: FactorOptionPanel
   m_TagString: Untagged
@@ -986,6 +972,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   option: {fileID: 223737047691717370, guid: 779f93d4e46d7dd43b1a34d96ad9cbb7, type: 3}
   containor: {fileID: 2860041801846476200}
+--- !u!114 &792789534720735967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6179568988881516652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleObjects:
+  - {fileID: 6179568988881516652}
 --- !u!1 &6865893944401361711
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ namespace EverScord
             PhotonConnector.OnReturnToLobbyScene += HandleReturnToLobbyScene;
             PhotonChatController.OnRoomFollow += HandleRoomInviteAccept;
             PhotonChatController.OnExile += HandleExile;
-            UIInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
+            UIReceiveInvite.OnRoomInviteAccept += HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
             UISelect.OnGameStart += HandleGameStart;
             UISelect.OnChangeUserData += HandleChangeUserData;
@@ -50,7 +50,7 @@ namespace EverScord
             PhotonConnector.OnReturnToLobbyScene -= HandleReturnToLobbyScene;
             PhotonChatController.OnRoomFollow -= HandleRoomInviteAccept;
             PhotonChatController.OnExile -= HandleExile;
-            UIInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
+            UIReceiveInvite.OnRoomInviteAccept -= HandleRoomInviteAccept;
             UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
             UISelect.OnGameStart -= HandleGameStart;
             UISelect.OnChangeUserData -= HandleChangeUserData;
