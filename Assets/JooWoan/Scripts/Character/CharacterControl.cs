@@ -423,8 +423,8 @@ namespace EverScord.Character
 
             Speed = info.speed * SPEED_FACTOR;
             Attack = info.attack;
-            Heal = info.healPerBullet;
 
+            Heal = info.healIncrease;
         }
 
         private void SetPortraits()
