@@ -5,10 +5,10 @@ namespace EverScord.Skill
 {
     public static class DamageCalculator
     {
-        public static float GetBulletDamage(int viewID, Weapon sourceWeapon)
+        public static float GetBulletDamage(int viewID)
         {
             CharacterControl character = GameManager.Instance.PlayerDict[viewID];
-            float totalDamage = sourceWeapon.Damage;
+            float totalDamage = character.Attack;
 
             // Calculate damage
 

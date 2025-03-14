@@ -118,7 +118,7 @@ namespace EverScord.Weapons
                     {
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
 
-                        float calculatedDamage = DamageCalculator.GetBulletDamage(ViewID, sourceWeapon);
+                        float calculatedDamage = DamageCalculator.GetBulletDamage(ViewID);
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(shooter, calculatedDamage, monster, false);
                     }
                     else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber)
@@ -128,7 +128,7 @@ namespace EverScord.Weapons
                         if (shooter.CharacterJob == PlayerData.EJob.Healer)
                         {
                             // Calculate total heal
-                            float calculatedHeal = sourceWeapon.Heal;
+                            float calculatedHeal = shooter.Heal;
 
                             character.IncreaseHP(shooter, calculatedHeal, true);
                         }

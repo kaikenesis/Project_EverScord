@@ -32,7 +32,7 @@ namespace EverScord.Skill
         {
             this.skill = (DashSkill)skill;
             meshTrail  = new MeshTrail(activator.PlayerTransform, this);
-            originalSpeed = activator.CharacterSpeed;
+            originalSpeed = activator.Speed;
             
             base.Init(activator, skill, ejob, skillIndex);
         }
