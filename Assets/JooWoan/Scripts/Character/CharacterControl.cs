@@ -577,7 +577,7 @@ namespace EverScord.Character
             onDecreaseHealth -= subscriber;
         }
 
-        public void DecreaseHP(float amount)
+        public void DecreaseHP(float amount, bool isMaxHPDamage = false)
         {
             bool isInvincible = HasState(CharState.INVINCIBLE);
 
@@ -593,8 +593,14 @@ namespace EverScord.Character
             if (IsDead)
                 return;
 
-            if (!isInvincible)
+            if (!isInvincible && isMaxHPDamage == false)
                 CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+
+            if (!isInvincible && isMaxHPDamage == true)
+            {
+                CurrentHealth = Mathf.Max(0, CurrentHealth - (MaxHealth * 0.01f * amount));
+                Debug.Log((MaxHealth * 0.01f * amount));
+            }
 
             onDecreaseHealth?.Invoke();
 

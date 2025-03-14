@@ -15,6 +15,7 @@ public class MonsterProjectile : MonoBehaviour
     private float curTime = 0;
     private float damage;
     private Coroutine move;
+    private bool isMaxHPDamage = false;
 
     public bool IsDestroyed {  get; private set; }
 
@@ -29,7 +30,7 @@ public class MonsterProjectile : MonoBehaviour
         this.IsDestroyed = isDestroyed;
     }
 
-    public void Setup(string projectileName, int id, Vector3 position, Vector3 direction, float damage, float speed)
+    public void Setup(string projectileName, int id, Vector3 position, Vector3 direction, float damage, float speed, bool isMaxHPDamage = false)
     {
         this.ProjectileName = projectileName;
         ID = id;
@@ -40,6 +41,7 @@ public class MonsterProjectile : MonoBehaviour
         this.direction = direction;
         this.speed = speed;
         curTime = 0;
+        this.isMaxHPDamage = isMaxHPDamage;
         move = StartCoroutine(Move());
     }
 
@@ -65,7 +67,7 @@ public class MonsterProjectile : MonoBehaviour
         if(other.gameObject.CompareTag("Player"))
         {
             CharacterControl controller = other.GetComponent<CharacterControl>();
-            controller.DecreaseHP(damage);
+            controller.DecreaseHP(damage, isMaxHPDamage);
             StopCoroutine(move);
             IsDestroyed = true;
         }

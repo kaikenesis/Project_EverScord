@@ -108,7 +108,6 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void PlayAnimation(string animationName)
     {
-        Debug.Log(animationName);
         photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName);
     }    
     
@@ -186,7 +185,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         else
             id = mp.ID;
 
-        mp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed);
+        mp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed, true);
         photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, damage, projectileSpeed);
     }
 
@@ -196,7 +195,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile bp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, bp);
-        bp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed);
+        bp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed, true);
     }
 
     private IEnumerator FillAmountProjector(int projectorNum, float time)
