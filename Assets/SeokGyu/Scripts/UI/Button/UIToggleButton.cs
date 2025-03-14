@@ -26,6 +26,7 @@ namespace EverScord
             {
                 toggleObject[i].SetActive(!toggleObject[i].activeSelf);
             }
+            SoundManager.Instance.PlaySound("ButtonSound");
         }
 
         public void MoveAnchorPos(GameObject rectTransform, Vector2 endPos, float duration)

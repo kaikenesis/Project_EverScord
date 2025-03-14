@@ -129,6 +129,11 @@ namespace EverScord
             }
         }
 
+        private void Start()
+        {
+            SoundManager.Instance.PlayBGM("LobbyBGM");
+        }
+
         private void Init()
         {
             View                = gameObject.AddComponent<PhotonView>();
