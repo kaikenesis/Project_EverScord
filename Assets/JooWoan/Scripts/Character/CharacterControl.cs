@@ -597,10 +597,7 @@ namespace EverScord.Character
                 CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
 
             if (!isInvincible && isMaxHPDamage == true)
-            {
                 CurrentHealth = Mathf.Max(0, CurrentHealth - (MaxHealth * 0.01f * amount));
-                Debug.Log((MaxHealth * 0.01f * amount));
-            }
 
             onDecreaseHealth?.Invoke();
 
