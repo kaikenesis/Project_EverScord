@@ -10,7 +10,7 @@ public class BossPattern02_Imp : ActionNodeImplement
 
     private void Start()
     {
-        damage = bossRPC.BossMonsterData.SkillDatas[1].SkillDamage;
+        damage = bossRPC.BossMonsterData.SkillDatas[1].MaxHpBasedDamage;
     }
 
     protected override IEnumerator Act()

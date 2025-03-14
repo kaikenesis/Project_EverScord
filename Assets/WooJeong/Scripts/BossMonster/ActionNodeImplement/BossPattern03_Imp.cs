@@ -1,3 +1,5 @@
+using EverScord.Character;
+using EverScord.Skill;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,16 +10,21 @@ public class BossPattern03_Imp : AttackNodeImplement
 {
     private float chargeRange = 10;
     private BoxCollider boxCollider;
+    private float damage;
 
     protected override void Awake()
     {
-        base.Awake();
+        attackable = false;
+        bossRPC = GetComponentInParent<BossRPC>();
         attackableHP = 90;
-        boxCollider = transform.AddComponent<BoxCollider>();
+
+        boxCollider = gameObject.AddComponent<BoxCollider>();
         boxCollider.size = new Vector3(2, 1, 3);
         boxCollider.center = new Vector3(0, 1, 1.5f);
         boxCollider.isTrigger = true;
         boxCollider.enabled = false;
+        damage = bossRPC.BossMonsterData.SkillDatas[2].SkillDamage;
+        chargeRange = bossRPC.BossMonsterData.SkillDatas[2].SkillRange;
     }
 
     protected override IEnumerator Act()
@@ -46,5 +53,16 @@ public class BossPattern03_Imp : AttackNodeImplement
             yield return new WaitForSeconds(Time.deltaTime);
         }
         boxCollider.enabled = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("hit4");
+            CharacterControl control = other.GetComponent<CharacterControl>();
+            float totalDamage = DamageCalculator.GetSkillDamage(bossRPC.BaseAttack, damage, 0, 0, control.Defense);
+            control.DecreaseHP(totalDamage);
+        }
     }
 }

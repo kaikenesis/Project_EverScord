@@ -2,6 +2,7 @@ using DTT.AreaOfEffectRegions;
 using EverScord;
 using EverScord.Character;
 using EverScord.Effects;
+using EverScord.Skill;
 using EverScord.UI;
 using Photon.Pun;
 using System.Collections;
@@ -185,7 +186,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         else
             id = mp.ID;
 
-        mp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed, true);
+        mp.Setup("BossProjectile", id, position, direction, BaseAttack, damage, projectileSpeed, true);
         photonView.RPC("SyncBossProjectile", RpcTarget.Others, id, position, direction, damage, projectileSpeed);
     }
 
@@ -195,7 +196,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", direction, Quaternion.identity);
         MonsterProjectile bp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, bp);
-        bp.Setup("BossProjectile", id, position, direction, damage, projectileSpeed, true);
+        bp.Setup("BossProjectile", id, position, direction, BaseAttack, damage, projectileSpeed, true);
     }
 
     private IEnumerator FillAmountProjector(int projectorNum, float time)
@@ -398,32 +399,22 @@ public class BossRPC : MonoBehaviour, IEnemy
         laserPoint.SetActive(false);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            Debug.Log("hit4");
-            CharacterControl control = other.GetComponent<CharacterControl>();
-            control.DecreaseHP(10);
-        }
-    }
-
     public void StunMonster(float stunTime)
     {
         return;
     }
 
-    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, float attackDamage)
+    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, float skillDamage)
     {
-        photonView.RPC("SyncStoneAttack", RpcTarget.All, pos, width, projectTime, effectAddressableKey, attackDamage);
+        photonView.RPC(nameof(SyncStoneAttack), RpcTarget.All, pos, width, projectTime, effectAddressableKey, skillDamage);
     }
 
     [PunRPC]
-    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage)
+    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
-        MonsterAttack ma = go.GetComponent<MonsterAttack>();
-        ma.Setup(width, projectTime, addressableKey, attackDamage);
+        MonsterAttack ma = go.GetComponent<MonsterAttack>();        
+        ma.Setup(width, projectTime, addressableKey, BaseAttack, skillDamage);
     }
 
     public void InstantiateStoneAttack2(Vector3 pos, float width, float projectTime, string effectAddressableKey, float attackDamage)

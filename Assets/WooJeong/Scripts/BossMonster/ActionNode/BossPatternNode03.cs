@@ -6,8 +6,10 @@ using UnityEngine;
 public class BossPatternNode03 : BActionNode
 {
     public override void Setup(GameObject gameObject)
-    {        
-        actionNodeImplement = gameObject.AddComponent<BossPattern03_Imp>();
+    {
+        GameObject p3 = new GameObject();
+        p3.name = "Pattern03";
+        actionNodeImplement = p3.AddComponent<BossPattern03_Imp>();
         base.Setup(gameObject);
     }
 }
