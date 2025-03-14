@@ -112,4 +112,9 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     {
         return blinkEffect;
     }
+
+    public float GetDefense()
+    {
+        return 0;
+    }
 }

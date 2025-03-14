@@ -9,4 +9,7 @@ public interface IEnemy
     public void DecreaseHP(float hp, CharacterControl attacker);
     public void StunMonster(float stunTime);
     public BlinkEffect GetBlinkEffect();
+
+    public float GetDefense();
+
 }

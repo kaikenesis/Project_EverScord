@@ -279,5 +279,10 @@ namespace EverScord
         {
             throw new System.NotImplementedException();
         }
+
+        public float GetDefense()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

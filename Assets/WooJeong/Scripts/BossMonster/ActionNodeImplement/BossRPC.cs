@@ -524,4 +524,9 @@ public class BossRPC : MonoBehaviour, IEnemy
     {
         return blinkEffect;
     }
+
+    public float GetDefense()
+    {
+        return Defense;
+    }
 }

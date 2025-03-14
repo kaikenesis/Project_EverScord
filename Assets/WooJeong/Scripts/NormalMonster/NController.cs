@@ -515,4 +515,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     {
         return blinkEffect;
     }
+
+    public float GetDefense()
+    {
+        return monsterData.Defense;
+    }
 }
