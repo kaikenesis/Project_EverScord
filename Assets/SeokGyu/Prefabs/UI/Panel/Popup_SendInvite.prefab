@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggleObject:
+  toggleObjects:
   - {fileID: 1779842337527751851}
 --- !u!1 &3977695469222070714
 GameObject:
@@ -245,8 +245,8 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 8115046191328794613}
-        m_TargetAssemblyTypeName: EverScord.UIToggleButton, Assembly-CSharp
-        m_MethodName: ToggleObject
+        m_TargetAssemblyTypeName: EverScord.ToggleObject, Assembly-CSharp
+        m_MethodName: OnDeactivateObjects
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1064,8 +1064,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8115046191328794613}
-        m_TargetAssemblyTypeName: EverScord.UIToggleButton, Assembly-CSharp
-        m_MethodName: ToggleObject
+        m_TargetAssemblyTypeName: EverScord.ToggleObject, Assembly-CSharp
+        m_MethodName: OnDeactivateObjects
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

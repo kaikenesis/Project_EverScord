@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class UITutorial : UIToggleButton
+    public class UITutorial : ToggleObject
     {
         private int curPage = 0;
         [SerializeField] private GameObject[] pages;
@@ -23,7 +23,7 @@ namespace EverScord
             pages[curPage].SetActive(true);
         }
 
-        public override void ToggleObject()
+        public override void OnActivateObjects()
         {
             if(curPage != 0)
             {
@@ -32,7 +32,7 @@ namespace EverScord
                 pages[curPage].SetActive(true);
             }
             
-            base.ToggleObject();
+            base.OnActivateObjects();
         }
     }
 }

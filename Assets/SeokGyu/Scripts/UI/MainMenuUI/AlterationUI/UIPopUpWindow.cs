@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace EverScord
 {
-    public class UIPopUpWindow : MonoBehaviour
+    public class UIPopUpWindow : ToggleObject
     {
         /*
         얼마의 재화가 필요한지 Text표시, 내 보유 재화가 얼마인지 Text표시 (부족하면 색 변경)
@@ -24,9 +24,7 @@ namespace EverScord
             MAX
         }
 
-        [SerializeField] private GameObject requireUI;
         [SerializeField] private TMP_Text requireText;
-        [SerializeField] private GameObject compareUI;
         [SerializeField] private TMP_Text beforeOption;
         [SerializeField] private TMP_Text afterOption;
         [SerializeField] private TMP_Text mainMessage;
@@ -80,9 +78,9 @@ namespace EverScord
 
         private void DisplayUnlockFactor(int cost)
         {
-            gameObject.SetActive(true);
-            requireUI.SetActive(true);
-            compareUI.SetActive(false);
+            OnActivateObject(0);
+            OnActivateObject(1);
+            OnDeactivateObject(2);
             subMessage.gameObject.SetActive(false);
             curType = EType.Unlock;
             int money = GameManager.Instance.PlayerData.money;
@@ -106,9 +104,9 @@ namespace EverScord
 
         private void DisplayRerollFactor(int cost)
         {
-            gameObject.SetActive(true);
-            requireUI.SetActive(true);
-            compareUI.SetActive(false);
+            OnActivateObject(0);
+            OnActivateObject(1);
+            OnDeactivateObject(2);
             subMessage.gameObject.SetActive(false);
             curType = EType.Reroll;
             int money = GameManager.Instance.PlayerData.money;
@@ -132,9 +130,9 @@ namespace EverScord
 
         private void DisplayApplyOption(string curName, float curValue, string newName, float newValue)
         {
-            gameObject.SetActive(true);
-            requireUI.SetActive(false);
-            compareUI.SetActive(true);
+            OnActivateObject(0);
+            OnDeactivateObject(1);
+            OnActivateObject(2);
             subMessage.gameObject.SetActive(true);
             curType = EType.Apply;
             rectTransform.sizeDelta = new Vector2(1040f, 680f);
@@ -174,7 +172,7 @@ namespace EverScord
                         {
                             OnAcceptUnlock?.Invoke();
                             curType = EType.None;
-                            gameObject.SetActive(false);
+                            OnDeactivateObject(0);
                         }
                     }
                     break;
@@ -190,7 +188,7 @@ namespace EverScord
                     {
                         OnApplyOption?.Invoke();
                         curType = EType.None;
-                        gameObject.SetActive(false);
+                        OnDeactivateObject(0);
                     }
                     break;
             }
@@ -199,7 +197,7 @@ namespace EverScord
         public void OnCancled()
         {
             curType = EType.None;
-            gameObject.SetActive(false);
+            OnDeactivateObject(0);
         }
     }
 }

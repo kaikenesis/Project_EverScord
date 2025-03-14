@@ -661,7 +661,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5789004170757910952}
   m_HandleRect: {fileID: 5789004170757910955}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -678,7 +678,7 @@ GameObject:
   - component: {fileID: 2625476695216241822}
   - component: {fileID: 2623028964277253820}
   - component: {fileID: 2802989574234299912}
-  - component: {fileID: 7220046939932623480}
+  - component: {fileID: 8178945456941813805}
   m_Layer: 5
   m_Name: Popup_Settings
   m_TagString: Untagged
@@ -748,7 +748,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7220046939932623480
+--- !u!114 &8178945456941813805
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -760,8 +760,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggleObject:
+  toggleObjects:
   - {fileID: 2843270130955790900}
+  objectOptions: []
 --- !u!1 &2881638485310988862
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,9 +1035,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7220046939932623480}
-        m_TargetAssemblyTypeName: EverScord.UIToggleButton, Assembly-CSharp
-        m_MethodName: ToggleObject
+      - m_Target: {fileID: 8178945456941813805}
+        m_TargetAssemblyTypeName: EverScord.ToggleObject, Assembly-CSharp
+        m_MethodName: OnDeactivateObjects
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1440,7 +1441,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4091668853186922904}
   - component: {fileID: 4091668853186922911}
-  - component: {fileID: 3554127928431530245}
+  - component: {fileID: 2866342008459464599}
   m_Layer: 5
   m_Name: Slider_Music
   m_TagString: Untagged
@@ -1521,7 +1522,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3554127928431530245}
+      - m_Target: {fileID: 2866342008459464599}
         m_TargetAssemblyTypeName: EverScord.AudioController, Assembly-CSharp
         m_MethodName: ChangeMasterVolume
         m_Mode: 0
@@ -1533,7 +1534,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3554127928431530245
+--- !u!114 &2866342008459464599
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1781,7 +1782,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1235878296211555652
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2201,7 +2202,7 @@ RectTransform:
   m_Father: {fileID: 102735210427987582}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2544,7 +2545,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000045776367}
+  m_AnchoredPosition: {x: 0, y: -0.00005722046}
   m_SizeDelta: {x: 0, y: 46}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &7371435655214535429
