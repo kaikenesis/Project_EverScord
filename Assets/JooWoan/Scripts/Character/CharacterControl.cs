@@ -114,9 +114,11 @@ namespace EverScord.Character
                 bool afterIsLowHealth = IsLowHealth;
 
                 if (!IsDead && currentHealth <= 0)
+                {
                     deathCoroutine = StartCoroutine(HandleDeath());
-                
-                if (previousIsLowHealth != afterIsLowHealth)
+                    BlinkEffects.StopAllBlinks();
+                }
+                else if (previousIsLowHealth != afterIsLowHealth)
                     BlinkEffects.LoopBlink(IsLowHealth);
 
                 if (photonView.IsMine)
@@ -653,7 +655,7 @@ namespace EverScord.Character
 
             EnableReviveCircle(true);
 
-            if (PhotonNetwork.IsMasterClient && photonView.IsMine)
+            if (photonView.IsMine)
                 GameManager.Instance.GameOverController.CheckGameOver();
 
             if (PhotonNetwork.IsConnected && photonView.IsMine)

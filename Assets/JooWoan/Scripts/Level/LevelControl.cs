@@ -4,7 +4,6 @@ using System;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
-using UnityEditor;
 
 namespace EverScord
 {
@@ -241,6 +240,7 @@ namespace EverScord
             GameManager.Instance.LoadScreen.CoverScreen();
             yield return waitOneSec;
 
+            GameManager.Instance.LoadScreen.ResetProgress();
             GameManager.Instance.LoadScreen.ImageHub.SetActive(true);
             GameManager.Instance.LoadScreen.ShowScreen();
 

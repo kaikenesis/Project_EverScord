@@ -78,5 +78,11 @@ namespace EverScord.UI
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncShowText), RpcTarget.All, isVictory);
         }
+
+        public IEnumerator ShowGameover(bool isVictory, float waitDuration)
+        {
+            yield return new WaitForSeconds(waitDuration);
+            ShowGameover(isVictory);
+        }
     }
 }
