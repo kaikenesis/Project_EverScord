@@ -24,7 +24,6 @@ public abstract class BehaviorNode : ScriptableObject
         int count = children.Count;
         for (int i = 0; i < count; i++)
         {
-            Debug.Log(children[i].name);
             children[i].parent = this;
             children[i].Init();
         }

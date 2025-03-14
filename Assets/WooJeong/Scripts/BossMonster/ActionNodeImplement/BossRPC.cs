@@ -36,11 +36,12 @@ public class BossRPC : MonoBehaviour, IEnemy
     private BlinkEffect blinkEffect;
 
     //cur stat
-    private float defense = 0;
-    private float speed = 0;
 
     public float HP { get; private set; }
     public float MaxHP { get; private set; }
+    public float BaseAttack { get; private set; }
+    public float Defense { get; private set; }
+    public float Speed { get; private set; }
     public int Phase { get; private set; }
 
     private bool isDead;
@@ -51,6 +52,10 @@ public class BossRPC : MonoBehaviour, IEnemy
         HP = bossData.MaxHP;
         MaxHP = bossData.MaxHP;
         Phase = 1;
+        BaseAttack = bossData.BaseAttack1;
+        Defense = bossData.Defense1;
+        Speed = bossData.Speed1;
+
         hitBox = GetComponent<CapsuleCollider>();
         photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
@@ -103,11 +108,13 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void PlayAnimation(string animationName)
     {
+        Debug.Log(animationName);
         photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName);
     }    
     
     public void PlayAnimation(string animationName, float transitionDuration)
     {
+        Debug.Log(animationName);
         photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName, transitionDuration);
     }
 
@@ -363,6 +370,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         HP = bossData.MaxHP_Phase2;
         MaxHP = bossData.MaxHP_Phase2;
         Phase++;
+        BaseAttack = bossData.BaseAttack2;
+        Defense = bossData.Defense2;
+        Speed = bossData.Speed2;
 
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
