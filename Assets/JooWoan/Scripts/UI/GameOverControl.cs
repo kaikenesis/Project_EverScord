@@ -10,7 +10,7 @@ namespace EverScord.UI
         private const float WAIT_TRANSITION = 3f;
         [SerializeField] private PhotonView photonView;
         [SerializeField] private GameObject uiHub;
-        [SerializeField] private TextMeshProUGUI victoryText, defeatText;
+        [SerializeField] private GameObject victoryText, defeatText;
         [SerializeField] private Animator textAnim;
         [SerializeField] private AnimationClip transitionClip;
 
@@ -28,13 +28,13 @@ namespace EverScord.UI
         [PunRPC]
         private void SyncShowText(bool isVictory)
         {
-            victoryText.gameObject.SetActive(false);
-            defeatText.gameObject.SetActive(false);
+            victoryText.SetActive(false);
+            defeatText.SetActive(false);
 
             if (isVictory)
-                victoryText.gameObject.SetActive(true);
+                victoryText.SetActive(true);
             else
-                defeatText.gameObject.SetActive(true);
+                defeatText.SetActive(true);
 
             uiHub.SetActive(true);
             StartCoroutine(Transition(isVictory));
