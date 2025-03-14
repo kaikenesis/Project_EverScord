@@ -2646,61 +2646,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 889326610}
     m_Modifications:
     - target: {fileID: 519050294884313719, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 519050294884313719, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 519050294884313719, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 754368247}
-    - target: {fileID: 519050294884313719, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 519050294884313719, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetUserName
-      objectReference: {fileID: 0}
-    - target: {fileID: 519050294884313719, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: EverScord.PhotonLogin, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 519050294884313719, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 754368247}
-    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoginPhoton
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: EverScord.PhotonLogin, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 8442215952889185936, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2732,14 +2684,6 @@ PrefabInstance:
     - target: {fileID: 8442215952889185936, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
       propertyPath: m_SizeDelta.y
       value: 660
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952889185936, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952889185936, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8442215952889185936, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2792,10 +2736,6 @@ PrefabInstance:
     - target: {fileID: 8442215952889185937, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
       propertyPath: m_Name
       value: Login
-      objectReference: {fileID: 0}
-    - target: {fileID: 8442215952889185937, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -25,6 +25,7 @@ namespace EverScord
             PhotonMatchController.OnSendMsgToMaster += HandleSendMsgToMaster;
             UISendInvite.OnSendInvite += HandleSendInvite;
             UIPartyOption.OnClickedExile += HandleClickedExile;
+            UIChangeName.OnChangeName += HandleChangeName;
         }
 
         private void OnDestroy()
@@ -34,6 +35,7 @@ namespace EverScord
             PhotonMatchController.OnSendMsgToMaster -= HandleSendMsgToMaster;
             UISendInvite.OnSendInvite -= HandleSendInvite;
             UIPartyOption.OnClickedExile -= HandleClickedExile;
+            UIChangeName.OnChangeName -= HandleChangeName;
         }
 
         private void Update()
@@ -75,6 +77,12 @@ namespace EverScord
             string msg = ":exile";
             chatClient.SendPrivateMessage(recipient, msg);
         }
+
+        private void HandleChangeName(string newName)
+        {
+            chatClient.Disconnect();
+            ConnectToPhotonChat(newName);
+        }
         #endregion
 
         #region Private Methods
@@ -106,7 +114,7 @@ namespace EverScord
         public void ConnectToPhotonChat(string nickName)
         {
             Debug.Log("Connecting to Photon Chat");
-            chatClient.AuthValues = new Photon.Chat.AuthenticationValues(nickName);
+            chatClient.AuthValues = new AuthenticationValues(nickName);
             ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
             chatClient.ConnectUsingSettings(chatSettings);
         }

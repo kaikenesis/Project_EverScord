@@ -7,7 +7,6 @@ using ExitGames.Client.Photon;
 using WebSocketSharp;
 using static EverScord.PlayerData;
 using EverScord.UI;
-using Unity.VisualScripting;
 
 namespace EverScord
 {
@@ -189,9 +188,10 @@ namespace EverScord
                 PhotonNetwork.LeaveRoom();
         }
 
-        private void HandleChangeName(string name)
+        private void HandleChangeName(string newName)
         {
-            PhotonNetwork.NickName = name;
+            PhotonNetwork.AuthValues.UserId = newName;
+            PhotonNetwork.NickName = newName;
 
             pv.RPC(nameof(UpdateRoom), RpcTarget.All);
         }
