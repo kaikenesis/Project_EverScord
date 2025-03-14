@@ -10,8 +10,7 @@ namespace EverScord.Skill
         [field: SerializeField] public GameObject ImpactEffect          { get; private set; }
         [field: SerializeField] public GameObject HealCircleEffect      { get; private set; }
         [field: SerializeField] public LayerMask CollidableLayer        { get; private set; }
-        [field: SerializeField] public float DetectRadius               { get; private set; }
-        [field: SerializeField] public float HealAmount                 { get; private set; }
+        [field: SerializeField] public float HealDuration               { get; private set; }
         [field: SerializeField] public float StunDuration               { get; private set; }
     }
 }

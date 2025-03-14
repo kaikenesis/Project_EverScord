@@ -23,6 +23,7 @@ namespace EverScord.Skill
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
+        private float laserDamage;
 
         private bool toggleLaser = false;
         private bool isOutlineActivated = false;
@@ -33,9 +34,10 @@ namespace EverScord.Skill
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
-            this.skill   = (CounterSkill)skill;
-
             base.Init(activator, skill, ejob, skillIndex);
+            this.skill = (CounterSkill)skill;
+
+            laserDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage);
         }
 
         public override bool Activate()
@@ -157,12 +159,10 @@ namespace EverScord.Skill
                 if (!Physics.Raycast(laserOrigin, laserDir, out RaycastHit hit, Mathf.Infinity, GameManager.EnemyLayer))
                     return;
 
-                float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
-
                 IEnemy monster = hit.transform.GetComponent<IEnemy>();
 
                 if (activator.CharacterPhotonView.IsMine)
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, monster);
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, laserDamage, monster);
             }
         }
 

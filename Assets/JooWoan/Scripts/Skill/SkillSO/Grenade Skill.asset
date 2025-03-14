@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b99fc09f441844846b6c360b7478083b, type: 3}
   m_Name: Grenade Skill
   m_EditorClassIdentifier: 
-  Name: GrenadeSkill
-  BaseDamage: 2500
-  BaseHeal: 35
-  Cooldown: 3
-  SkillPrefab: {fileID: 1322690896785909928, guid: 07f7bb21166f341429be39814e3bd6b3, type: 3}
+  <OffensiveTag>k__BackingField: ned_skill_1
+  <SupportTag>k__BackingField: ned_skill_2
+  <SkillPrefab>k__BackingField: {fileID: 1322690896785909928, guid: 07f7bb21166f341429be39814e3bd6b3, type: 3}
   <ThrowPoint>k__BackingField: {fileID: 3727081715274472048, guid: 5dc1d28378aa08e45b3d2cef86bbf338, type: 3}
   <ThrowingObject>k__BackingField: {fileID: 9219727077848919278, guid: 05899301fe3f4184e9886fc5b9fdc913, type: 3}
   <DestinationMarker>k__BackingField: {fileID: 1898189779652114, guid: 34dfcaa6bb3c3cd4da2080dc3fac234b, type: 3}
@@ -41,6 +39,5 @@ MonoBehaviour:
   <StampMarkerColor>k__BackingField:
     serializedVersion: 2
     rgba: 419455487
-  <ExplosionRadius>k__BackingField: 3
   <PoisonedDuration>k__BackingField: 3
-  <PoisonDamage>k__BackingField: 100
+  <HealDuration>k__BackingField: 3

@@ -644,7 +644,9 @@ namespace EverScord.Character
 
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
             {
-                photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
+                if (playEffect)
+                    photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
+
                 photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, true);
             }
         }

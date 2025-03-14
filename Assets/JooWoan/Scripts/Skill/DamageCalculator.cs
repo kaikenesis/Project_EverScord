@@ -1,5 +1,4 @@
 using EverScord.Character;
-using EverScord.Weapons;
 
 namespace EverScord.Skill
 {
@@ -15,13 +14,20 @@ namespace EverScord.Skill
             return totalDamage;
         }
 
-        public static float GetSkillDamage(CharacterControl character, CharacterSkill skill)
+        public static float GetSkillDamage(CharacterControl character, float baseDamage)
         {
-            float totalDamage = skill.BaseDamage;
+            float totalDamage = baseDamage;
 
             // Calculate damage
 
             return totalDamage;
+        }
+
+        public static float GetHealAmount(CharacterControl character, float baseHeal)
+        {
+            float totalHeal = baseHeal;
+
+            return totalHeal;
         }
     }
 }

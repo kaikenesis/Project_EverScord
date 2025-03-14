@@ -27,12 +27,12 @@ namespace EverScord.Skill
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
+            base.Init(activator, skill, ejob, skillIndex);
+
             Skill       = skill as JumpAttackSkill;
             waitSkill   = new WaitForSeconds(Skill.Duration);
             animControl = activator.AnimationControl;
             animInfo    = animControl.AnimInfo;
-
-            base.Init(activator, skill, ejob, skillIndex);
         }
 
         void Start()
@@ -45,15 +45,14 @@ namespace EverScord.Skill
             if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
-                calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
+                calculatedImpact = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
                 landingEffectPrefab = ResourceManager.Instance.GetAsset<GameObject>(Skill.ExplosionEffect.AssetGUID);
             }
             else
             {
                 targetLayer = GameManager.PlayerLayer;
 
-                // Calculate total heal amount
-                calculatedImpact = Skill.BaseHeal;
+                calculatedImpact = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
                 landingEffectPrefab = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealEffect.AssetGUID);
             }
 
@@ -230,7 +229,7 @@ namespace EverScord.Skill
             if (!photonView.IsMine)
                 return;
 
-            Collider[] colliders = Physics.OverlapSphere(landingPosition, Skill.Radius, targetLayer);
+            Collider[] colliders = Physics.OverlapSphere(landingPosition, SkillInfo.skillSizes[0], targetLayer);
 
             for (int i = 0; i < colliders.Length; i++)
             {

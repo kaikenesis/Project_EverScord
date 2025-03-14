@@ -20,10 +20,11 @@ namespace EverScord.Skill
         private GameObject bomb, healCircle;
         private WaitForSeconds waitStrikeInterval, waitBombDrop, waitZoneDuration;
         private AircraftControl aircraft1, aircraft2, aircraft3;
-        private float calculatedImpact;
+        private float calculatedImpact, calculatedDotAmount;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
+            base.Init(activator, skill, ejob, skillIndex);
             Skill = (AirStrikeSkill)skill;
 
             waitStrikeInterval  = new WaitForSeconds(Skill.ExplosionInterval);
@@ -41,7 +42,8 @@ namespace EverScord.Skill
             if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
-                calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
+                calculatedImpact = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
+                calculatedDotAmount = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage);
 
                 bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.BombEffectReference.AssetGUID);
                 _ = ResourceManager.Instance.CreatePool(Skill.ExplosionEffectReference.AssetGUID, 5);
@@ -49,15 +51,12 @@ namespace EverScord.Skill
             else
             {
                 targetLayer = GameManager.PlayerLayer;
-
-                // Calculate total heal amount
-                calculatedImpact = Skill.BaseHeal;
+                calculatedImpact = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
+                calculatedDotAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDotDamage);
 
                 healCircle = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealZoneEffectReference.AssetGUID);
                 _ = ResourceManager.Instance.CreatePool(Skill.HealExplosionReference.AssetGUID, 5);
             }
-
-            base.Init(activator, skill, ejob, skillIndex);
         }
 
         public override void OffensiveAction()
@@ -167,7 +166,7 @@ namespace EverScord.Skill
                     flameControl.Init(
                         activator,
                         Skill.ZoneInfluenceInterval,
-                        Skill.FlameBaseDamage,
+                        calculatedDotAmount,
                         targetLayer
                     );
                 }
@@ -178,7 +177,7 @@ namespace EverScord.Skill
                     healZoneControl.Init(
                         activator,
                         Skill.ZoneInfluenceInterval,
-                        Skill.HealBaseAmount,
+                        calculatedDotAmount,
                         targetLayer
                     );
                 }
