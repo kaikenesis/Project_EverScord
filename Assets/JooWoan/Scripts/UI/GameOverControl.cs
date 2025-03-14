@@ -14,12 +14,6 @@ namespace EverScord.UI
         [SerializeField] private Animator textAnim;
         [SerializeField] private AnimationClip transitionClip;
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F6))
-                ShowGameover(true);
-        }
-
         void Awake()
         {
             GameManager.Instance.InitControl(this);
