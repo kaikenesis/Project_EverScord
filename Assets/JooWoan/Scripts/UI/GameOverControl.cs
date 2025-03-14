@@ -75,7 +75,6 @@ namespace EverScord.UI
 
         public void ShowGameover(bool isVictory)
         {
-            Debug.Log("======================= SHOW GAME OVER");
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncShowText), RpcTarget.All, isVictory);
         }

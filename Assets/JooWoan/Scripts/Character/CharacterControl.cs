@@ -587,8 +587,11 @@ namespace EverScord.Character
 
             onDecreaseHealth?.Invoke();
 
+            if (photonView.IsMine)
+                OnHealthUpdated?.Invoke(CurrentHealth / maxHealth);
+
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, false);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
         }
 
         public void IncreaseHP(CharacterControl activator, float amount, bool isExternalHeal = false)
@@ -650,7 +653,7 @@ namespace EverScord.Character
 
             EnableReviveCircle(true);
 
-            if (PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient && photonView.IsMine)
                 GameManager.Instance.GameOverController.CheckGameOver();
 
             if (PhotonNetwork.IsConnected && photonView.IsMine)
