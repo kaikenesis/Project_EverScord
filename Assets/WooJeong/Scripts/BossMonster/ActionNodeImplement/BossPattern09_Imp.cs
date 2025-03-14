@@ -1,18 +1,18 @@
 using EverScord;
 using EverScord.Character;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern08_Imp : AttackNodeImplement
+public class BossPattern09_Imp : AttackNodeImplement
 {
-    protected int attackCount = 30;
+    private float attackDamage = 10;
+    private float attackWidth = 3;
     protected int failurePhase = 2;
 
     protected override void Awake()
     {
         base.Awake();
-        attackableHP = 40;
+        attackableHP = 30;
     }
 
     public override NodeState Evaluate()
@@ -24,18 +24,19 @@ public class BossPattern08_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
-        List<CharacterControl> controls = new List<CharacterControl>();
-        foreach(var player in GameManager.Instance.PlayerDict.Values)
+        for (int i = 0; i < 3; i++)
         {
-            if(player.IsDead) continue;
-            controls.Add(player);
+            bossRPC.PlayAnimation("StandingAttack");
+            foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
+            {
+                bossRPC.InstantiateStoneAttack(player.PlayerTransform.position, attackWidth, 1, "StoneUp", attackDamage);
+            }
+            yield return new WaitForSeconds(1.5f);
+            bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);
+            yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1.5f);
         }
-        int randInt = Random.Range(0, controls.Count);
-        controls[randInt].ApplyDebuff(CharState.STUNNED, attackCount);
-        bossRPC.PlayAnimation("Shoot");
-        yield return new WaitForSeconds(bossRPC.clipDict["Shoot"]);
         isEnd = true;
         action = null;
-        yield return null;
     }
+
 }
