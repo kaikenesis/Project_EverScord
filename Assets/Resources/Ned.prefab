@@ -524,15 +524,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5dfc937515d1fc4596358452f9c0f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
   gravity: -40
   mass: 1
   bodyRotateSpeed: 500
-  maxHealth: 100
   currentHealth: 100
-  dealtDamage: 0
-  dealtHeal: 0
-  killCount: 0
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
   weapon: {fileID: 6163937095246642853}
@@ -581,8 +576,6 @@ MonoBehaviour:
   <ShootableLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 1792
-  <Damage>k__BackingField: 200
-  <Heal>k__BackingField: 5
   <AimSensitivity>k__BackingField: 1
   <Cooldown>k__BackingField: 0.15
   <ReloadTime>k__BackingField: 3

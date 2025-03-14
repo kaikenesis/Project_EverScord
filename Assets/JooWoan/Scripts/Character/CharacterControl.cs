@@ -73,6 +73,11 @@ namespace EverScord.Character
         public float Speed                                              { get; private set; }
         public float Attack                                             { get; private set; }
         public float Heal                                               { get; private set; }
+        public float HealthRegen                                        { get; private set; }
+        public float CooldownDecrease                                   { get; private set; }
+        public float ReloadSpeedDecrease                                { get; private set; }
+        public float SkillDamageIncrease                                { get; private set; }
+        public float HealIncrease                                       { get; private set; }
         public float DealtDamage                                        { get; private set; }
         public float DealtHeal                                          { get; private set; }
         public int KillCount                                            { get; private set; }
@@ -420,11 +425,16 @@ namespace EverScord.Character
             StatInfo info = StatData.StatInfoDict[tag];
 
             currentHealth = MaxHealth = info.health;
+            HealthRegen = info.healthRegen;
 
             Speed = info.speed * SPEED_FACTOR;
             Attack = info.attack;
 
-            Heal = info.healIncrease;
+            if (CharacterJob == PlayerData.EJob.Healer)
+            {
+                Attack = info.supportAttack;
+                Heal = info.attack;
+            }
         }
 
         private void SetPortraits()
