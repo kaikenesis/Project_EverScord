@@ -6,7 +6,6 @@ using EverScord.Character;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Effects;
-using static UnityEngine.GraphicsBuffer;
 
 namespace EverScord.Skill
 {

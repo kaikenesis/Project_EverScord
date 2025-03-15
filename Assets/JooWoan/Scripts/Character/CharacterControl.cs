@@ -621,8 +621,10 @@ namespace EverScord.Character
 
         public void ApplyBuff(BuffType type, float duration)
         {
-            if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncApplyBuff), RpcTarget.All, (int)type, duration);
+            CharacterBuff buff = CharacterBuff.GetBuff(this, type, duration, RemoveBuff);
+
+            if (buff != null)
+                BuffList.Add(buff);
         }
 
         private void RemoveBuff()
@@ -1007,15 +1009,6 @@ namespace EverScord.Character
         {
             CharState debuffState = (CharState)state;
             SetState(SetCharState.REMOVE, debuffState);
-        }
-
-        [PunRPC]
-        private void SyncApplyBuff(int buffType, float duration)
-        {
-            CharacterBuff buff = CharacterBuff.GetBuff(this, (BuffType)buffType, duration, RemoveBuff);
-
-            if (buff != null)
-                BuffList.Add(buff);
         }
 
         [PunRPC]
