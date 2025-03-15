@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,6 +44,21 @@ namespace EverScord
             for (int i = 0; i < toggleObjects.Length; i++)
             {
                 toggleObjects[i].SetActive(false);
+            }
+        }
+
+        public virtual void OnToggleObject(int index)
+        {
+            if (index >= toggleObjects.Length || index < 0) return;
+
+            toggleObjects[index].SetActive(!toggleObjects[index].activeSelf);
+        }
+
+        public virtual void OnToggleObjects()
+        {
+            for (int i = 0; i < toggleObjects.Length; i++)
+            {
+                toggleObjects[i].SetActive(!toggleObjects[i].activeSelf);
             }
         }
 

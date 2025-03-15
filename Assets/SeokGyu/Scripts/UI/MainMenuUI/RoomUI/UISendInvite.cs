@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class UISendInvite : MonoBehaviour
+    public class UISendInvite : ToggleObject
     {
         [SerializeField] private TMP_InputField inputField;
 
@@ -15,6 +15,7 @@ namespace EverScord
             if (string.IsNullOrEmpty(inputField.text)) return;
             OnSendInvite?.Invoke(inputField.text);
             inputField.text = "";
+            OnDeactivateObjects();
         }
     }
 }

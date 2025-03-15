@@ -18,6 +18,7 @@ namespace EverScord
         [SerializeField] private Slider slider;
         [SerializeField] private float duration = 1.0f;
         [SerializeField] protected EType type = EType.None;
+        [field: SerializeField] private int test;
         private Color initialFillColor;
 
         protected virtual void Awake()

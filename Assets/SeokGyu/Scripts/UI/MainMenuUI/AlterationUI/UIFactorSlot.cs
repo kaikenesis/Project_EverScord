@@ -164,21 +164,6 @@ namespace EverScord
                 optionNums.Add(-1);
                 valueNums.Add(-1);
             }
-
-            
-
-            //switch (curTypeNum)
-            //{
-            //    case 0:
-            //        backImg.color = new Color(1, 0.54f, 0.54f);
-            //        break;
-            //    case 1:
-            //        backImg.color = new Color(0.54f, 0.54f, 1);
-            //        break;
-            //    default:
-            //        backImg.color = new Color(1, 1, 1);
-            //        break;
-            //}
         }
 
         public void OnClicked()

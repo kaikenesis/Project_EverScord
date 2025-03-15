@@ -131,6 +131,7 @@ namespace EverScord.Character
                 {
                     PlayerUIControl.SetGrayscaleScreen(currentHealth);
                     PlayerUIControl.SetBloodyScreen(currentHealth, afterIsLowHealth);
+                    OnHealthUpdated?.Invoke(CurrentHealth / Mathf.Max(0.01f, MaxHealth));
                 }
             }
         }
@@ -204,7 +205,6 @@ namespace EverScord.Character
             SetPortraits();
 
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
-            OnHealthUpdated?.Invoke(CurrentHealth / Mathf.Max(0.01f, MaxHealth));
 
             if (photonView.IsMine)
                 hpRegenCoroutine = StartCoroutine(RegenerateHP());
@@ -622,9 +622,6 @@ namespace EverScord.Character
 
             onDecreaseHealth?.Invoke();
 
-            if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(CurrentHealth / Math.Max(0.01f, MaxHealth));
-
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
         }
@@ -747,9 +744,6 @@ namespace EverScord.Character
             UIMarker.ToggleDeathIcon();
 
             hpRegenCoroutine = StartCoroutine(RegenerateHP());
-
-            if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(CurrentHealth / Mathf.Max(0.01f, MaxHealth));
         }
 
         public void PlayHitEffects()
@@ -997,9 +991,6 @@ namespace EverScord.Character
         private void SyncHealth(float health, bool isIncreasing)
         {
             CurrentHealth = health;
-
-            if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(CurrentHealth / Mathf.Max(0.01f, MaxHealth));
 
             if (!isIncreasing)
                 onDecreaseHealth?.Invoke();

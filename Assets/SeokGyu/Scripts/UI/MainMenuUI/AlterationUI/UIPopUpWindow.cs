@@ -62,7 +62,6 @@ namespace EverScord
         private void HandleUnlockFactor(int cost)
         {
             DisplayUnlockFactor(cost);
-            
         }
 
         private void HandleRerollFactor(int cost)

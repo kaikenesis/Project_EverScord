@@ -35,10 +35,10 @@ namespace EverScord
             UIDisplayRoom.OnLeaveRoom += HandleLeaveRoom;
             UISelect.OnGameStart += HandleGameStart;
             UISelect.OnChangeUserData += HandleChangeUserData;
+            UISelect.OnChangeCharacter += HandleChangeUserData;
             UISelect.OnUpdateReady += HandleChangeUserData;
             UIPartyOption.OnClickedExit += HandleClickedExit;
             UIChangeName.OnChangeName += HandleChangeName;
-            CharacterPodium.OnChangeCharacter += HandleChangeUserData;
 
             inviteRoomName = "";
             pv = GetComponent<PhotonView>();
@@ -54,10 +54,10 @@ namespace EverScord
             UIDisplayRoom.OnLeaveRoom -= HandleLeaveRoom;
             UISelect.OnGameStart -= HandleGameStart;
             UISelect.OnChangeUserData -= HandleChangeUserData;
+            UISelect.OnChangeCharacter -= HandleChangeUserData;
             UISelect.OnUpdateReady -= HandleChangeUserData;
             UIPartyOption.OnClickedExit -= HandleClickedExit;
             UIChangeName.OnChangeName -= HandleChangeName;
-            CharacterPodium.OnChangeCharacter -= HandleChangeUserData;
         }
 
         #region Handle Methods

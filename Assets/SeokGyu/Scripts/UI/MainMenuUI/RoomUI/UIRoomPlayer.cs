@@ -19,14 +19,14 @@ namespace EverScord
 
         private void Awake()
         {
-            UIInputController.OnClickedPlayerUI += HandleClickedPlayerUI;
+            LobbyInputController.OnClickedPlayerUI += HandleClickedPlayerUI;
 
             image = GetComponent<Image>();
         }
 
         private void OnDestroy()
         {
-            UIInputController.OnClickedPlayerUI -= HandleClickedPlayerUI;
+            LobbyInputController.OnClickedPlayerUI -= HandleClickedPlayerUI;
         }
 
         private void HandleClickedPlayerUI(bool bVisible, Vector2 mousePos)
