@@ -1,4 +1,3 @@
-using System;
 using EverScord.Character;
 using UnityEngine;
 using Photon.Pun;
@@ -13,6 +12,7 @@ namespace EverScord.Skill
         protected PhotonView photonView;
         protected PlayerData.EJob ejob;
         protected int skillIndex;
+        public CharacterSkillInfo SkillInfo { get; private set; }
 
         public virtual bool CanAttackWhileSkill
         {
@@ -31,7 +31,10 @@ namespace EverScord.Skill
             this.ejob       = ejob;
             photonView      = activator.CharacterPhotonView;
 
-            cooldownTimer = new SkillTimer(skill.Cooldown, skillIndex, photonView.IsMine);
+            string tag      = ejob == PlayerData.EJob.Dealer ? skill.OffensiveTag : skill.SupportTag;
+            SkillInfo       = SkillData.SkillInfoDict[tag];
+
+            cooldownTimer   = new SkillTimer(SkillInfo.cooldown, skillIndex, photonView.IsMine);
             StartCoroutine(cooldownTimer.RunTimer());
         }
 

@@ -11,9 +11,8 @@ namespace EverScord.Skill
         
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {            
-            Skill = (GrenadeSkill)skill;
-
             base.Init(activator, skill, ejob, skillIndex);
+            Skill = (GrenadeSkill)skill;
 
             GameObject mainMarker = predictor.MarkerControl.Marker.gameObject;
             GameObject stampMarker = predictor.MarkerControl.StampedMarker.gameObject;
@@ -27,8 +26,8 @@ namespace EverScord.Skill
             if (!photonView.IsMine)
                 return;
 
-            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, Skill.ExplosionRadius, GameManager.EnemyLayer);
-            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, Skill);
+            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, SkillInfo.skillSizes[0], GameManager.EnemyLayer);
+            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
 
             for (int i = 0; i < colliders.Length; i++)
             {
@@ -36,7 +35,7 @@ namespace EverScord.Skill
                 GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
 
                 if (enemy is BossRPC boss)
-                    boss.SetDebuff(activator, EBossDebuff.POISON, Skill.PoisonedDuration, Skill.PoisonDamage);
+                    boss.SetDebuff(activator, EBossDebuff.POISON, Skill.PoisonedDuration, SkillInfo.skillDotDamage);
             }
         }
 
@@ -45,14 +44,19 @@ namespace EverScord.Skill
             if (!photonView.IsMine)
                 return;
             
-            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, Skill.ExplosionRadius, GameManager.PlayerLayer);
-            float calculatedHeal = Skill.BaseHeal;
+            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, SkillInfo.skillSizes[0], GameManager.PlayerLayer);
+            var players = new CharacterControl[colliders.Length];
+
+            float totalHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
+            float dotHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDotDamage);
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                player.IncreaseHP(activator, calculatedHeal, true);
+                players[i] = colliders[i].GetComponent<CharacterControl>();
+                players[i].IncreaseHP(activator, totalHealAmount, true);
             }
+
+            StartCoroutine(CharacterSkill.RegenerateHP(activator, players, Skill.HealDuration, dotHealAmount));
         }
 
         public void SetGrenadeImpactPosition(Vector3 position)

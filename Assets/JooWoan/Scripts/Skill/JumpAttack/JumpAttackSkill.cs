@@ -8,7 +8,6 @@ namespace EverScord.Skill
     {
         [field: SerializeField] public float Duration                           { get; private set; }
         [field: SerializeField] public float LandingDuration                    { get; private set; }
-        [field: SerializeField] public float Radius                             { get; private set; }
         [field: SerializeField] public float SlowDuration                       { get; private set; }
         [field: SerializeField] public float SlowedAmount                       { get; private set; }
         [field: SerializeField] public Color32 StampMarkerColor                 { get; private set; }

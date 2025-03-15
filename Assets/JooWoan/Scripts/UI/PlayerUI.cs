@@ -50,7 +50,7 @@ namespace EverScord.UI
             SetCursor(CursorType.BATTLE);
 
             Volume volume = CharacterCamera.Root.GetComponent<Volume>();
-            VolumeProfile profile = volume.sharedProfile;
+            VolumeProfile profile = volume.profile;
 
             if (profile.TryGet<ColorCurves>(out var curves))
             {
@@ -63,6 +63,12 @@ namespace EverScord.UI
             bloodMat.SetFloat(BLOOD_SIZE, 1f);
             bloodMat.SetInt(BLOOD_ENABLED, 0);
             SetGrayscaleScreen(false);
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F8))
+                SetGrayscaleScreen(true);
         }
 
         public static void SetCursor(CursorType type, float xPos = 0.5f, float yPos = 0.5f)

@@ -10,8 +10,7 @@ namespace EverScord.Skill
         [field: SerializeField] public AssetReferenceGameObject HealEffectReference     { get; private set; }
         [field: SerializeField] public Color32 MarkerColor                              { get; private set; }
         [field: SerializeField] public Color32 StampMarkerColor                         { get; private set; }
-        [field: SerializeField] public float ExplosionRadius                            { get; private set; }
         [field: SerializeField] public float PoisonedDuration                           { get; private set; }
-        [field: SerializeField] public float PoisonDamage                               { get; private set; }
+        [field: SerializeField] public float HealDuration                               { get; private set; }
     }
 }

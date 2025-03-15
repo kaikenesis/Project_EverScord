@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using EverScord.Effects;
+using EverScord.Pool;
 
 namespace EverScord.Skill
 {
@@ -16,13 +17,14 @@ namespace EverScord.Skill
 
         private Vector3 strikeStartPos, strikeEndPos;
         private LayerMask targetLayer;
-        private GameObject bomb, flames, healCircle;
+        private GameObject bomb, healCircle;
         private WaitForSeconds waitStrikeInterval, waitBombDrop, waitZoneDuration;
         private AircraftControl aircraft1, aircraft2, aircraft3;
-        private float calculatedImpact;
+        private float calculatedImpact, calculatedDotAmount;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
+            base.Init(activator, skill, ejob, skillIndex);
             Skill = (AirStrikeSkill)skill;
 
             waitStrikeInterval  = new WaitForSeconds(Skill.ExplosionInterval);
@@ -40,21 +42,21 @@ namespace EverScord.Skill
             if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
-                calculatedImpact = DamageCalculator.GetSkillDamage(activator, Skill);
+                calculatedImpact = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
+                calculatedDotAmount = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage);
+
                 bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.BombEffectReference.AssetGUID);
-                flames = ResourceManager.Instance.GetAsset<GameObject>(Skill.FlameEffectReference.AssetGUID);
+                _ = ResourceManager.Instance.CreatePool(Skill.ExplosionEffectReference.AssetGUID, 5);
             }
             else
             {
                 targetLayer = GameManager.PlayerLayer;
+                calculatedImpact = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
+                calculatedDotAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDotDamage);
 
-                // Calculate total heal amount
-                calculatedImpact = Skill.BaseHeal;
-                bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealBombEffectReference.AssetGUID);
                 healCircle = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealZoneEffectReference.AssetGUID);
+                _ = ResourceManager.Instance.CreatePool(Skill.HealExplosionReference.AssetGUID, 5);
             }
-
-            base.Init(activator, skill, ejob, skillIndex);
         }
 
         public override void OffensiveAction()
@@ -87,8 +89,18 @@ namespace EverScord.Skill
             {
                 Vector3 dropPosition = strikeStartPos + direction * distanceSum;
 
-                var effect = Instantiate(bomb, CharacterSkill.SkillRoot);
-                effect.transform.position = dropPosition;
+                PoolableVfx explosion = ResourceManager.Instance.GetFromPool(Skill.ExplosionEffectReference.AssetGUID) as PoolableVfx;
+
+                if (ejob == PlayerData.EJob.Dealer)
+                {
+                    var effect = Instantiate(bomb, CharacterSkill.SkillRoot);
+                    effect.transform.position = dropPosition;
+                }
+                else
+                    explosion = ResourceManager.Instance.GetFromPool(Skill.HealExplosionReference.AssetGUID) as PoolableVfx;
+
+                explosion.transform.position = dropPosition;
+                explosion.Play(0.3f);
 
                 if (photonView.IsMine)
                     StartCoroutine(ProceedCollisionCheck(dropPosition));
@@ -123,16 +135,21 @@ namespace EverScord.Skill
         {
             yield return waitBombDrop;
             
-            FlameControl flameControl = null;
-            HealZoneControl healZoneControl = null;
-
-            GameObject flameEffect = null;
+            PoolableVfx flames = null;
             GameObject healEffect = null;
 
             if (ejob == PlayerData.EJob.Dealer)
             {
-                flameEffect = Instantiate(flames, CharacterSkill.SkillRoot);
-                flameEffect.transform.position = dropPosition;
+                flames = ResourceManager.Instance.GetFromPool(Skill.FlameEffectReference.AssetGUID) as PoolableVfx;
+
+                flames.transform.position = new Vector3(
+                    dropPosition.x,
+                    flames.transform.position.y,
+                    dropPosition.z
+                );
+
+                flames.SetDuration(Skill.ZoneDuration + 2);
+                flames.Play();
             }
             else
             {
@@ -142,25 +159,25 @@ namespace EverScord.Skill
 
             if (photonView.IsMine)
             {
-                if (ejob == PlayerData.EJob.Dealer)
+                if (ejob == PlayerData.EJob.Dealer && flames)
                 {
-                    flameControl = flameEffect.GetComponent<FlameControl>();
+                    FlameControl flameControl = flames.GetComponent<FlameControl>();
 
                     flameControl.Init(
                         activator,
                         Skill.ZoneInfluenceInterval,
-                        Skill.FlameBaseDamage,
+                        calculatedDotAmount,
                         targetLayer
                     );
                 }
                 else
                 {
-                    healZoneControl = healEffect.GetComponent<HealZoneControl>();
+                    HealZoneControl healZoneControl = healEffect.GetComponent<HealZoneControl>();
 
                     healZoneControl.Init(
                         activator,
                         Skill.ZoneInfluenceInterval,
-                        Skill.HealBaseAmount,
+                        calculatedDotAmount,
                         targetLayer
                     );
                 }
@@ -168,7 +185,9 @@ namespace EverScord.Skill
 
             yield return waitZoneDuration;
 
-            EffectControl.SetEffectParticles(flameEffect, false);
+            if (flames)
+                flames.Stop();
+            
             EffectControl.SetEffectParticles(healEffect, false);
         }
 

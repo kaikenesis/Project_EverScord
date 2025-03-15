@@ -4,14 +4,28 @@ namespace EverScord
 {
     public class WaitHabitTrigger : MonoBehaviour
     {
-        [SerializeField] private Animator anim;
-        [SerializeField] private AnimationClip idleClip;
+        [SerializeField] private Animator anim, defeatAnim;
+        [SerializeField] private AnimationClip idleClip, victoryStart, defeatStart;
         [SerializeField] private GameObject weapon;
         [Range(0f, 100f), SerializeField] private float triggerChance;
 
-        void Start()
+        public void PlayAnimation(bool isVictory)
         {
-            InvokeRepeating(nameof(TriggerWaitHabit), 1f, 1f);
+            if (isVictory)
+            {
+                defeatAnim.enabled = false;
+                anim.enabled = true;
+                anim.Play(victoryStart.name);
+                InvokeRepeating(nameof(TriggerWaitHabit), 1f, 1f);
+                return;
+            }
+
+            if (weapon)
+                weapon.SetActive(false);
+            
+            anim.enabled = false;
+            defeatAnim.enabled = true;
+            defeatAnim.Play(defeatStart.name);
         }
 
         private void TriggerWaitHabit()

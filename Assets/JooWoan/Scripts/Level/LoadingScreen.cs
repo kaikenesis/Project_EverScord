@@ -50,6 +50,14 @@ namespace EverScord
             UpdateBanners();
         }
 
+        public void ResetProgress()
+        {
+            LoadingBar.fillAmount = 0f;
+
+            filterRect.sizeDelta = new Vector2(initialRectWidth, filterRect.sizeDelta.y);
+            filterRect.anchoredPosition = Vector3.zero;
+        }
+
         private void ResetState()
         {
             ImageHub.SetActive(false);
@@ -58,10 +66,7 @@ namespace EverScord
             coverColor.a = 0f;
             CoverImage.color = coverColor;
 
-            LoadingBar.fillAmount = 0f;
-
-            filterRect.sizeDelta = new Vector2(initialRectWidth, filterRect.sizeDelta.y);
-            filterRect.anchoredPosition = Vector3.zero;
+            ResetProgress();
         }
 
         private void InitBanners()

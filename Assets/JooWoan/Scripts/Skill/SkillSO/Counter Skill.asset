@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f446e61775a1e46987abaa2dc12869, type: 3}
   m_Name: Counter Skill
   m_EditorClassIdentifier: 
-  Name: CounterSkill
-  BaseDamage: 200
-  BaseHeal: 0
-  Cooldown: 8
-  SkillPrefab: {fileID: 4764123188155448098, guid: 80fcb58c1898a3441b12ef7ac33ea03d, type: 3}
+  <OffensiveTag>k__BackingField: urth_skill_1
+  <SupportTag>k__BackingField: urth_skill_2
+  <SkillPrefab>k__BackingField: {fileID: 4764123188155448098, guid: 80fcb58c1898a3441b12ef7ac33ea03d, type: 3}
   <LaserLerpRate>k__BackingField: 0.8
   <Duration>k__BackingField: 5
-  <DamageInterval>k__BackingField: 0.5
+  <DamageInterval>k__BackingField: 1
   <BarrierPrefab>k__BackingField: {fileID: 5413233384625236636, guid: e7cb022060768c1439e2ec67d4a916c1, type: 3}
   <LaserPrefab>k__BackingField: {fileID: 573418665919364532, guid: e7c91125997ab09429728531cedc02ef, type: 3}

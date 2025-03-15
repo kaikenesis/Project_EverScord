@@ -26,6 +26,21 @@ namespace EverScord
             Hard
         }
 
+        public static string GetCharacterName(ECharacter character)
+        {
+            switch (character)
+            {
+                case ECharacter.Ned:
+                case ECharacter.Uni:
+                    return character.ToString();
+
+                case ECharacter.Us:
+                    return "Urth";
+            }
+
+            return "Ned";
+        }
+
         [SerializeField] private int maxMoney = 100000000;
 
         public ECharacter character = ECharacter.Ned;
