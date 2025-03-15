@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 
@@ -7,11 +9,10 @@ namespace EverScord.Skill
 {
     public abstract class CharacterSkill : ScriptableObject
     {
-        [field: SerializeField] public string Name;
-        [field: SerializeField] public float BaseDamage;
-        [field: SerializeField] public float BaseHeal;
-        [field: SerializeField] public float Cooldown;
-        [field: SerializeField] public GameObject SkillPrefab;
+        [field: SerializeField] public string OffensiveTag      { get; private set; }
+        [field: SerializeField] public string SupportTag        { get; private set; }
+        [field: SerializeField] public GameObject SkillPrefab   { get; private set; }
+
         private static Transform skillRoot;
         public static Transform SkillRoot
         {
@@ -21,6 +22,30 @@ namespace EverScord.Skill
                     return skillRoot;
                 
                 return GameObject.FindGameObjectWithTag(ConstStrings.TAG_SKILLROOT).transform;
+            }
+        }
+
+        public static IEnumerator RegenerateHP(CharacterControl activator, CharacterControl[] targets, float duration, float amount)
+        {
+            Dictionary<CharacterControl, float> healTimerDict = new();
+
+            for (int i = 0; i < targets.Length; i++)
+                healTimerDict[targets[i]] = 0f;
+
+            for (float t = 0f; t <= duration; t += Time.deltaTime)
+            {
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    healTimerDict[targets[i]] += Time.deltaTime;
+
+                    if (healTimerDict[targets[i]] >= 1f)
+                    {
+                        healTimerDict[targets[i]] = 0f;
+                        targets[i].IncreaseHP(activator, amount, true);
+                    }
+                }
+
+                yield return null;
             }
         }
     }

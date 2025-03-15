@@ -29,7 +29,7 @@ namespace EverScord
                 float.TryParse(sheet[i]["skill_shield"], out info.skillShield);
 
                 float.TryParse(sheet[i]["skill_range"],  out info.skillRange);
-                float.TryParse(sheet[i]["skill_size"],   out info.skillSize);
+                info.skillSizes = CSVReader.SplitCellFloat(sheet[i]["skill_size"]);
 
                 skillInfoDict[info.tag] = info;
             }

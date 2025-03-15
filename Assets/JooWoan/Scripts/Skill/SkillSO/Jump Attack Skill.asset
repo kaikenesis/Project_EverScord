@@ -12,14 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adca7e6d964e4e042b3614f6bbcb703a, type: 3}
   m_Name: Jump Attack Skill
   m_EditorClassIdentifier: 
-  Name: JumpAttackSkill
-  BaseDamage: 3500
-  BaseHeal: 70
-  Cooldown: 3
-  SkillPrefab: {fileID: 4109157859279932737, guid: 3adcdb15eb3894542b62d0e272a7c371, type: 3}
+  <OffensiveTag>k__BackingField: urth_ult_1
+  <SupportTag>k__BackingField: urth_ult_2
+  <SkillPrefab>k__BackingField: {fileID: 4109157859279932737, guid: 3adcdb15eb3894542b62d0e272a7c371, type: 3}
   <Duration>k__BackingField: 5
   <LandingDuration>k__BackingField: 1.5
-  <Radius>k__BackingField: 4
   <SlowDuration>k__BackingField: 1
   <SlowedAmount>k__BackingField: 1
   <StampMarkerColor>k__BackingField:

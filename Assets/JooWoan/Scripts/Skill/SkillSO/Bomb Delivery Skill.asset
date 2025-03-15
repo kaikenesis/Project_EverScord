@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a205b56d487438489e71b2222538f78, type: 3}
   m_Name: Bomb Delivery Skill
   m_EditorClassIdentifier: 
-  Name: BombDeliverySkill
-  BaseDamage: 3000
-  BaseHeal: 45
-  Cooldown: 3
-  SkillPrefab: {fileID: 3267024966870220487, guid: e3beafd2e0b52d34ca00bb32a85b421b, type: 3}
+  <OffensiveTag>k__BackingField: yuni_ult_1
+  <SupportTag>k__BackingField: yuni_ult_2
+  <SkillPrefab>k__BackingField: {fileID: 3267024966870220487, guid: e3beafd2e0b52d34ca00bb32a85b421b, type: 3}
   <BombPrefab>k__BackingField: {fileID: 1029683450922114, guid: 911d39b31e356794d971139c547d1e61, type: 3}
   <TeleportElectric>k__BackingField: {fileID: 1029683450922114, guid: 3a5766751aecfea4ea1af00569fd4a57, type: 3}
   <ImpactEffect>k__BackingField: {fileID: 7101899591798170243, guid: 8f9dfda68c68fa644ae93a8323c50638, type: 3}
@@ -24,6 +22,5 @@ MonoBehaviour:
   <CollidableLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 1792
-  <DetectRadius>k__BackingField: 8
-  <HealAmount>k__BackingField: 5
+  <HealDuration>k__BackingField: 3
   <StunDuration>k__BackingField: 3

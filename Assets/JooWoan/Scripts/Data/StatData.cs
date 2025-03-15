@@ -19,17 +19,17 @@ namespace EverScord
 
                 info.tag = sheet[i]["Tag"];
 
-                float.TryParse(sheet[i]["Health"],       out info.health);
-                float.TryParse(sheet[i]["HealthRegen"],  out info.healthRegen);
-                float.TryParse(sheet[i]["Attack"],       out info.attack);
-                float.TryParse(sheet[i]["SupportAttack"],out info.supportAttack);
-                float.TryParse(sheet[i]["Defense"],      out info.defense);
-                float.TryParse(sheet[i]["CritChance"],   out info.critChance);
-                float.TryParse(sheet[i]["Speed"],        out info.speed);
-                float.TryParse(sheet[i]["Cooldown"],     out info.cooldown);
-                float.TryParse(sheet[i]["ReloadSpeed"],  out info.reloadSpeed);
-                float.TryParse(sheet[i]["SkillDamage"],  out info.skillDamage);
-                float.TryParse(sheet[i]["HealPerBullet"],out info.healPerBullet);
+                float.TryParse(sheet[i]["Health"],              out info.health);
+                float.TryParse(sheet[i]["HealthRegen"],         out info.healthRegen);
+                float.TryParse(sheet[i]["Attack"],              out info.attack);
+                float.TryParse(sheet[i]["SupportAttack"],       out info.supportAttack);
+                float.TryParse(sheet[i]["Defense"],             out info.defense);
+                float.TryParse(sheet[i]["CritChance"],          out info.critChance);
+                float.TryParse(sheet[i]["Speed"],               out info.speed);
+                float.TryParse(sheet[i]["CooldownDecrease"],    out info.cooldownDecrease);
+                float.TryParse(sheet[i]["ReloadSpeedDecrease"], out info.reloadSpeedDecrease);
+                float.TryParse(sheet[i]["SkillDamageIncrease"], out info.skillDamageIncrease);
+                float.TryParse(sheet[i]["HealIncrease"],        out info.healIncrease);
                 
                 statInfoDict[info.tag] = info;
             }

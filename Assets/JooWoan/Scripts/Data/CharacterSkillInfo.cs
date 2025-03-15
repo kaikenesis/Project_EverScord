@@ -17,7 +17,7 @@ namespace EverScord
         //public int hitType;
 
         public float skillRange;
-        public float skillSize;
+        public List<float> skillSizes;
         //public string triggerCondition;
     }
 }

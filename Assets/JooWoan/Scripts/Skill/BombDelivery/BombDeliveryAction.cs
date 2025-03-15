@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using EverScord.Effects;
+using static UnityEngine.GraphicsBuffer;
 
 namespace EverScord.Skill
 {
@@ -16,10 +17,10 @@ namespace EverScord.Skill
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
+            base.Init(activator, skill, ejob, skillIndex);
+
             this.skill = (BombDeliverySkill)skill;
             teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
-
-            base.Init(activator, skill, ejob, skillIndex);
         }
 
         public override bool Activate()
@@ -55,15 +56,15 @@ namespace EverScord.Skill
             var impactEffect = Instantiate(skill.ImpactEffect, CharacterSkill.SkillRoot);
             impactEffect.transform.position = closestTarget.position;
 
-            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, skill);
-
             IEnemy enemy = closestTarget.GetComponent<IEnemy>();
 
-            if (activator.CharacterPhotonView.IsMine)
-            {
-                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
-                enemy.StunMonster(skill.StunDuration);
-            }
+            if (!activator.CharacterPhotonView.IsMine)
+                return;
+
+            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
+            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
+
+            enemy.StunMonster(skill.StunDuration);
         }
 
         public override void SupportAction()
@@ -72,15 +73,19 @@ namespace EverScord.Skill
                 return;
 
             TeleportPlayer();
-            CharacterControl targetPlayer = closestTarget.GetComponent<CharacterControl>();
+            CharacterControl target = closestTarget.GetComponent<CharacterControl>();
 
             var healEffect = Instantiate(skill.HealCircleEffect, CharacterSkill.SkillRoot);
             healEffect.transform.position = closestTarget.position;
 
-            // Start Coroutine and increase hp for 3 seconds, set particle to loop
+            if (!activator.CharacterPhotonView.IsMine)
+                return;
 
-            if (activator.CharacterPhotonView.IsMine)
-                targetPlayer.IncreaseHP(activator, skill.HealAmount, true);
+            float totalHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
+            float dotHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDotDamage);
+
+            target.IncreaseHP(activator, totalHealAmount, true);
+            StartCoroutine(CharacterSkill.RegenerateHP(activator, new CharacterControl[] {target}, skill.HealDuration, dotHealAmount));
         }
 
         private void TeleportPlayer()
@@ -98,7 +103,7 @@ namespace EverScord.Skill
 
         private bool SetClosestTarget(LayerMask layerMask)
         {
-            Collider[] colliders = Physics.OverlapSphere(activator.PlayerTransform.position, skill.DetectRadius, layerMask);
+            Collider[] colliders = Physics.OverlapSphere(activator.PlayerTransform.position, SkillInfo.skillRange, layerMask);
 
             var electricEffect = Instantiate(skill.TeleportElectric, activator.PlayerTransform);
             electricEffect.transform.position = activator.PlayerTransform.position;

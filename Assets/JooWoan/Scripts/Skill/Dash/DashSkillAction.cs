@@ -30,11 +30,11 @@ namespace EverScord.Skill
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
+            base.Init(activator, skill, ejob, skillIndex);
+
             this.skill = (DashSkill)skill;
             meshTrail  = new MeshTrail(activator.PlayerTransform, this);
-            originalSpeed = activator.CharacterSpeed;
-            
-            base.Init(activator, skill, ejob, skillIndex);
+            originalSpeed = activator.Speed;
         }
 
         public override bool Activate()

@@ -104,6 +104,10 @@ public class MonsterSpawner : MonoBehaviour
     private void SpawnSmoke()
     {
         spawnSmoke = ResourceManager.Instance.GetFromPool(AssetReferenceManager.SpawnSmoke_ID) as PooledParticle;
+        
+        if (spawnSmoke == null)
+            return;
+        
         spawnSmoke.Init(AssetReferenceManager.SpawnSmoke_ID);
 
         spawnSmoke.transform.position = transform.position;
@@ -118,7 +122,8 @@ public class MonsterSpawner : MonoBehaviour
         if (state)
         {
             spawnMarker = ResourceManager.Instance.GetFromPool(AssetReferenceManager.SpawnMarker_ID, transform.position, Quaternion.identity);
-            spawnMarker.SetActive(true);
+            if (spawnMarker)
+                spawnMarker.SetActive(true);
         }
         else if (spawnMarker != null)
             ResourceManager.Instance.ReturnToPool(spawnMarker, AssetReferenceManager.SpawnMarker_ID);

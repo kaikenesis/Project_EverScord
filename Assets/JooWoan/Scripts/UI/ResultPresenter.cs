@@ -73,21 +73,29 @@ namespace EverScord.UI
 
         private void SetupUI()
         {
+            ingameUiHub.SetActive(false);
+            GameManager.Instance.GameOverController.EnableUI(false);
+            
+            PlayerUI.SetCursor(CursorType.UIFOCUS);
+            uiHub.SetActive(true);
+
             List<CharacterControl> playerList = GameManager.Instance.PlayerDict.Values.ToList();
             int currentClientIndex = 0;
 
             for (int i = 0; i < playerList.Count; i++)
             {
-                if (playerList[i] == CharacterControl.CurrentClientCharacter)
+                if (playerList[i].CharacterPhotonView.IsMine)
                 {
                     currentClientIndex = i;
                     break;
                 }
             }
 
+            int middleIndex = playerList.Count / 2;
+
             var temp = playerList[currentClientIndex];
             playerList.RemoveAt(currentClientIndex);
-            playerList.Add(temp);
+            playerList.Insert(middleIndex, temp);
 
             for (int i = 0; i < playerList.Count; i++)
             {
@@ -133,17 +141,12 @@ namespace EverScord.UI
 
             spawnedPrefab.transform.localPosition = spawnPoint.transform.localPosition;
             spawnedPrefab.transform.localRotation = spawnPoint.transform.localRotation;
+
+            spawnedPrefab.GetComponentInChildren<WaitHabitTrigger>(true).PlayAnimation(isVictory);
         }
 
         public IEnumerator ShowResults()
         {
-            PlayerUI.SetCursor(CursorType.UIFOCUS);
-
-            ingameUiHub.SetActive(false);
-            uiHub.SetActive(true);
-
-            GameManager.Instance.GameOverController.EnableUI(false);
-
             blackTween.DORewind();
             blackTween.DOPlay();
 
