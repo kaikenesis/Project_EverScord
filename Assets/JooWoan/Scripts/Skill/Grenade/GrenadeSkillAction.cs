@@ -8,11 +8,13 @@ namespace EverScord.Skill
     {
         public GrenadeSkill Skill { get; private set; }
         private Vector3 grenadeImpactPosition;
+        private float skillRadius;
         
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {            
             base.Init(activator, skill, ejob, skillIndex);
             Skill = (GrenadeSkill)skill;
+            skillRadius = SkillInfo.skillSizes[0];
 
             GameObject mainMarker = predictor.MarkerControl.Marker.gameObject;
             GameObject stampMarker = predictor.MarkerControl.StampedMarker.gameObject;
@@ -26,7 +28,7 @@ namespace EverScord.Skill
             if (!photonView.IsMine)
                 return;
 
-            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, SkillInfo.skillSizes[0], GameManager.EnemyLayer);
+            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, skillRadius, GameManager.EnemyLayer);
             float calculatedDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
 
             for (int i = 0; i < colliders.Length; i++)
@@ -43,8 +45,8 @@ namespace EverScord.Skill
         {
             if (!photonView.IsMine)
                 return;
-            
-            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, SkillInfo.skillSizes[0], GameManager.PlayerLayer);
+
+            Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, skillRadius, GameManager.PlayerLayer);
             var players = new CharacterControl[colliders.Length];
 
             float totalHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);

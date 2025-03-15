@@ -9,6 +9,7 @@ namespace EverScord.Skill
         protected float cooldown;
         protected float elapsedTime = 0f;
         protected Action onTimerTick;
+        protected bool canRunTimer = true;
 
         public bool IsCooldown => elapsedTime < cooldown;
         public float Cooldown => cooldown;
@@ -18,8 +19,11 @@ namespace EverScord.Skill
             get { return Mathf.Clamp01(elapsedTime / Mathf.Max(0.01f, cooldown)); }
         }
 
-        public CooldownTimer(float cooldown)
+        public CooldownTimer(float cooldown, Action callback = null)
         {
+            onTimerTick -= callback;
+            onTimerTick += callback;
+
             this.cooldown = cooldown;
             elapsedTime = cooldown;
         }
@@ -29,7 +33,7 @@ namespace EverScord.Skill
             if (resetTime)
                 ResetElapsedTime();
 
-            while (true)
+            while (canRunTimer)
             {
                 elapsedTime += Time.deltaTime;
                 onTimerTick?.Invoke();
@@ -45,6 +49,22 @@ namespace EverScord.Skill
         public float GetElapsedTime()
         {
             return elapsedTime;
+        }
+
+        public void StopTimer()
+        {
+            canRunTimer = false;
+        }
+
+        public void SubscribeOnTimerTick(Action subscriber)
+        {
+            onTimerTick -= subscriber;
+            onTimerTick += subscriber;
+        }
+
+        public void UnsubscribeOnTimerTick(Action subscriber)
+        {
+            onTimerTick -= subscriber;
         }
     }
 }

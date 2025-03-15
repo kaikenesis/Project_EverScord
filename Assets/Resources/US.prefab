@@ -12408,15 +12408,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5dfc937515d1fc4596358452f9c0f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
   gravity: -40
   mass: 1
   bodyRotateSpeed: 500
-  maxHealth: 100
   currentHealth: 100
-  dealtDamage: 0
-  dealtHeal: 0
-  killCount: 0
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
   weapon: {fileID: 6018587541618258978}
@@ -12426,6 +12421,15 @@ MonoBehaviour:
   uiPrefab: {fileID: 1513519116851114217, guid: a53680f6070b6ee4dbb5da14592309ec, type: 3}
   cameraPrefab: {fileID: 6716463709426020098, guid: b7ba58d67a16a9642b900e15c37509a6, type: 3}
   rigLayerPrefab: {fileID: 8786123538758353834, guid: 2018bfb1cdc9094498d011298b4f6501, type: 3}
+  <Speed>k__BackingField: 0
+  <Attack>k__BackingField: 0
+  <CriticalHitChance>k__BackingField: 0
+  <Defense>k__BackingField: 0
+  <Heal>k__BackingField: 0
+  <HealthRegen>k__BackingField: 0
+  <CooldownDecrease>k__BackingField: 0
+  <ReloadSpeedDecrease>k__BackingField: 0
+  <SkillDamageIncrease>k__BackingField: 0
 --- !u!114 &4246564966177677742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12465,8 +12469,6 @@ MonoBehaviour:
   <ShootableLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 1792
-  <Damage>k__BackingField: 180
-  <Heal>k__BackingField: 5
   <AimSensitivity>k__BackingField: 1
   <Cooldown>k__BackingField: 0.15
   <ReloadTime>k__BackingField: 3

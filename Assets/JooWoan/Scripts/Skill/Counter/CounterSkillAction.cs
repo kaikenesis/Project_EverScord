@@ -6,6 +6,7 @@ using EverScord.Character;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Effects;
+using static UnityEngine.GraphicsBuffer;
 
 namespace EverScord.Skill
 {
@@ -19,7 +20,6 @@ namespace EverScord.Skill
         private CounterSkill skill;
         private CharacterControl cachedTarget;
         private Coroutine buffCoroutine;
-        private GameObject barrier, secondBarrier;
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
@@ -49,16 +49,13 @@ namespace EverScord.Skill
             isOutlineActivated = false;
 
             skillCoroutine = StartCoroutine(ActivateSkill());
+            StartCoroutine(GrantBuff(activator));
+
             return true;
         }
 
         private IEnumerator ActivateSkill()
         {
-            barrier = Instantiate(skill.BarrierPrefab, activator.PlayerTransform);
-            barrier.transform.SetParent(CharacterSkill.SkillRoot);
-
-            StartCoroutine(UpdateBarrierPosition(barrier.transform, activator.PlayerTransform));
-
             for (elapsedSkillTime = 0f; elapsedSkillTime <= skill.Duration; elapsedSkillTime += Time.deltaTime)
             {
                 if (ejob == PlayerData.EJob.Dealer)
@@ -219,10 +216,10 @@ namespace EverScord.Skill
 
         public IEnumerator GrantBuff(CharacterControl target)
         {
+            target.ApplyBuff(BuffType.BARRIER, skill.Duration);
+
             GameObject barrier = Instantiate(skill.BarrierPrefab);
             barrier.transform.SetParent(CharacterSkill.SkillRoot);
-
-            // Increase target stat
 
             StartCoroutine(UpdateBarrierPosition(barrier.transform, target.transform));
 
@@ -258,9 +255,6 @@ namespace EverScord.Skill
 
         public override void ExitSkill()
         {
-            StopBarrier(barrier);
-            StopBarrier(secondBarrier);
-            
             StopLaser();
             SetOutline(false);
 

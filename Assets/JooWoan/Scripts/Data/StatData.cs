@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 using EverScord.FileIO;
 
 namespace EverScord

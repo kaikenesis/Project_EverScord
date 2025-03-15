@@ -60,6 +60,7 @@ namespace EverScord.Character
         public UIMarker UIMarker                                        { get; private set; }
         public PlayerData.ECharacter CharacterType                      { get; private set; }
         public PlayerData.EJob CharacterJob                             { get; private set; }
+        public List<CharacterBuff> BuffList                             { get; private set; }
         public IDictionary<CharState, Debuff> DebuffDict                { get; private set; }
         public CharState State                                          { get; private set; }
         public IHelmet CharacterHelmet                                  { get; private set; }
@@ -70,14 +71,15 @@ namespace EverScord.Character
         public Vector3 MoveVelocity                                     { get; private set; }
         public string Nickname                                          { get; private set; }
         public float MaxHealth                                          { get; private set; }
-        public float Speed                                              { get; private set; }
-        public float Attack                                             { get; private set; }
-        public float Defense                                            { get; private set; }
-        public float Heal                                               { get; private set; }
-        public float HealthRegen                                        { get; private set; }
-        public float CooldownDecrease                                   { get; private set; }
-        public float ReloadSpeedDecrease                                { get; private set; }
-        public float SkillDamageIncrease                                { get; private set; }
+        [field: SerializeField] public float Speed                      { get; private set; }
+        [field: SerializeField] public float Attack                     { get; private set; }
+        [field: SerializeField] public float CriticalHitChance          { get; private set; }
+        [field: SerializeField] public float Defense                    { get; private set; }
+        [field: SerializeField] public float Heal                       { get; private set; }
+        [field: SerializeField] public float HealthRegen                { get; private set; }
+        [field: SerializeField] public float CooldownDecrease           { get; private set; }
+        [field: SerializeField] public float ReloadSpeedDecrease        { get; private set; }
+        [field: SerializeField] public float SkillDamageIncrease        { get; private set; }
         public float HealIncrease                                       { get; private set; }
         public float DealtDamage                                        { get; private set; }
         public float DealtHeal                                          { get; private set; }
@@ -140,6 +142,7 @@ namespace EverScord.Character
             PlayerTransform  = transform;
 
             PhysicsControl   = new CharacterPhysics(gravity, mass);
+            BuffList         = new List<CharacterBuff>();
             DebuffDict       = new Dictionary<CharState, Debuff>();
             CharacterHelmet  = new Helmet(10, 10, 10, 10, 10);
             CharacterVest    = new Vest(10, 10, 10);
@@ -443,6 +446,7 @@ namespace EverScord.Character
             Speed = info.speed * SPEED_FACTOR;
             Attack = info.attack;
             Defense = info.defense;
+            CriticalHitChance = info.critChance;
 
             if (CharacterJob == PlayerData.EJob.Healer)
             {
@@ -570,11 +574,71 @@ namespace EverScord.Character
             return (State & state) != 0;
         }
 
+        public void SetStat(StatType type, float amount)
+        {
+            switch (type)
+            {
+                case StatType.MAXHEALTH:
+                    MaxHealth = amount;
+                    break;
+
+                case StatType.SPEED:
+                    Speed = amount;
+                    break;
+
+                case StatType.ATTACK:
+                    Attack = amount;
+                    break;
+
+                case StatType.DEFENSE:
+                    Defense = amount;
+                    break;
+
+                case StatType.HEAL:
+                    Heal = amount;
+                    break;
+
+                case StatType.HEALTH_REGEN:
+                    HealthRegen = amount;
+                    break;
+
+                case StatType.COOLDOWN_DECREASE:
+                    CooldownDecrease = amount;
+                    break;
+
+                case StatType.RELOADSPEED_DECREASE:
+                    ReloadSpeedDecrease = amount;
+                    break;
+
+                case StatType.SKILLDAMAGE_INCREASE:
+                    SkillDamageIncrease = amount;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public void ApplyBuff(BuffType type, float duration)
+        {
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncApplyBuff), RpcTarget.All, (int)type, duration);
+        }
+
+        private void RemoveBuff()
+        {
+            for (int i = BuffList.Count - 1; i >= 0; i--)
+            {
+                if (BuffList[i].IsBuffOver)
+                    BuffList.RemoveAt(i);
+            }
+        }
+
         public void ApplyDebuff(CharState state, int count)
         {
             if (HasState(CharState.INVINCIBLE))
                 return;
-                        
+
             if (DebuffDict.ContainsKey(state) && DebuffDict[state] != null)
                 return;
             
@@ -930,8 +994,8 @@ namespace EverScord.Character
         private void SyncApplyDebuff(int state, int count)
         {
             CancelAction();
-
             SetState(SetCharState.ADD, (CharState)state);
+
             StunnedDebuff debuff = DebuffDict[CharState.STUNNED] as StunnedDebuff;
 
             if (debuff != null)
@@ -943,6 +1007,15 @@ namespace EverScord.Character
         {
             CharState debuffState = (CharState)state;
             SetState(SetCharState.REMOVE, debuffState);
+        }
+
+        [PunRPC]
+        private void SyncApplyBuff(int buffType, float duration)
+        {
+            CharacterBuff buff = CharacterBuff.GetBuff(this, (BuffType)buffType, duration, RemoveBuff);
+
+            if (buff != null)
+                BuffList.Add(buff);
         }
 
         [PunRPC]
