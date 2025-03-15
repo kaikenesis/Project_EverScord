@@ -81,26 +81,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4571560351977567648}
     m_Modifications:
-    - target: {fileID: 300329469015716899, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 300329469015716899, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 824226229308291049, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 410133582128794408}
-    - target: {fileID: 824226229308291049, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnActivateObjects
-      objectReference: {fileID: 0}
-    - target: {fileID: 824226229308291049, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: EverScord.ToggleObject, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 1431488136503917409, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -133,33 +113,9 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 180
       objectReference: {fileID: 0}
-    - target: {fileID: 2737382766764823973, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: objectOptions.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2737382766764823973, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: objectOptions.Array.data[0].targetObject
-      value: 
-      objectReference: {fileID: 6000262278470447409}
-    - target: {fileID: 2737382766764823973, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: objectOptions.Array.data[0].positionPreset
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3358087875224769665, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
       propertyPath: m_Name
       value: OptionButton
-      objectReference: {fileID: 0}
-    - target: {fileID: 3616611764150654606, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3616611764150654606, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3616611764150654606, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5499524728120960629, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
       propertyPath: m_Pivot.x
@@ -330,22 +286,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
---- !u!114 &410133582128794408 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2737382766764823973, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-  m_PrefabInstance: {fileID: 2327293718353534605}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6000262278470447409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &6000262278470447409 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8289160497725304764, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}
-  m_PrefabInstance: {fileID: 2327293718353534605}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7790675213000489208 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5499524728120960629, guid: 09ec9c5426448654ca8292fbddfc3f17, type: 3}

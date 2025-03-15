@@ -16,11 +16,10 @@ namespace EverScord.UI
         private Transform currentCharacter;
         private InputInfo playerInput;
 
-        public static Action OnChangeCharacter = delegate { };
-
         private void Awake()
         {
             UIDisplayRoom.OnVisibleObject += HandleVisibleObject;
+            UISelect.OnChangeCharacter += HandleChangeCharacter;
             SetCharacterTransform();
             HideCharacters();
         }
@@ -28,11 +27,17 @@ namespace EverScord.UI
         private void OnDestroy()
         {
             UIDisplayRoom.OnVisibleObject -= HandleVisibleObject;
+            UISelect.OnChangeCharacter -= HandleChangeCharacter;
         }
 
         private void HandleVisibleObject()
         {
             ShowCharacters();
+        }
+
+        private void HandleChangeCharacter()
+        {
+            SwitchPlayer(GameManager.Instance.PlayerData.character);
         }
 
         void Update()
@@ -102,33 +107,6 @@ namespace EverScord.UI
             }
 
             return null;
-        }
-
-        public void SetCharacterUni()
-        {
-            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Uni) return;
-
-            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Uni;
-            SwitchPlayer(PlayerData.ECharacter.Uni);
-            OnChangeCharacter?.Invoke();
-        }
-
-        public void SetCharacterNed()
-        {
-            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Ned) return;
-
-            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Ned;
-            SwitchPlayer(PlayerData.ECharacter.Ned);
-            OnChangeCharacter?.Invoke();
-        }
-
-        public void SetCharacterUs()
-        {
-            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Us) return;
-
-            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Us;
-            SwitchPlayer(PlayerData.ECharacter.Us);
-            OnChangeCharacter?.Invoke();
         }
 
         [System.Serializable]

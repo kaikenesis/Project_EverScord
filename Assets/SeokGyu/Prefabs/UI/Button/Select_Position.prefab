@@ -196,7 +196,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3327078574650620880}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2878412156568195779}
+        m_TargetAssemblyTypeName: EverScord.ToggleObject, Assembly-CSharp
+        m_MethodName: OnDeactivateObjects
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4702226991936555786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +350,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4184903379296022840}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2878412156568195779}
+        m_TargetAssemblyTypeName: EverScord.ToggleObject, Assembly-CSharp
+        m_MethodName: OnDeactivateObjects
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &9061040875511226863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,6 +470,7 @@ GameObject:
   - component: {fileID: 6527600878134315752}
   - component: {fileID: 6527600878134315755}
   - component: {fileID: 5657367087322790647}
+  - component: {fileID: 2878412156568195779}
   m_Layer: 5
   m_Name: Select_Position
   m_TagString: Untagged
@@ -538,3 +563,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2878412156568195779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6527600878134315756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleObjects:
+  - {fileID: 6527600878134315756}
+  objectOptions: []
