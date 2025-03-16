@@ -19,21 +19,6 @@ namespace EverScord.Armor
                 originalVest = ((VestDecorator)decoratedVest).originalVest;
         }
 
-        public float Health
-        {
-            get { return HealthBonus.CalculateStat(originalVest.Health); }
-        }
-
-        public float Defense
-        {
-            get { return DefenseBonus.CalculateStat(originalVest.Defense); }
-        }
-
-        public float HealthRegeneration
-        {
-            get { return HealthRegenerationBonus.CalculateStat(originalVest.HealthRegeneration); }
-        }
-
         public StatBonus HealthBonus
         {
             get { return StatBonus.MergeBonus(decoratedVest.HealthBonus, augment.HealthBonus); }

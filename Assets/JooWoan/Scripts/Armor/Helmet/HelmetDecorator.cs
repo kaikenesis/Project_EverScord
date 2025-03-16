@@ -19,31 +19,6 @@ namespace EverScord.Armor
                 originalHelmet = ((HelmetDecorator)decoratedHelmet).originalHelmet;
         }
 
-        public float BasicAttackDamage
-        {
-            get { return BasicAttackBonus.CalculateStat(originalHelmet.BasicAttackDamage); }
-        }
-
-        public float SkillDamage
-        {
-            get { return SkillAttackBonus.CalculateStat(originalHelmet.SkillDamage); }
-        }
-
-        public float BasicHealAmount
-        {
-            get { return BasicHealBonus.CalculateStat(originalHelmet.BasicHealAmount); }
-        }
-
-        public float SkillHealAmount
-        {
-            get { return SkillHealBonus.CalculateStat(originalHelmet.SkillHealAmount); }
-        }
-
-        public float AllroundHealAmount
-        {
-            get { return AllroundHealBonus.CalculateStat(originalHelmet.AllroundHealAmount); }
-        }
-
         public StatBonus BasicAttackBonus
         {
             get { return StatBonus.MergeBonus(decoratedHelmet.BasicAttackBonus, augment.BasicAttackBonus); }

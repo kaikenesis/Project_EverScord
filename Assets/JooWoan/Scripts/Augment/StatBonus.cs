@@ -6,7 +6,7 @@ namespace EverScord.Augment
         public float additive;
         public float multiplicative;
 
-        public float CalculateStat(float statValue)
+        public float CalculateStat(float statValue = 1f)
         {
             return statValue * (additive + 1f) * multiplicative;
         }

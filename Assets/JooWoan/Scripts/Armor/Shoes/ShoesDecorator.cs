@@ -19,21 +19,6 @@ namespace EverScord.Armor
                 originalShoes = ((ShoesDecorator)decoratedShoes).originalShoes;
         }
 
-        public float MoveSpeed
-        {
-            get { return MoveSpeedBonus.CalculateStat(originalShoes.MoveSpeed); }
-        }
-
-        public float Cooldown
-        {
-            get { return CooldownBonus.CalculateStat(originalShoes.Cooldown); }
-        }
-
-        public float ReloadSpeed
-        {
-            get { return ReloadSpeedBonus.CalculateStat(originalShoes.ReloadSpeed); }
-        }
-
         public StatBonus MoveSpeedBonus
         {
             get { return StatBonus.MergeBonus(decoratedShoes.MoveSpeedBonus, augment.MoveSpeedBonus); }

@@ -128,7 +128,7 @@ namespace EverScord.Weapons
                         if (shooter.CharacterJob == PlayerData.EJob.Healer)
                         {
                             // Calculate total heal
-                            float calculatedHeal = shooter.Heal;
+                            float calculatedHeal = shooter.Stats.Attack;
 
                             character.IncreaseHP(shooter, calculatedHeal, true);
                         }

@@ -12,6 +12,7 @@ namespace EverScord.Skill
         protected PhotonView photonView;
         protected PlayerData.EJob ejob;
         protected int skillIndex;
+
         public CharacterSkillInfo SkillInfo { get; private set; }
 
         public virtual bool CanAttackWhileSkill
@@ -34,8 +35,15 @@ namespace EverScord.Skill
             string tag      = ejob == PlayerData.EJob.Dealer ? skill.OffensiveTag : skill.SupportTag;
             SkillInfo       = SkillData.SkillInfoDict[tag];
 
-            cooldownTimer   = new SkillTimer(SkillInfo.cooldown, skillIndex, photonView.IsMine);
+            float cooldown  = activator.Stats.DecreasedCooldown(SkillInfo.cooldown);
+            cooldownTimer   = new SkillTimer(cooldown, skillIndex, photonView.IsMine);
             StartCoroutine(cooldownTimer.RunTimer());
+        }
+
+        public void SetNewCooldown()
+        {
+            float cooldown = activator.Stats.DecreasedCooldown(SkillInfo.cooldown);
+            cooldownTimer.SetNewCooldown(cooldown);
         }
 
         public virtual bool Activate()

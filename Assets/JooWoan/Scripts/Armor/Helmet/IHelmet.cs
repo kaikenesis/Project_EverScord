@@ -4,15 +4,6 @@ namespace EverScord.Armor
 {
     public interface IHelmet : IArmor
     {
-        // Dealer
-        public float BasicAttackDamage      { get; }
-        public float SkillDamage            { get; }
-
-        // Healer
-        public float BasicHealAmount        { get; }
-        public float SkillHealAmount        { get; }
-        public float AllroundHealAmount     { get; }
-
         public StatBonus BasicAttackBonus   { get; }
         public StatBonus SkillAttackBonus   { get; }
         public StatBonus BasicHealBonus     { get; }
@@ -35,19 +26,19 @@ namespace EverScord.Armor
             switch (bonusType)
             {
                 case BonusType.BasicAttack:
-                    return BasicAttackDamage;
+                    return BasicAttackBonus.CalculateStat();
 
                 case BonusType.SkillAttack:
-                    return SkillDamage;
+                    return SkillAttackBonus.CalculateStat();
 
                 case BonusType.BasicHeal:
-                    return BasicHealAmount;
+                    return BasicHealBonus.CalculateStat();
 
                 case BonusType.SkillHeal:
-                    return SkillHealAmount;
+                    return SkillHealBonus.CalculateStat();
 
                 case BonusType.AllroundHeal:
-                    return AllroundHealAmount;
+                    return AllroundHealBonus.CalculateStat();
 
                 default:
                     return -1;

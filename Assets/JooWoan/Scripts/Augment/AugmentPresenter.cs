@@ -360,6 +360,8 @@ namespace EverScord.Augment
             player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
             player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
 
+            player.Stats.OnCooldownBonusUpdated?.Invoke();
+
             enhanceIndex++;
             enhanceCount++;
             onEnhanced?.Invoke();

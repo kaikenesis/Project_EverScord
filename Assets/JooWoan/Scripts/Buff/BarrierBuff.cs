@@ -13,13 +13,13 @@ namespace EverScord.Character
 
         protected override void Apply()
         {
-            originalDefense = target.Defense;
-            target.SetStat(StatType.DEFENSE, originalDefense + increaseAmount);
+            originalDefense = target.Stats.Defense;
+            target.Stats.SetStat(StatType.DEFENSE, originalDefense + increaseAmount);
         }
 
         protected override void EndBuff()
         {
-            target.SetStat(StatType.DEFENSE, originalDefense);
+            target.Stats.SetStat(StatType.DEFENSE, originalDefense);
             base.EndBuff();
         }
     }

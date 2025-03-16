@@ -4,14 +4,9 @@ namespace EverScord.Armor
 {
     public interface IShoes : IArmor
     {
-        public float MoveSpeed              { get; }
-        public float Cooldown               { get; }
-        public float ReloadSpeed            { get; }
-
         public StatBonus MoveSpeedBonus     { get; }
         public StatBonus CooldownBonus      { get; }
         public StatBonus ReloadSpeedBonus   { get; }
-
 
         // BonusType enum 의 순서는 ArmorAugmentSheet.csv 에 나열된 강화 순서와 동일해야 합니다.
         // BonusType order must be identical to ArmorAugmentSheet.csv augment order.
@@ -27,13 +22,13 @@ namespace EverScord.Armor
             switch (bonusType)
             {
                 case BonusType.MoveSpeed:
-                    return MoveSpeed;
+                    return MoveSpeedBonus.CalculateStat();
 
                 case BonusType.Cooldown:
-                    return Cooldown;
+                    return CooldownBonus.CalculateStat();
 
                 case BonusType.ReloadSpeed:
-                    return ReloadSpeed;
+                    return ReloadSpeedBonus.CalculateStat();
 
                 default:
                     return -1;

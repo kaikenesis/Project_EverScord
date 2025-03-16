@@ -17,16 +17,15 @@ namespace EverScord.Character
     public class CharacterControl : MonoBehaviour, IPunInstantiateMagicCallback, IPunObservable
     {
         private const float SKIN_RATIO = 0.1f;
+        private const float LOWHEALTH_THRESHOLD = 0.1f;
         private const float REMOTE_LERP_VALUE = 10f;
         private const float BODY_CENTER = 2f;
         private const float BODY_ROTATESTART_ANGLE = 2f;
-        private const float SPEED_FACTOR = 0.01f * 2f;
 
         [Header("Character")]
         [SerializeField] private float gravity;
         [SerializeField] private float mass;
         [SerializeField] private float bodyRotateSpeed;
-        [SerializeField] private float currentHealth;
 
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius;
@@ -48,6 +47,7 @@ namespace EverScord.Character
         [SerializeField] private CharacterRigControl rigLayerPrefab;
 
         public static CharacterControl CurrentClientCharacter           { get; private set; }
+        public CharacterStat Stats                                      { get; private set; }
         public PlayerUI PlayerUIControl                                 { get; private set; }
         public CharacterRigControl RigControl                           { get; private set; }
         public CharacterAnimation AnimationControl                      { get; private set; }
@@ -70,17 +70,6 @@ namespace EverScord.Character
         public Vector3 MouseRayHitPos                                   { get; private set; }
         public Vector3 MoveVelocity                                     { get; private set; }
         public string Nickname                                          { get; private set; }
-        public float MaxHealth                                          { get; private set; }
-        [field: SerializeField] public float Speed                      { get; private set; }
-        [field: SerializeField] public float Attack                     { get; private set; }
-        [field: SerializeField] public float CriticalHitChance          { get; private set; }
-        [field: SerializeField] public float Defense                    { get; private set; }
-        [field: SerializeField] public float Heal                       { get; private set; }
-        [field: SerializeField] public float HealthRegen                { get; private set; }
-        [field: SerializeField] public float CooldownDecrease           { get; private set; }
-        [field: SerializeField] public float ReloadSpeedDecrease        { get; private set; }
-        [field: SerializeField] public float SkillDamageIncrease        { get; private set; }
-        public float HealIncrease                                       { get; private set; }
         public float DealtDamage                                        { get; private set; }
         public float DealtHeal                                          { get; private set; }
         public int KillCount                                            { get; private set; }
@@ -89,6 +78,7 @@ namespace EverScord.Character
         public PhotonView CharacterPhotonView => photonView;
         public CharacterController Controller => controller;
         public InputInfo PlayerInputInfo => playerInputInfo;
+        public List<SkillActionInfo> SkillList => skillList;
         public Vector3 LookDir => lookDir;
 
         public static Action OnPhotonViewListUpdated = delegate { };
@@ -110,44 +100,16 @@ namespace EverScord.Character
         private LayerMask groundAndEnemyLayer;
         private InputInfo playerInputInfo;
 
-        public float CurrentHealth
-        {
-            get { return currentHealth; }
-            set
-            {
-                bool previousIsLowHealth = IsLowHealth;
-
-                currentHealth = value;
-
-                bool afterIsLowHealth = IsLowHealth;
-
-                if (!IsDead && currentHealth <= 0)
-                {
-                    deathCoroutine = StartCoroutine(HandleDeath());
-                    BlinkEffects.StopAllBlinks();
-                }
-                else if (previousIsLowHealth != afterIsLowHealth)
-                    BlinkEffects.LoopBlink(IsLowHealth);
-
-                if (photonView.IsMine)
-                {
-                    PlayerUIControl.SetGrayscaleScreen(currentHealth);
-                    PlayerUIControl.SetBloodyScreen(currentHealth, afterIsLowHealth);
-                }
-            }
-        }
-
         void Awake()
         {
             PlayerTransform  = transform;
 
-            PhysicsControl   = new CharacterPhysics(gravity, mass);
             BuffList         = new List<CharacterBuff>();
             DebuffDict       = new Dictionary<CharState, Debuff>();
-            CharacterHelmet  = new Helmet(10, 10, 10, 10, 10);
-            CharacterVest    = new Vest(10, 10, 10);
-            CharacterShoes   = new Shoes(10, 10, 10);
-
+            CharacterHelmet  = new Helmet();
+            CharacterVest    = new Vest();
+            CharacterShoes   = new Shoes();
+            PhysicsControl   = new CharacterPhysics(gravity, mass);
             waitHpRegen      = new WaitForSeconds(1f);
             playerInputInfo  = new InputInfo();
 
@@ -156,20 +118,13 @@ namespace EverScord.Character
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
             UIMarker         = gameObject.AddComponent<UIMarker>();
+            Stats            = gameObject.AddComponent<CharacterStat>();
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
             
             if (SkinRenderers.Length > 0)
                 OriginalSkinLayer = 1 << SkinRenderers[0].gameObject.layer;
-
-            UIMarker.Initialize(PointMarkData.EType.Player);
-            AnimationControl.Init(photonView);
-            weapon.Init(this);
-
-            RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
-            RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
-            RigControl.SetAimWeight(false);
 
             if (photonView.IsMine)
             {
@@ -186,8 +141,10 @@ namespace EverScord.Character
                 CurrentClientCharacter = this;
             }
 
+            UIMarker.Initialize(PointMarkData.EType.Player);
             AnimationControl.Init(photonView);
             weapon.Init(this);
+            Stats.InitBaseStat(this);
 
             RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
             RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
@@ -199,6 +156,12 @@ namespace EverScord.Character
             CharacterJob = GameManager.Instance.PlayerData.job;
         }
 
+        void OnEnable()
+        {
+            if (photonView.IsMine && Stats)
+                EnableRegenerateHP(true);
+        }
+
         void Start()
         {
             InitBasicInfo();
@@ -207,16 +170,16 @@ namespace EverScord.Character
             SetPortraits();
 
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
-            OnHealthUpdated?.Invoke(CurrentHealth / Mathf.Max(0.01f, MaxHealth));
+            OnHealthUpdated?.Invoke(Stats.CurrentHealth / Mathf.Max(0.01f, Stats.MaxHealth));
 
             if (photonView.IsMine)
-                hpRegenCoroutine = StartCoroutine(RegenerateHP());
+                EnableRegenerateHP(true);
         }
 
         void Update()
         {
             if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
-                IncreaseHP(this, 10);
+                IncreaseHP(this, 100);
 
             if (Input.GetKeyDown(KeyCode.F3))
                 DecreaseHP(1000);
@@ -290,11 +253,11 @@ namespace EverScord.Character
 
             movement = new Vector3(moveInput.x, 0, moveInput.z);
 
-            Vector3 velocity = movement * Speed;
+            Vector3 velocity = movement * Stats.Speed;
             velocity.y = PhysicsControl.FallSpeed;
 
             if (PhysicsControl.IsImpactAdded)
-                velocity = PhysicsControl.ImpactVelocity.normalized * Speed;
+                velocity = PhysicsControl.ImpactVelocity.normalized * Stats.Speed;
             
             controller.Move(velocity * Time.deltaTime);
         }
@@ -427,31 +390,10 @@ namespace EverScord.Character
 
             for (int i = 0; i < skillList.Count; i++)
             {
-                InitBaseStat();
                 skillList[i].Init(this, i, CharacterJob);
 
                 if (PhotonNetwork.IsConnected)
                     photonView.RPC(nameof(SyncBasicInfo), RpcTarget.Others, i, (int)CharacterJob, (int)CharacterType);
-            }
-        }
-
-        private void InitBaseStat()
-        {
-            string tag = PlayerData.GetCharacterName(CharacterType);
-            StatInfo info = StatData.StatInfoDict[tag];
-
-            currentHealth = MaxHealth = info.health;
-            HealthRegen = info.healthRegen;
-
-            Speed = info.speed * SPEED_FACTOR;
-            Attack = info.attack;
-            Defense = info.defense;
-            CriticalHitChance = info.critChance;
-
-            if (CharacterJob == PlayerData.EJob.Healer)
-            {
-                Attack = info.supportAttack;
-                Heal = info.attack;
             }
         }
 
@@ -491,11 +433,6 @@ namespace EverScord.Character
             var effect3 = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.HealEffect_ID);
             healEffect = Instantiate(effect3, PlayerTransform).GetComponent<ParticleSystem>();
             healEffect.gameObject.SetActive(false);
-        }
-
-        public void SetSpeed(float speed)
-        {
-            Speed = speed;
         }
 
         public void SetIsAiming(bool state)
@@ -574,51 +511,6 @@ namespace EverScord.Character
             return (State & state) != 0;
         }
 
-        public void SetStat(StatType type, float amount)
-        {
-            switch (type)
-            {
-                case StatType.MAXHEALTH:
-                    MaxHealth = amount;
-                    break;
-
-                case StatType.SPEED:
-                    Speed = amount;
-                    break;
-
-                case StatType.ATTACK:
-                    Attack = amount;
-                    break;
-
-                case StatType.DEFENSE:
-                    Defense = amount;
-                    break;
-
-                case StatType.HEAL:
-                    Heal = amount;
-                    break;
-
-                case StatType.HEALTH_REGEN:
-                    HealthRegen = amount;
-                    break;
-
-                case StatType.COOLDOWN_DECREASE:
-                    CooldownDecrease = amount;
-                    break;
-
-                case StatType.RELOADSPEED_DECREASE:
-                    ReloadSpeedDecrease = amount;
-                    break;
-
-                case StatType.SKILLDAMAGE_INCREASE:
-                    SkillDamageIncrease = amount;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         public void ApplyBuff(BuffType type, float duration)
         {
             CharacterBuff buff = CharacterBuff.GetBuff(this, type, duration, RemoveBuff);
@@ -684,15 +576,15 @@ namespace EverScord.Character
                 return;
 
             if (!isInvincible)
-                CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+                Stats.CurrentHealth = Mathf.Max(0, Stats.CurrentHealth - amount);
 
             onDecreaseHealth?.Invoke();
 
             if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(CurrentHealth / Math.Max(0.01f, MaxHealth));
+                OnHealthUpdated?.Invoke(Stats.CurrentHealth / Math.Max(0.01f, Stats.MaxHealth));
 
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth, false);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, Stats.CurrentHealth, false);
         }
 
         public void IncreaseHP(CharacterControl activator, float amount, bool isExternalHeal = false, bool playEffect = true)
@@ -703,7 +595,7 @@ namespace EverScord.Character
             if (playEffect)
                 PlayHealEffects();
 
-            CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
+            Stats.CurrentHealth = Mathf.Min(Stats.MaxHealth, Stats.CurrentHealth + amount);
 
             if (activator.CharacterPhotonView.IsMine)
                 activator.IncreaseDealtHeal(amount);
@@ -713,15 +605,24 @@ namespace EverScord.Character
                 if (playEffect)
                     photonView.RPC(nameof(SyncHitEffects), RpcTarget.Others, true, false);
 
-                photonView.RPC(nameof(SyncHealth), RpcTarget.All, currentHealth, true);
+                photonView.RPC(nameof(SyncHealth), RpcTarget.All, Stats.CurrentHealth, true);
             }
+        }
+
+        public void EnableRegenerateHP(bool state)
+        {
+            if (hpRegenCoroutine != null)
+                StopCoroutine(hpRegenCoroutine);
+            
+            if (state)
+                hpRegenCoroutine = StartCoroutine(RegenerateHP());
         }
 
         private IEnumerator RegenerateHP()
         {
             while (!IsDead)
             {
-                IncreaseHP(this, HealthRegen, playEffect: false);
+                IncreaseHP(this, Stats.HealthRegen, playEffect: false);
                 yield return waitHpRegen;
             }
         }
@@ -741,7 +642,12 @@ namespace EverScord.Character
             ++KillCount;
         }
 
-        private IEnumerator HandleDeath()
+        public void StartDeath()
+        {
+            deathCoroutine = StartCoroutine(HandleDeath());
+        }
+
+        public IEnumerator HandleDeath()
         {
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.DEATH);
@@ -790,7 +696,7 @@ namespace EverScord.Character
             Instantiate(beamEffect, PlayerTransform.position, Quaternion.identity);
 
             PlayHealEffects();
-            CurrentHealth = MaxHealth;
+            Stats.CurrentHealth = Stats.MaxHealth;
 
             AnimationControl.Play(AnimationControl.AnimInfo.Revive);
             EnableReviveCircle(false);
@@ -812,10 +718,11 @@ namespace EverScord.Character
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, transform.position);
             UIMarker.ToggleDeathIcon();
 
-            hpRegenCoroutine = StartCoroutine(RegenerateHP());
-
             if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(CurrentHealth / Mathf.Max(0.01f, MaxHealth));
+            {
+                OnHealthUpdated?.Invoke(Stats.CurrentHealth / Mathf.Max(0.01f, Stats.MaxHealth));
+                EnableRegenerateHP(true);
+            }
         }
 
         public void PlayHitEffects()
@@ -933,7 +840,7 @@ namespace EverScord.Character
 
         public bool IsLowHealth
         {
-            get { return currentHealth <= MaxHealth * 0.1f; }
+            get { return Stats.CurrentHealth <= Stats.MaxHealth * LOWHEALTH_THRESHOLD; }
         }
 
         public bool IsDead
@@ -981,7 +888,6 @@ namespace EverScord.Character
             CharacterJob = (PlayerData.EJob)characterJob;
             CharacterType = (PlayerData.ECharacter)characterType;
 
-            InitBaseStat();
             skillList[index].Init(this, index, (PlayerData.EJob)characterJob);
         }
 
@@ -1062,10 +968,10 @@ namespace EverScord.Character
         [PunRPC]
         private void SyncHealth(float health, bool isIncreasing)
         {
-            CurrentHealth = health;
+            Stats.CurrentHealth = health;
 
             if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(CurrentHealth / Mathf.Max(0.01f, MaxHealth));
+                OnHealthUpdated?.Invoke(Stats.CurrentHealth / Mathf.Max(0.01f, Stats.MaxHealth));
 
             if (!isIncreasing)
                 onDecreaseHealth?.Invoke();

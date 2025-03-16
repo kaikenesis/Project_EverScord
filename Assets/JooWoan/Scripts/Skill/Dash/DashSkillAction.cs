@@ -34,7 +34,7 @@ namespace EverScord.Skill
 
             this.skill = (DashSkill)skill;
             meshTrail  = new MeshTrail(activator.PlayerTransform, this);
-            originalSpeed = activator.Speed;
+            originalSpeed = activator.Stats.Speed;
         }
 
         public override bool Activate()
@@ -55,7 +55,7 @@ namespace EverScord.Skill
             float decreaseValue = SPEED_DROP_POINT;
             float decreaseStartTime = skill.Duration * SPEED_DROP_POINT;
 
-            activator.SetSpeed(moveSpeed);
+            activator.Stats.SetStat(StatType.SPEED, moveSpeed);
             activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
             activator.PhysicsControl.AddImpact(activator.LookDir, skill.DashForce);
 
@@ -75,7 +75,7 @@ namespace EverScord.Skill
                     moveSpeed     = Mathf.Lerp(moveSpeed, originalSpeed, decreaseValue);
 
                     activator.AnimationControl.SetAnimatorSpeed(animatorSpeed);
-                    activator.SetSpeed(moveSpeed);
+                    activator.Stats.SetStat(StatType.SPEED, moveSpeed);
                 }
                 yield return null;
             }
@@ -95,7 +95,7 @@ namespace EverScord.Skill
 
         public override void ExitSkill()
         {
-            activator.SetSpeed(originalSpeed);
+            activator.Stats.SetStat(StatType.SPEED, originalSpeed);
             activator.AnimationControl.SetAnimatorSpeed();
 
             // Effect will be automatically destroyed due to particle system settings

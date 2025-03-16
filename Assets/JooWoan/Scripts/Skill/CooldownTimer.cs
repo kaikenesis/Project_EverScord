@@ -30,6 +30,8 @@ namespace EverScord.Skill
 
         public virtual IEnumerator RunTimer(bool resetTime = false)
         {
+            canRunTimer = true;
+
             if (resetTime)
                 ResetElapsedTime();
 
@@ -49,6 +51,11 @@ namespace EverScord.Skill
         public float GetElapsedTime()
         {
             return elapsedTime;
+        }
+
+        public void SetNewCooldown(float cooldown)
+        {
+            this.cooldown = cooldown;
         }
 
         public void StopTimer()

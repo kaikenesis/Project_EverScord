@@ -59,6 +59,7 @@ namespace EverScord.Weapons
                 cooldownTimer = new CooldownTimer(Cooldown);
 
             isReloading = false;
+            CurrentAmmo = MaxAmmo;
             StartCoroutine(cooldownTimer.RunTimer());
         }
 
@@ -132,7 +133,8 @@ namespace EverScord.Weapons
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, true);
             animControl.Play(animControl.AnimInfo.Reload);
 
-            yield return new WaitForSeconds(ReloadTime);
+            float reloadTime = shooter.Stats.DecreasedReload(ReloadTime);
+            yield return new WaitForSeconds(reloadTime);
 
             shooter.SetIsAiming(true);
             shooter.RigControl.SetAimWeight(true);
