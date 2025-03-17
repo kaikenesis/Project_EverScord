@@ -40,5 +40,10 @@ namespace EverScord
             warninngText.SetActive(false);
             gameObject.SetActive(false);
         }
+
+        public void ShowLoginUI(bool state)
+        {
+            gameObject.SetActive(state);
+        }
     }
 }
