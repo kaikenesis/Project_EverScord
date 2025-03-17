@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,12 +39,32 @@ namespace EverScord
         {
             warninngOutline.enabled = false;
             warninngText.SetActive(false);
-            gameObject.SetActive(false);
+
+            ShowLoginUI(false);
+            GameManager.Instance.TitleController.TransitionLobby();
         }
 
         public void ShowLoginUI(bool state)
         {
-            gameObject.SetActive(state);
+            if (state)
+            {
+                gameObject.SetActive(state);
+
+                DOTween.Rewind(ConstStrings.TWEEN_LOGIN_IN);
+                DOTween.Play(ConstStrings.TWEEN_LOGIN_IN);
+            }
+            else
+            {
+                DOTween.Rewind(ConstStrings.TWEEN_LOGIN_OUT);
+                DOTween.Play(ConstStrings.TWEEN_LOGIN_OUT);
+
+                // Tween OnComplete callback: gameobject.SetActive(false)
+            }
+        }
+
+        public void DisableLoginUI()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

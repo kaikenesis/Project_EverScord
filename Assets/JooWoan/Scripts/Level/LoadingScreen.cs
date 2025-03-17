@@ -98,16 +98,22 @@ namespace EverScord
                 bannerImages[i].sprite = GetNextSprite();
         }
 
-        public void CoverScreen()
+        public static void CoverScreen()
         {
             DOTween.Rewind(ConstStrings.TWEEN_COVER_SCREEN);
             DOTween.Play(ConstStrings.TWEEN_COVER_SCREEN);
         }
 
-        public void ShowScreen()
+        public static void ShowScreen()
         {   
             DOTween.Rewind(ConstStrings.TWEEN_SHOW_SCREEN);
             DOTween.Play(ConstStrings.TWEEN_SHOW_SCREEN);
+        }
+
+        public static void ShowScreenFrom1()
+        {   
+            DOTween.Rewind(ConstStrings.TWEEN_SHOW_SCREEN_FROM1);
+            DOTween.Play(ConstStrings.TWEEN_SHOW_SCREEN_FROM1);
         }
 
         public void SetTargetCamera(Camera cam)

@@ -71,6 +71,7 @@ namespace EverScord
                 roomContainer.SetActive(true);
             }
 
+            Debug.Log("JOINING LOBBY");
             OnShowObjects();
         }
 

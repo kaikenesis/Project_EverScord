@@ -31,6 +31,7 @@ namespace EverScord
         public MonsterProjectileController ProjectileController { get; private set; }
         public LevelControl LevelController                     { get; private set; }
         public GameOverControl GameOverController               { get; private set; }
+        public TitleControl TitleController                     { get; private set; }
         public AugmentPresenter AugmentControl                  { get; private set; }
         public ResultPresenter ResultControl                    { get; private set; }
         public static PhotonView View                           { get; private set; }
@@ -197,6 +198,10 @@ namespace EverScord
                 case GameOverControl gameoverControl:
                     GameOverController = gameoverControl;
                     break;
+
+                case TitleControl titleControl:
+                    TitleController = titleControl;
+                    break;                
 
                 default:
                     break;

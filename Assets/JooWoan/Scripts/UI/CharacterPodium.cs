@@ -22,7 +22,6 @@ namespace EverScord.UI
         {
             UIDisplayRoom.OnVisibleObject += HandleVisibleObject;
             SetCharacterTransform();
-            HideCharacters();
         }
 
         private void OnDestroy()

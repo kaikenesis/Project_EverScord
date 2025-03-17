@@ -32,10 +32,13 @@ namespace EverScord
         public const string TWEEN_OPEN_PORTAL = "OpenPortal";
         public const string TWEEN_CLOSE_PORTAL = "ClosePortal";
         public const string TWEEN_SHOW_SCREEN = "ShowScreen";
+        public const string TWEEN_SHOW_SCREEN_FROM1 = "ShowScreenFrom1";
         public const string TWEEN_COVER_SCREEN = "CoverScreen";
         public const string TWEEN_STAGE_NOTIFICATION = "StageNotification";
         public const string TWEEN_STAGE_NOTIFICATION_OFF= "StageNotificationOff";
         public const string TWEEN_STAGE_COUNTDOWN = "StageCountdown";
+        public const string TWEEN_LOGIN_IN = "LOGIN_IN";
+        public const string TWEEN_LOGIN_OUT = "LOGIN_OUT";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";

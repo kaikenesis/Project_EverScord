@@ -7,12 +7,21 @@ namespace EverScord
     public class TitleControl : MonoBehaviour
     {
         [SerializeField] private UILogin login;
-        [SerializeField] private DOTweenAnimation titleFadeOutTween, loginFadeTween, loginMoveTween;
+        [SerializeField] private GameObject titleArea, lobbyArea;
+        [SerializeField] private DOTweenAnimation titleFadeOutTween;
         private bool hasPressedAnything = false;
+
+        void Awake()
+        {
+            GameManager.Instance.InitControl(this);
+            titleArea.SetActive(true);
+            lobbyArea.SetActive(false);
+        }
 
         void Start()
         {
-            login.ShowLoginUI(false);
+            LoadingScreen.ShowScreenFrom1();
+            login.DisableLoginUI();
         }
 
         void Update()
@@ -31,12 +40,20 @@ namespace EverScord
 
             yield return new WaitForSeconds(0.3f);
             login.ShowLoginUI(true);
+        }
 
-            loginFadeTween.DORewind();
-            loginFadeTween.DOPlay();
+        public void TransitionLobby()
+        {
+            StartCoroutine(StartTransitionLobby());
+        }
 
-            loginMoveTween.DORewind();
-            loginMoveTween.DOPlay();
+        public IEnumerator StartTransitionLobby()
+        {
+            LoadingScreen.CoverScreen();
+            yield return new WaitForSeconds(2f);
+
+            lobbyArea.SetActive(true);
+            LoadingScreen.ShowScreen();
         }
     }
 }

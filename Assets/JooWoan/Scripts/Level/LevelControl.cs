@@ -174,7 +174,7 @@ namespace EverScord
             }
             yield return waitStageTransition;
 
-            GameManager.Instance.LoadScreen.CoverScreen();
+            LoadingScreen.CoverScreen();
             yield return waitStageFade;
 
             bool bCoverScreen = true;
@@ -188,7 +188,7 @@ namespace EverScord
 
             yield return new WaitForSeconds(0.8f);
 
-            GameManager.Instance.LoadScreen.ShowScreen();
+            LoadingScreen.ShowScreen();
             portalControl.PlayWarpEffect(false);
             yield return waitStageTransition;
 
@@ -237,12 +237,12 @@ namespace EverScord
         {
             IsLoadingLevel = true;
 
-            GameManager.Instance.LoadScreen.CoverScreen();
+            LoadingScreen.CoverScreen();
             yield return waitOneSec;
 
             GameManager.Instance.LoadScreen.ResetProgress();
             GameManager.Instance.LoadScreen.ImageHub.SetActive(true);
-            GameManager.Instance.LoadScreen.ShowScreen();
+            LoadingScreen.ShowScreen();
 
             if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
                 PhotonNetwork.LoadLevel(sceneName);
@@ -261,10 +261,10 @@ namespace EverScord
         {
             yield return waitLoadScreen;
 
-            GameManager.Instance.LoadScreen.CoverScreen();
+            LoadingScreen.CoverScreen();
             yield return new WaitForSeconds(3f);
 
-            GameManager.Instance.LoadScreen.ShowScreen();
+            LoadingScreen.ShowScreen();
             GameManager.Instance.LoadScreen.ImageHub.SetActive(false);
 
             IsLoadingLevel = false;
