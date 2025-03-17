@@ -39,6 +39,7 @@ namespace EverScord
         public const string TWEEN_STAGE_COUNTDOWN = "StageCountdown";
         public const string TWEEN_LOGIN_IN = "LOGIN_IN";
         public const string TWEEN_LOGIN_OUT = "LOGIN_OUT";
+        public const string TWEEN_LOBBYCAM_INTRO = "LobbyCamIntro";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";
