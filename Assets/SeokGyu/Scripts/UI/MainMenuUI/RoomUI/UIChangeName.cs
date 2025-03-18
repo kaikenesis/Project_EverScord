@@ -11,8 +11,14 @@ namespace EverScord
         [SerializeField] private GameObject warningText;
         [SerializeField] private Outline warningOutline;
         private string userName;
+        private ToggleObject toggleObject;
 
         public static Action<string> OnChangeName = delegate { };
+
+        private void Awake()
+        {
+            toggleObject = GetComponent<ToggleObject>();
+        }
 
         public void ChangeName()
         {
@@ -29,7 +35,7 @@ namespace EverScord
             userNameInput.text = "";
             warningOutline.enabled = false;
             warningText.SetActive(false);
-            gameObject.SetActive(false);
+            toggleObject.OnDeactivateObjects();
         }
 
         public void SetUserName()

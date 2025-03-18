@@ -56,6 +56,7 @@ namespace EverScord
         {
             if(bActivePopupWindow)
             {
+                SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupWindow = false;
                 popupWindow.OnDeactivateObjects();
                 return;
@@ -63,6 +64,7 @@ namespace EverScord
 
             if(bActiveProbabilitySheet)
             {
+                SoundManager.Instance.PlaySound("ButtonSound");
                 bActiveProbabilitySheet = false;
                 probabilitySheet.SetActive(false);
                 return;
@@ -70,6 +72,7 @@ namespace EverScord
 
             if(bActiveFactorOptionList)
             {
+                SoundManager.Instance.PlaySound("ButtonSound");
                 bActiveFactorOptionList = false;
                 factorOptionList.OnDeactivateObjects();
                 return;

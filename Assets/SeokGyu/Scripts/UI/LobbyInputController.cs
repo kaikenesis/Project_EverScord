@@ -72,6 +72,7 @@ namespace EverScord
         {
             if(bActiveSendInvite)
             {
+                SoundManager.Instance.PlaySound("ButtonSound");
                 bActiveSendInvite = false;
                 sendInvite.GetComponent<ToggleObject>().OnDeactivateObjects();
                 return;
@@ -79,11 +80,13 @@ namespace EverScord
 
             if(bActivePopupSetting)
             {
+                SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupSetting = false;
                 popupSetting.OnDeactivateObjects();
             }
             else
             {
+                SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupSetting = true;
                 popupSetting.OnActivateObjects();
             }
