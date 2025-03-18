@@ -68,6 +68,7 @@ namespace EverScord
         #endregion // Handle Methods
         public void StopMatch()
         {
+            SoundManager.Instance.PlaySound("ButtonSound");
             OnRequestStopMatch?.Invoke();
         }
 

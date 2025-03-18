@@ -1,10 +1,8 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace EverScord
 {
-    public class ToggleObject : MonoBehaviour
+    public class ToggleObject : MonoBehaviour, ISound
     {
         [SerializeField] protected GameObject[] toggleObjects;
         [SerializeField] protected ObjectOption[] objectOptions;
@@ -60,6 +58,11 @@ namespace EverScord
             {
                 toggleObjects[i].SetActive(!toggleObjects[i].activeSelf);
             }
+        }
+
+        public void PlayButtonSound()
+        {
+            SoundManager.Instance.PlaySound("ButtonSound");
         }
 
         [System.Serializable]

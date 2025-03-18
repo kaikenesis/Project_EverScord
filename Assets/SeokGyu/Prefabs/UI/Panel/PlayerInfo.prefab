@@ -69,6 +69,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8020469400386834151}
     m_Modifications:
+    - target: {fileID: 3371930261124651262, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: toggleObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 4340456035525968036}
     - target: {fileID: 7865248679746024354, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -161,11 +165,68 @@ PrefabInstance:
       propertyPath: m_Name
       value: NickNameBar
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    - target: {fileID: 7865248680116599018, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 343033306662308834}
+    - target: {fileID: 7865248680116599018, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlayButtonSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 7865248680116599018, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EverScord.ToggleObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8448393246846265238, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayButtonSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 8448393246846265238, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ChangeName
+      objectReference: {fileID: 0}
+    - target: {fileID: 8448393246846265238, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EverScord.ToggleObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8448393246846265238, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EverScord.UIChangeName, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9098633329881573838, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayButtonSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 9098633329881573838, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnDeactivateObjects
+      objectReference: {fileID: 0}
+    - target: {fileID: 9098633329881573838, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EverScord.ToggleObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5932150821823860333, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+    - {fileID: 5104820140365459715, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 8156801957593273135, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7865248679746024354, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4340456035525968037}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+--- !u!114 &343033306662308834 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3371930261124651262, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
+  m_PrefabInstance: {fileID: 3029007528932774684}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5129538729380847806 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7865248679746024354, guid: 3c93d0b3f9958d34491398e18423c099, type: 3}
@@ -182,6 +243,188 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &5266013542877840949
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5129538729380847806}
+    m_Modifications:
+    - target: {fileID: 8152841759039353384, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1031807800720188149}
+    - target: {fileID: 8152841759039353384, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 408990162502348094}
+    - target: {fileID: 8152841759039353384, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayButtonSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 8152841759039353384, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ChangeName
+      objectReference: {fileID: 0}
+    - target: {fileID: 8152841759039353384, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EverScord.ToggleObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8152841759039353384, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EverScord.UIChangeName, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 970
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 660
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185937, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_Name
+      value: ChangeNickname
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817722929783028848, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1031807800720188149}
+    - target: {fileID: 8817722929783028848, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayButtonSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817722929783028848, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnDeactivateObjects
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817722929783028848, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EverScord.ToggleObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4813776637196264637, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+--- !u!114 &408990162502348094 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5528631473050331915, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+  m_PrefabInstance: {fileID: 5266013542877840949}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340456035525968036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b401c80ccb077e46b2f6d07783c4470, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1031807800720188149 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5135533837761520832, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+  m_PrefabInstance: {fileID: 5266013542877840949}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340456035525968036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &4340456035525968036 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8442215952889185937, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+  m_PrefabInstance: {fileID: 5266013542877840949}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &4340456035525968037 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8442215952889185936, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+  m_PrefabInstance: {fileID: 5266013542877840949}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8169865768551164272
 PrefabInstance:
   m_ObjectHideFlags: 0

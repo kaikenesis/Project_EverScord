@@ -106,12 +106,14 @@ namespace EverScord
 
         public void ClickedExit()
         {
+            SoundManager.Instance.PlaySound("ButtonSound");
             OnClickedExit?.Invoke();
             gameObject.SetActive(false);
         }
 
         public void ClickedExile()
         {
+            SoundManager.Instance.PlaySound("ButtonSound");
             if (IsPlayerInCurrentRoom(nickName))
                 OnClickedExile?.Invoke(nickName);
             gameObject.SetActive(false);
