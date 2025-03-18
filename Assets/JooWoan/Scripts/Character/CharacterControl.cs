@@ -580,7 +580,7 @@ namespace EverScord.Character
                 Stats.CurrentHealth = Mathf.Max(0, Stats.CurrentHealth - (Stats.MaxHealth * 0.01f * amount));
 
             onDecreaseHealth?.Invoke();
-
+            SoundManager.Instance.PlaySound("PlayerHitted_Human");
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, Stats.CurrentHealth, false);
         }
