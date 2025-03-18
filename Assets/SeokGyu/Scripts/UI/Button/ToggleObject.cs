@@ -1,0 +1,99 @@
+using System;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace EverScord
+{
+    public class ToggleObject : MonoBehaviour
+    {
+        [SerializeField] protected GameObject[] toggleObjects;
+        [SerializeField] protected ObjectOption[] objectOptions;
+
+        private void Awake()
+        {
+            for (int i = 0; i < objectOptions.Length; i++)
+            {
+                objectOptions[i].Initialize();
+            }
+        }
+
+        public virtual void OnActivateObject(int index)
+        {
+            if (index >= toggleObjects.Length || index < 0) return;
+
+            toggleObjects[index].SetActive(true);
+        }
+
+        public virtual void OnActivateObjects()
+        {
+            for (int i = 0; i < toggleObjects.Length; i++)
+            {
+                toggleObjects[i].SetActive(true);
+            }
+        }
+
+        public virtual void OnDeactivateObject(int index)
+        {
+            if (index >= toggleObjects.Length || index < 0) return;
+
+            toggleObjects[index].SetActive(false);
+        }
+
+        public virtual void OnDeactivateObjects()
+        {
+            for (int i = 0; i < toggleObjects.Length; i++)
+            {
+                toggleObjects[i].SetActive(false);
+            }
+        }
+
+        public virtual void OnToggleObject(int index)
+        {
+            if (index >= toggleObjects.Length || index < 0) return;
+
+            toggleObjects[index].SetActive(!toggleObjects[index].activeSelf);
+        }
+
+        public virtual void OnToggleObjects()
+        {
+            for (int i = 0; i < toggleObjects.Length; i++)
+            {
+                toggleObjects[i].SetActive(!toggleObjects[i].activeSelf);
+            }
+        }
+
+        [System.Serializable]
+        public class ObjectOption
+        {
+            public enum EPosPreset
+            {
+                None,
+                MiddleCenter,
+                Custom
+            }
+
+            [SerializeField] private GameObject targetObject;
+            [SerializeField] private EPosPreset positionPreset;
+            [SerializeField] private Canvas canvas;
+            [SerializeField] private Vector2 offset;
+
+            public void Initialize()
+            {
+                switch(positionPreset)
+                {
+                    case EPosPreset.MiddleCenter:
+                        {
+                            targetObject.transform.position = canvas.transform.position;
+                            targetObject.GetComponent<RectTransform>().sizeDelta += offset;
+                        }
+                        break;
+                    case EPosPreset.Custom:
+                        {
+                            targetObject.transform.position += new Vector3(offset.x, offset.y, 0f);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+}

@@ -254,8 +254,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 764339032180311650}
-        m_TargetAssemblyTypeName: EverScord.UIToggleButton, Assembly-CSharp
-        m_MethodName: ToggleObject
+        m_TargetAssemblyTypeName: EverScord.ToggleObject, Assembly-CSharp
+        m_MethodName: OnDeactivateObjects
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -669,7 +669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5062ae83da4f57845ae6c5290e740059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggleObject:
+  toggleObjects:
   - {fileID: 7641422995611664616}
   pages:
   - {fileID: 48339401323848422}

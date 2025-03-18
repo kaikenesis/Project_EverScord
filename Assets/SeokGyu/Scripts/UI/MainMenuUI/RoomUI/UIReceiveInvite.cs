@@ -4,15 +4,15 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class UIInvite : MonoBehaviour
+    public class UIReceiveInvite : MonoBehaviour
     {
         [SerializeField] private string friendName;
         [SerializeField] private string roomName;
         [SerializeField] private TMP_Text friendNameText;
 
-        public static Action<UIInvite> OnInviteAccept = delegate { };
+        public static Action<UIReceiveInvite> OnInviteAccept = delegate { };
         public static Action<string> OnRoomInviteAccept = delegate { };
-        public static Action<UIInvite> OnInviteDecline = delegate { };
+        public static Action<UIReceiveInvite> OnInviteDecline = delegate { };
 
         public void Initialize(string friendName, string roomName)
         {

@@ -3,10 +3,12 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class UISelect : MonoBehaviour, ISystemSelector, IJobSelector, ILevelSelector
+    public class UISelect : MonoBehaviour
     {
         public static Action OnChangeUserData = delegate { };
+        public static Action OnChangeCharacter = delegate { };
         public static Action OnGameStart = delegate { };
+        public static Action OnUpdateReady = delegate { };
 
         public void GameStart()
         {
@@ -20,6 +22,33 @@ namespace EverScord
 #else
             Application.Quit();
 #endif
+        }
+
+        public void SelectNed()
+        {
+            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Ned)
+                return;
+
+            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Ned;
+            OnChangeCharacter?.Invoke();
+        }
+
+        public void SelectUni()
+        {
+            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Uni)
+                return;
+
+            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Uni;
+            OnChangeCharacter?.Invoke();
+        }
+
+        public void SelectUs()
+        {
+            if (GameManager.Instance.PlayerData.character == PlayerData.ECharacter.Us)
+                return;
+
+            GameManager.Instance.PlayerData.character = PlayerData.ECharacter.Us;
+            OnChangeCharacter?.Invoke();
         }
 
         public void SelectDealer()
@@ -60,6 +89,12 @@ namespace EverScord
 
             GameManager.Instance.PlayerData.difficulty = PlayerData.EDifficulty.Hard;
             OnChangeUserData?.Invoke();
+        }
+
+        public void SetReady(bool bReady)
+        {
+            GameManager.Instance.PlayerData.bReady = bReady;
+            OnUpdateReady?.Invoke();
         }
     }
 }

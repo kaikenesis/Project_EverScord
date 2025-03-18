@@ -6,30 +6,30 @@ namespace EverScord
     public class UIDisplayInvites : MonoBehaviour
     {
         [SerializeField] private Transform inviteContainer;
-        [SerializeField] private UIInvite uiInvitePrefab;
+        [SerializeField] private UIReceiveInvite uiInvitePrefab;
         [SerializeField] private Vector2 originalSize;
         [SerializeField] private Vector2 increaseSize;
 
         private RectTransform contentRect;
-        private List<UIInvite> invites;
+        private List<UIReceiveInvite> invites;
 
         private void Awake()
         {
-            invites = new List<UIInvite>();
+            invites = new List<UIReceiveInvite>();
             contentRect = inviteContainer.GetComponent<RectTransform>();
             originalSize = contentRect.sizeDelta;
             increaseSize = new Vector2(0, uiInvitePrefab.GetComponent<RectTransform>().sizeDelta.y);
 
             PhotonChatController.OnRoomInvite += HandleRoomInvite;
-            UIInvite.OnInviteAccept += HandleInviteAccept;
-            UIInvite.OnInviteDecline += HandleInviteDecline;
+            UIReceiveInvite.OnInviteAccept += HandleInviteAccept;
+            UIReceiveInvite.OnInviteDecline += HandleInviteDecline;
         }
 
         private void OnDestroy()
         {
             PhotonChatController.OnRoomInvite -= HandleRoomInvite;
-            UIInvite.OnInviteAccept -= HandleInviteAccept;
-            UIInvite.OnInviteDecline -= HandleInviteDecline;
+            UIReceiveInvite.OnInviteAccept -= HandleInviteAccept;
+            UIReceiveInvite.OnInviteDecline -= HandleInviteDecline;
         }
 
         private void HandleRoomInvite(string friend, string room)
@@ -37,13 +37,13 @@ namespace EverScord
             if (GameManager.Instance.PhotonData.state != PhotonData.EState.NONE) return;
 
             Debug.Log($"Room invite for {friend} to room {room}");
-            UIInvite uiInvite = Instantiate(uiInvitePrefab, inviteContainer);
+            UIReceiveInvite uiInvite = Instantiate(uiInvitePrefab, inviteContainer);
             uiInvite.Initialize(friend, room);
             contentRect.sizeDelta += increaseSize;
             invites.Add(uiInvite);
         }
 
-        private void HandleInviteAccept(UIInvite invite)
+        private void HandleInviteAccept(UIReceiveInvite invite)
         {
             if (invites.Contains(invite))
             {
@@ -52,7 +52,7 @@ namespace EverScord
             }
         }
 
-        private void HandleInviteDecline(UIInvite invite)
+        private void HandleInviteDecline(UIReceiveInvite invite)
         {
             if (invites.Contains(invite))
             {

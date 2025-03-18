@@ -149,11 +149,6 @@ namespace EverScord
             PlayerUI.SetCursor(CursorType.UIFOCUS);
         }
 
-        public void UpdateUserName(string newName)
-        {
-            PhotonNetwork.NickName = newName;
-        }
-
         public void UpdateMoney(int cost)
         {
             playerData.UpdateMoney(cost);
