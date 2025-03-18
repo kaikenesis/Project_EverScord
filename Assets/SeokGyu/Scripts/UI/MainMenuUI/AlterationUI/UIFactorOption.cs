@@ -26,6 +26,8 @@ namespace EverScord
 
         public void OnClicked()
         {
+            SoundManager.Instance.PlaySound("ButtonSound");
+
             OnSelectOption?.Invoke(typeNum, optionNum, value);
         }
     }

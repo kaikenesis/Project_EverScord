@@ -13,6 +13,7 @@ namespace EverScord
         public void GameStart()
         {
             OnGameStart?.Invoke();
+            SoundManager.Instance.PlaySound("ButtonGameStartSound");
         }
 
         public void QuitGame()
