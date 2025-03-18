@@ -8,16 +8,16 @@ namespace EverScord.Skill
     public class FlameControl : MonoBehaviour
     {
         private CharacterControl activator;
+        private CharacterSkillInfo skillInfo;
         private LayerMask targetLayer;
         private IDictionary<IEnemy, CooldownTimer> hurtTimerDict;
         private float hurtInterval;
-        private float flameBaseDamage;
 
-        public void Init(CharacterControl activator, float hurtInterval, float flameBaseDamage, LayerMask targetLayer)
+        public void Init(CharacterControl activator, float hurtInterval, CharacterSkillInfo skillInfo, LayerMask targetLayer)
         {
             this.activator = activator;
+            this.skillInfo = skillInfo;
             this.hurtInterval = hurtInterval;
-            this.flameBaseDamage = flameBaseDamage;
             this.targetLayer = targetLayer;
 
             hurtTimerDict = new Dictionary<IEnemy, CooldownTimer>();
@@ -42,10 +42,8 @@ namespace EverScord.Skill
             if (hurtTimerDict[enemy].IsCooldown)
                 return;
 
-            // Calculate flame total damage based on character stats
-            float totalFlameDamage = flameBaseDamage;
-
-            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, totalFlameDamage, enemy, true);
+            float flameDamage = DamageCalculator.GetSkillDamage(activator, skillInfo.skillDotDamage, skillInfo.skillCoefficient, enemy);
+            GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, flameDamage, enemy, true);
             hurtTimerDict[enemy].ResetElapsedTime();
         }
     }

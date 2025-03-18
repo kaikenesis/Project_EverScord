@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Augment;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 namespace EverScord.Character
 {
@@ -11,22 +10,25 @@ namespace EverScord.Character
         private const float SPEED_FACTOR = 0.01f * 2f;
         [SerializeField] private float currentHealth;
 
-        public Action OnCooldownBonusUpdated;
+        public static Action<float> OnHealthUpdated = delegate { };
+        public Action OnStatEnhanced = delegate { };
+
+        public IDictionary<StatType, StatBonus> BonusDict => bonusDict;
+        public bool IsInitialized => bonusDict != null;
+
         private CharacterControl character;
         private IDictionary<StatType, StatBonus> bonusDict;
         private float maxHealth, moveSpeed, attack, critChance, defense, healthRegen;
 
-        public static Action<float> OnHealthUpdated = delegate { };
-
         void Awake()
         {
-            OnCooldownBonusUpdated -= UpdateSkillTimers;
-            OnCooldownBonusUpdated += UpdateSkillTimers;
+            OnStatEnhanced -= UpdateSkillTimers;
+            OnStatEnhanced += UpdateSkillTimers;
         }
 
-        void Oestroy()
+        void OnDestroy()
         {
-            OnCooldownBonusUpdated -= UpdateSkillTimers;
+            OnStatEnhanced -= UpdateSkillTimers;
         }
 
         void Update()
@@ -37,7 +39,11 @@ namespace EverScord.Character
 
         public void InitBaseStat(CharacterControl character)
         {
+            if (IsInitialized)
+                return;
+
             bonusDict = new Dictionary<StatType, StatBonus>();
+
             int statCount = (int)StatType.END;
 
             for (int i = 0; i < statCount; i++)
@@ -47,14 +53,14 @@ namespace EverScord.Character
             string tag = PlayerData.GetCharacterName(character.CharacterType);
             StatInfo info = StatData.StatInfoDict[tag];
 
-            maxHealth           = info.health;
-            healthRegen         = info.healthRegen;
-            attack              = info.attack;
-            defense             = info.defense;
-            critChance          = info.critChance;
-            moveSpeed           = info.speed * SPEED_FACTOR;
+            maxHealth       = info.health;
+            healthRegen     = info.healthRegen;
+            attack          = info.attack;
+            defense         = info.defense;
+            critChance      = info.critChance;
+            moveSpeed       = info.speed * SPEED_FACTOR;
 
-            currentHealth       = MaxHealth;
+            currentHealth   = MaxHealth;
 
             if (character.CharacterJob == PlayerData.EJob.Healer)
                 attack = info.supportAttack;
@@ -231,7 +237,7 @@ namespace EverScord.Character
                 return;
             
             bonusDict[type] = StatBonus.CreateBonus(additive, multiplicative);
-            OnCooldownBonusUpdated?.Invoke();
+            OnStatEnhanced?.Invoke();
         }
 
         private void UpdateSkillTimers()
@@ -240,10 +246,9 @@ namespace EverScord.Character
                 character.SkillList[i].SkillAction.SetNewCooldown();
         }
 
-
         private void DebugStats()
         {
-            Debug.Log("===============================================");
+            Debug.Log($"{character.CharacterType.ToString()}===============================================");
             Debug.Log($"Max HP: {MaxHealth}");
             Debug.Log($"SPEED: {Speed}");
             Debug.Log($"ATK: {Attack}");
@@ -253,7 +258,7 @@ namespace EverScord.Character
             Debug.Log($"Alteration COOLDOWN-:Additive: {bonusDict[StatType.COOLDOWN_DECREASE].additive}, Mult: {bonusDict[StatType.COOLDOWN_DECREASE].multiplicative}");
             Debug.Log($"Alteration RELOAD-: Additive: {bonusDict[StatType.RELOADSPEED_DECREASE].additive}, Mult: {bonusDict[StatType.RELOADSPEED_DECREASE].multiplicative}");
             Debug.Log($"Alteration SKILLDMG+: Additive: {bonusDict[StatType.SKILLDAMAGE_INCREASE].additive}, Mult: {bonusDict[StatType.SKILLDAMAGE_INCREASE].multiplicative}");
-            Debug.Log("===============================================");
+            Debug.Log($"{character.CharacterType.ToString()}===============================================");
         }
     }
     

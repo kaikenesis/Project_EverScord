@@ -29,11 +29,12 @@ namespace EverScord.Skill
                 return;
 
             Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, skillRadius, GameManager.EnemyLayer);
-            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
 
             for (int i = 0; i < colliders.Length; i++)
             {
                 IEnemy enemy = colliders[i].GetComponent<IEnemy>();
+
+                float calculatedDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient, enemy);
                 GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
 
                 if (enemy is BossRPC boss)
@@ -49,8 +50,8 @@ namespace EverScord.Skill
             Collider[] colliders = Physics.OverlapSphere(grenadeImpactPosition, skillRadius, GameManager.PlayerLayer);
             var players = new CharacterControl[colliders.Length];
 
-            float totalHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
-            float dotHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDotDamage);
+            float totalHealAmount = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient);
+            float dotHealAmount = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage, SkillInfo.skillCoefficient);
 
             for (int i = 0; i < colliders.Length; i++)
             {

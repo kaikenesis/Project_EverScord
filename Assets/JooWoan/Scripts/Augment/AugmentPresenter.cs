@@ -360,7 +360,10 @@ namespace EverScord.Augment
             player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
             player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
 
-            player.Stats.OnCooldownBonusUpdated?.Invoke();
+            if (PhotonNetwork.IsConnected)
+                player.CharacterPhotonView.RPC(nameof(player.SyncArmor), RpcTarget.Others, selectedHelmetTag, selectedVestTag, selectedShoesTag, enhanceIndex);
+
+            player.Stats.OnStatEnhanced?.Invoke();
 
             enhanceIndex++;
             enhanceCount++;
@@ -416,6 +419,22 @@ namespace EverScord.Augment
             }
 
             return null;
+        }
+
+        public void SyncPlayerArmor(bool isHealer, string helmetTag, string vestTag, string shoesTag, int enhanceIndex)
+        {
+            var helmetAugmentDict = augmentData.OffenseHelmetAugmentDict;
+
+            if (isHealer)
+                helmetAugmentDict = augmentData.SupportHelmetAugmentDict;
+
+            HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[selectedHelmetTag][enhanceIndex];
+            VestAugment vestAugment = (VestAugment)augmentData.VestAugmentDict[selectedVestTag][enhanceIndex];
+            ShoesAugment shoesAugment = (ShoesAugment)augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex];
+
+            player.SetArmor(new HelmetDecorator(player.CharacterHelmet, helmetAugment));
+            player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
+            player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
         }
     }
 

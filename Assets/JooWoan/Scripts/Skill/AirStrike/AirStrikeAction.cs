@@ -20,7 +20,6 @@ namespace EverScord.Skill
         private GameObject bomb, healCircle;
         private WaitForSeconds waitStrikeInterval, waitBombDrop, waitZoneDuration;
         private AircraftControl aircraft1, aircraft2, aircraft3;
-        private float calculatedImpact, calculatedDotAmount;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
@@ -42,18 +41,12 @@ namespace EverScord.Skill
             if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
-                calculatedImpact = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
-                calculatedDotAmount = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage);
-
                 bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.BombEffectReference.AssetGUID);
                 _ = ResourceManager.Instance.CreatePool(Skill.ExplosionEffectReference.AssetGUID, 5);
             }
             else
             {
                 targetLayer = GameManager.PlayerLayer;
-                calculatedImpact = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
-                calculatedDotAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDotDamage);
-
                 healCircle = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealZoneEffectReference.AssetGUID);
                 _ = ResourceManager.Instance.CreatePool(Skill.HealExplosionReference.AssetGUID, 5);
             }
@@ -121,12 +114,14 @@ namespace EverScord.Skill
                 if (ejob == PlayerData.EJob.Dealer)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedImpact, enemy);
+                    float bombDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient, enemy);
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, bombDamage, enemy);
                 }
                 else
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                    player.IncreaseHP(activator, calculatedImpact, true);
+                    float bombHeal = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient);
+                    player.IncreaseHP(activator, bombHeal, true);
                 }
             }
         }
@@ -166,7 +161,7 @@ namespace EverScord.Skill
                     flameControl.Init(
                         activator,
                         Skill.ZoneInfluenceInterval,
-                        calculatedDotAmount,
+                        SkillInfo,
                         targetLayer
                     );
                 }
@@ -177,7 +172,7 @@ namespace EverScord.Skill
                     healZoneControl.Init(
                         activator,
                         Skill.ZoneInfluenceInterval,
-                        calculatedDotAmount,
+                        SkillInfo,
                         targetLayer
                     );
                 }

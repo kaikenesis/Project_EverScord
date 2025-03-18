@@ -143,7 +143,6 @@ namespace EverScord.Character
             UIMarker.Initialize(PointMarkData.EType.Player);
             AnimationControl.Init(photonView);
             weapon.Init(this);
-            Stats.InitBaseStat(this);
 
             RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
             RigControl.Init(AnimationControl.Anim.transform, GetComponent<Animator>(), weapon);
@@ -157,8 +156,7 @@ namespace EverScord.Character
 
         void OnEnable()
         {
-            if (photonView.IsMine && Stats)
-                EnableRegenerateHP(true);
+            EnableRegenerateHP(true);
         }
 
         void Start()
@@ -167,11 +165,9 @@ namespace EverScord.Character
             SetReviveCircle();
             SetEffects();
             SetPortraits();
+            EnableRegenerateHP(true);
 
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
-
-            if (photonView.IsMine)
-                EnableRegenerateHP(true);
         }
 
         void Update()
@@ -385,6 +381,8 @@ namespace EverScord.Character
         {
             if (!photonView.IsMine)
                 return;
+
+            Stats.InitBaseStat(this);
 
             for (int i = 0; i < skillList.Count; i++)
             {
@@ -609,6 +607,12 @@ namespace EverScord.Character
 
         public void EnableRegenerateHP(bool state)
         {
+            if (!Stats.IsInitialized)
+                return;
+
+            if (!CharacterPhotonView.IsMine)
+                return;
+
             if (hpRegenCoroutine != null)
                 StopCoroutine(hpRegenCoroutine);
             
@@ -716,10 +720,7 @@ namespace EverScord.Character
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, transform.position);
             UIMarker.ToggleDeathIcon();
 
-            if (photonView.IsMine)
-            {
-                EnableRegenerateHP(true);
-            }
+            EnableRegenerateHP(true);
         }
 
         public void PlayHitEffects()
@@ -885,7 +886,10 @@ namespace EverScord.Character
             CharacterJob = (PlayerData.EJob)characterJob;
             CharacterType = (PlayerData.ECharacter)characterType;
 
+            Stats.InitBaseStat(this);
             skillList[index].Init(this, index, (PlayerData.EJob)characterJob);
+
+            EnableRegenerateHP(true);
         }
 
         [PunRPC]
@@ -1055,6 +1059,13 @@ namespace EverScord.Character
         private void CreatePortrait()
         {
             OnPhotonViewListUpdated?.Invoke();
+        }
+
+        [PunRPC]
+        public void SyncArmor(string helmetTag, string vestTag, string shoesTag, int enhanceIndex)
+        {
+            bool isHealer = CharacterJob == PlayerData.EJob.Healer;
+            GameManager.Instance.AugmentControl.SyncPlayerArmor(isHealer, helmetTag, vestTag, shoesTag, enhanceIndex);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
