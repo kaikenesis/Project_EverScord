@@ -35,7 +35,7 @@ namespace EverScord
             userNameInput.text = "";
             warningOutline.enabled = false;
             warningText.SetActive(false);
-            toggleObject.OnDeactivateObjects();
+            toggleObject.PlayDoTween(true);
         }
 
         public void SetUserName()

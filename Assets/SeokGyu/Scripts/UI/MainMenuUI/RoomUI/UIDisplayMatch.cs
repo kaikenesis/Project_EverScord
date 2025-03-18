@@ -26,12 +26,13 @@ namespace EverScord
             PhotonMatchController.OnStopTimer += HandleStopTimer;
             PhotonMatchController.OnMatchComplete += HandleMatchComplete;
 
-            seconds = 0;
-            minutes = 0;
             rectTransform = GetComponent<RectTransform>();
             rectTransform.anchoredPosition = startPos;
+
+            Initialize();
+
+            
             gameObject.SetActive(false);
-            DOTweenAnimation doTweenAnim = GetComponent<DOTweenAnimation>();
         }
 
         private void OnDestroy()
@@ -41,11 +42,20 @@ namespace EverScord
             PhotonMatchController.OnMatchComplete -= HandleMatchComplete;
         }
 
+        public void Initialize()
+        {
+            seconds = 0;
+            minutes = 0;
+            timerText.text = $"경과시간 {minutes} : {seconds}";
+
+            gameObject.SetActive(false);
+        }
+
         #region Handle Methods
         private void HandleStartTimer()
         {
             gameObject.SetActive(true);
-            rectTransform.DOAnchorPos(movePos, 1.0f, false);
+            DOTween.PlayForward("MatchPanel");
 
             bPlayTimer = true;
             StartCoroutine(UpdateTimer());
@@ -53,7 +63,8 @@ namespace EverScord
 
         private void HandleStopTimer()
         {
-            StartCoroutine(MoveAnchorPos());
+            bPlayTimer = false;
+            DOTween.PlayBackwards("MatchPanel");
         }
         private void HandleMatchComplete()
         {
@@ -88,20 +99,6 @@ namespace EverScord
 
                 yield return new WaitForSeconds(1.0f);
             }
-        }
-
-        private IEnumerator MoveAnchorPos()
-        {
-            bPlayTimer = false;
-            rectTransform.DOAnchorPos(startPos, 1.0f, false);
-
-            yield return new WaitForSeconds(1.0f);
-
-            seconds = 0;
-            minutes = 0;
-            timerText.text = $"경과시간 {minutes} : {seconds}";
-
-            gameObject.SetActive(false);
         }
     }
 }

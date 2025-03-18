@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace EverScord
@@ -6,6 +7,9 @@ namespace EverScord
     {
         [SerializeField] protected GameObject[] toggleObjects;
         [SerializeField] protected ObjectOption[] objectOptions;
+        [SerializeField] private string doTweenID;
+        private bool bReverse = false;
+        private bool bActive = false;
 
         private void Awake()
         {
@@ -63,6 +67,40 @@ namespace EverScord
         public void PlayButtonSound()
         {
             SoundManager.Instance.PlaySound("ButtonSound");
+        }
+
+        public void PlayDoTween(bool bReverse)
+        {
+            if(bActive == false && bReverse == false)
+            {
+                bActive = true;
+                this.bReverse = true;
+                OnActivateObjects();
+                DOTween.PlayForward(doTweenID);
+            }
+            else if(bActive == true && bReverse == true)
+            {
+                bActive = false;
+                this.bReverse = false;
+                DOTween.PlayBackwards(doTweenID);
+            }
+        }
+
+        public void PlayDoTweenToggleObjects()
+        {
+            if (!bReverse)
+            {
+                bActive = true;
+                bReverse = true;
+                OnActivateObjects();
+                DOTween.PlayForward(doTweenID);
+            }
+            else
+            {
+                bActive = false;
+                bReverse = false;
+                DOTween.PlayBackwards(doTweenID);
+            }
         }
 
         [System.Serializable]
