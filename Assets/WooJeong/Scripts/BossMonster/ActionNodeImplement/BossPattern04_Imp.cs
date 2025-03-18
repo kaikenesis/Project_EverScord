@@ -23,6 +23,7 @@ public class BossPattern04_Imp : AttackNodeImplement
         bossRPC.PlayAnimation("StandingAttack");
         yield return bossRPC.ProjectEnable(5, 1f);
         bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);
+        bossRPC.PlaySound("BossPattern04");
         //충돌 판정
         foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
         {

@@ -158,15 +158,15 @@ public abstract class NController : MonoBehaviour, IEnemy
         }
     }
 
-    public void PlaySound(string soundName)
+    public void PlaySound(string soundName, float volume = 1.0f)
     {
-        photonView.RPC(nameof(SyncNMSound), RpcTarget.All, soundName);
+        photonView.RPC(nameof(SyncNMSound), RpcTarget.All, soundName, volume);
     }
 
     [PunRPC]
-    protected void SyncNMSound(string soundName)
+    protected void SyncNMSound(string soundName, float volume)
     {
-        SoundManager.Instance.PlaySound(soundName);
+        SoundManager.Instance.PlaySound(soundName, volume);
     }
 
     public void StopSound(string soundName)

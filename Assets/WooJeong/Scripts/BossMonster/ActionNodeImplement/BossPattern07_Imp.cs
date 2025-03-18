@@ -21,6 +21,7 @@ public class BossPattern07_Imp : AttackNodeImplement
     {
         bossRPC.PlayAnimation("Shoot");
         yield return new WaitForSeconds(0.5f);
+        bossRPC.PlaySound("BossPatternShoot");
         Vector3[] dirs = { transform.forward, transform.right, -transform.forward, -transform.right };
 
         for (int i = 0; i < 7; i++)

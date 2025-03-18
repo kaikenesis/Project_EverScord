@@ -36,15 +36,16 @@ public class BossPattern06_Imp : AttackNodeImplement
         Debug.Log("Attack7 start");
         bossRPC.PlayAnimation("StandingAttack");
         safePos = transform.position + transform.forward * safeStartDistance;
-        bossRPC.SetPositionScaleP7_SafeZone(safePos, safeScale);
-        bossRPC.SetActivePattern7(true);
+        bossRPC.SetPositionScaleP6_SafeZone(safePos, safeScale);
+        bossRPC.SetActivePattern6(true);
+        bossRPC.PlaySound("BossPattern06");
         yield return new WaitForSeconds(1f);
         StartCoroutine(MoveSafePos(attackLifeTime));   
         StartCoroutine(Attack(attackLifeTime));
         yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1f);
         bossRPC.PlayAnimation("Idle");
         yield return new WaitForSeconds(4f);
-        bossRPC.SetActivePattern7(false);
+        bossRPC.SetActivePattern6(false);
         Debug.Log("Attack7 end");
         curTime = 0;
         isEnd = true;
@@ -86,7 +87,7 @@ public class BossPattern06_Imp : AttackNodeImplement
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             safePos = Vector3.Lerp(startPoint, endPoint, t / duration);
-            bossRPC.MoveP7_SafeZone(safePos);
+            bossRPC.MoveP6_SafeZone(safePos);
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }

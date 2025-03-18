@@ -27,6 +27,7 @@ public class BossPattern12_Imp : AttackNodeImplement
             }
             yield return new WaitForSeconds(1.5f);
             bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);
+            bossRPC.PlaySound("BossPattern04");
             yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1.5f);
         }
         isEnd = true;

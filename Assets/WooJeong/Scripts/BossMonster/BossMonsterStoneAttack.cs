@@ -90,6 +90,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         HP--;
         if (HP <= 0)
         {
+            SoundManager.Instance.PlaySound("BossPatternStoneBreak");
             sphereCollider.enabled = false;
             effectParticle.Play();
             yield return new WaitForSeconds(effectParticle.main.duration - 1f);

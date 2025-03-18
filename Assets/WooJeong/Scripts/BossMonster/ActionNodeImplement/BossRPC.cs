@@ -140,6 +140,28 @@ public class BossRPC : MonoBehaviour, IEnemy
         animator.CrossFade(animationName, transitionDuration, -1, 0);
     }
 
+    public void PlaySound(string soundName, float volume = 1.0f)
+    {
+        photonView.RPC(nameof(SyncBossSound), RpcTarget.All, soundName, volume);
+    }
+
+    [PunRPC]
+    private void SyncBossSound(string soundName, float volume)
+    {
+        SoundManager.Instance.PlaySound(soundName, volume);
+    }
+
+    public void StopSound(string soundName)
+    {
+        photonView.RPC(nameof(SyncBossStopSound), RpcTarget.All, soundName);
+    }
+
+    [PunRPC]
+    private void SyncBossStopSound(string soundName)
+    {
+        SoundManager.Instance.StopSound(soundName);
+    }
+
     public void PlayEffect(string effectName, Vector3 pos)
     {
         photonView.RPC("SyncEffect", RpcTarget.All, effectName, pos);
@@ -158,6 +180,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void PlayJumpEffect()
     {
         photonView.RPC("SyncJumpEffect", RpcTarget.All);
+        PlaySound("NMS1_1");
     }
 
     [PunRPC]
@@ -287,7 +310,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         }
     }
 
-    public void SetActivePattern7(bool tf)
+    public void SetActivePattern6(bool tf)
     {
         photonView.RPC("SyncFog", RpcTarget.All, tf);
     }
@@ -307,27 +330,38 @@ public class BossRPC : MonoBehaviour, IEnemy
             safeZone.GetComponent<ParticleSystem>().Play();
     }
 
-    public void SetPositionScaleP7_SafeZone(Vector3 pos, float size)
+    public void SetPositionScaleP6_SafeZone(Vector3 pos, float size)
     {
-        photonView.RPC("SyncPositionScaleP7_SafeZone", RpcTarget.All, pos, size);
+        photonView.RPC(nameof(SyncPositionScaleP6_SafeZone), RpcTarget.All, pos, size);
     }
 
     [PunRPC]
-    private void SyncPositionScaleP7_SafeZone(Vector3 pos, float size)
+    private void SyncPositionScaleP6_SafeZone(Vector3 pos, float size)
     {
         safeZone.transform.position = pos;
         safeZone.transform.localScale = new Vector3(size, 1, size);
     }
 
-    public void MoveP7_SafeZone(Vector3 pos)
+    public void MoveP6_SafeZone(Vector3 pos)
     {
-        photonView.RPC("SyncP7_SafePosition", RpcTarget.All, pos);
+        photonView.RPC(nameof(SyncP6_SafePosition), RpcTarget.All, pos);
     }
 
     [PunRPC]
-    private void SyncP7_SafePosition(Vector3 pos)
+    private void SyncP6_SafePosition(Vector3 pos)
     {
         safeZone.transform.position = pos;
+    }
+
+    private IEnumerator MoveSafePos(float duration, Vector3 endPoint)
+    {
+        Vector3 startPoint = transform.position + transform.forward * 4;
+
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            safeZone.transform.position = Vector3.Lerp(startPoint, endPoint, t / duration);
+            yield return null;
+        }
     }
 
     public void DecreaseHP(float hp, CharacterControl attacker)
@@ -464,6 +498,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         if (bossShield.HP > 0)
         {
             PlayEffect("P15_Attack", transform.position);
+            PlaySound("BossPattern15_Attack");
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
                 player.DecreaseHP(50);

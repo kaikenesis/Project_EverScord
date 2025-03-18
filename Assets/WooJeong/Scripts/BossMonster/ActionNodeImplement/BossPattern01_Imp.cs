@@ -32,6 +32,7 @@ public class BossPattern01_Imp : ActionNodeImplement
         Debug.Log("Attack1");
         bossRPC.PlayAnimation("Shoot");
         yield return new WaitForSeconds(0.5f);
+        bossRPC.PlaySound("BossPatternShoot");
         for (int i = 0; i < 7; i++)
         {
             Vector3 pos = transform.position + transform.forward * 2;

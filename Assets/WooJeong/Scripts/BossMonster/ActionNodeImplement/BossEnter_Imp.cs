@@ -33,7 +33,9 @@ public class BossEnter_Imp : ActionNodeImplement
         yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 4 * 3);
 
         bossRPC.PlayAnimation("Roar");
+        bossRPC.PlaySound("BossRoarSound");
         yield return new WaitForSeconds(bossRPC.clipDict["Roar"]);
+        bossRPC.StopSound("BossRoarSound");
         isEnd = true;
         Debug.Log("Enter end");
     }
