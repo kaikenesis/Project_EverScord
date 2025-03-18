@@ -8,7 +8,7 @@ public class BossPattern07_Imp : AttackNodeImplement
     private float damage;
     private void Start()
     {
-        damage = bossRPC.BossMonsterData.SkillDatas[6].SkillDamage;
+        damage = bossRPC.BossMonsterData.SkillDatas[6].MaxHpBasedDamage;
     }
 
     protected override void Awake()

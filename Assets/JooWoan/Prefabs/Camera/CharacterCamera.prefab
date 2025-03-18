@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9047991624842570687}
   - component: {fileID: 6716463709426020098}
+  - component: {fileID: 7032677012788360198}
   m_Layer: 0
   m_Name: CharacterCamera
   m_TagString: MainCamera
@@ -47,6 +48,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Cam>k__BackingField: {fileID: 743369422225487233}
   smoothTime: 0.3
+--- !u!81 &7032677012788360198
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3024066775647037444}
+  m_Enabled: 1
 --- !u!1 &7349522964782437245
 GameObject:
   m_ObjectHideFlags: 0

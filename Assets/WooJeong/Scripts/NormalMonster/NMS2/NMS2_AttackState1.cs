@@ -9,7 +9,7 @@ public class NMS2_AttackState1 : NAttackState
 
     private void Start()
     {
-        damage = monsterController.monsterData.Skill02_Damage;
+        damage = monsterController.monsterData.Skill01_Damage;
     }
 
     protected override IEnumerator Attack()

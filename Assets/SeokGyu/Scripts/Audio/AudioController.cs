@@ -10,7 +10,6 @@ namespace EverScord
         Master,
         BGM,
         SFX,
-        UI
     }
 
     public class AudioController : MonoBehaviour

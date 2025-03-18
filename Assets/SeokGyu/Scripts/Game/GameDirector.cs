@@ -15,6 +15,7 @@ namespace EverScord
 
             SpawnPhotonPrefabs();
             CreatePlayer();
+            SoundManager.Instance.PlayBGM("InGameBGM01");
         }
 
         public void SpawnPhotonPrefabs()

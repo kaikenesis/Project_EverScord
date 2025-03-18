@@ -26,6 +26,7 @@ namespace EverScord
             }
 
             OnConnectToPhoton?.Invoke(userName);
+            SoundManager.Instance.PlaySound("ButtonSound");
         }
 
         public void SetUserName()

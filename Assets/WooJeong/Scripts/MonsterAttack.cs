@@ -1,12 +1,14 @@
 using DTT.AreaOfEffectRegions;
 using EverScord.Character;
+using EverScord.Skill;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class MonsterAttack : MonoBehaviour
 {
-    private float attackDamage;
+    private float baseAttack;
+    private float skillDamage;
     [SerializeField] GameObject circleProjectorObject;
     [SerializeField] SRPCircleRegionProjector circleProjector;
     private CapsuleCollider capCollider;
@@ -19,11 +21,12 @@ public class MonsterAttack : MonoBehaviour
         capCollider.isTrigger = true;
     }
 
-    public void Setup(float width, float projectTime, string effectAddressableKey, float attackDamage)
+    public void Setup(float width, float projectTime, string effectAddressableKey, float baseAttack, float skillDamage)
     {
         this.projectTime = projectTime;
         this.effectAddressableKey = effectAddressableKey;
-        this.attackDamage = attackDamage;
+        this.baseAttack = baseAttack;
+        this.skillDamage = skillDamage;
         circleProjector.Radius = width;
         capCollider.radius = width/2;
 
@@ -72,7 +75,8 @@ public class MonsterAttack : MonoBehaviour
         if(other.gameObject.CompareTag("Player"))
         {
             CharacterControl control = other.gameObject.GetComponent<CharacterControl>();
-            control.DecreaseHP(attackDamage);
+            float totalDamage = DamageCalculator.GetSkillDamage(baseAttack, skillDamage, 0, 0, control.Defense);
+            control.DecreaseHP(totalDamage);
         }
     }
 }

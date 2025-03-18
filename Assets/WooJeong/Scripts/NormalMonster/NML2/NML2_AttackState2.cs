@@ -12,6 +12,7 @@ public class NML2_AttackState2 : NAttackState
     {
         float time = monsterController.clipDict["Attack2"];
         monsterController.PlayAnimation("Attack2");
+        monsterController.PlaySound("NML2_2");
 
         for (int i = 0; i < 3; i++)
         {
@@ -20,7 +21,7 @@ public class NML2_AttackState2 : NAttackState
         }
 
         yield return new WaitForSeconds(time - 6f);
-
+        monsterController.StopSound("NML2_@");
         StartCoroutine(monsterController.CoolDown2());
         attack = null;
         Exit();

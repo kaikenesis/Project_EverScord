@@ -117,7 +117,7 @@ namespace EverScord.Weapons
                     if (hit.transform.gameObject.layer == GameManager.EnemyLayerNumber)
                     {
                         IEnemy monster = hit.transform.GetComponent<IEnemy>();
-
+                        
                         float calculatedDamage = DamageCalculator.GetBulletDamage(ViewID);
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(shooter, calculatedDamage, monster, false);
                     }

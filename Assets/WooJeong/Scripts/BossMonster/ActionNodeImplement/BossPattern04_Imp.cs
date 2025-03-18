@@ -1,5 +1,6 @@
 using EverScord;
 using EverScord.Character;
+using EverScord.Skill;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +8,13 @@ using UnityEngine;
 public class BossPattern04_Imp : AttackNodeImplement
 {
     private float attackRadius = 10;
+    private float damage;
 
     protected override void Awake()
     {
         base.Awake();
         attackableHP = 80;
+        damage = bossRPC.BossMonsterData.SkillDatas[3].SkillDamage;
     }
 
     protected override IEnumerator Act()

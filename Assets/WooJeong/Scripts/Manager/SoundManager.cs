@@ -12,33 +12,8 @@ public class SoundManager : Singleton<SoundManager>
     private List<AudioSource> audioSourcePool = new List<AudioSource>();
 
     [SerializeField] private AudioMixer audioMixer;
-
     [SerializeField] private AudioMixerGroup bgmMixerGroup;
     [SerializeField] private AudioMixerGroup sfxMixerGroup;
-    [SerializeField] private AudioMixerGroup uiMixerGroup;
-
-    [System.Serializable]
-    public class SoundClip
-    {
-        public string name;
-        public AudioClip clip;
-        public SoundCategory category;
-        [Range(0f, 1f)] public float volume = 1f;
-        public bool loop = false;
-        [Range(0.1f, 3f)] public float pitch = 1f;
-        [Range(0f, 1f)] public float spatialBlend = 0f; // 0: 2D, 1: 3D
-    }
-
-    public enum SoundCategory
-    {
-        Master,
-        BGM,
-        SFX,
-        UI
-    }
-
-    [SerializeField] private List<SoundClip> soundClips = new List<SoundClip>();
-    private Dictionary<string, SoundClip> soundClipDict = new Dictionary<string, SoundClip>();
 
     private AudioSource currentBGM;
 
@@ -52,21 +27,10 @@ public class SoundManager : Singleton<SoundManager>
 
     private void InitializeSoundManager()
     {
+        Debug.Log("Init sound manager");
         for (int i = 0; i < audioSourcePoolSize; i++)
         {
             CreateAudioSource();
-        }
-
-        foreach (SoundClip clip in soundClips)
-        {
-            if (!soundClipDict.ContainsKey(clip.name))
-            {
-                soundClipDict.Add(clip.name, clip);
-            }
-            else
-            {
-                Debug.LogWarning($"중복된 사운드 클립 이름이 있습니다: {clip.name}");
-            }
         }
 
         //LoadVolumeSettings();
@@ -95,43 +59,18 @@ public class SoundManager : Singleton<SoundManager>
 
     public AudioSource PlaySound(string soundName)
     {
-        if (!soundClipDict.TryGetValue(soundName, out SoundClip clip))
-        {
-            Debug.LogWarning($"사운드 클립을 찾을 수 없습니다: {soundName}");
+        AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
+        if (audioClip == null)
             return null;
-        }
-
-        return PlaySound(clip);
+        return PlaySound(audioClip);
     }
 
-    public AudioSource PlaySound(SoundClip clip)
-    {
+    public AudioSource PlaySound(AudioClip clip)
+    {        
         AudioSource source = GetAvailableAudioSource();
-        source.clip = clip.clip;
-        source.volume = clip.volume;
-        source.loop = clip.loop;
-        source.pitch = clip.pitch;
-        source.spatialBlend = clip.spatialBlend;
-        
-        switch (clip.category)
-        {
-            case SoundCategory.BGM:
-                source.outputAudioMixerGroup = bgmMixerGroup;
-                if (currentBGM != null && currentBGM.isPlaying)
-                {
-                    StopCoroutine(nameof(FadeOutBGM));
-                    StartCoroutine(FadeOutBGM(currentBGM, 1.0f));
-                }
-                currentBGM = source;
-                break;
-            case SoundCategory.SFX:
-                source.outputAudioMixerGroup = sfxMixerGroup;
-                break;
-            case SoundCategory.UI:
-                source.outputAudioMixerGroup = uiMixerGroup;
-                break;
-        }
-
+        source.clip = clip;        
+        source.outputAudioMixerGroup = sfxMixerGroup;
+        source.spatialBlend = 0;
         source.Play();
         return source;
     }
@@ -139,15 +78,33 @@ public class SoundManager : Singleton<SoundManager>
     // 3D 사운드 재생
     public AudioSource PlaySoundAtPosition(string soundName, Vector3 position)
     {
-        if (!soundClipDict.TryGetValue(soundName, out SoundClip clip))
-        {
-            Debug.Log($"사운드 클립을 찾을 수 없습니다: {soundName}");
-            return null;
-        }
-
-        AudioSource source = PlaySound(clip);
+        AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
+        AudioSource source = PlaySound(audioClip);
+        source.spatialBlend = 1;
+        source.outputAudioMixerGroup = sfxMixerGroup;
         source.transform.position = position;
         return source;
+    }
+
+    public void PlayBGM(string soundName, float duration = 1.0f)
+    {
+        AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
+
+        AudioSource source = GetAvailableAudioSource();
+        source.clip = audioClip;
+        source.volume = 0;
+        source.loop = true;
+        source.outputAudioMixerGroup = bgmMixerGroup;
+        
+        if (currentBGM != null && currentBGM.isPlaying)
+        {
+            StopCoroutine(nameof(FadeOutBGM));
+            StartCoroutine(FadeOutBGM(currentBGM, duration));
+        }
+
+        currentBGM = source;
+        source.Play();
+        StartCoroutine(FadeInRoutine(source, 1, duration));
     }
 
     private IEnumerator FadeOutBGM(AudioSource source, float duration)
@@ -162,31 +119,6 @@ public class SoundManager : Singleton<SoundManager>
 
         source.Stop();
         source.volume = startVolume;
-    }
-
-    public void FadeInBGM(string soundName, float duration)
-    {
-        if (!soundClipDict.TryGetValue(soundName, out SoundClip clip))
-        {
-            Debug.Log($"사운드 클립을 찾을 수 없습니다: {soundName}");
-            return;
-        }
-
-        AudioSource source = GetAvailableAudioSource();
-        source.clip = clip.clip;
-        source.volume = 0;
-        source.loop = clip.loop;
-        source.outputAudioMixerGroup = bgmMixerGroup;
-
-        if (currentBGM != null && currentBGM.isPlaying)
-        {
-            StopCoroutine(nameof(FadeOutBGM));
-            StartCoroutine(FadeOutBGM(currentBGM, duration));
-        }
-
-        currentBGM = source;
-        source.Play();
-        StartCoroutine(FadeInRoutine(source, clip.volume, duration));
     }
 
     private IEnumerator FadeInRoutine(AudioSource source, float targetVolume, float duration)
@@ -204,7 +136,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         foreach (AudioSource source in audioSourcePool)
         {
-            if (source.isPlaying && source.clip == soundClipDict[soundName].clip)
+            if (source.isPlaying && source.clip.name == soundName)
             {
                 source.Stop();
             }
@@ -219,7 +151,7 @@ public class SoundManager : Singleton<SoundManager>
         }
     }
 
-    public void SetVolume(SoundCategory category, float volumePercent)
+    public void SetVolume(EAudioMixerType category, float volumePercent)
     {
         // 볼륨을 데시벨로 변환 (0-1 값을 사용)
         float volumeDB = volumePercent <= 0 ? MIN_VOLUME_DB : Mathf.Log10(volumePercent) * 20;
@@ -228,7 +160,7 @@ public class SoundManager : Singleton<SoundManager>
         //SaveVolumeSettings(category, volumePercent);
     }
 
-    private void SaveVolumeSettings(SoundCategory category, float volume)
+    private void SaveVolumeSettings(EAudioMixerType category, float volume)
     {
         PlayerPrefs.SetFloat(category.ToString() + "Volume", volume);
         PlayerPrefs.Save();
@@ -236,10 +168,9 @@ public class SoundManager : Singleton<SoundManager>
 
     private void LoadVolumeSettings()
     {
-        SetVolume(SoundCategory.Master, PlayerPrefs.GetFloat("MasterVolume", 1.0f));
-        SetVolume(SoundCategory.BGM, PlayerPrefs.GetFloat("BGMVolume", 1.0f));
-        SetVolume(SoundCategory.SFX, PlayerPrefs.GetFloat("SFXVolume", 1.0f));
-        SetVolume(SoundCategory.UI, PlayerPrefs.GetFloat("UIVolume", 1.0f));
+        SetVolume(EAudioMixerType.Master, PlayerPrefs.GetFloat("MasterVolume", 1.0f));
+        SetVolume(EAudioMixerType.BGM, PlayerPrefs.GetFloat("BGMVolume", 1.0f));
+        SetVolume(EAudioMixerType.SFX, PlayerPrefs.GetFloat("SFXVolume", 1.0f));
     }
 
     public void ResetVolumeSettings()
@@ -249,26 +180,5 @@ public class SoundManager : Singleton<SoundManager>
         PlayerPrefs.DeleteKey("SFXVolume");
         PlayerPrefs.DeleteKey("UIVolume");
         PlayerPrefs.Save();
-    }
-
-    public void AddSoundClip(AudioClip clip, string name, SoundCategory category, float volume = 1f, bool loop = false)
-    {
-        if (soundClipDict.ContainsKey(name))
-        {
-            Debug.Log($"이미 존재하는 사운드 이름입니다: {name}");
-            return;
-        }
-
-        SoundClip newClip = new SoundClip
-        {
-            name = name,
-            clip = clip,
-            category = category,
-            volume = volume,
-            loop = loop
-        };
-
-        soundClips.Add(newClip);
-        soundClipDict.Add(name, newClip);
     }
 }

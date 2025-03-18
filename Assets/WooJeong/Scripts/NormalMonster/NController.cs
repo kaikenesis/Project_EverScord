@@ -2,6 +2,7 @@ using EverScord;
 using EverScord.Character;
 using EverScord.Effects;
 using EverScord.Pool;
+using EverScord.Skill;
 using Photon.Pun;
 using System;
 using System.Collections;
@@ -157,6 +158,27 @@ public abstract class NController : MonoBehaviour, IEnemy
         }
     }
 
+    public void PlaySound(string soundName)
+    {
+        photonView.RPC(nameof(SyncNMSound), RpcTarget.All, soundName);
+    }
+
+    [PunRPC]
+    protected void SyncNMSound(string soundName)
+    {
+        SoundManager.Instance.PlaySound(soundName);
+    }
+
+    public void StopSound(string soundName)
+    {
+        photonView.RPC(nameof(SyncStopSound), RpcTarget.All, soundName);
+    }
+
+    protected void SyncStopSound(string soundName)
+    {
+        SoundManager.Instance.StopSound(soundName);
+    }
+
     protected virtual void SetHealthBar()
     {
         if (healthBarObject != null)
@@ -176,13 +198,13 @@ public abstract class NController : MonoBehaviour, IEnemy
             return;
         if (other.gameObject.CompareTag("Player"))
         {
+            float totalDamage = 0f;
             CharacterControl controller = other.GetComponent<CharacterControl>();
             if (LastAttack == 1)
-                Debug.Log("Attack1");
+                totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill01_Damage, 0, 0, controller.Defense);
             else
-                Debug.Log("Attack2");
-
-            controller.DecreaseHP(10);
+                totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill02_Damage, 0, 0, controller.Defense);
+            controller.DecreaseHP(totalDamage);
         }
     }
 
@@ -191,17 +213,17 @@ public abstract class NController : MonoBehaviour, IEnemy
         GUID = guid;
     }
 
-    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage)
+    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
     {
-        photonView.RPC(nameof(SyncMonsterAttack), RpcTarget.All, pos, width, projectTime, addressableKey, attackDamage);
+        photonView.RPC(nameof(SyncMonsterAttack), RpcTarget.All, pos, width, projectTime, addressableKey, skillDamage);
     }
 
     [PunRPC]
-    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float attackDamage)
+    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
         MonsterAttack ma = go.GetComponent<MonsterAttack>();
-        ma.Setup(width, projectTime, addressableKey, attackDamage);
+        ma.Setup(width, projectTime, addressableKey, monsterData.BaseAttackDamage, skillDamage);
     }
 
     public void DecreaseHP(float damage, CharacterControl attacker)
@@ -321,7 +343,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         Animator.CrossFade(animationName, 0.3f, -1, 0);
     }
 
-    public void Fire(string projectileName, float damage)
+    public void Fire(string projectileName, float skillDamage)
     {
         Vector3 position = transform.position + transform.forward * 2;
         float projectileSpeed = 20;
@@ -337,8 +359,8 @@ public abstract class NController : MonoBehaviour, IEnemy
         else
             id = mp.ID;
 
-        mp.Setup(projectileName, id, position, transform.forward, damage, projectileSpeed);
-        photonView.RPC(nameof(SyncProjectileNM), RpcTarget.Others, projectileName, id, position, transform.forward, damage, projectileSpeed);
+        mp.Setup(projectileName, id, position, transform.forward, monsterData.BaseAttackDamage, skillDamage, projectileSpeed);
+        photonView.RPC(nameof(SyncProjectileNM), RpcTarget.Others, projectileName, id, position, transform.forward, skillDamage, projectileSpeed);
     }
 
     [PunRPC]
@@ -347,7 +369,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterProjectile", position, Quaternion.identity);
         MonsterProjectile mp = go.GetComponent<MonsterProjectile>();
         GameManager.Instance.ProjectileController.AddDict(id, mp);
-        mp.Setup(projectileName, id, position, transform.forward, damage, projectileSpeed);
+        mp.Setup(projectileName, id, position, direction, monsterData.BaseAttackDamage, damage, projectileSpeed);
     }
 
     public void SetActiveHitbox(bool value)
@@ -514,5 +536,10 @@ public abstract class NController : MonoBehaviour, IEnemy
     public BlinkEffect GetBlinkEffect()
     {
         return blinkEffect;
+    }
+
+    public float GetDefense()
+    {
+        return monsterData.Defense;
     }
 }

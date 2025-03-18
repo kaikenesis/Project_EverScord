@@ -23,12 +23,13 @@ public class NML1_AttackState2 : NAttackState
     {
         startVector = transform.position;
         moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        //yield return project = StartCoroutine(monsterController.ProjectAttackRange(2));
+        
         controller.PhotonView.RPC(nameof(SyncProjectLineIndicator), RpcTarget.All, 1.0f);
         yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
-        
+        monsterController.PlaySound("NML1_2");
+
         yield return new WaitForSeconds(time / 4);
         monsterController.BoxCollider2.enabled = true;
         StartCoroutine(Charge(1f));

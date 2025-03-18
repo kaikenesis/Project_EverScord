@@ -41,4 +41,9 @@ public class BossShield : MonoBehaviour, IEnemy
     {
         return blinkEffect;
     }
+
+    public float GetDefense()
+    {
+        return 0;
+    }
 }

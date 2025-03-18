@@ -28,12 +28,12 @@ public class BossData : ScriptableObject, IData
         MaxHP = stat_1.health;
         BaseAttack1 = stat_1.attack;
         Defense1 = stat_1.defense;
-        Speed1 = stat_1.speed;
+        Speed1 = stat_1.speed * 0.01f;
 
         StatInfo stat_2 = StatData.StatInfoDict["FB_B"];
         MaxHP_Phase2 = stat_2.health;
         BaseAttack2 = stat_2.attack;
         Defense2 = stat_2.defense;
-        Speed2 = stat_2.speed;
+        Speed2 = stat_2.speed * 0.01f;
     }
 }
