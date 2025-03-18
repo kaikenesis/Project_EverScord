@@ -57,5 +57,21 @@ namespace EverScord
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
         }
+
+        public void LobbyToAlteration()
+        {
+            DOTween.Rewind(ConstStrings.TWEEN_LOBBY2ALTERATION);
+            DOTween.Play(ConstStrings.TWEEN_LOBBY2ALTERATION);
+
+            // callback: Btn_Alteration - UIToggleButton.ToggleObject()
+        }
+
+        public void AlterationToLobby()
+        {
+            DOTween.Rewind(ConstStrings.TWEEN_ALTERATION2LOBBY);
+            DOTween.Play(ConstStrings.TWEEN_ALTERATION2LOBBY);
+
+            // callback: AlterationPanel - ReturnButton - UIToggleButton.ToggleObject()
+        }
     }
 }
