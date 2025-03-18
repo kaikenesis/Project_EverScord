@@ -1403,6 +1403,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870358345603182341}
     m_Modifications:
+    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1393903660169672399}
+    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Play
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: LoginPhoton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.AudioSource, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952426102266, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EverScord.PhotonLogin, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8442215952889185936, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1514,6 +1538,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 9003756052642509182}
   m_SourcePrefab: {fileID: 100100000, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+--- !u!82 &1393903660169672399 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1363860984413731038, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
+  m_PrefabInstance: {fileID: 123087752860864017}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8403027539141953664 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8442215952889185937, guid: 83ddb60cea51d664ba9a451293834eec, type: 3}
@@ -1888,7 +1917,7 @@ MonoBehaviour:
   hasOnPlay: 0
   hasOnUpdate: 0
   hasOnStepComplete: 0
-  hasOnComplete: 0
+  hasOnComplete: 1
   hasOnTweenCreated: 0
   hasOnRewind: 0
   onStart:
@@ -1905,7 +1934,19 @@ MonoBehaviour:
       m_Calls: []
   onComplete:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8403027539141953664}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onTweenCreated:
     m_PersistentCalls:
       m_Calls: []

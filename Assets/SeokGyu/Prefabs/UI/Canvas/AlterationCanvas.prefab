@@ -2330,21 +2330,42 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3956488190590916835, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
       propertyPath: toggleObjects.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3956488190590916835, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
       propertyPath: toggleObjects.Array.data[0]
       value: 
       objectReference: {fileID: 4594022062394619460}
     - target: {fileID: 8207361345405533160, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207361345405533160, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
+      objectReference: {fileID: 8368418096521954446}
+    - target: {fileID: 8207361345405533160, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: AlterationToLobby
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207361345405533160, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EverScord.TitleControl, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207361345405533160, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
+--- !u!82 &8368418096521954446 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1430473818697199279, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
+  m_PrefabInstance: {fileID: 7491887170799872545}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8580483700495791451 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1219498887639834490, guid: 3a4dd8a8a129b4641a11b457d10edd79, type: 3}
