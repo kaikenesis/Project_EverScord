@@ -52,8 +52,10 @@ namespace EverScord
             LoadingScreen.CoverScreen();
             yield return new WaitForSeconds(2f);
 
+            login.ToggleLobbyCanvas();
             lobbyArea.SetActive(true);
             LoadingScreen.ShowScreen();
+
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
         }
