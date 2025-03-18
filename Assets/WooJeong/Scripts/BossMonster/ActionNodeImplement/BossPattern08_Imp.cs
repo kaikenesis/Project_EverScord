@@ -24,6 +24,9 @@ public class BossPattern08_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
+        bossRPC.PlayAnimation("Shoot");
+        yield return new WaitForSeconds(0.5f);
+        bossRPC.PlaySound("BossPattern08");
         List<CharacterControl> controls = new List<CharacterControl>();
         foreach(var player in GameManager.Instance.PlayerDict.Values)
         {
@@ -32,8 +35,7 @@ public class BossPattern08_Imp : AttackNodeImplement
         }
         int randInt = Random.Range(0, controls.Count);
         controls[randInt].ApplyDebuff(CharState.STUNNED, attackCount);
-        bossRPC.PlayAnimation("Shoot");
-        yield return new WaitForSeconds(bossRPC.clipDict["Shoot"]);
+        yield return new WaitForSeconds(bossRPC.clipDict["Shoot"] - 0.5f);
         isEnd = true;
         action = null;
         yield return null;

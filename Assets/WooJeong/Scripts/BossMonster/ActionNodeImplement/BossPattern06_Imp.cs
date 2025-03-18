@@ -6,22 +6,24 @@ using UnityEngine;
 
 public class BossPattern06_Imp : AttackNodeImplement
 {
-    private float attackDamage = 1;
     //private float attackRadius = 100;
     private float attackLifeTime = 4;
     protected float safeRange = 7.5f;
     protected float safeScale = 0.7f;
     private float curTime = 0;
-    private float attackSpan = 0.1f;
+    private float attackSpan = 1f;
     private Vector3 safePos = Vector3.zero;
     private float safeStartDistance = 4;
     private float randomRange = 10;
     protected int failurePhase = 2;
+    protected float damage;
+    private Dictionary<CharacterControl, float> hitPlayers = new();
 
     protected override void Awake()
     {
         base.Awake();
         attackableHP = 60;
+        damage = bossRPC.BossMonsterData.SkillDatas[5].SkillDotDamage;
     }
 
     public override NodeState Evaluate()
@@ -33,19 +35,24 @@ public class BossPattern06_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack7 start");
+        Debug.Log("Attack6 start");
         bossRPC.PlayAnimation("StandingAttack");
         safePos = transform.position + transform.forward * safeStartDistance;
-        bossRPC.SetPositionScaleP7_SafeZone(safePos, safeScale);
-        bossRPC.SetActivePattern7(true);
+        bossRPC.SetPositionScaleP6_SafeZone(safePos, safeScale);
+        bossRPC.SetActivePattern6(true);
+        bossRPC.PlaySound("BossPattern06");
         yield return new WaitForSeconds(1f);
-        StartCoroutine(MoveSafePos(attackLifeTime));   
+        Vector3 endPoint = new Vector3(safePos.x + Random.Range(-randomRange, randomRange),
+            safePos.y, safePos.z + Random.Range(-randomRange, randomRange));
+        bossRPC.MoveP6_SafeZone(attackLifeTime, endPoint);
         StartCoroutine(Attack(attackLifeTime));
         yield return new WaitForSeconds(bossRPC.clipDict["StandingAttack"] - 1f);
+
         bossRPC.PlayAnimation("Idle");
         yield return new WaitForSeconds(4f);
-        bossRPC.SetActivePattern7(false);
-        Debug.Log("Attack7 end");
+        bossRPC.SetActivePattern6(false);
+
+        Debug.Log("Attack6 end");
         curTime = 0;
         isEnd = true;
         action = null;
@@ -54,6 +61,7 @@ public class BossPattern06_Imp : AttackNodeImplement
 
     private IEnumerator Attack(float time)
     {
+        hitPlayers.Clear();
         while (true)
         {
             curTime += attackSpan;
@@ -65,29 +73,26 @@ public class BossPattern06_Imp : AttackNodeImplement
 
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                // float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
+                if(hitPlayers.ContainsKey(player))
+                    hitPlayers[player] -= Time.deltaTime;
+
                 float distanceToSafe = Vector3.Distance(player.PlayerTransform.position, safePos);
+
                 if (distanceToSafe > safeRange/2)
                 {
-                    player.DecreaseHP(attackDamage);
-                    Debug.Log("p7 hit");
+                    if (hitPlayers.ContainsKey(player) == false)
+                    {
+                        hitPlayers[player] = attackSpan;
+                        player.DecreaseHP(damage, true);
+                    }
+                    else if (hitPlayers[player] <= 0)
+                    {
+                        hitPlayers.Add(player, attackSpan);
+                        player.DecreaseHP(damage, true);
+                    }
                 }
             }
-            yield return new WaitForSeconds(attackSpan);
-        }
-    }
-
-    private IEnumerator MoveSafePos(float duration)
-    {
-        Vector3 startPoint = safePos;
-        Vector3 endPoint = new Vector3(safePos.x + Random.Range(-randomRange, randomRange), 
-            safePos.y, safePos.z + Random.Range(-randomRange, randomRange));
-
-        for (float t = 0f; t < duration; t += Time.deltaTime)
-        {
-            safePos = Vector3.Lerp(startPoint, endPoint, t / duration);
-            bossRPC.MoveP7_SafeZone(safePos);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
     }
 }

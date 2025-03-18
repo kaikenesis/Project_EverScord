@@ -25,9 +25,24 @@ public class SoundManager : Singleton<SoundManager>
         InitializeSoundManager();
     }
 
+    private void Start()
+    {
+        LevelControl.OnLevelUpdated += ManageBGM;
+    }
+
+    private void ManageBGM(int curStageNum, bool bCoverScreen)
+    {
+        if (bCoverScreen == false)
+            return;
+
+        if ((curStageNum + 1) % 2 == 1)
+            PlayBGM("InGameBGM01");
+        else
+            PlayBGM("InGameBGM02");
+    }
+
     private void InitializeSoundManager()
     {
-        Debug.Log("Init sound manager");
         for (int i = 0; i < audioSourcePoolSize; i++)
         {
             CreateAudioSource();
@@ -57,18 +72,32 @@ public class SoundManager : Singleton<SoundManager>
         return CreateAudioSource();
     }
 
-    public AudioSource PlaySound(string soundName)
+    public AudioSource PlaySound(string soundName, float volume = 1.0f, bool playOnly = false)
     {
+        if (playOnly)
+        {
+            foreach (AudioSource asc in audioSourcePool)
+            {
+                if (asc.isPlaying && asc.clip.name == soundName)
+                {
+                    return asc;
+                }
+            }
+        }
         AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
+        audioClip.name = soundName;
+
         if (audioClip == null)
             return null;
-        return PlaySound(audioClip);
+        return PlaySound(audioClip, volume);
     }
 
-    public AudioSource PlaySound(AudioClip clip)
+    public AudioSource PlaySound(AudioClip clip, float volume)
     {        
         AudioSource source = GetAvailableAudioSource();
-        source.clip = clip;        
+        source.clip = clip;
+        source.loop = false;
+        source.volume = volume;
         source.outputAudioMixerGroup = sfxMixerGroup;
         source.spatialBlend = 0;
         source.Play();
@@ -76,12 +105,21 @@ public class SoundManager : Singleton<SoundManager>
     }
 
     // 3D 사운드 재생
-    public AudioSource PlaySoundAtPosition(string soundName, Vector3 position)
+    public AudioSource PlaySoundAtPosition(string soundName, Vector3 position, float volume = 1.0f, bool playOnly = false)
     {
+        if (playOnly)
+        {
+            foreach (AudioSource asc in audioSourcePool)
+            {
+                if (asc.isPlaying && asc.clip.name == soundName)
+                {
+                    return asc;
+                }
+            }
+        }
         AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
-        AudioSource source = PlaySound(audioClip);
+        AudioSource source = PlaySound(audioClip, volume);
         source.spatialBlend = 1;
-        source.outputAudioMixerGroup = sfxMixerGroup;
         source.transform.position = position;
         return source;
     }
@@ -98,8 +136,8 @@ public class SoundManager : Singleton<SoundManager>
         
         if (currentBGM != null && currentBGM.isPlaying)
         {
-            StopCoroutine(nameof(FadeOutBGM));
-            StartCoroutine(FadeOutBGM(currentBGM, duration));
+            StopCoroutine(nameof(FadeOutSound));
+            StartCoroutine(FadeOutSound(currentBGM, duration));
         }
 
         currentBGM = source;
@@ -107,7 +145,7 @@ public class SoundManager : Singleton<SoundManager>
         StartCoroutine(FadeInRoutine(source, 1, duration));
     }
 
-    private IEnumerator FadeOutBGM(AudioSource source, float duration)
+    private IEnumerator FadeOutSound(AudioSource source, float duration)
     {
         float startVolume = source.volume;
 
@@ -138,7 +176,7 @@ public class SoundManager : Singleton<SoundManager>
         {
             if (source.isPlaying && source.clip.name == soundName)
             {
-                source.Stop();
+                StartCoroutine(FadeOutSound(source, 1f));
             }
         }
     }

@@ -14,6 +14,7 @@ public class MonsterAttack : MonoBehaviour
     private CapsuleCollider capCollider;
     private float projectTime;
     private string effectAddressableKey;
+    private string soundName;
 
     private void Awake()
     {
@@ -21,12 +22,13 @@ public class MonsterAttack : MonoBehaviour
         capCollider.isTrigger = true;
     }
 
-    public void Setup(float width, float projectTime, string effectAddressableKey, float baseAttack, float skillDamage)
+    public void Setup(float width, float projectTime, string effectAddressableKey, float baseAttack, float skillDamage ,string soundName)
     {
         this.projectTime = projectTime;
         this.effectAddressableKey = effectAddressableKey;
         this.baseAttack = baseAttack;
         this.skillDamage = skillDamage;
+        this.soundName = soundName;
         circleProjector.Radius = width;
         capCollider.radius = width/2;
 
@@ -39,7 +41,7 @@ public class MonsterAttack : MonoBehaviour
     public IEnumerator Attack()
     {
         yield return StartCoroutine(ProjectCircle(projectTime));
-
+        SoundManager.Instance.PlaySound(soundName);
         capCollider.enabled = true;
         GameObject effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
         ParticleSystem effectParticle = effect.GetComponent<ParticleSystem>();

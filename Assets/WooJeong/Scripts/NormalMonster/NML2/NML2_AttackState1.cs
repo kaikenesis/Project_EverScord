@@ -18,8 +18,8 @@ public class NML2_AttackState1 : NAttackState
                     + monsterController.clipDict["Attack1_Loop"]
                     + monsterController.clipDict["Attack1_End"];
         monsterController.PlaySound("NML2_1");
-        yield return new WaitForSeconds(time);        
-
+        yield return new WaitForSeconds(time);
+        monsterController.StopSound("NML2_1");
         StartCoroutine(monsterController.CoolDown1());
         attack = null;
         Exit();
@@ -43,7 +43,8 @@ public class NML2_AttackState1 : NAttackState
             monsterController.monsterData.Skill01_RangeX,
             monsterController.monsterData.ProjectionTime,
             "NML2_A1_Effect01",
-            monsterController.monsterData.Skill01_Damage);
+            monsterController.monsterData.Skill01_Damage,
+            "NML2_Floor");
 
         if (player2 != null)
         {
@@ -52,7 +53,8 @@ public class NML2_AttackState1 : NAttackState
                 monsterController.monsterData.Skill01_RangeX,
                 monsterController.monsterData.ProjectionTime,
                 "NML2_A1_Effect01",
-                monsterController.monsterData.Skill01_Damage);
+                monsterController.monsterData.Skill01_Damage,
+                "NML2_Floor");
         }
     }
 }

@@ -23,14 +23,16 @@ public class BossPattern05_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack6 start");
+        Debug.Log("Attack5 start");
         bossRPC.PlayAnimation("RotatingShot", 0);
         yield return new WaitForSeconds(1.5f);
         bossRPC.LaserEnable(laserLifeTime);
+        bossRPC.PlaySound("BossPatternLaser");
         yield return new WaitForSeconds(laserLifeTime);
+        bossRPC.StopSound("BossPatternLaser");
         bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
-        Debug.Log("Attack6 end");
+        Debug.Log("Attack5 end");
     }
 }

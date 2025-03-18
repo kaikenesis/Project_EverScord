@@ -134,14 +134,19 @@ namespace EverScord.Weapons
             animControl.Play(animControl.AnimInfo.Reload);
 
             float reloadTime = shooter.Stats.DecreasedReload(ReloadTime);
-            yield return new WaitForSeconds(reloadTime);
+
+            for(int i = 0; i < 3; i++)
+            {
+                SoundManager.Instance.PlaySound("ReloadingLoad");
+                yield return new WaitForSeconds(reloadTime/3);
+            }
 
             shooter.SetIsAiming(true);
             shooter.RigControl.SetAimWeight(true);
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, false);
 
             yield return new WaitForSeconds(animControl.AnimInfo.ShootStance.length * ANIM_TRANSITION);
-
+            SoundManager.Instance.PlaySound("ReloadingPump");
             CurrentAmmo = MaxAmmo;
             cooldownTimer.ResetElapsedTime();
             isReloading = false;
@@ -178,7 +183,7 @@ namespace EverScord.Weapons
 
             if (!PhotonNetwork.IsConnected)
                 return;
-
+            SoundManager.Instance.PlaySound("Shoot");
             photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);
         }
 

@@ -21,7 +21,7 @@ public class NML2_AttackState2 : NAttackState
         }
 
         yield return new WaitForSeconds(time - 6f);
-        monsterController.StopSound("NML2_@");
+        monsterController.StopSound("NML2_2");
         StartCoroutine(monsterController.CoolDown2());
         attack = null;
         Exit();
@@ -34,6 +34,7 @@ public class NML2_AttackState2 : NAttackState
             monsterController.monsterData.Skill02_RangeX,
             monsterController.monsterData.ProjectionTime,
             "NML2_A2_Effect",
-            monsterController.monsterData.Skill02_Damage);
+            monsterController.monsterData.Skill02_Damage,
+            "NML2_Floor");
     }
 }

@@ -61,6 +61,9 @@ public class MonsterSpawner : MonoBehaviour
             curTime += Time.deltaTime;
             float timeUntilSpawn = spawnTimer - curTime;
 
+            if (AllPlayerDead() == true)
+                yield break;
+
             if (curTime > spawnTimer)
             {
                 mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
@@ -99,6 +102,20 @@ public class MonsterSpawner : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private bool AllPlayerDead()
+    {
+        int playerCount = 0;
+        foreach (var player in GameManager.Instance.PlayerDict.Values)
+        {
+            if (player.IsDead)
+                playerCount++;
+        }
+        if (playerCount != GameManager.Instance.PlayerDict.Count)
+            return false;
+
+        return true;
     }
 
     private void SpawnSmoke()

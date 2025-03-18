@@ -18,8 +18,10 @@ public class NMM2_AttackState1 : NAttackState
         monsterController.PlayAnimation("Attack1");
         float time = monsterController.clipDict["Attack1"];
 
+        yield return new WaitForSeconds(0.6f);
         capsuleCollider.enabled = true;
-        yield return new WaitForSeconds(time);
+        monsterController.PlaySound("NMM2_1");
+        yield return new WaitForSeconds(time - 0.6f);
         capsuleCollider.enabled = false;
         StartCoroutine(monsterController.CoolDown1());
         attack = null;

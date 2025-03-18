@@ -140,6 +140,28 @@ public class BossRPC : MonoBehaviour, IEnemy
         animator.CrossFade(animationName, transitionDuration, -1, 0);
     }
 
+    public void PlaySound(string soundName, float volume = 1.0f)
+    {
+        photonView.RPC(nameof(SyncBossSound), RpcTarget.All, soundName, volume);
+    }
+
+    [PunRPC]
+    private void SyncBossSound(string soundName, float volume)
+    {
+        SoundManager.Instance.PlaySound(soundName, volume);
+    }
+
+    public void StopSound(string soundName)
+    {
+        photonView.RPC(nameof(SyncBossStopSound), RpcTarget.All, soundName);
+    }
+
+    [PunRPC]
+    private void SyncBossStopSound(string soundName)
+    {
+        SoundManager.Instance.StopSound(soundName);
+    }
+
     public void PlayEffect(string effectName, Vector3 pos)
     {
         photonView.RPC("SyncEffect", RpcTarget.All, effectName, pos);
@@ -158,6 +180,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void PlayJumpEffect()
     {
         photonView.RPC("SyncJumpEffect", RpcTarget.All);
+        PlaySound("NMS1_1");
     }
 
     [PunRPC]
@@ -287,9 +310,11 @@ public class BossRPC : MonoBehaviour, IEnemy
         }
     }
 
-    public void SetActivePattern7(bool tf)
+    public void SetActivePattern6(bool tf)
     {
-        photonView.RPC("SyncFog", RpcTarget.All, tf);
+        float damage = bossData.SkillDatas[4].SkillDamage;
+        laserPoint.GetComponent<BossLaser>().SetDamage(damage, BaseAttack);
+        photonView.RPC(nameof(SyncFog), RpcTarget.All, tf);
     }
 
     [PunRPC]
@@ -307,27 +332,38 @@ public class BossRPC : MonoBehaviour, IEnemy
             safeZone.GetComponent<ParticleSystem>().Play();
     }
 
-    public void SetPositionScaleP7_SafeZone(Vector3 pos, float size)
+    public void SetPositionScaleP6_SafeZone(Vector3 pos, float size)
     {
-        photonView.RPC("SyncPositionScaleP7_SafeZone", RpcTarget.All, pos, size);
+        photonView.RPC(nameof(SyncPositionScaleP6_SafeZone), RpcTarget.All, pos, size);
     }
 
     [PunRPC]
-    private void SyncPositionScaleP7_SafeZone(Vector3 pos, float size)
+    private void SyncPositionScaleP6_SafeZone(Vector3 pos, float size)
     {
         safeZone.transform.position = pos;
         safeZone.transform.localScale = new Vector3(size, 1, size);
     }
 
-    public void MoveP7_SafeZone(Vector3 pos)
+    public void MoveP6_SafeZone(float duration, Vector3 endPoint)
     {
-        photonView.RPC("SyncP7_SafePosition", RpcTarget.All, pos);
+        photonView.RPC(nameof(SyncP6_SafePosition), RpcTarget.All, duration, endPoint);
     }
 
     [PunRPC]
-    private void SyncP7_SafePosition(Vector3 pos)
+    private void SyncP6_SafePosition(float duration, Vector3 endPoint)
     {
-        safeZone.transform.position = pos;
+        StartCoroutine(MoveSafePos(duration, endPoint));
+    }
+
+    private IEnumerator MoveSafePos(float duration, Vector3 endPoint)
+    {
+        Vector3 startPoint = transform.position + transform.forward * 4;
+
+        for (float t = 0f; t < duration; t += Time.deltaTime)
+        {
+            safeZone.transform.position = Vector3.Lerp(startPoint, endPoint, t / duration);
+            yield return null;
+        }
     }
 
     public void DecreaseHP(float hp, CharacterControl attacker)
@@ -388,6 +424,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void LaserEnable(float enableTime)
     {
+        laserPoint.GetComponent<BossLaser>().SetDamage(bossData.SkillDatas[4].SkillDamage, BaseAttack);
         photonView.RPC("SyncLaser", RpcTarget.All, enableTime);
     }
 
@@ -404,17 +441,17 @@ public class BossRPC : MonoBehaviour, IEnemy
         return;
     }
 
-    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, float skillDamage)
+    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, float skillDamage, string soundName)
     {
-        photonView.RPC(nameof(SyncStoneAttack), RpcTarget.All, pos, width, projectTime, effectAddressableKey, skillDamage);
+        photonView.RPC(nameof(SyncStoneAttack), RpcTarget.All, pos, width, projectTime, effectAddressableKey, skillDamage, soundName);
     }
 
     [PunRPC]
-    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
+    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage, string soundName)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
         MonsterAttack ma = go.GetComponent<MonsterAttack>();        
-        ma.Setup(width, projectTime, addressableKey, BaseAttack, skillDamage);
+        ma.Setup(width, projectTime, addressableKey, BaseAttack, skillDamage, soundName);
     }
 
     public void InstantiateStoneAttack2(Vector3 pos, float width, float projectTime, string effectAddressableKey, float attackDamage)
@@ -422,7 +459,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         GameObject go = ResourceManager.Instance.GetFromPool("BossMonsterStoneAttack", pos, Quaternion.identity);
         PhotonView view = go.GetComponent<PhotonView>();
         BossMonsterStoneAttack ma = go.GetComponent<BossMonsterStoneAttack>();
-        ma.Setup(width, projectTime, effectAddressableKey, attackDamage);
+        ma.Setup(width, projectTime, effectAddressableKey, attackDamage, BaseAttack);
         if (view.ViewID == 0)
         {
             if (PhotonNetwork.AllocateViewID(view))
@@ -448,7 +485,7 @@ public class BossRPC : MonoBehaviour, IEnemy
             view.ViewID = viewID;
         }
         BossMonsterStoneAttack ma = go.GetComponent<BossMonsterStoneAttack>();
-        ma.Setup(width, projectTime, addressableKey, attackDamage);
+        ma.Setup(width, projectTime, addressableKey, attackDamage, BaseAttack);
     }
 
     public IEnumerator EnableShield()
@@ -464,9 +501,10 @@ public class BossRPC : MonoBehaviour, IEnemy
         if (bossShield.HP > 0)
         {
             PlayEffect("P15_Attack", transform.position);
+            PlaySound("BossPattern15_Attack");
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                player.DecreaseHP(50);
+                player.DecreaseHP(bossData.SkillDatas[13].MaxHpBasedDamage, true);
             }
         }
         animator.speed = 1;
