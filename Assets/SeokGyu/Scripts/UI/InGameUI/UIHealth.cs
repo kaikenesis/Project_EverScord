@@ -14,14 +14,14 @@ namespace EverScord
             base.Awake();
             Initialize();
 
-            CharacterControl.OnHealthUpdated += HandleHealthUpdated;
+            CharacterStat.OnHealthUpdated += HandleHealthUpdated;
             LevelControl.OnProgressUpdated += HandleStageProgressUpdated;
             LevelControl.OnLevelUpdated += HandleLevelUpdated;
         }
 
         private void OnDestroy()
         {
-            CharacterControl.OnHealthUpdated -= HandleHealthUpdated;
+            CharacterStat.OnHealthUpdated -= HandleHealthUpdated;
             LevelControl.OnProgressUpdated -= HandleStageProgressUpdated;
             LevelControl.OnLevelUpdated -= HandleLevelUpdated;
         }

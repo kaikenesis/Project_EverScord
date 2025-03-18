@@ -68,6 +68,7 @@ namespace EverScord
         public void DisableLoginUI()
         {
             gameObject.SetActive(false);
+            toggleObject.OnToggleObjects();
         }
     }
 }

@@ -83,7 +83,6 @@ namespace EverScord.Character
 
         public static Action OnPhotonViewListUpdated = delegate { };
         public static Action<int, bool, Vector3> OnCheckAlive = delegate { };
-        public static Action<float> OnHealthUpdated = delegate { };
 
         private static GameObject deathEffect, reviveEffect, beamEffect;
         private static ParticleSystem hitEffect1, hitEffect2;
@@ -170,7 +169,6 @@ namespace EverScord.Character
             SetPortraits();
 
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
-            OnHealthUpdated?.Invoke(Stats.CurrentHealth / Mathf.Max(0.01f, Stats.MaxHealth));
 
             if (photonView.IsMine)
                 EnableRegenerateHP(true);
@@ -583,9 +581,6 @@ namespace EverScord.Character
 
             onDecreaseHealth?.Invoke();
 
-            if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(Stats.CurrentHealth / Math.Max(0.01f, Stats.MaxHealth));
-
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncHealth), RpcTarget.Others, Stats.CurrentHealth, false);
         }
@@ -723,7 +718,6 @@ namespace EverScord.Character
 
             if (photonView.IsMine)
             {
-                OnHealthUpdated?.Invoke(Stats.CurrentHealth / Mathf.Max(0.01f, Stats.MaxHealth));
                 EnableRegenerateHP(true);
             }
         }
@@ -972,9 +966,6 @@ namespace EverScord.Character
         private void SyncHealth(float health, bool isIncreasing)
         {
             Stats.CurrentHealth = health;
-
-            if (photonView.IsMine)
-                OnHealthUpdated?.Invoke(Stats.CurrentHealth / Mathf.Max(0.01f, Stats.MaxHealth));
 
             if (!isIncreasing)
                 onDecreaseHealth?.Invoke();

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Augment;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 namespace EverScord.Character
 {
@@ -14,6 +15,8 @@ namespace EverScord.Character
         private CharacterControl character;
         private IDictionary<StatType, StatBonus> bonusDict;
         private float maxHealth, moveSpeed, attack, critChance, defense, healthRegen;
+
+        public static Action<float> OnHealthUpdated = delegate { };
 
         void Awake()
         {
@@ -182,6 +185,7 @@ namespace EverScord.Character
                 {
                     character.PlayerUIControl.SetGrayscaleScreen(currentHealth);
                     character.PlayerUIControl.SetBloodyScreen(currentHealth, afterIsLowHealth);
+                    OnHealthUpdated?.Invoke(currentHealth / Mathf.Max(0.01f, MaxHealth));
                 }
             }
         }

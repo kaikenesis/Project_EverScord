@@ -75,7 +75,7 @@ public class MonsterAttack : MonoBehaviour
         if(other.gameObject.CompareTag("Player"))
         {
             CharacterControl control = other.gameObject.GetComponent<CharacterControl>();
-            float totalDamage = DamageCalculator.GetSkillDamage(baseAttack, skillDamage, 0, 0, control.Defense);
+            float totalDamage = DamageCalculator.GetSkillDamage(baseAttack, skillDamage, 0, 0, control.Stats.Defense);
             control.DecreaseHP(totalDamage);
         }
     }

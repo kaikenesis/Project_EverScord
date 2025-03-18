@@ -61,7 +61,7 @@ public class BossPattern03_Imp : AttackNodeImplement
         {
             Debug.Log("hit4");
             CharacterControl control = other.GetComponent<CharacterControl>();
-            float totalDamage = DamageCalculator.GetSkillDamage(bossRPC.BaseAttack, damage, 0, 0, control.Defense);
+            float totalDamage = DamageCalculator.GetSkillDamage(bossRPC.BaseAttack, damage, 0, 0, control.Stats.Defense);
             control.DecreaseHP(totalDamage);
         }
     }

@@ -201,9 +201,9 @@ public abstract class NController : MonoBehaviour, IEnemy
             float totalDamage = 0f;
             CharacterControl controller = other.GetComponent<CharacterControl>();
             if (LastAttack == 1)
-                totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill01_Damage, 0, 0, controller.Defense);
+                totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill01_Damage, 0, 0, controller.Stats.Defense);
             else
-                totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill02_Damage, 0, 0, controller.Defense);
+                totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill02_Damage, 0, 0, controller.Stats.Defense);
             controller.DecreaseHP(totalDamage);
         }
     }

@@ -76,7 +76,7 @@ public class MonsterProjectile : MonoBehaviour
             if (isMaxHPDamage == true)
                 totalDamage = skillDamage;
             else
-                totalDamage = DamageCalculator.GetSkillDamage(baseDamage, skillDamage, 0, 0, controller.Defense);
+                totalDamage = DamageCalculator.GetSkillDamage(baseDamage, skillDamage, 0, 0, controller.Stats.Defense);
 
             controller.DecreaseHP(totalDamage, isMaxHPDamage);
             StopCoroutine(move);
