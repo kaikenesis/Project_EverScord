@@ -16,7 +16,9 @@ public class NMM2_AttackState2 : NAttackState
     {
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
+
         yield return new WaitForSeconds(time/2);
+        monsterController.PlaySound("NMM2_2");
         monsterController.Fire("BossProjectile", damage);
         yield return new WaitForSeconds(time/2);
 

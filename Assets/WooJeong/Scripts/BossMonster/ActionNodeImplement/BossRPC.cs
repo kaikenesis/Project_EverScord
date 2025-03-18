@@ -404,17 +404,17 @@ public class BossRPC : MonoBehaviour, IEnemy
         return;
     }
 
-    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, float skillDamage)
+    public void InstantiateStoneAttack(Vector3 pos, float width, float projectTime, string effectAddressableKey, float skillDamage, string soundName)
     {
-        photonView.RPC(nameof(SyncStoneAttack), RpcTarget.All, pos, width, projectTime, effectAddressableKey, skillDamage);
+        photonView.RPC(nameof(SyncStoneAttack), RpcTarget.All, pos, width, projectTime, effectAddressableKey, skillDamage, soundName);
     }
 
     [PunRPC]
-    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
+    protected void SyncStoneAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage, string soundName)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
         MonsterAttack ma = go.GetComponent<MonsterAttack>();        
-        ma.Setup(width, projectTime, addressableKey, BaseAttack, skillDamage);
+        ma.Setup(width, projectTime, addressableKey, BaseAttack, skillDamage, soundName);
     }
 
     public void InstantiateStoneAttack2(Vector3 pos, float width, float projectTime, string effectAddressableKey, float attackDamage)

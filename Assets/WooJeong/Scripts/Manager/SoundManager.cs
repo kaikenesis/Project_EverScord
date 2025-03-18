@@ -27,7 +27,6 @@ public class SoundManager : Singleton<SoundManager>
 
     private void InitializeSoundManager()
     {
-        Debug.Log("Init sound manager");
         for (int i = 0; i < audioSourcePoolSize; i++)
         {
             CreateAudioSource();
@@ -57,18 +56,22 @@ public class SoundManager : Singleton<SoundManager>
         return CreateAudioSource();
     }
 
-    public AudioSource PlaySound(string soundName)
+    public AudioSource PlaySound(string soundName, float volume = 1.0f)
     {
         AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
+        audioClip.name = soundName;
+        Debug.Log(audioClip.name);
         if (audioClip == null)
             return null;
-        return PlaySound(audioClip);
+        return PlaySound(audioClip, volume);
     }
 
-    public AudioSource PlaySound(AudioClip clip)
+    public AudioSource PlaySound(AudioClip clip, float volume)
     {        
-        AudioSource source = GetAvailableAudioSource();
-        source.clip = clip;        
+        AudioSource source = GetAvailableAudioSource();        
+        source.clip = clip;
+        source.loop = false;
+        source.volume = volume;
         source.outputAudioMixerGroup = sfxMixerGroup;
         source.spatialBlend = 0;
         source.Play();
@@ -76,10 +79,10 @@ public class SoundManager : Singleton<SoundManager>
     }
 
     // 3D 사운드 재생
-    public AudioSource PlaySoundAtPosition(string soundName, Vector3 position)
+    public AudioSource PlaySoundAtPosition(string soundName, Vector3 position, float volume = 1.0f)
     {
         AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
-        AudioSource source = PlaySound(audioClip);
+        AudioSource source = PlaySound(audioClip, volume);
         source.spatialBlend = 1;
         source.outputAudioMixerGroup = sfxMixerGroup;
         source.transform.position = position;

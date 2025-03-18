@@ -29,7 +29,7 @@ public class BossPattern09_Imp : AttackNodeImplement
             bossRPC.PlayAnimation("StandingAttack");
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                bossRPC.InstantiateStoneAttack(player.PlayerTransform.position, attackWidth, 1, "StoneUp", attackDamage);
+                bossRPC.InstantiateStoneAttack(player.PlayerTransform.position, attackWidth, 1, "StoneUp", attackDamage, "BossStoneUpSound");
             }
             yield return new WaitForSeconds(1.5f);
             bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);

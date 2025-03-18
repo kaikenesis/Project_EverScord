@@ -174,6 +174,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         photonView.RPC(nameof(SyncStopSound), RpcTarget.All, soundName);
     }
 
+    [PunRPC]
     protected void SyncStopSound(string soundName)
     {
         SoundManager.Instance.StopSound(soundName);
@@ -213,17 +214,17 @@ public abstract class NController : MonoBehaviour, IEnemy
         GUID = guid;
     }
 
-    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
+    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage, string soundName)
     {
-        photonView.RPC(nameof(SyncMonsterAttack), RpcTarget.All, pos, width, projectTime, addressableKey, skillDamage);
+        photonView.RPC(nameof(SyncMonsterAttack), RpcTarget.All, pos, width, projectTime, addressableKey, skillDamage, soundName);
     }
 
     [PunRPC]
-    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
+    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage, string soundName)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
         MonsterAttack ma = go.GetComponent<MonsterAttack>();
-        ma.Setup(width, projectTime, addressableKey, monsterData.BaseAttackDamage, skillDamage);
+        ma.Setup(width, projectTime, addressableKey, monsterData.BaseAttackDamage, skillDamage, soundName);
     }
 
     public void DecreaseHP(float damage, CharacterControl attacker)

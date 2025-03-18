@@ -45,7 +45,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     public IEnumerator Attack()
     {
         yield return StartCoroutine(ProjectCircle(1f));
-
+        SoundManager.Instance.PlaySound("BossStoneUpSound");
         sphereCollider.enabled = true;
         effect = ResourceManager.Instance.GetFromPool(effectAddressableKey, transform.position, Quaternion.identity);
         effectParticle = effect.GetComponent<ParticleSystem>();
