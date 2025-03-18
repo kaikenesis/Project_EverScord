@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class BossPattern12_Imp : AttackNodeImplement
 {
-    private float attackDamage = 10;
+    private float damage;
     private float attackWidth = 3;
+
+    private void Start()
+    {
+        damage = bossRPC.BossMonsterData.SkillDatas[10].SkillDamage;
+    }
 
     public override NodeState Evaluate()
     {
@@ -23,7 +28,7 @@ public class BossPattern12_Imp : AttackNodeImplement
             bossRPC.PlayAnimation("StandingAttack");
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                bossRPC.InstantiateStoneAttack2(player.PlayerTransform.position, attackWidth, 1, "StoneUp", attackDamage);
+                bossRPC.InstantiateStoneAttack2(player.PlayerTransform.position, attackWidth, 1, "StoneUp", damage);
             }
             yield return new WaitForSeconds(1.5f);
             bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 3);

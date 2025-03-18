@@ -312,7 +312,9 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void SetActivePattern6(bool tf)
     {
-        photonView.RPC("SyncFog", RpcTarget.All, tf);
+        float damage = bossData.SkillDatas[4].SkillDamage;
+        laserPoint.GetComponent<BossLaser>().SetDamage(damage, BaseAttack);
+        photonView.RPC(nameof(SyncFog), RpcTarget.All, tf);
     }
 
     [PunRPC]
@@ -342,15 +344,15 @@ public class BossRPC : MonoBehaviour, IEnemy
         safeZone.transform.localScale = new Vector3(size, 1, size);
     }
 
-    public void MoveP6_SafeZone(Vector3 pos)
+    public void MoveP6_SafeZone(float duration, Vector3 endPoint)
     {
-        photonView.RPC(nameof(SyncP6_SafePosition), RpcTarget.All, pos);
+        photonView.RPC(nameof(SyncP6_SafePosition), RpcTarget.All, duration, endPoint);
     }
 
     [PunRPC]
-    private void SyncP6_SafePosition(Vector3 pos)
+    private void SyncP6_SafePosition(float duration, Vector3 endPoint)
     {
-        safeZone.transform.position = pos;
+        StartCoroutine(MoveSafePos(duration, endPoint));
     }
 
     private IEnumerator MoveSafePos(float duration, Vector3 endPoint)
@@ -422,6 +424,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void LaserEnable(float enableTime)
     {
+        laserPoint.GetComponent<BossLaser>().SetDamage(bossData.SkillDatas[4].SkillDamage, BaseAttack);
         photonView.RPC("SyncLaser", RpcTarget.All, enableTime);
     }
 
@@ -456,7 +459,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         GameObject go = ResourceManager.Instance.GetFromPool("BossMonsterStoneAttack", pos, Quaternion.identity);
         PhotonView view = go.GetComponent<PhotonView>();
         BossMonsterStoneAttack ma = go.GetComponent<BossMonsterStoneAttack>();
-        ma.Setup(width, projectTime, effectAddressableKey, attackDamage);
+        ma.Setup(width, projectTime, effectAddressableKey, attackDamage, BaseAttack);
         if (view.ViewID == 0)
         {
             if (PhotonNetwork.AllocateViewID(view))
@@ -482,7 +485,7 @@ public class BossRPC : MonoBehaviour, IEnemy
             view.ViewID = viewID;
         }
         BossMonsterStoneAttack ma = go.GetComponent<BossMonsterStoneAttack>();
-        ma.Setup(width, projectTime, addressableKey, attackDamage);
+        ma.Setup(width, projectTime, addressableKey, attackDamage, BaseAttack);
     }
 
     public IEnumerator EnableShield()
@@ -501,7 +504,7 @@ public class BossRPC : MonoBehaviour, IEnemy
             PlaySound("BossPattern15_Attack");
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
-                player.DecreaseHP(50);
+                player.DecreaseHP(bossData.SkillDatas[13].MaxHpBasedDamage, true);
             }
         }
         animator.speed = 1;

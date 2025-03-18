@@ -25,6 +25,22 @@ public class SoundManager : Singleton<SoundManager>
         InitializeSoundManager();
     }
 
+    private void Start()
+    {
+        LevelControl.OnLevelUpdated += ManageBGM;
+    }
+
+    private void ManageBGM(int curStageNum, bool bCoverScreen)
+    {
+        if (bCoverScreen == false)
+            return;
+
+        if ((curStageNum + 1) % 2 == 1)
+            PlayBGM("InGameBGM01");
+        else
+            PlayBGM("InGameBGM02");
+    }
+
     private void InitializeSoundManager()
     {
         for (int i = 0; i < audioSourcePoolSize; i++)
@@ -60,7 +76,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         AudioClip audioClip = ResourceManager.Instance.GetAsset<AudioClip>(soundName);
         audioClip.name = soundName;
-        Debug.Log(audioClip.name);
+
         if (audioClip == null)
             return null;
         return PlaySound(audioClip, volume);
@@ -101,8 +117,8 @@ public class SoundManager : Singleton<SoundManager>
         
         if (currentBGM != null && currentBGM.isPlaying)
         {
-            StopCoroutine(nameof(FadeOutBGM));
-            StartCoroutine(FadeOutBGM(currentBGM, duration));
+            StopCoroutine(nameof(FadeOutSound));
+            StartCoroutine(FadeOutSound(currentBGM, duration));
         }
 
         currentBGM = source;
@@ -110,7 +126,7 @@ public class SoundManager : Singleton<SoundManager>
         StartCoroutine(FadeInRoutine(source, 1, duration));
     }
 
-    private IEnumerator FadeOutBGM(AudioSource source, float duration)
+    private IEnumerator FadeOutSound(AudioSource source, float duration)
     {
         float startVolume = source.volume;
 
@@ -141,7 +157,7 @@ public class SoundManager : Singleton<SoundManager>
         {
             if (source.isPlaying && source.clip.name == soundName)
             {
-                source.Stop();
+                StartCoroutine(FadeOutSound(source, 1f));
             }
         }
     }
