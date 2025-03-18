@@ -17,12 +17,14 @@ namespace EverScord
         {
             UIFactorSlot.OnDisplayOptionList += HandleDisplayOptionList;
             UIFactorPanel.OnUnlockFactor += HandleDisplayUnlockWindow;
+            UIPopUpWindow.OnAcceptUnlock += HandleAcceptUnlock;
         }
 
         private void OnDestroy()
         {
             UIFactorSlot.OnDisplayOptionList -= HandleDisplayOptionList;
             UIFactorPanel.OnUnlockFactor += HandleDisplayUnlockWindow;
+            UIPopUpWindow.OnAcceptUnlock -= HandleAcceptUnlock;
         }
 
         private void HandleDisplayOptionList(int curTypeNum)
@@ -33,6 +35,11 @@ namespace EverScord
         private void HandleDisplayUnlockWindow(int cost)
         {
             bActivePopupWindow = true;
+        }
+
+        private void HandleAcceptUnlock()
+        {
+            bActivePopupWindow = false;
         }
 
         protected override void OnKeyInput()
@@ -49,18 +56,21 @@ namespace EverScord
         {
             if(bActivePopupWindow)
             {
+                bActivePopupWindow = false;
                 popupWindow.OnDeactivateObjects();
                 return;
             }
 
             if(bActiveProbabilitySheet)
             {
+                bActiveProbabilitySheet = false;
                 probabilitySheet.SetActive(false);
                 return;
             }
 
             if(bActiveFactorOptionList)
             {
+                bActiveFactorOptionList = false;
                 factorOptionList.OnDeactivateObjects();
                 return;
             }

@@ -89,7 +89,7 @@ namespace EverScord
                         break;
                     case EPosPreset.Custom:
                         {
-                            targetObject.GetComponent<RectTransform>().sizeDelta += offset;
+                            targetObject.transform.position += new Vector3(offset.x, offset.y, 0f);
                         }
                         break;
                 }
