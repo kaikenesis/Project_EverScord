@@ -61,13 +61,17 @@ namespace EverScord
                 DOTween.Rewind(ConstStrings.TWEEN_LOGIN_OUT);
                 DOTween.Play(ConstStrings.TWEEN_LOGIN_OUT);
 
-                // Tween OnComplete callback: gameobject.SetActive(false)
+                // Tween OnComplete callback: gameObject.SetActive(false);
             }
         }
 
         public void DisableLoginUI()
         {
             gameObject.SetActive(false);
+        }
+
+        public void ToggleLobbyCanvas()
+        {
             toggleObject.OnToggleObjects();
         }
     }
