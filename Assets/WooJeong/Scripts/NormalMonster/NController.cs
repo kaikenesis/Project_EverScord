@@ -158,6 +158,27 @@ public abstract class NController : MonoBehaviour, IEnemy
         }
     }
 
+    public void PlaySound(string soundName)
+    {
+        photonView.RPC(nameof(SyncNMSound), RpcTarget.All, soundName);
+    }
+
+    [PunRPC]
+    protected void SyncNMSound(string soundName)
+    {
+        SoundManager.Instance.PlaySound(soundName);
+    }
+
+    public void StopSound(string soundName)
+    {
+        photonView.RPC(nameof(SyncStopSound), RpcTarget.All, soundName);
+    }
+
+    protected void SyncStopSound(string soundName)
+    {
+        SoundManager.Instance.StopSound(soundName);
+    }
+
     protected virtual void SetHealthBar()
     {
         if (healthBarObject != null)
