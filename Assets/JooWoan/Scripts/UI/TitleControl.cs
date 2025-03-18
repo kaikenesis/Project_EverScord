@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace EverScord
         [SerializeField] private GameObject titleArea, lobbyArea;
         [SerializeField] private DOTweenAnimation titleFadeOutTween;
         private bool hasPressedAnything = false;
+
+        public static Action OnTransitionToLobby = delegate { };
 
         void Awake()
         {
@@ -55,6 +58,9 @@ namespace EverScord
             login.ToggleLobbyCanvas();
             lobbyArea.SetActive(true);
             LoadingScreen.ShowScreen();
+            OnTransitionToLobby?.Invoke();
+
+            Debug.Log("============================== transition lobby");
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);

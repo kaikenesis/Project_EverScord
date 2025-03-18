@@ -1342,16 +1342,44 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 9152437296985810427}
+    - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 4447504635655161359}
+    - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnActivateObjects
       objectReference: {fileID: 0}
     - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Play
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: EverScord.UITutorial, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: UnityEngine.AudioSource, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073006912676353656, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -1655,6 +1683,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6817944583579288444, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
   m_PrefabInstance: {fileID: 4687537708117483533}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &4447504635655161359 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8986316587996177922, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+  m_PrefabInstance: {fileID: 4687537708117483533}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4952953418095897381 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 410133582128794408, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
@@ -1776,12 +1809,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974926362473235769, guid: f284786c3c6acc741834f6817f3bc87b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974926362473235769, guid: f284786c3c6acc741834f6817f3bc87b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnToggleObjects
+      value: LobbyToAlteration
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974926362473235769, guid: f284786c3c6acc741834f6817f3bc87b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EverScord.TitleControl, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7772679851843467147, guid: f284786c3c6acc741834f6817f3bc87b, type: 3}
       propertyPath: toggleObjects.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7772679851843467147, guid: f284786c3c6acc741834f6817f3bc87b, type: 3}
       propertyPath: toggleObjects.Array.data[1]
