@@ -55,10 +55,10 @@ public class MonsterSpawner : MonoBehaviour
             yield break;
 
         yield return new WaitForSeconds(startDelay);
-
+        curTime = spawnTimer;
         while(true)
         {
-            curTime += Time.deltaTime;
+            curTime++;
             float timeUntilSpawn = spawnTimer - curTime;
 
             if (AllPlayerDead() == true)
@@ -100,7 +100,7 @@ public class MonsterSpawner : MonoBehaviour
             else if (enableMarker && timeUntilSpawn < SPAWN_ALERT_TIME)
                 photonView.RPC(nameof(SyncSpawnMarker), RpcTarget.All, true);
 
-            yield return null;
+            yield return new WaitForSeconds(1f);
         }
     }
 

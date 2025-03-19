@@ -7,7 +7,7 @@ using UnityEngine;
 public class MapPattern3_Attack : MonoBehaviour
 {
     [SerializeField] float tickDistance = 1f;
-    private float attackDamage = 10;
+    private float attackDamage = 2;
     private SphereCollider sphereCollider;
     private Dictionary<GameObject, float> hitPlayers = new();
 
@@ -35,7 +35,7 @@ public class MapPattern3_Attack : MonoBehaviour
 
             hitPlayers[other.gameObject] = tickDistance;
             CharacterControl controller = other.GetComponent<CharacterControl>();
-            controller.DecreaseHP(attackDamage);
+            controller.DecreaseHP(attackDamage, true);
         }
     }
 

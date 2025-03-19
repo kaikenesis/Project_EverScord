@@ -176,7 +176,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void PlayJumpEffect()
     {
         photonView.RPC("SyncJumpEffect", RpcTarget.All);
-        PlaySound("NMS1_1");
+        PlaySound("BossJump");
     }
 
     [PunRPC]

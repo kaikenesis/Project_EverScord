@@ -5,6 +5,7 @@ public abstract class NWaitState : MonoBehaviour, IState
 {
     protected NController monsterController;
     protected bool isEnter = false;
+    protected Coroutine coGameEnd;
 
     protected abstract void Setup();
     
@@ -41,8 +42,8 @@ public abstract class NWaitState : MonoBehaviour, IState
 
         if (monsterController.player == null)
             monsterController.SetNearestPlayer();
-        if (monsterController.player == null)
-            monsterController.isDead = true;
+        if (monsterController.player == null && coGameEnd == null)
+            coGameEnd = StartCoroutine(monsterController.GameEnd());
 
         monsterController.LookPlayer();
 

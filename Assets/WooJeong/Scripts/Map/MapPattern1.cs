@@ -14,7 +14,7 @@ public class MapPattern1 : MonoBehaviour
     [SerializeField] private float startDelay = 3f;
     [SerializeField] private GameObject effect;
     private BoxCollider boxCollider;
-    private float damage = 20;
+    private float damage = 2;
     private Coroutine rotate;
     private PhotonView photonView;
     private Dictionary<GameObject, float> hitPlayers = new();
@@ -89,7 +89,7 @@ public class MapPattern1 : MonoBehaviour
 
             hitPlayers[other.gameObject] = 1f;
             CharacterControl controller = other.GetComponent<CharacterControl>();
-            controller.DecreaseHP(damage);
+            controller.DecreaseHP(damage, true);
         }
     }
 
