@@ -181,10 +181,10 @@ namespace EverScord.Weapons
                 smokeTrail.Init(bullet);
             }
 
-            if (!PhotonNetwork.IsConnected)
-                return;
-            SoundManager.Instance.PlaySound("Shoot");
-            photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);
+            SoundManager.Instance.PlaySound(ConstStrings.SOUND_SHOOT);
+
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);
         }
 
         public void SetShootingStance(CharacterControl shooter, bool state, bool isImmediate = false)

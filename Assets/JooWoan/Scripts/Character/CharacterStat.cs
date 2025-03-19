@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using EverScord.Augment;
+using Photon.Pun;
 
 namespace EverScord.Character
 {
@@ -222,6 +223,10 @@ namespace EverScord.Character
                     targetStat = ref healthRegen;
                     break;
 
+                case StatType.CRITICAL_CHANCE:
+                    targetStat = ref critChance;
+                    break;
+
                 default:
                     return;
             }
@@ -238,6 +243,9 @@ namespace EverScord.Character
             
             bonusDict[type] = StatBonus.CreateBonus(additive, multiplicative);
             OnStatEnhanced?.Invoke();
+
+            if (PhotonNetwork.IsConnected && character.CharacterPhotonView.IsMine)
+                character.CharacterPhotonView.RPC(nameof(character.SyncAlterationBonus), RpcTarget.Others, (int)type, additive, multiplicative);
         }
 
         private void UpdateSkillTimers()
@@ -264,15 +272,16 @@ namespace EverScord.Character
     
     public enum StatType
     {
-        MAXHEALTH,
-        SPEED,
         ATTACK,
         DEFENSE,
-        HEALTH_REGEN,
-        COOLDOWN_DECREASE,
-        RELOADSPEED_DECREASE,
+        CRITICAL_CHANCE,
         SKILLDAMAGE_INCREASE,
         HEAL_INCREASE,
+        MAXHEALTH,
+        HEALTH_REGEN,
+        SPEED,
+        COOLDOWN_DECREASE,
+        RELOADSPEED_DECREASE,
         END
     }
 }

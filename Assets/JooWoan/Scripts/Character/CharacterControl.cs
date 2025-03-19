@@ -1066,6 +1066,12 @@ namespace EverScord.Character
             GameManager.Instance.AugmentControl.SyncPlayerArmor(this, helmetTag, vestTag, shoesTag, enhanceIndex);
         }
 
+        [PunRPC]
+        public void SyncAlterationBonus(int bonusType, float additive, float multiplicative)
+        {
+            Stats.SetAlterationBonus((StatType)bonusType, additive, multiplicative);
+        }
+
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
         #endregion
     }
