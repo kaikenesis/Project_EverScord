@@ -17,6 +17,13 @@ namespace EverScord
             {
                 objectOptions[i].Initialize();
             }
+
+            Initialize();
+        }
+
+        protected virtual void Initialize()
+        {
+
         }
 
         public virtual void OnActivateObject(int index)

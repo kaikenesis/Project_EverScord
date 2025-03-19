@@ -23,7 +23,6 @@ namespace EverScord
         public string curOptionName { get; private set; }
         public float curOptionValue { get; private set; }
 
-
         public static Action<int, int> OnClickedSlot = delegate { };
         public static Action<int> OnDisplayOptionList = delegate { };
         public static Action<string, float, string, float> OnRequestUpdateInfo = delegate { };
@@ -127,8 +126,6 @@ namespace EverScord
             lockImg.sprite = GameManager.Instance.FactorDatas[typeNum].LockedSourceImg;
             curTypeNum = typeNum;
 
-
-
             if (optionNums.Count > slotIndex)
             {
                 if(slotIndex < panelData.lastUnlockedNum)
@@ -174,17 +171,6 @@ namespace EverScord
             if (bConfirmed)
             {
                 OnDisplayOptionList?.Invoke(curTypeNum);
-            }
-            else
-            {
-                if (bLock == true)
-                {
-                    Debug.Log("Lock");
-                }
-                else
-                {
-                    Debug.Log("UnLock");
-                }
             }
         }
     }

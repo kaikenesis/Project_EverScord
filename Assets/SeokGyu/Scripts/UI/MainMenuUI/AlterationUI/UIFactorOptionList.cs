@@ -1,12 +1,10 @@
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace EverScord
 {
-    public class UIFactorOptionList : MonoBehaviour
+    public class UIFactorOptionList : ToggleObject
     {
         [SerializeField] private GameObject option;
         [SerializeField] private Transform containor;
@@ -14,14 +12,6 @@ namespace EverScord
 
         public static Action<int, int, float> OnApplyOption = delegate { };
         public static Action<string> OnInitializeOptionName = delegate { };
-
-        private void Awake()
-        {
-            UIFactorSlot.OnDisplayOptionList += HandleDisplayOptionList;
-            UIFactorOption.OnSelectOption += HandleSelectOption;
-
-            Init();
-        }
 
         private void OnDestroy()
         {
@@ -46,7 +36,8 @@ namespace EverScord
 
         private void HandleDisplayOptionList(int typeNum)
         {
-            gameObject.SetActive(true);
+            OnActivateObjects();
+            PlayDoTween(false);
 
             FactorData datas = GameManager.Instance.FactorDatas[typeNum];
             DisplayOption(datas.OptionDatas.Length, datas, typeNum);
@@ -54,11 +45,13 @@ namespace EverScord
 
         private void HandleSelectOption(int typeNum, int optionNum, float value)
         {
-            gameObject.SetActive(false);
+            PlayDoTween(true);
         }
 
-        private void Init()
+        protected override void Initialize()
         {
+            base.Initialize();
+
             int max = -1;
             int count = GameManager.Instance.FactorDatas.Length;
             for (int i = 0; i < count; i++)
@@ -75,6 +68,9 @@ namespace EverScord
                 UIFactorOption factorOption = obj.GetComponent<UIFactorOption>();
                 options.Add(factorOption);
             }
+
+            UIFactorSlot.OnDisplayOptionList += HandleDisplayOptionList;
+            UIFactorOption.OnSelectOption += HandleSelectOption;
         }
 
         private void DisplayOption(int count, FactorData datas, int typeNum)

@@ -52,7 +52,8 @@ namespace EverScord
 
         private void UpdateName(string newName)
         {
-            nickName.text = newName;
+            if(nickName != null)
+                nickName.text = newName;
         }
 
         private void UpdateMoney(int money)
