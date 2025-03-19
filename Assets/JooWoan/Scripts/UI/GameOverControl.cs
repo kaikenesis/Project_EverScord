@@ -31,6 +31,7 @@ namespace EverScord.UI
                 defeatText.SetActive(true);
 
             uiHub.SetActive(true);
+            SoundManager.Instance.PlaySound("ClearDefeatSound");
             StartCoroutine(Transition(isVictory));
         }
 

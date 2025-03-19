@@ -58,7 +58,6 @@ namespace EverScord.Skill
             float defenseRate = enemyDefense / (enemyDefense + 100);
             float damage = skillDamage + attack * skillAttackRate * defenseRate;
             float totalDamage = damage + damage * (skillDamageIncrease * 0.01f);
-            Debug.Log($"{defenseRate} / {damage} / {totalDamage}");
             return totalDamage;
         }
     }

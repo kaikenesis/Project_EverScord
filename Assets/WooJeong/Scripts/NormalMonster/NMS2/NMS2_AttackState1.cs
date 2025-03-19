@@ -27,7 +27,7 @@ public class NMS2_AttackState1 : NAttackState
 
         for (int i = 0; i < attackCount; i++)
         {
-            monsterController.PlaySound("NMM2_2");
+            monsterController.PlaySound("NMS2_1");
             monsterController.Fire("NMM2_Projectile", damage);
             yield return new WaitForSeconds(time / attackCount);
         }

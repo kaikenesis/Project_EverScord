@@ -241,6 +241,7 @@ namespace EverScord
         {
             SetLevelIndex(0);
             Instance.StartCoroutine(LevelControl.LoadSceneAsync(sceneName));
+            SoundManager.Instance.PlayBGM("LobbyBGM");
         }
 
         [PunRPC]
