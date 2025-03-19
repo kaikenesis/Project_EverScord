@@ -42,13 +42,13 @@ public class NMonsterData : ScriptableObject, IData
         CoolDown1 = skill_1.cooldown;
         Skill01_RangeZ = skill_1.skillRange;
         Skill01_RangeX = skill_1.skillSizes[0];
-        Skill01_RangeY = 1;
+        Skill01_RangeY = 3;
         Skill01_Damage = skill_1.skillDamage;
 
         MonsterSkillInfo skill_2 = MonsterData.MonsterInfoDict[Tag + "_2"];
         CoolDown2 = skill_2.cooldown;
         Skill02_RangeZ = skill_2.skillRange;
-        Skill02_RangeY = 1;
+        Skill02_RangeY = 3;
         Skill02_RangeX = skill_2.skillSizes[0];
         Skill02_Damage = skill_2.skillDamage;
     }

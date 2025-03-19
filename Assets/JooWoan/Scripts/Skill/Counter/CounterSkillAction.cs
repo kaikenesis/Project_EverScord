@@ -22,7 +22,6 @@ namespace EverScord.Skill
 
         private float elapsedSkillTime;
         private float elapsedLaserTime;
-        private float laserDamage;
 
         private bool toggleLaser = false;
         private bool isOutlineActivated = false;
@@ -35,8 +34,6 @@ namespace EverScord.Skill
         {
             base.Init(activator, skill, ejob, skillIndex);
             this.skill = (CounterSkill)skill;
-
-            laserDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage);
         }
 
         public override bool Activate()
@@ -158,7 +155,10 @@ namespace EverScord.Skill
                 IEnemy monster = hit.transform.GetComponent<IEnemy>();
 
                 if (activator.CharacterPhotonView.IsMine)
+                {
+                    float laserDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage, SkillInfo.skillCoefficient, monster);
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, laserDamage, monster);
+                }
             }
         }
 

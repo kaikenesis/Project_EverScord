@@ -12,5 +12,6 @@ public class BossPattern13_Imp : BossPattern06_Imp
         safeRange = 5f;
         safeScale = 0.5f;
         failurePhase = 1;
+        damage = bossRPC.BossMonsterData.SkillDatas[11].SkillDotDamage;
     }
 }

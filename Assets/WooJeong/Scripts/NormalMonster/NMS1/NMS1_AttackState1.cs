@@ -15,6 +15,7 @@ public class NMS1_AttackState1 : NAttackState
         float time = monsterController.clipDict["Attack1"] + monsterController.clipDict["Attack1_Loop"];
         yield return new WaitForSeconds(time);
         monsterController.BoxCollider1.enabled = true;
+        monsterController.PlaySound("NMS1_1");
         time = monsterController.clipDict["Attack1_Attack"];
         yield return new WaitForSeconds(time);
         monsterController.BoxCollider1.enabled = false;

@@ -9,6 +9,7 @@ public class BossPatternNode03 : BActionNode
     {
         GameObject p3 = new GameObject();
         p3.name = "Pattern03";
+        p3.transform.parent = gameObject.transform;
         actionNodeImplement = p3.AddComponent<BossPattern03_Imp>();
         base.Setup(gameObject);
     }

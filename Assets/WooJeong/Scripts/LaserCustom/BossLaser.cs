@@ -4,11 +4,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class V3DLaserCustom : MonoBehaviour
+public class BossLaser : MonoBehaviour
 {
     private float laserDamage = 20;
     private Dictionary<GameObject, float> hitPlayers = new();
     private float tickTime = 0.5f;
+    private float baseAttack;
+
+    public void SetDamage(float damage, float attack)
+    {
+        laserDamage = damage;
+        baseAttack = attack;
+    }
 
     private void OnTriggerStay(Collider other)
     {

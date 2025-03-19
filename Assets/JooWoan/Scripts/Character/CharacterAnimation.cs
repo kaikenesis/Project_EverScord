@@ -48,6 +48,8 @@ namespace EverScord.Character
             anim.SetBool(ConstStrings.PARAM_ISMOVING, true);
             anim.SetFloat(ConstStrings.PARAM_HORIZONTAL, moveDir.x, transitionDampTime, Time.deltaTime);
             anim.SetFloat(ConstStrings.PARAM_VERTICAL, moveDir.z, transitionDampTime, Time.deltaTime);
+
+            SoundManager.Instance.PlaySound("FootStep", 1, true);
         }
 
         public void Rotate(bool state)

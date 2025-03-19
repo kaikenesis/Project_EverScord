@@ -1,35 +1,40 @@
+using EverScord.Augment;
 using EverScord.Character;
-using EverScord.Weapons;
 using UnityEngine;
 
 namespace EverScord.Skill
 {
     public static class DamageCalculator
     {
-        public static float GetBulletDamage(int viewID)
+        public const float BASE_HEAL = 13f;
+
+        public static float GetBulletDamage(int viewID, IEnemy monster = null)
         {
             CharacterControl character = GameManager.Instance.PlayerDict[viewID];
-            float totalDamage = character.Stats.Attack;
 
-            // Calculate damage
+            if (character.CharacterJob == PlayerData.EJob.Dealer && monster != null)
+                return GetAttackDamage(character.Stats.Attack, character.Stats.CriticalHitChance, monster.GetDefense());
 
-            return totalDamage;
+            return GetBulletHealAmount(character);
         }
 
-        public static float GetSkillDamage(CharacterControl character, float baseDamage)
+        public static float GetBulletHealAmount(CharacterControl character)
         {
-            float totalDamage = baseDamage;
+            float amount = BASE_HEAL + character.Stats.Attack * 0.3f;
+            StatBonus healBonus = character.Stats.BonusDict[StatType.COOLDOWN_DECREASE];
 
-            // Calculate damage
-
-            return totalDamage;
+            return healBonus.CalculateStat(amount);
         }
 
-        public static float GetHealAmount(CharacterControl character, float baseHeal)
+        public static float GetSkillDamage(CharacterControl character, float baseDamage, float coefficient, IEnemy monster = null)
         {
-            float totalHeal = baseHeal;
+            float attack = character.Stats.Attack;
+            float increase = 100f;
+            float defense = monster != null ? monster.GetDefense() : 0f;
 
-            return totalHeal;
+            float skillDamage = character.Stats.IncreasedSkillDamage(baseDamage);
+
+            return GetSkillDamage(attack, skillDamage, coefficient, increase, defense);
         }
         
         public static float GetAttackDamage(float attack, float critChance, float enemyDefense)
@@ -53,10 +58,13 @@ namespace EverScord.Skill
             return damage;
         }
         
-        public static float GetSkillDamage(float attack, float skillDamage, float skillAttackRate, float skillDamageIncrease, float enemyDefense)
+        public static float GetSkillDamage(float attack, float skillDamage, float skillAttackRate = 1f, float skillDamageIncrease = 100f, float enemyDefense = 0f)
         {
+            skillAttackRate = Mathf.Max(1f, skillAttackRate);
+            skillDamageIncrease = Mathf.Max(100f, skillDamageIncrease);
+
             float defenseRate = enemyDefense / (enemyDefense + 100);
-            float damage = skillDamage + attack * skillAttackRate * defenseRate;
+            float damage = skillDamage + attack * skillAttackRate * (1 - defenseRate);
             float totalDamage = damage + damage * (skillDamageIncrease * 0.01f);
             Debug.Log($"{defenseRate} / {damage} / {totalDamage}");
             return totalDamage;

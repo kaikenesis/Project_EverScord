@@ -18,6 +18,7 @@ public class BossPattern02_Imp : ActionNodeImplement
         Debug.Log("Attack2");
         bossRPC.PlayAnimation("Shoot");
         yield return new WaitForSeconds(0.5f);
+        bossRPC.PlaySound("BossPatternShoot");
         for (int i = 0; i < 7; i++)
         {
             Vector3 direction = Quaternion.AngleAxis(-30, Vector3.up) * transform.forward;

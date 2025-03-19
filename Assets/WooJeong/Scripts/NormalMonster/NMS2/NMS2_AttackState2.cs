@@ -9,6 +9,7 @@ public class NMS2_AttackState2 : NAttackState
     protected override IEnumerator Attack()
     {        
         monsterController.PlayAnimation("Attack2");
+        monsterController.PlaySound("NMS2_2");
         float time = monsterController.clipDict["Attack2"];
         controller.isUpgraded = true;
         yield return new WaitForSeconds(time);

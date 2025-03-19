@@ -48,7 +48,9 @@ public class BossPattern15_Imp : AttackNodeImplement
         bossRPC.PlayJumpEffect();
         yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 4);
 
+        bossRPC.PlaySound("BossPattern15");
         yield return bossRPC.EnableShield();
+        bossRPC.StopSound("BossPattern15");
 
         Debug.Log("Attack15 start");
         isEnd = true;

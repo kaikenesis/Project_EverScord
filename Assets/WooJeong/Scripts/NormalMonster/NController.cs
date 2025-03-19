@@ -158,15 +158,15 @@ public abstract class NController : MonoBehaviour, IEnemy
         }
     }
 
-    public void PlaySound(string soundName)
+    public void PlaySound(string soundName, float volume = 1.0f)
     {
-        photonView.RPC(nameof(SyncNMSound), RpcTarget.All, soundName);
+        photonView.RPC(nameof(SyncNMSound), RpcTarget.All, soundName, volume);
     }
 
     [PunRPC]
-    protected void SyncNMSound(string soundName)
+    protected void SyncNMSound(string soundName, float volume)
     {
-        SoundManager.Instance.PlaySound(soundName);
+        SoundManager.Instance.PlaySound(soundName, volume);
     }
 
     public void StopSound(string soundName)
@@ -174,6 +174,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         photonView.RPC(nameof(SyncStopSound), RpcTarget.All, soundName);
     }
 
+    [PunRPC]
     protected void SyncStopSound(string soundName)
     {
         SoundManager.Instance.StopSound(soundName);
@@ -198,7 +199,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             return;
         if (other.gameObject.CompareTag("Player"))
         {
-            float totalDamage = 0f;
+            float totalDamage;
             CharacterControl controller = other.GetComponent<CharacterControl>();
             if (LastAttack == 1)
                 totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill01_Damage, 0, 0, controller.Stats.Defense);
@@ -213,17 +214,17 @@ public abstract class NController : MonoBehaviour, IEnemy
         GUID = guid;
     }
 
-    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
+    public void InstantiateMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage, string soundName)
     {
-        photonView.RPC(nameof(SyncMonsterAttack), RpcTarget.All, pos, width, projectTime, addressableKey, skillDamage);
+        photonView.RPC(nameof(SyncMonsterAttack), RpcTarget.All, pos, width, projectTime, addressableKey, skillDamage, soundName);
     }
 
     [PunRPC]
-    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage)
+    protected void SyncMonsterAttack(Vector3 pos, float width, float projectTime, string addressableKey, float skillDamage, string soundName)
     {
         GameObject go = ResourceManager.Instance.GetFromPool("MonsterAttack", pos, Quaternion.identity);
         MonsterAttack ma = go.GetComponent<MonsterAttack>();
-        ma.Setup(width, projectTime, addressableKey, monsterData.BaseAttackDamage, skillDamage);
+        ma.Setup(width, projectTime, addressableKey, monsterData.BaseAttackDamage, skillDamage, soundName);
     }
 
     public void DecreaseHP(float damage, CharacterControl attacker)

@@ -24,11 +24,12 @@ public class NMM1_AttackState2 : NAttackState
         
         for (int i = 0; i < 3; i++)
         {
+            monsterController.PlaySound("NMM1_Sound");
             yield return new WaitForSeconds(time / 4 / 3);
             monsterController.BoxCollider2.enabled = true;
             yield return new WaitForSeconds(time / 4 / 3);
             monsterController.BoxCollider2.enabled = false;
-            yield return new WaitForSeconds(time / 4 / 3);
+            yield return new WaitForSeconds(time / 4 / 3);            
         }
         yield return new WaitForSeconds(time / 4);
         StartCoroutine(monsterController.CoolDown2());

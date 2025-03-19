@@ -36,6 +36,7 @@ public class BossPattern03_Imp : AttackNodeImplement
         StartCoroutine(Charge(0.5f));
         yield return new WaitForSeconds(0.7f);
         bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 5);
+        bossRPC.PlaySound("BossPattern03");
         yield return new WaitForSeconds(2f);
         bossRPC.PlayAnimation("Idle");
         isEnd = true;
@@ -45,11 +46,12 @@ public class BossPattern03_Imp : AttackNodeImplement
     private IEnumerator Charge(float duration)
     {
         boxCollider.enabled = true;
-        Vector3 startPoint = transform.position;
-        Vector3 endPoint = transform.position + transform.forward * (chargeRange-3);
+        Transform boss = transform.parent.transform;
+        Vector3 startPoint = boss.position;
+        Vector3 endPoint = boss.position + boss.forward * (chargeRange-3);
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
-            transform.position = Vector3.Lerp(startPoint, endPoint, t / duration);
+            boss.position = Vector3.Lerp(startPoint, endPoint, t / duration);
             yield return new WaitForSeconds(Time.deltaTime);
         }
         boxCollider.enabled = false;

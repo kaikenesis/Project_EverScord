@@ -28,9 +28,9 @@ public class NML1_AttackState2 : NAttackState
         yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
         float time = monsterController.clipDict["Attack2"];
-        monsterController.PlaySound("NML1_2");
 
         yield return new WaitForSeconds(time / 4);
+        monsterController.PlaySound("NML1_2");
         monsterController.BoxCollider2.enabled = true;
         StartCoroutine(Charge(1f));
         yield return new WaitForSeconds(time / 4 * 3);

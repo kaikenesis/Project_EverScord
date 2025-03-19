@@ -7,18 +7,20 @@ namespace EverScord
 {
     public class TitleControl : MonoBehaviour
     {
+        public bool IsExaminingAlteration { get; private set; }
+        public static Action OnTransitionToLobby = delegate { };
+
         [SerializeField] private UILogin login;
         [SerializeField] private GameObject titleArea, lobbyArea;
         [SerializeField] private DOTweenAnimation titleFadeOutTween;
         private bool hasPressedAnything = false;
-
-        public static Action OnTransitionToLobby = delegate { };
 
         void Awake()
         {
             GameManager.Instance.InitControl(this);
             titleArea.SetActive(true);
             lobbyArea.SetActive(false);
+            IsExaminingAlteration = false;
         }
 
         void Start()
@@ -56,11 +58,10 @@ namespace EverScord
             yield return new WaitForSeconds(2f);
 
             login.ToggleLobbyCanvas();
+            titleArea.SetActive(false);
             lobbyArea.SetActive(true);
             LoadingScreen.ShowScreen();
             OnTransitionToLobby?.Invoke();
-
-            Debug.Log("============================== transition lobby");
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
@@ -68,6 +69,8 @@ namespace EverScord
 
         public void LobbyToAlteration()
         {
+            IsExaminingAlteration = true;
+
             DOTween.Rewind(ConstStrings.TWEEN_LOBBY2ALTERATION);
             DOTween.Play(ConstStrings.TWEEN_LOBBY2ALTERATION);
 
@@ -76,6 +79,8 @@ namespace EverScord
 
         public void AlterationToLobby()
         {
+            IsExaminingAlteration = false;
+
             DOTween.Rewind(ConstStrings.TWEEN_ALTERATION2LOBBY);
             DOTween.Play(ConstStrings.TWEEN_ALTERATION2LOBBY);
 

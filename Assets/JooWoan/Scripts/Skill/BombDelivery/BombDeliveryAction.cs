@@ -61,7 +61,7 @@ namespace EverScord.Skill
             if (!activator.CharacterPhotonView.IsMine)
                 return;
 
-            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
+            float calculatedDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient, enemy);
             GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
 
             enemy.StunMonster(skill.StunDuration);
@@ -81,8 +81,8 @@ namespace EverScord.Skill
             if (!activator.CharacterPhotonView.IsMine)
                 return;
 
-            float totalHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
-            float dotHealAmount = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDotDamage);
+            float totalHealAmount = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient);
+            float dotHealAmount = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage, SkillInfo.skillCoefficient);
 
             target.IncreaseHP(activator, totalHealAmount, true);
             StartCoroutine(CharacterSkill.RegenerateHP(activator, new CharacterControl[] {target}, skill.HealDuration, dotHealAmount));
