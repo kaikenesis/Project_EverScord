@@ -34,6 +34,7 @@ namespace EverScord
         public TitleControl TitleController                     { get; private set; }
         public AugmentPresenter AugmentControl                  { get; private set; }
         public ResultPresenter ResultControl                    { get; private set; }
+        public DebuffSystem DebuffSystem                        { get; private set; }
         public static PhotonView View                           { get; private set; }
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
@@ -201,8 +202,11 @@ namespace EverScord
 
                 case TitleControl titleControl:
                     TitleController = titleControl;
-                    break;                
+                    break;
 
+                case DebuffSystem debuffSystem:
+                    DebuffSystem = debuffSystem;
+                    break;
                 default:
                     break;
             }
@@ -237,6 +241,7 @@ namespace EverScord
         {
             SetLevelIndex(0);
             Instance.StartCoroutine(LevelControl.LoadSceneAsync(sceneName));
+            SoundManager.Instance.PlayBGM("LobbyBGM");
         }
 
         [PunRPC]

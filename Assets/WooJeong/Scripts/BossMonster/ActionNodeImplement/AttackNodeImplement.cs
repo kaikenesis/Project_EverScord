@@ -15,7 +15,6 @@ public abstract class AttackNodeImplement : ActionNodeImplement
 
     public override NodeState Evaluate()
     {
-        Debug.Log(this);
         if (attackable == false && bossRPC.IsUnderHP(attackableHP))
         {
             attackable = true;

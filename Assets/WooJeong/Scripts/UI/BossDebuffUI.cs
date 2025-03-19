@@ -20,6 +20,12 @@ public class BossDebuffUI : MonoBehaviour
         poisonImage = poisonUI.GetComponent<Image>();
     }
 
+    private void Start()
+    {
+        DebuffSystem.OnBossDebuffStart += DebuffEnter;
+        DebuffSystem.OnBossDebuffEnd += DebuffEnd;
+    }
+
     public void DebuffEnter(EBossDebuff bossDebuff)
     {
         switch (bossDebuff)

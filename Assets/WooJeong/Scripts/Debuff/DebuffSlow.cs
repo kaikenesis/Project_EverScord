@@ -1,21 +1,23 @@
 using EverScord.Character;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class BossDebuffSlow : BaseBossDebuff
+public class DebuffSlow : BaseDebuff
 {
-    public override IEnumerator StartDebuff(BossRPC boss, CharacterControl attacker, float time, float value)
+    public override IEnumerator StartDebuff(IEnemy enemy, CharacterControl attacker, float time, float value)
     {
         Debug.Log("boss slow");
-        timer = time;
-        boss.BossNavMeshAgent.speed -= value;
+        float timer = time;
+        NavMeshAgent agent = enemy.GetNavMeshAgent();
+        agent.speed -= value;
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
             timer -= 0.1f;
             if(timer <= 0)
             {
-                boss.BossNavMeshAgent.speed += value;
+                agent.speed += value;
                 yield break;
             }
         }

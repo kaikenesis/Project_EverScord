@@ -20,7 +20,7 @@ public abstract class NRunState : MonoBehaviour, IState
     {
         Setup();
         photonView = GetComponent<PhotonView>();
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent = monsterController.MonsterNavMeshAgent;
         navMeshAgent.stoppingDistance = monsterController.monsterData.StopDistance;
     }
 

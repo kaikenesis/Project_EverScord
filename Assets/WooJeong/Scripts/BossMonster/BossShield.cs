@@ -3,6 +3,7 @@ using EverScord.Character;
 using EverScord.Effects;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BossShield : MonoBehaviour, IEnemy
 {
@@ -45,5 +46,15 @@ public class BossShield : MonoBehaviour, IEnemy
     public float GetDefense()
     {
         return 0;
+    }
+
+    public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public NavMeshAgent GetNavMeshAgent()
+    {
+        throw new NotImplementedException();
     }
 }
