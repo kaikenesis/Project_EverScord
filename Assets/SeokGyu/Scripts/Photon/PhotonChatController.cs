@@ -83,7 +83,7 @@ namespace EverScord
             chatClient.Disconnect();
             ConnectToPhotonChat(newName);
         }
-        #endregion
+        #endregion // Handle Methods
 
         #region Private Methods
         private void InviteMessage(string sender, string message)
@@ -108,7 +108,7 @@ namespace EverScord
         {
             OnExile?.Invoke();
         }
-        #endregion
+        #endregion // Private Methods
 
         #region Public Methods
         public void ConnectToPhotonChat(string nickName)
@@ -118,7 +118,7 @@ namespace EverScord
             ChatAppSettings chatSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
             chatClient.ConnectUsingSettings(chatSettings);
         }
-        #endregion
+        #endregion // Public Methods
 
         #region Callback Chat Methods
         public void DebugReturn(DebugLevel level, string message)

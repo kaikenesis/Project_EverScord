@@ -1,3 +1,4 @@
+using EverScord.UI;
 using System;
 using System.Collections;
 using TMPro;
@@ -20,16 +21,18 @@ namespace EverScord
             StartTimer();
 
             LevelControl.OnLevelUpdated += HandleLevelUpdated;
-            LevelControl.OnLevelClear += HandleLevelClear;
+            PortalControl.OnLevelClear += HandleTimerPause;
+            GameOverControl.OnGameOver += HandleTimerPause;
         }
 
         private void OnDestroy()
         {
             LevelControl.OnLevelUpdated -= HandleLevelUpdated;
-            LevelControl.OnLevelClear -= HandleLevelClear;
+            PortalControl.OnLevelClear -= HandleTimerPause;
+            GameOverControl.OnGameOver -= HandleTimerPause;
         }
 
-        private void HandleLevelClear()
+        private void HandleTimerPause()
         {
             PauseTimer();
         }
