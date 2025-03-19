@@ -85,11 +85,10 @@ namespace EverScord.Character
         public static Action<int, bool, Vector3> OnCheckAlive = delegate { };
 
         private static GameObject deathEffect, reviveEffect, beamEffect;
-        private static ParticleSystem hitEffect1, hitEffect2;
+        private static ParticleSystem hitEffect1, hitEffect2, healEffect;
 
         private Action onDecreaseHealth;
         private PhotonView photonView;
-        private ParticleSystem healEffect;
         private ReviveCircle reviveCircle;
         private CharacterController controller;
         private Coroutine deathCoroutine, hpRegenCoroutine;
@@ -1064,8 +1063,7 @@ namespace EverScord.Character
         [PunRPC]
         public void SyncArmor(string helmetTag, string vestTag, string shoesTag, int enhanceIndex)
         {
-            bool isHealer = CharacterJob == PlayerData.EJob.Healer;
-            GameManager.Instance.AugmentControl.SyncPlayerArmor(isHealer, helmetTag, vestTag, shoesTag, enhanceIndex);
+            GameManager.Instance.AugmentControl.SyncPlayerArmor(this, helmetTag, vestTag, shoesTag, enhanceIndex);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////

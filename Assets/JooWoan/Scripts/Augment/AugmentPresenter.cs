@@ -359,11 +359,10 @@ namespace EverScord.Augment
             player.SetArmor(new HelmetDecorator(player.CharacterHelmet, helmetAugment));
             player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
             player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
+            player.Stats.OnStatEnhanced?.Invoke();
 
             if (PhotonNetwork.IsConnected)
                 player.CharacterPhotonView.RPC(nameof(player.SyncArmor), RpcTarget.Others, selectedHelmetTag, selectedVestTag, selectedShoesTag, enhanceIndex);
-
-            player.Stats.OnStatEnhanced?.Invoke();
 
             enhanceIndex++;
             enhanceCount++;
@@ -421,20 +420,21 @@ namespace EverScord.Augment
             return null;
         }
 
-        public void SyncPlayerArmor(bool isHealer, string helmetTag, string vestTag, string shoesTag, int enhanceIndex)
+        public void SyncPlayerArmor(CharacterControl target, string helmetTag, string vestTag, string shoesTag, int index)
         {
             var helmetAugmentDict = augmentData.OffenseHelmetAugmentDict;
 
-            if (isHealer)
+            if (target.CharacterJob == PlayerData.EJob.Healer)
                 helmetAugmentDict = augmentData.SupportHelmetAugmentDict;
 
-            HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[selectedHelmetTag][enhanceIndex];
-            VestAugment vestAugment = (VestAugment)augmentData.VestAugmentDict[selectedVestTag][enhanceIndex];
-            ShoesAugment shoesAugment = (ShoesAugment)augmentData.ShoesAugmentDict[selectedShoesTag][enhanceIndex];
+            HelmetAugment helmetAugment = (HelmetAugment)helmetAugmentDict[helmetTag][index];
+            VestAugment vestAugment = (VestAugment)augmentData.VestAugmentDict[vestTag][index];
+            ShoesAugment shoesAugment = (ShoesAugment)augmentData.ShoesAugmentDict[shoesTag][index];
 
-            player.SetArmor(new HelmetDecorator(player.CharacterHelmet, helmetAugment));
-            player.SetArmor(new VestDecorator(player.CharacterVest, vestAugment));
-            player.SetArmor(new ShoesDecorator(player.CharacterShoes, shoesAugment));
+            target.SetArmor(new HelmetDecorator(target.CharacterHelmet, helmetAugment));
+            target.SetArmor(new VestDecorator(target.CharacterVest, vestAugment));
+            target.SetArmor(new ShoesDecorator(target.CharacterShoes, shoesAugment));
+            target.Stats.OnStatEnhanced?.Invoke();
         }
     }
 
