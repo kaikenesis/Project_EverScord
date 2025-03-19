@@ -66,11 +66,8 @@ namespace EverScord
             Color optionImgColor = datas.OptionDatas[optionNum].ImgColor;
 
             AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
-            List<int> optionNums = panelData.OptionNum;
-            optionNums[selectIndex] = optionNum;
-
-            List<float> valueNums = panelData.ValueNum;
-            valueNums[selectIndex] = value;
+            panelData.OptionNum[selectIndex] = optionNum;
+            panelData.Value[selectIndex] = value;
 
             OnApplyOption?.Invoke(selectType, selectIndex, optionName, value, sourceImg, optionImgColor);
         }

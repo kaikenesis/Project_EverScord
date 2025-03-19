@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.Cockpit;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,11 +12,12 @@ namespace EverScord
             get { return panelDatas; }
         }
 
-        public AlterationData(int panelNum)
+        public AlterationData(FactorData[] factorData)
         {
-            for (int i = 0; i < panelNum; i++)
+            int count = factorData.Length;
+            for (int i = 0; i < count; i++)
             {
-                panelDatas.Add(new PanelData());
+                panelDatas.Add(new PanelData(factorData[i]));
             }
         }
 
@@ -23,16 +25,35 @@ namespace EverScord
         {
             public int lastUnlockedNum = 0;
 
-            private List<int> optionNum = new List<int>();
-            public List<int> OptionNum
+            private int[] optionNum;
+            public int[] OptionNum
             {
                 get { return optionNum; }
             }
 
-            private List<float> valueNum = new List<float>();
-            public List<float> ValueNum
+            private float[] value;
+            public float[] Value
             {
-                get { return valueNum; }
+                get { return value; }
+            }
+
+            public PanelData(FactorData factorData)
+            {
+                int length = factorData.OptionDatas.Length;
+                optionNum = new int[length];
+                value = new float[length];
+            }
+
+            public AlterationStatus alterationStatus;
+
+            public class AlterationStatus
+            {
+                public float[] statusValues { get; private set; }
+
+                public void SetStatus(float[] values)
+                {
+                    statusValues = values;
+                }
             }
         }
     }

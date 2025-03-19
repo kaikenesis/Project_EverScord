@@ -141,7 +141,7 @@ namespace EverScord
             EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict          = new Dictionary<int, CharacterControl>();
-            PlayerAlterationData = new AlterationData(factorDatas.Length);
+            PlayerAlterationData = new AlterationData(factorDatas);
 
             View.ViewID = 999;
             CurrentLevelIndex = -1;

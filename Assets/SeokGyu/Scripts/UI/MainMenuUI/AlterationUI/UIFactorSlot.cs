@@ -66,25 +66,13 @@ namespace EverScord
             int cost = GameManager.Instance.CostDatas.SlotCostDatas[slotNum - 1].Reroll;
             GameManager.Instance.UpdateMoney(-cost);
 
-            FactorData datas = GameManager.Instance.FactorDatas[typeNum];
-
-            int randomOptionNum = UnityEngine.Random.Range(0, datas.OptionDatas.Length);
-
-            newOptionSprite = datas.OptionDatas[randomOptionNum].SourceImg;
-            newOptionColor = datas.OptionDatas[randomOptionNum].ImgColor;
-            newOptionName = datas.OptionDatas[randomOptionNum].Name;
-
-            int randomValueNum = UnityEngine.Random.Range(0, datas.OptionDatas[randomOptionNum].Values.Length);
-            newOptionValue = datas.OptionDatas[randomOptionNum].Values[randomValueNum];
-
+            FactorData factorData = GameManager.Instance.FactorDatas[typeNum];
+            factorData.SetRandomOption(out newOptionSprite, out newOptionColor, out newOptionName, out newOptionValue, out int optionNum);
             OnRequestApplyOption?.Invoke(newOptionColor, newOptionName, newOptionValue, curOptionName, curOptionValue);
 
             AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
-            List<int> optionNums = panelData.OptionNum;
-            optionNums[slotNum] = randomOptionNum;
-
-            List<float> valueNums = panelData.ValueNum;
-            valueNums[slotNum] = newOptionValue;
+            panelData.OptionNum[slotNum] = optionNum;
+            panelData.Value[slotNum] = newOptionValue;
         }
 
         private void HandleApplyOption(int typeNum, int slotNum, string newName, float newValue, Sprite newSourceImg, Color newColor)
@@ -117,8 +105,8 @@ namespace EverScord
         public void Initialize(int typeNum, bool bConfirmed, int slotIndex)
         {
             AlterationData.PanelData panelData = GameManager.Instance.PlayerAlterationData.PanelDatas[typeNum];
-            List<int> optionNums = panelData.OptionNum;
-            List<float> valueNums = panelData.ValueNum;
+            int[] optionNums = panelData.OptionNum;
+            float[] valueNums = panelData.Value;
 
             slotNum = slotIndex;
             this.bConfirmed = bConfirmed;
@@ -126,7 +114,7 @@ namespace EverScord
             lockImg.sprite = GameManager.Instance.FactorDatas[typeNum].LockedSourceImg;
             curTypeNum = typeNum;
 
-            if (optionNums.Count > slotIndex)
+            if (optionNums.Length > slotIndex)
             {
                 if(slotIndex < panelData.lastUnlockedNum)
                 {
@@ -157,9 +145,6 @@ namespace EverScord
 
                 if (bLock == false)
                     panelData.lastUnlockedNum++;
-
-                optionNums.Add(-1);
-                valueNums.Add(-1);
             }
         }
 
