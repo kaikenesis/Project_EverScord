@@ -32,12 +32,6 @@ namespace EverScord.Character
             OnStatEnhanced -= UpdateSkillTimers;
         }
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F4))
-                DebugStats();
-        }
-
         public void InitBaseStat(CharacterControl character)
         {
             if (IsInitialized)
@@ -252,21 +246,6 @@ namespace EverScord.Character
         {
             for (int i = 0; i < character.SkillList.Count; i++)
                 character.SkillList[i].SkillAction.SetNewCooldown();
-        }
-
-        private void DebugStats()
-        {
-            Debug.Log($"{character.CharacterType.ToString()}===============================================");
-            Debug.Log($"Max HP: {MaxHealth}");
-            Debug.Log($"SPEED: {Speed}");
-            Debug.Log($"ATK: {Attack}");
-            Debug.Log($"DEF: {Defense}");
-            Debug.Log($"HP REGEN: {HealthRegen}");
-            Debug.Log($"Alteration HP+: Additive: {bonusDict[StatType.HEAL_INCREASE].additive}, Mult: {bonusDict[StatType.HEAL_INCREASE].multiplicative}");
-            Debug.Log($"Alteration COOLDOWN-:Additive: {bonusDict[StatType.COOLDOWN_DECREASE].additive}, Mult: {bonusDict[StatType.COOLDOWN_DECREASE].multiplicative}");
-            Debug.Log($"Alteration RELOAD-: Additive: {bonusDict[StatType.RELOADSPEED_DECREASE].additive}, Mult: {bonusDict[StatType.RELOADSPEED_DECREASE].multiplicative}");
-            Debug.Log($"Alteration SKILLDMG+: Additive: {bonusDict[StatType.SKILLDAMAGE_INCREASE].additive}, Mult: {bonusDict[StatType.SKILLDAMAGE_INCREASE].multiplicative}");
-            Debug.Log($"{character.CharacterType.ToString()}===============================================");
         }
     }
     

@@ -177,12 +177,6 @@ namespace EverScord.Character
 
         void Update()
         {
-            if (photonView.IsMine && Input.GetKeyDown(KeyCode.F1))
-                IncreaseHP(this, 100);
-
-            if (Input.GetKeyDown(KeyCode.F3))
-                DecreaseHP(1000);
-
             UIMarker.UpdatePosition(PlayerTransform.position);
 
             if (!photonView.IsMine)

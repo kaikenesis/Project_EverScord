@@ -17,7 +17,7 @@ namespace EverScord
         private static GameManager instance;
         public const float GROUND_HEIGHT = 0f;
 
-        [SerializeField] private bool debugMode = false;
+        public bool debugMode = false;
         [SerializeField] private PlayerData playerData;
         public PlayerData PlayerData { get { return playerData; } }
 

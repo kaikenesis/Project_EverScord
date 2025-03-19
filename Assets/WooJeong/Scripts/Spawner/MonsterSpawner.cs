@@ -68,9 +68,16 @@ public class MonsterSpawner : MonoBehaviour
             {
                 mo = ResourceManager.Instance.GetFromPool(monster.AssetGUID, transform.position, Quaternion.identity);
 
-                SpawnSmoke();
+                if (mo == null)
+                {
+                    curTime = 0f;
+                    yield return new WaitForSeconds(1f);
+                    continue;
+                }
 
+                SpawnSmoke();
                 PhotonView view = mo.GetComponent<PhotonView>();
+
                 if (view.ViewID == 0)
                 {
                     if (PhotonNetwork.AllocateViewID(view))

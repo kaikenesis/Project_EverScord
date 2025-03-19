@@ -41,7 +41,7 @@ namespace EverScord.UI
 
             titleControl = GameManager.Instance.TitleController;
             eventSystem = GetComponent<EventSystem>();
-            raycasters = FindObjectsOfType<GraphicRaycaster>();
+            raycasters = FindObjectsOfType<GraphicRaycaster>(true);
         }
 
         private void HandleVisibleObject()

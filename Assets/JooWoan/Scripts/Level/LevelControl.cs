@@ -17,6 +17,7 @@ namespace EverScord
 
         public static Action<float> OnProgressUpdated = delegate { };
         public static Action<int, bool> OnLevelUpdated = delegate { };
+        public static Action OnLoadComplete = delegate { };
 
         public static PhotonView View { get; private set; }
         public static bool IsLoadingLevel { get; private set; }
@@ -24,8 +25,9 @@ namespace EverScord
 
         public PortalControl PortalController => portalControl;
         public float CurrentProgress => progress / Mathf.Max(0.001f, maxProgress);
-        public int MaxLevelIndex => levelList.Count - 1;
         public static bool IsLevelCompleted => progress >= maxProgress;
+        public static float MaxProgress => maxProgress;
+        public int MaxLevelIndex => levelList.Count - 1;
 
         private static WaitForSeconds waitLoadScreen, waitStageTransition, waitStageFade;
         private static WaitForSeconds waitOneSec = new WaitForSeconds(1f);
@@ -68,14 +70,6 @@ namespace EverScord
             OnProgressUpdated += portalControl.TryOpenPortal;
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F2))
-            {
-                SyncChangeCurrentProgress(maxProgress);
-            }
-        }
-
         void OnDisable()
         {
             OnProgressUpdated -= portalControl.TryOpenPortal;
@@ -98,7 +92,7 @@ namespace EverScord
             OnProgressUpdated?.Invoke(CurrentProgress);
         }
 
-        private void SyncChangeCurrentProgress(float changeAmount)
+        public static void SyncChangeCurrentProgress(float changeAmount)
         {
             if (PhotonNetwork.IsConnected)
                 View.RPC(nameof(SyncProgress), RpcTarget.All, changeAmount);
@@ -281,6 +275,7 @@ namespace EverScord
             GameManager.Instance.LoadScreen.ImageHub.SetActive(false);
 
             IsLoadingLevel = false;
+            OnLoadComplete?.Invoke();
         }
     }
 }

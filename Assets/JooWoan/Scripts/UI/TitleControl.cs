@@ -17,18 +17,23 @@ namespace EverScord
 
         void Awake()
         {
+            if (!GameManager.IsFirstGameLoad)
+            {
+                hasPressedAnything = true;
+                LevelControl.OnLoadComplete -= ShowLobby;
+                LevelControl.OnLoadComplete += ShowLobby;
+                return;
+            }
+
             GameManager.Instance.InitControl(this);
+            IsExaminingAlteration = false;
+
             titleArea.SetActive(true);
             lobbyArea.SetActive(false);
-            IsExaminingAlteration = false;
-        }
 
-        void Start()
-        {
             login.DisableLoginUI();
             LoadingScreen.ShowScreenFrom1();
             DOTween.PlayForward(ConstStrings.TWEEN_SHOW_TITLE);
-            GameManager.SetIsFirstGameLoad(false);
         }
 
         void Update()
@@ -51,6 +56,10 @@ namespace EverScord
 
         public bool TransitionLobby()
         {
+            if (!GameManager.IsFirstGameLoad)
+                return false;
+
+            GameManager.SetIsFirstGameLoad(false);
             StartCoroutine(StartTransitionLobby());
             return true;
         }
@@ -60,17 +69,19 @@ namespace EverScord
             LoadingScreen.CoverScreen();
             yield return new WaitForSeconds(2f);
 
-            login.ToggleLobbyCanvas();
             LoadingScreen.ShowScreen();
-
             ShowLobby();
         }
 
         private void ShowLobby()
         {
+            LevelControl.OnLoadComplete -= ShowLobby;
+
             titleArea.SetActive(false);
             lobbyArea.SetActive(true);
+            login.ToggleLobbyCanvas();
             OnTransitionToLobby?.Invoke();
+
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
         }
