@@ -22,6 +22,9 @@ namespace EverScord
 
             if (Input.GetKeyDown(KeyCode.F5))
                 GameManager.Instance.debugMode = !GameManager.Instance.debugMode;
+
+            if (Input.GetKeyDown(KeyCode.F6))
+                GameManager.Instance.GameOverController.ShowGameover(true);
         }
 
         public void DebugStats()

@@ -12247,6 +12247,7 @@ GameObject:
   - component: {fileID: 8432001289966840857}
   - component: {fileID: 825100488221383254}
   - component: {fileID: 9092899928574150878}
+  - component: {fileID: 8142957000056251972}
   m_Layer: 0
   m_Name: Root
   m_TagString: Untagged
@@ -12304,12 +12305,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 825100488221383254}
-  defeatAnim: {fileID: 825100488221383254}
   idleClip: {fileID: 7400000, guid: ef7e4d4af8a5a5742bf219b205af2317, type: 2}
-  victoryStart: {fileID: 7400000, guid: d3b25054da4b7e3419a897bd3313633d, type: 2}
-  defeatStart: {fileID: 7400000, guid: d9128ace63f15584e977b9faafdf4c0c, type: 2}
   weapon: {fileID: 9086579445324412688}
   triggerChance: 25
+  defeatAnim: {fileID: 825100488221383254}
+  victoryStart: {fileID: 7400000, guid: d3b25054da4b7e3419a897bd3313633d, type: 2}
+  defeatStart: {fileID: 7400000, guid: d9128ace63f15584e977b9faafdf4c0c, type: 2}
+--- !u!114 &8142957000056251972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569987085641719017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 743e7e7ec9b101949944a029851f0d50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5628051569203414381
 GameObject:
   m_ObjectHideFlags: 0

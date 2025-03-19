@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DG.Tweening;
+using EverScord.UI;
 using UnityEngine;
 
 namespace EverScord
@@ -12,7 +13,7 @@ namespace EverScord
 
         [SerializeField] private UILogin login;
         [SerializeField] private GameObject titleArea, lobbyArea;
-        [SerializeField] private DOTweenAnimation titleFadeOutTween;
+        [SerializeField] private DOTweenAnimation titleFadeOutTween, alterationBgTween;
         [SerializeField] private float showPlayerPanelDelay;
         private bool hasPressedAnything = false;
 
@@ -128,6 +129,20 @@ namespace EverScord
         {
             DOTween.Rewind(ConstStrings.TWEEN_PLAYERPANEL);
             DOTween.Play(ConstStrings.TWEEN_PLAYERPANEL);
+        }
+
+        public void DarkenAlterationBackground(bool state)
+        {
+            if (state)
+                DOTween.PlayForward(ConstStrings.TWEEN_DARKEN_ALTERATION_BG);
+            else
+                DOTween.PlayBackwards(ConstStrings.TWEEN_DARKEN_ALTERATION_BG);
+        }
+
+        public void AlterationAppliedTween()
+        {
+            DOTween.Rewind(ConstStrings.TWEEN_ALTERATION_APPLIED);
+            DOTween.Play(ConstStrings.TWEEN_ALTERATION_APPLIED);
         }
     }
 }

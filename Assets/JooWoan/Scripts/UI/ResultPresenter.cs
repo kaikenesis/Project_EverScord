@@ -161,7 +161,7 @@ namespace EverScord.UI
 
             yield return new WaitForSeconds(0.5f);
 
-            StartCoroutine(BlurBackground());
+            StartCoroutine(VolumeAnimator.BlurBackground(depthOfField, 0.5f, 1f, 5f));
 
             for (int i = 0; i < resultUIList.Count; i++)
                 resultUIList[i].gameObject.SetActive(false);
@@ -172,27 +172,6 @@ namespace EverScord.UI
                 resultUIList[i].PlayTween();
                 yield return new WaitForSeconds(SHOW_RESULT_INTERVAL);
             }
-        }
-
-        private IEnumerator BlurBackground()
-        {
-            if (!depthOfField)
-                yield break;
-
-            depthOfField.active = true;
-
-            float targetDistance = 0.5f;
-            float currentDistance = 1f;
-            float lerpSpeed = 5f;
-
-            while (!Mathf.Approximately(currentDistance, targetDistance))
-            {
-                currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.deltaTime * lerpSpeed);
-                depthOfField.focusDistance.value = currentDistance;
-                yield return null;
-            }
-
-            depthOfField.focusDistance.value = targetDistance;
         }
 
         public void IncreaseReadyCount()
