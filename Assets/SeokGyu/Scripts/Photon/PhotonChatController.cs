@@ -4,6 +4,7 @@ using Photon.Pun;
 using System;
 using ExitGames.Client.Photon;
 using Photon.Chat.Demo;
+using EverScord.Character;
 
 namespace EverScord
 {
@@ -16,6 +17,8 @@ namespace EverScord
         public static Action<string> OnRoomFollow = delegate { };
         public static Action OnStopMatch = delegate { };
         public static Action OnExile = delegate { };
+        public static Action<string> OnSendMsgDead = delegate { };
+        public static Action<string> OnSendMsgAlive = delegate { };
 
         private void Awake()
         {
@@ -26,6 +29,7 @@ namespace EverScord
             UISendInvite.OnSendInvite += HandleSendInvite;
             UIPartyOption.OnClickedExile += HandleClickedExile;
             UIChangeName.OnChangeName += HandleChangeName;
+            CharacterControl.OnCheckAlive += HandleSendMsgAlive;
         }
 
         private void OnDestroy()
@@ -36,6 +40,23 @@ namespace EverScord
             UISendInvite.OnSendInvite -= HandleSendInvite;
             UIPartyOption.OnClickedExile -= HandleClickedExile;
             UIChangeName.OnChangeName -= HandleChangeName;
+            CharacterControl.OnCheckAlive -= HandleSendMsgAlive;
+        }
+
+        private void HandleSendMsgAlive(int pvID, bool isDead, Vector3 position)
+        {
+            PhotonView pv = PhotonNetwork.GetPhotonView(pvID);
+
+            if(isDead)
+            {
+                string message = $"[시스템] : <color=red>{pv.Owner.NickName}님이 사망했습니다.</color>";
+                pv.RPC(nameof(SendDeadSystemMsg), RpcTarget.All, message);
+            }
+            else
+            {
+                string message = $"[시스템] : <color=blue>{pv.Owner.NickName}님이 살아났습니다.</color>";
+                pv.RPC(nameof(SendAliveSystemMsg), RpcTarget.All, message);
+            }
         }
 
         private void Update()
@@ -119,6 +140,21 @@ namespace EverScord
             chatClient.ConnectUsingSettings(chatSettings);
         }
         #endregion // Public Methods
+
+        #region PunRPC Methods
+        // PhotonView를 못찾고있음 불러올게 아니라 따로 추가해줘야할듯?
+        [PunRPC]
+        private void SendDeadSystemMsg(string message)
+        {
+            OnSendMsgDead?.Invoke(message);
+        }
+
+        [PunRPC]
+        private void SendAliveSystemMsg(string message)
+        {
+            OnSendMsgAlive?.Invoke(message);
+        }
+        #endregion // PunRPC Methods
 
         #region Callback Chat Methods
         public void DebugReturn(DebugLevel level, string message)
