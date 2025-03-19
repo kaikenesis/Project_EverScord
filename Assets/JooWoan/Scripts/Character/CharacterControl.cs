@@ -1,3 +1,4 @@
+using UnityEngine.AddressableAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,10 @@ namespace EverScord.Character
 
         [Header("Weapon")]
         [SerializeField] private Weapon weapon;
+
+        [Header("Sound")]
+        [SerializeField] private AssetReference frontFootstep;
+        [SerializeField] private AssetReference backFootstep;
 
         [Header("Skill")]
         [SerializeField] private List<SkillActionInfo> skillList;
@@ -91,8 +96,8 @@ namespace EverScord.Character
         private PhotonView photonView;
         private ReviveCircle reviveCircle;
         private CharacterController controller;
-        private Coroutine deathCoroutine, hpRegenCoroutine;
-        private WaitForSeconds waitHpRegen;
+        private Coroutine deathCoroutine, hpRegenCoroutine, footstepCoroutine;
+        private WaitForSeconds waitHpRegen, waitFootstep;
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
         private LayerMask groundAndEnemyLayer;
@@ -102,6 +107,13 @@ namespace EverScord.Character
         {
             PlayerTransform  = transform;
 
+            photonView       = GetComponent<PhotonView>();
+            controller       = GetComponent<CharacterController>();
+            AnimationControl = GetComponent<CharacterAnimation>();
+            SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
+            UIMarker         = gameObject.AddComponent<UIMarker>();
+            Stats            = gameObject.AddComponent<CharacterStat>();
+
             BuffList         = new List<CharacterBuff>();
             DebuffDict       = new Dictionary<CharState, Debuff>();
             CharacterHelmet  = new Helmet();
@@ -109,14 +121,8 @@ namespace EverScord.Character
             CharacterShoes   = new Shoes();
             PhysicsControl   = new CharacterPhysics(gravity, mass);
             waitHpRegen      = new WaitForSeconds(1f);
+            waitFootstep     = new WaitForSeconds(AnimationControl.AnimInfo.RunForward.length * 0.48f);
             playerInputInfo  = new InputInfo();
-
-            photonView       = GetComponent<PhotonView>();
-            controller       = GetComponent<CharacterController>();
-            AnimationControl = GetComponent<CharacterAnimation>();
-            SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
-            UIMarker         = gameObject.AddComponent<UIMarker>();
-            Stats            = gameObject.AddComponent<CharacterStat>();
 
             // Unity docs: Set skinwidth 10% of the Radius
             controller.skinWidth = controller.radius * SKIN_RATIO;
@@ -197,6 +203,7 @@ namespace EverScord.Character
 
             Move();
             AnimationControl.AnimateMovement(this, moveDir);
+            PlayFootstepSounds();
 
             TrackAim();
             RotateBody();
@@ -373,6 +380,31 @@ namespace EverScord.Character
                     photonView.RPC(nameof(SyncUseSkill), RpcTarget.Others, i);
                 
                 break;
+            }
+        }
+
+        private void PlayFootstepSounds()
+        {
+            if (footstepCoroutine == null && IsMoving)
+                footstepCoroutine = StartCoroutine(FootstepSound());
+
+            else if (footstepCoroutine != null && !IsMoving)
+            {
+                StopCoroutine(footstepCoroutine);
+                footstepCoroutine = null;
+            }
+        }
+
+        private IEnumerator FootstepSound()
+        {
+            while (IsMoving)
+            {
+                if (moveDir.z > 0)
+                    SoundManager.Instance.PlaySound(frontFootstep.AssetGUID);
+                else
+                    SoundManager.Instance.PlaySound(backFootstep.AssetGUID);
+
+                yield return waitFootstep;
             }
         }
 

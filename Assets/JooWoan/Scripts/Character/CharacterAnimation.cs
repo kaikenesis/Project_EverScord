@@ -11,7 +11,6 @@ namespace EverScord.Character
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float lerpMaskSpeed = 1f;
         [field: SerializeField] public float ShootStanceDuration { get; private set; }
-
         public Animator Anim => anim;
         public AnimationInfo AnimInfo => info;
         private PhotonView photonView;
@@ -48,8 +47,6 @@ namespace EverScord.Character
             anim.SetBool(ConstStrings.PARAM_ISMOVING, true);
             anim.SetFloat(ConstStrings.PARAM_HORIZONTAL, moveDir.x, transitionDampTime, Time.deltaTime);
             anim.SetFloat(ConstStrings.PARAM_VERTICAL, moveDir.z, transitionDampTime, Time.deltaTime);
-
-            SoundManager.Instance.PlaySound("FootStep", 1, true);
         }
 
         public void Rotate(bool state)

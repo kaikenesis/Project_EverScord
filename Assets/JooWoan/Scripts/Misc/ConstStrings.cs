@@ -45,6 +45,7 @@ namespace EverScord
 
         // Sound Names
         public const string SOUND_SHOOT = "Shoot";
+        public const string SOUND_RELOADING = "ReloadingLoad";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";

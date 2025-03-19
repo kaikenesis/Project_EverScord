@@ -6540,6 +6540,16 @@ MonoBehaviour:
   groundCheckRadius: 0.1
   groundCheckOffset: {x: 0, y: 0.05, z: 0}
   weapon: {fileID: 9078234697602045160}
+  frontFootstep:
+    m_AssetGUID: 2e96198372c54524c8cf099946163270
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  backFootstep:
+    m_AssetGUID: b4d6e77c0e88b8d448cb61b14893ff6a
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   skillList:
   - <Skill>k__BackingField: {fileID: 11400000, guid: e51215101053b274a9a1c32374d063c2, type: 2}
   - <Skill>k__BackingField: {fileID: 11400000, guid: fdd920105e3e3624d8cbd6b7e53bdc88, type: 2}
@@ -12637,6 +12647,7 @@ GameObject:
   - component: {fileID: 4971527992289089803}
   - component: {fileID: 52074984756935801}
   - component: {fileID: 1082497503637100628}
+  - component: {fileID: 1212890328942415986}
   m_Layer: 0
   m_Name: Root
   m_TagString: Untagged
@@ -12732,6 +12743,18 @@ MonoBehaviour:
     LayerIndex: 0
   - SynchronizeType: 1
     LayerIndex: 1
+--- !u!114 &1212890328942415986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6690210158392346469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 743e7e7ec9b101949944a029851f0d50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6769085125112470791
 GameObject:
   m_ObjectHideFlags: 0

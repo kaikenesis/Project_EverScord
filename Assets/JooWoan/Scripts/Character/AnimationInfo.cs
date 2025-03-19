@@ -18,5 +18,6 @@ namespace EverScord.Character
         [field: SerializeField] public AnimationClip Land           { get; private set; }
         [field: SerializeField] public AnimationClip ThrowReady     { get; private set; }
         [field: SerializeField] public AnimationClip Throw          { get; private set; }
+        [field: SerializeField] public AnimationClip RunForward     { get; private set; }
     }
 }
