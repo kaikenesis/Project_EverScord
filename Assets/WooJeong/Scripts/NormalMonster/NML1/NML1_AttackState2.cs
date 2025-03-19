@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class NML1_AttackState2 : NAttackState
 {
-    private Vector3 moveVector;
     private Vector3 startVector;
     private float chargeRange;
     private NML1_Controller controller;    
@@ -21,9 +20,6 @@ public class NML1_AttackState2 : NAttackState
 
     protected override IEnumerator Attack()
     {
-        startVector = transform.position;
-        moveVector = (monsterController.player.transform.position - transform.position).normalized;
-        
         controller.PhotonView.RPC(nameof(SyncProjectLineIndicator), RpcTarget.All, 1.0f);
         yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
@@ -32,7 +28,7 @@ public class NML1_AttackState2 : NAttackState
         yield return new WaitForSeconds(time / 4);
         monsterController.PlaySound("NML1_2");
         monsterController.BoxCollider2.enabled = true;
-        StartCoroutine(Charge(1f));
+        StartCoroutine(Charge(1.2f));
         yield return new WaitForSeconds(time / 4 * 3);
         monsterController.BoxCollider2.enabled = false;
         StartCoroutine(monsterController.CoolDown2());
@@ -42,7 +38,9 @@ public class NML1_AttackState2 : NAttackState
 
     private IEnumerator Charge(float duration)
     {
-        Vector3 endPoint = startVector + moveVector * (chargeRange - monsterController.monsterData.Skill02_RangeZ);
+        startVector = transform.position;
+
+        Vector3 endPoint = startVector + transform.forward * (chargeRange - monsterController.monsterData.Skill02_RangeZ);
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             transform.position = Vector3.Lerp(startVector, endPoint, t / duration);

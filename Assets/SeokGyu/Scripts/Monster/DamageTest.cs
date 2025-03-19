@@ -1,6 +1,7 @@
 using EverScord.Character;
 using EverScord.Effects;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace EverScord
 {
@@ -27,6 +28,16 @@ namespace EverScord
         }
 
         public float GetDefense()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public NavMeshAgent GetNavMeshAgent()
         {
             throw new System.NotImplementedException();
         }

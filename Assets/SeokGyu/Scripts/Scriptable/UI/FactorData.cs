@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace EverScord
@@ -64,6 +66,36 @@ namespace EverScord
         {
             get { return optionDatas; }
             private set { optionDatas = value; }
+        }
+
+        public void SetRandomOption(out Sprite sprite, out Color color, out string name, out float value, out int index)
+        {
+            index = Random.Range(0, OptionDatas.Length);
+
+            sprite = OptionDatas[index].SourceImg;
+            color = OptionDatas[index].ImgColor;
+            name = OptionDatas[index].Name;
+            value = GetRandomValueMinMax(index);
+        }
+
+        // Min값과 Max값 사이 랜덤
+        private float GetRandomValueMinMax(int optionNum)
+        {
+            float[] values = OptionDatas[optionNum].Values;
+            float dist = 0.5f;
+            int min = (int)(values[0] / dist);
+            int max = (int)(values[values.Length - 1] / dist);
+            int randomValue = Random.Range(min, max);
+
+            return randomValue * dist;
+        }
+
+        // 정해진 배열 값들 중에서 랜덤
+        private float GetRandomValue(int optionNum)
+        {
+            float[] values = OptionDatas[optionNum].Values;
+            int randomNum = Random.Range(0, values.Length);
+            return OptionDatas[randomNum].Values[randomNum];
         }
 
         [System.Serializable]

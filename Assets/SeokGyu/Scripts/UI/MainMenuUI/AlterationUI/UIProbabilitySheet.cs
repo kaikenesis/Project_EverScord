@@ -3,17 +3,14 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class UIProbabilitySheet : MonoBehaviour
+    public class UIProbabilitySheet : ToggleObject
     {
         [SerializeField] private GameObject option;
 
-        private void Awake()
+        protected override void Initialize()
         {
-            Initialize();
-        }
+            base.Initialize();
 
-        private void Initialize()
-        {
             int typeCount = GameManager.Instance.FactorDatas.Length;
             for (int i = 0; i < typeCount; i++)
             {

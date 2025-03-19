@@ -65,14 +65,14 @@ namespace EverScord
 
             for (int i = 0; i < panelDatas.Count; i++)
             {
-                if (panelDatas[i].OptionNum.Count <= 0) return;
+                if (panelDatas[i].OptionNum.Length <= 0) return;
                     
-                for (int j = 0; j < panelDatas[i].OptionNum.Count; j++)
+                for (int j = 0; j < panelDatas[i].OptionNum.Length; j++)
                 {
                     if (panelDatas[i].OptionNum[j] == -1) continue;
 
                     FactorData.OptionData optionData = GameManager.Instance.FactorDatas[i].OptionDatas[panelDatas[i].OptionNum[j]];
-                    HandleRequestUpdateInfo(optionData.Name, panelDatas[i].ValueNum[j], "", 0f);
+                    HandleRequestUpdateInfo(optionData.Name, panelDatas[i].Value[j], "", 0f);
                 }
             }
         }
@@ -80,11 +80,15 @@ namespace EverScord
         private void UpdateInfo()
         {
             infoText.text = "";
+            float[] values = new float[options.Count];
             for (int i = 0; i < options.Count; i++)
             {
+                values[i] = options[i].value;
                 if (options[i].value == 0.0f) continue;
                 infoText.text += $"{options[i].name} : {options[i].value}\n";
             }
+
+            
         }
 
         public class OptionInfo

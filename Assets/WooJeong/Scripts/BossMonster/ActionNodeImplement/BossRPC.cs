@@ -31,10 +31,10 @@ public class BossRPC : MonoBehaviour, IEnemy
     private Animator animator;
     private CapsuleCollider hitBox;
     private UIMarker uiMarker;
-    public NavMeshAgent BossNavMeshAgent { get; private set; }
-    private BossDebuffSystem bossDebuffSystem;
-    private BossDebuffUI bossDebuffUI;
+    private NavMeshAgent bossNavMeshAgent;
     private BlinkEffect blinkEffect;
+
+    private GameObject worldCanvas;
 
     //cur stat
 
@@ -62,12 +62,8 @@ public class BossRPC : MonoBehaviour, IEnemy
         animator = GetComponent<Animator>();
         uiMarker = gameObject.AddComponent<UIMarker>();
         uiMarker.Initialize(PointMarkData.EType.BossMonster);
-        BossNavMeshAgent = GetComponent<NavMeshAgent>();
-        bossDebuffSystem = gameObject.AddComponent<BossDebuffSystem>();
-        GameObject ui = GameObject.FindGameObjectWithTag("BossDebuffUI");
-        bossDebuffUI = ui.GetComponent<BossDebuffUI>();
-        bossDebuffSystem.SubcribeOnBossDebuffStart(bossDebuffUI.DebuffEnter);
-        bossDebuffSystem.SubcribeOnBossDebuffEnd(bossDebuffUI.DebuffEnd);
+        bossNavMeshAgent = GetComponent<NavMeshAgent>();
+        worldCanvas = GameObject.FindGameObjectWithTag("MonsterUI");
 
         blinkEffect = BlinkEffect.Create(this);
         foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
@@ -95,7 +91,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
     {
-        bossDebuffSystem.SetDebuff(this, debuffState, attacker, time, value);
+        GameManager.Instance.DebuffSystem.SetDebuff(this, debuffState, attacker, time, value);
     }
 
     private void SetProjectors()
@@ -366,15 +362,19 @@ public class BossRPC : MonoBehaviour, IEnemy
         }
     }
 
-    public void DecreaseHP(float hp, CharacterControl attacker)
+    public void DecreaseHP(float damage, CharacterControl attacker)
     {
-        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, hp, attacker.CharacterPhotonView.ViewID);
+        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, damage, attacker.CharacterPhotonView.ViewID);
     }
 
     [PunRPC]
-    protected void SyncBossMonsterHP(float hp, int attackerID)
+    protected void SyncBossMonsterHP(float damage, int attackerID)
     {
-        ReduceHP(hp, attackerID);
+        ReduceHP(damage, attackerID);
+        GameObject damageObj = ResourceManager.Instance.GetFromPool("DamageText", transform.position, Quaternion.identity);
+        damageObj.transform.SetParent(worldCanvas.transform);
+        DamageTextUI damageUI = damageObj.GetComponent<DamageTextUI>();
+        damageUI.DisplayDamage(transform, damage, 3);
         GameManager.Instance.LevelController.IncreaseBossProgress(this);
     }
 
@@ -539,7 +539,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     [PunRPC]
     private void SyncBossDeath()
     {
-        bossDebuffSystem.ClearActions();
+        //bossDebuffSystem.ClearActions();
         Destroy(gameObject);
     }
 
@@ -556,5 +556,10 @@ public class BossRPC : MonoBehaviour, IEnemy
     public float GetDefense()
     {
         return Defense;
+    }
+
+    public NavMeshAgent GetNavMeshAgent()
+    {
+        return bossNavMeshAgent;
     }
 }

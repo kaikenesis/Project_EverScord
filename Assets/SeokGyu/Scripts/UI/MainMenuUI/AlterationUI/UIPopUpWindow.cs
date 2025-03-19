@@ -39,9 +39,18 @@ namespace EverScord
         public static Action OnAcceptUnlock = delegate { };
         public static Action OnAcceptReroll = delegate { };
         public static Action OnApplyOption = delegate { };
-        
-        private void Awake()
+
+        private void OnDestroy()
         {
+            UIFactorPanel.OnUnlockFactor -= HandleUnlockFactor;
+            UIFactorPanel.OnRerollFactor -= HandleRerollFactor;
+            UIFactorSlot.OnRequestApplyOption -= HandleRequestApplyOption;
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
             UIFactorPanel.OnUnlockFactor += HandleUnlockFactor;
             UIFactorPanel.OnRerollFactor += HandleRerollFactor;
             UIFactorSlot.OnRequestApplyOption += HandleRequestApplyOption;
@@ -49,13 +58,6 @@ namespace EverScord
             rectTransform = GetComponent<RectTransform>();
 
             gameObject.SetActive(false);
-        }
-
-        private void OnDestroy()
-        {
-            UIFactorPanel.OnUnlockFactor -= HandleUnlockFactor;
-            UIFactorPanel.OnRerollFactor -= HandleRerollFactor;
-            UIFactorSlot.OnRequestApplyOption -= HandleRequestApplyOption;
         }
 
         #region Handle Methods
@@ -77,10 +79,10 @@ namespace EverScord
 
         private void DisplayUnlockFactor(int cost)
         {
-            OnActivateObject(0);
-            OnActivateObject(1);
+            PlayDoTween(false);
             OnDeactivateObject(2);
             subMessage.gameObject.SetActive(false);
+
             curType = EType.Unlock;
             int money = GameManager.Instance.PlayerData.money;
             rectTransform.sizeDelta = new Vector2(890f, 560f);
@@ -103,10 +105,10 @@ namespace EverScord
 
         private void DisplayRerollFactor(int cost)
         {
-            OnActivateObject(0);
-            OnActivateObject(1);
+            PlayDoTween(false);
             OnDeactivateObject(2);
             subMessage.gameObject.SetActive(false);
+
             curType = EType.Reroll;
             int money = GameManager.Instance.PlayerData.money;
             rectTransform.sizeDelta = new Vector2(890f, 560f);
@@ -133,6 +135,7 @@ namespace EverScord
             OnDeactivateObject(1);
             OnActivateObject(2);
             subMessage.gameObject.SetActive(true);
+            
             curType = EType.Apply;
             rectTransform.sizeDelta = new Vector2(1040f, 680f);
 
@@ -171,7 +174,7 @@ namespace EverScord
                         {
                             OnAcceptUnlock?.Invoke();
                             curType = EType.None;
-                            OnDeactivateObject(0);
+                            PlayDoTween(true);
                         }
                     }
                     break;
@@ -187,7 +190,7 @@ namespace EverScord
                     {
                         OnApplyOption?.Invoke();
                         curType = EType.None;
-                        OnDeactivateObject(0);
+                        PlayDoTween(true);
                     }
                     break;
             }
@@ -196,7 +199,7 @@ namespace EverScord
         public void OnCancled()
         {
             curType = EType.None;
-            OnDeactivateObject(0);
+            PlayDoTween(true);
         }
     }
 }

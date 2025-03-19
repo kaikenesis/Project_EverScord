@@ -1,14 +1,15 @@
+using EverScord;
 using EverScord.Character;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossDebuffSystem : MonoBehaviour
+public class DebuffSystem : MonoBehaviour
 {
-    private Dictionary<EBossDebuff, BaseBossDebuff> debuffDict = new();
-    public Action<EBossDebuff> OnBossDebuffStart;
-    public Action<EBossDebuff> OnBossDebuffEnd;
+    private Dictionary<EBossDebuff, BaseDebuff> debuffDict = new();
+    public static Action<EBossDebuff> OnBossDebuffStart;
+    public static Action<EBossDebuff> OnBossDebuffEnd;
 
     public void SubcribeOnBossDebuffStart(Action<EBossDebuff> action)
     {
@@ -33,6 +34,7 @@ public class BossDebuffSystem : MonoBehaviour
     private void Awake()
     {
         Initialize();
+        GameManager.Instance.InitControl(this);
     }
 
     private void Initialize()
@@ -40,23 +42,25 @@ public class BossDebuffSystem : MonoBehaviour
         if (debuffDict.Count > 0)
             return;
 
-        debuffDict[EBossDebuff.POISON] = new BossDebuffPoison();
-        debuffDict[EBossDebuff.SLOW] = new BossDebuffSlow();
+        debuffDict[EBossDebuff.POISON] = new DebuffPoison();
+        debuffDict[EBossDebuff.SLOW] = new DebuffSlow();
     }
 
-    public void SetDebuff(BossRPC boss, EBossDebuff bossDebuff, CharacterControl attacker, float time, float value)
+    public void SetDebuff(IEnemy enemy, EBossDebuff debuffType, CharacterControl attacker, float time, float value)
     {
         if (debuffDict.Count == 0)
             Initialize();
 
-        StartCoroutine(debuffDict[bossDebuff].StartDebuff(boss, attacker, time, value));
-        StartCoroutine(DebuffEnd(bossDebuff, time));
-        OnBossDebuffStart?.Invoke(bossDebuff);
+        StartCoroutine(debuffDict[debuffType].StartDebuff(enemy, attacker, time, value));
+        if (enemy is BossRPC == false)
+            return;
+        StartCoroutine(DebuffEnd(debuffType, time));
+        OnBossDebuffStart?.Invoke(debuffType);
     }
 
-    private IEnumerator DebuffEnd(EBossDebuff bossDebuff, float time)
+    private IEnumerator DebuffEnd(EBossDebuff debuffType, float time)
     {
         yield return new WaitForSeconds(time);
-        OnBossDebuffEnd?.Invoke(bossDebuff);
+        OnBossDebuffEnd?.Invoke(debuffType);
     }
 }

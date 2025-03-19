@@ -11,11 +11,9 @@ namespace EverScord
     {
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private Button cancleButton;
-        private Vector2 startPos = new Vector2(0f, 210f);
-        private Vector2 movePos = new Vector2(0f, 0f);
         private RectTransform rectTransform;
-        private int seconds;
-        private int minutes;
+        private int seconds = 0;
+        private int minutes = 0;
         private bool bPlayTimer = false;
 
         public static Action OnRequestStopMatch = delegate { };
@@ -26,13 +24,7 @@ namespace EverScord
             PhotonMatchController.OnStopTimer += HandleStopTimer;
             PhotonMatchController.OnMatchComplete += HandleMatchComplete;
 
-            rectTransform = GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = startPos;
-
             Initialize();
-
-            
-            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -46,7 +38,7 @@ namespace EverScord
         {
             seconds = 0;
             minutes = 0;
-            timerText.text = $"경과시간 {minutes} : {seconds}";
+            timerText.text = string.Format("경과시간 {0}:{1:D2}", minutes, seconds);
 
             gameObject.SetActive(false);
         }
@@ -93,7 +85,7 @@ namespace EverScord
                     seconds = 0;
                 }
 
-                timerText.text = $"경과시간 {minutes} : {seconds}";
+                timerText.text = string.Format("경과시간 {0}:{1:D2}", minutes, seconds);
 
                 seconds++;
 

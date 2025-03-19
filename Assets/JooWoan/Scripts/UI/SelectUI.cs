@@ -62,7 +62,7 @@ namespace EverScord.UI
             SetSlotColor(selectedSlotIndex, false);
             selectedSlotIndex = index;
             SetSlotColor(selectedSlotIndex, true);
-
+            SoundManager.Instance.PlaySound("ButtonSound");
             onSelectSlotEvent?.Invoke();
         }
         

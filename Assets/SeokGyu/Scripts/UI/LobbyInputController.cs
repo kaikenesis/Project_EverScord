@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -72,9 +73,17 @@ namespace EverScord
         {
             if(bActiveSendInvite)
             {
+                if (bActivePopupSetting)
+                {
+                    SoundManager.Instance.PlaySound("ButtonSound");
+                    bActivePopupSetting = false;
+                    popupSetting.PlayDoTween(true);
+                    return;
+                }
+
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActiveSendInvite = false;
-                sendInvite.GetComponent<ToggleObject>().OnDeactivateObjects();
+                sendInvite.GetComponent<UISendInvite>().PlayDoTween(true);
                 return;
             }
 
@@ -82,13 +91,13 @@ namespace EverScord
             {
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupSetting = false;
-                popupSetting.OnDeactivateObjects();
+                popupSetting.PlayDoTween(true);
             }
             else
             {
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupSetting = true;
-                popupSetting.OnActivateObjects();
+                popupSetting.PlayDoTween(false);
             }
         }
 

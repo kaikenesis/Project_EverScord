@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -41,6 +42,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     public BoxCollider BoxCollider1 { get; protected set; }
     public BoxCollider BoxCollider2 { get; protected set; }
     public Animator Animator { get; protected set; }
+    public NavMeshAgent MonsterNavMeshAgent { get; protected set; }
 
     public string GUID { get; protected set; }
 
@@ -68,7 +70,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         photonView = GetComponent<PhotonView>();
         Animator = GetComponentInChildren<Animator>();
         Hitbox = GetComponent<BoxCollider>();
-
+        MonsterNavMeshAgent = GetComponent<NavMeshAgent>();
         BoxCollider1 = gameObject.AddComponent<BoxCollider>();
         BoxCollider2 = gameObject.AddComponent<BoxCollider>();
         uiMarker = gameObject.AddComponent<UIMarker>();
@@ -229,7 +231,6 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float damage, CharacterControl attacker)
     {
-        Debug.Log("Monster hitted");
         this.HP -= damage;
         if (this.HP <= 0)
         {
@@ -542,5 +543,20 @@ public abstract class NController : MonoBehaviour, IEnemy
     public float GetDefense()
     {
         return monsterData.Defense;
+    }
+
+    public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
+    {
+        GameManager.Instance.DebuffSystem.SetDebuff(this, debuffState, attacker, time, value);
+    }
+
+    public void SetDebuff()
+    {
+        throw new NotImplementedException();
+    }
+
+    public NavMeshAgent GetNavMeshAgent()
+    {
+        return MonsterNavMeshAgent;
     }
 }
