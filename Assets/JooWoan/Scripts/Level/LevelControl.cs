@@ -16,7 +16,6 @@ namespace EverScord
 
         public static Action<float> OnProgressUpdated = delegate { };
         public static Action<int, bool> OnLevelUpdated = delegate { };
-        public static Action OnLevelClear = delegate { };
 
         public static PhotonView View { get; private set; }
         public static bool IsLoadingLevel { get; private set; }
@@ -160,7 +159,6 @@ namespace EverScord
 
             yield return waitStageTransition;
 
-            OnLevelClear?.Invoke();
             portalControl.PlayWarpEffect(true);
             yield return waitStageTransition;
 

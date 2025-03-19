@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace EverScord.UI
         [SerializeField] private GameObject victoryText, defeatText;
         [SerializeField] private Animator textAnim;
         [SerializeField] private AnimationClip transitionClip;
+
+        public static Action OnGameOver = delegate { };
 
         void Awake()
         {
@@ -70,6 +73,8 @@ namespace EverScord.UI
 
         public void ShowGameover(bool isVictory)
         {
+            OnGameOver?.Invoke();
+
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncShowText), RpcTarget.All, isVictory);
         }

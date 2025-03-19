@@ -37,6 +37,8 @@ namespace EverScord
 
         private float colliderWorldRadius;
 
+        public static Action OnLevelClear = delegate { };
+
         private void Awake()
         {
             photonView = GetComponent<PhotonView>();
@@ -145,6 +147,7 @@ namespace EverScord
             gameObject.SetActive(true);
 
             GameManager.Instance.AugmentControl.ShowAugmentCards();
+            OnLevelClear?.Invoke();
 
             DOTween.Rewind(ConstStrings.TWEEN_OPEN_PORTAL);
             DOTween.Play(ConstStrings.TWEEN_OPEN_PORTAL);
