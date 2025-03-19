@@ -22,7 +22,6 @@ namespace EverScord
 
         private void OnDestroy()
         {
-            PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
             PhotonConnector.OnReturnToLobbyScene -= HandleLobbyJoined;
             PhotonLogin.OnLoginError -= HandleLoginError;
         }
@@ -73,6 +72,7 @@ namespace EverScord
         public void ToggleLobbyCanvas()
         {
             toggleObject.OnToggleObjects();
+            PhotonConnector.OnLobbyJoined -= HandleLobbyJoined;
         }
     }
 }

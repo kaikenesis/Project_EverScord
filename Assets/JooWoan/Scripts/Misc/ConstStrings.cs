@@ -43,6 +43,9 @@ namespace EverScord
         public const string TWEEN_LOBBY2ALTERATION = "LobbyToAlteration";
         public const string TWEEN_ALTERATION2LOBBY = "AlterationToLobby";
 
+        // Sound Names
+        public const string SOUND_SHOOT = "Shoot";
+
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";
 

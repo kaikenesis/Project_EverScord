@@ -15,7 +15,6 @@ namespace EverScord
             if (string.IsNullOrEmpty(inputField.text)) return;
             OnSendInvite?.Invoke(inputField.text);
             inputField.text = "";
-            OnDeactivateObjects();
         }
     }
 }

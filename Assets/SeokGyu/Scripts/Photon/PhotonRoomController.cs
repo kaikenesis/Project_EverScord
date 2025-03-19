@@ -39,6 +39,7 @@ namespace EverScord
             UISelect.OnUpdateReady += HandleChangeUserData;
             UIPartyOption.OnClickedExit += HandleClickedExit;
             UIChangeName.OnChangeName += HandleChangeName;
+            TitleControl.OnTransitionToLobby += HandleTransitionToLobby;
 
             inviteRoomName = "";
             pv = GetComponent<PhotonView>();
@@ -58,6 +59,7 @@ namespace EverScord
             UISelect.OnUpdateReady -= HandleChangeUserData;
             UIPartyOption.OnClickedExit -= HandleClickedExit;
             UIChangeName.OnChangeName -= HandleChangeName;
+            TitleControl.OnTransitionToLobby -= HandleTransitionToLobby;
         }
 
         #region Handle Methods
@@ -194,6 +196,12 @@ namespace EverScord
             PhotonNetwork.NickName = newName;
 
             pv.RPC(nameof(UpdateRoom), RpcTarget.All);
+        }
+
+        private void HandleTransitionToLobby()
+        {
+            if(GameManager.Instance.PhotonData.state == PhotonData.EState.NONE)
+                DisplayRoomPlayers();
         }
         #endregion // Handle Methods
 

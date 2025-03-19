@@ -168,6 +168,8 @@ namespace EverScord
 
         public void OnClicked()
         {
+            SoundManager.Instance.PlaySound("ButtonSound");
+
             OnClickedSlot?.Invoke(curTypeNum, slotNum);
             if (bConfirmed)
             {

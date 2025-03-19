@@ -23,7 +23,6 @@ namespace EverScord.Skill
         private ParticleSystem[] markerParticles;
         private Vector3 landingPosition;
         private LayerMask targetLayer;
-        private float calculatedImpact;
 
         public override void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
@@ -45,14 +44,11 @@ namespace EverScord.Skill
             if (ejob == PlayerData.EJob.Dealer)
             {
                 targetLayer = GameManager.EnemyLayer;
-                calculatedImpact = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage);
                 landingEffectPrefab = ResourceManager.Instance.GetAsset<GameObject>(Skill.ExplosionEffect.AssetGUID);
             }
             else
             {
                 targetLayer = GameManager.PlayerLayer;
-
-                calculatedImpact = DamageCalculator.GetHealAmount(activator, SkillInfo.skillDamage);
                 landingEffectPrefab = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealEffect.AssetGUID);
             }
 
@@ -236,7 +232,8 @@ namespace EverScord.Skill
                 if (ejob == PlayerData.EJob.Dealer)
                 {
                     IEnemy enemy = colliders[i].GetComponent<IEnemy>();
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedImpact, enemy);
+                    float damage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient, enemy);
+                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, damage, enemy);
 
                     if (enemy is BossRPC boss)
                         boss.SetDebuff(activator, EBossDebuff.SLOW, Skill.SlowDuration, Skill.SlowedAmount);
@@ -244,7 +241,8 @@ namespace EverScord.Skill
                 else
                 {
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
-                    player.IncreaseHP(activator, calculatedImpact, true);
+                    float heal = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient);
+                    player.IncreaseHP(activator, heal, true);
                 }
             }
         }
