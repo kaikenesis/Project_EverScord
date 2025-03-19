@@ -385,6 +385,12 @@ public abstract class NController : MonoBehaviour, IEnemy
         Hitbox.enabled = value;
     }
 
+    public IEnumerator GameEnd()
+    {
+        yield return new WaitForSeconds(5f);
+        Death();
+    }
+
     public void SetNearestPlayer()
     {
         float nearest = Mathf.Infinity;

@@ -7,7 +7,6 @@ public class BossEnter_Imp : ActionNodeImplement
     private bool Entered = false;
     public override NodeState Evaluate()
     {
-        Debug.Log("Enter");
         if (Entered)
             return NodeState.SUCCESS;
 

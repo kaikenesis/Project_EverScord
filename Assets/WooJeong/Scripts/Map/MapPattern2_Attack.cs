@@ -34,7 +34,7 @@ public class MapPattern2_Attack : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             CharacterControl controller = other.GetComponent<CharacterControl>();
-            controller.DecreaseHP(attackDamage);
+            controller.DecreaseHP(attackDamage, true);
         }
     }
 }

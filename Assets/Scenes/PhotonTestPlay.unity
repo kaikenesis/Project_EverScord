@@ -862,7 +862,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: startDelay
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: monster.m_AssetGUID
@@ -5827,7 +5831,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: startDelay
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: monster.m_AssetGUID
@@ -5901,7 +5909,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: startDelay
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
@@ -5975,6 +5987,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: startDelay
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
@@ -11653,7 +11669,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: maxSpawnCount
@@ -11919,7 +11939,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5380285033949727484, guid: e6842fcacfab2dc4ba76c93337224a38, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11949,7 +11969,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 619748627, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -10.5
       objectReference: {fileID: 0}
     - target: {fileID: 619748627, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11957,7 +11977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 619748627, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -3.88
       objectReference: {fileID: 0}
     - target: {fileID: 619748627, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -11993,7 +12013,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 933150261, guid: f22203214dcd4b04fa0306385daf553d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12905,7 +12925,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: monster.m_AssetGUID
@@ -13001,7 +13025,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
@@ -13075,11 +13103,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: startDelay
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: m_Name
@@ -14323,6 +14351,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
@@ -14790,7 +14822,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
@@ -20337,7 +20373,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
@@ -20559,7 +20599,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: m_Name
@@ -20629,7 +20673,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
+      propertyPath: startDelay
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: monster.m_AssetGUID
@@ -20971,11 +21019,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 289657450156451370, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: startDelay
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: 3906a4f23a29d574da6cd0452a9dc00e, type: 3}
       propertyPath: m_Name
@@ -21175,6 +21223,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3012738276022746407, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
@@ -21767,11 +21819,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: startDelay
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6377856683032125126, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: sceneViewId
@@ -21994,7 +22046,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: startDelay
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
@@ -22419,6 +22475,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: spawnTimer
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: startDelay
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
@@ -23282,7 +23342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3160128391856505993, guid: b681fd16d85140346b32ca4a7c28040a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6553360898828202359, guid: b681fd16d85140346b32ca4a7c28040a, type: 3}
       propertyPath: sceneViewId
@@ -29751,7 +29811,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
@@ -30220,7 +30284,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: maxSpawnCount
@@ -30611,6 +30679,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
       propertyPath: spawnTimer
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
+      propertyPath: startDelay
       value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -31647,6 +31719,10 @@ PrefabInstance:
       propertyPath: spawnTimer
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 1278200459900447085, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
+      propertyPath: startDelay
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 3147461548993780595, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
       propertyPath: m_Name
       value: MonsterSpawner_NML2
@@ -31899,7 +31975,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 289657450156451370, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
+      propertyPath: startDelay
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5556151949683599727, guid: d1a7b0356a34a884abd12457438c4dc7, type: 3}
       propertyPath: m_Name
@@ -32222,7 +32302,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: maxSpawnCount
@@ -32497,6 +32581,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
       propertyPath: spawnTimer
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
+      propertyPath: startDelay
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 8696852779944493238, guid: 81f14657f6c403842ac16af49afb770d, type: 3}
@@ -32828,11 +32916,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: startDelay
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 465030895608011363, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}
       propertyPath: maxSpawnCount
@@ -32905,6 +32993,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1278200459900447085, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
       propertyPath: spawnTimer
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 1278200459900447085, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
+      propertyPath: startDelay
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 3147461548993780595, guid: 5d4f9c768a4da8645959a857cc954381, type: 3}
@@ -33063,7 +33155,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: spawnTimer
-      value: 10
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
+      propertyPath: startDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2375928316524444124, guid: a7943cb9dd1b5ed4ba4c45662e9b3784, type: 3}
       propertyPath: maxSpawnCount
