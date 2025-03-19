@@ -170,6 +170,8 @@ namespace EverScord
             LoadingScreen.CoverScreen();
             yield return waitStageFade;
 
+            portalControl.ScanEffect.gameObject.SetActive(false);
+
             bool bCoverScreen = true;
             OnLevelUpdated?.Invoke(GameManager.CurrentLevelIndex + 1, bCoverScreen);
 

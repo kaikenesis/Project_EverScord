@@ -17,8 +17,10 @@ namespace EverScord
         [SerializeField] private VisualEffect warpEffect;
         [SerializeField] private SphereCollider portalCollider;
         [SerializeField] private Vector3 initialPortalScale;
+        [SerializeField] private ParticleSystem scanEffect;
 
         public PhotonView View => photonView;
+        public ParticleSystem ScanEffect => scanEffect;
 
         private PhotonView photonView;
         private CooldownTimer portalTimer;
@@ -145,6 +147,7 @@ namespace EverScord
         {
             isPortalOpened = true;
             gameObject.SetActive(true);
+            scanEffect.gameObject.SetActive(true);
 
             GameManager.Instance.AugmentControl.ShowAugmentCards();
             OnLevelClear?.Invoke();
