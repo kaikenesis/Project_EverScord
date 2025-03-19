@@ -199,7 +199,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             return;
         if (other.gameObject.CompareTag("Player"))
         {
-            float totalDamage = 0f;
+            float totalDamage;
             CharacterControl controller = other.GetComponent<CharacterControl>();
             if (LastAttack == 1)
                 totalDamage = DamageCalculator.GetSkillDamage(monsterData.BaseAttackDamage, monsterData.Skill01_Damage, 0, 0, controller.Stats.Defense);
