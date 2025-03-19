@@ -25,8 +25,15 @@ namespace EverScord
 
         void Start()
         {
+            if (!GameManager.IsFirstGameLoad)
+            {
+                ShowLobby();
+                return;
+            }
+
             LoadingScreen.ShowScreenFrom1();
             login.DisableLoginUI();
+            GameManager.SetIsFirstGameLoad(false);
         }
 
         void Update()
@@ -58,11 +65,16 @@ namespace EverScord
             yield return new WaitForSeconds(2f);
 
             login.ToggleLobbyCanvas();
+            LoadingScreen.ShowScreen();
+
+            ShowLobby();
+        }
+
+        private void ShowLobby()
+        {
             titleArea.SetActive(false);
             lobbyArea.SetActive(true);
-            LoadingScreen.ShowScreen();
             OnTransitionToLobby?.Invoke();
-
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
         }

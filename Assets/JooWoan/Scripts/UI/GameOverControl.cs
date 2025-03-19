@@ -1,6 +1,5 @@
 using Photon.Pun;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 namespace EverScord.UI

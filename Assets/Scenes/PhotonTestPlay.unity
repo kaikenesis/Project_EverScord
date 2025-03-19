@@ -13955,9 +13955,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiHub: {fileID: 2006123361}
-  ingameUiHub: {fileID: 1034619282614934498}
   victoryText: {fileID: 308259488}
   defeatText: {fileID: 1722118602}
+  ingameUIList:
+  - {fileID: 1034619282614934498}
+  - {fileID: 3912486777739509131}
   photonView: {fileID: 747628673}
   resultUIList:
   - {fileID: 2063725049}
@@ -31841,6 +31843,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
+--- !u!1 &3912486777739509131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6923019025935935204, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
+  m_PrefabInstance: {fileID: 3912486777739509130}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4087430365913434671 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6858877037431276954, guid: 5cc0426f93192d34db1e9f806ab6c697, type: 3}

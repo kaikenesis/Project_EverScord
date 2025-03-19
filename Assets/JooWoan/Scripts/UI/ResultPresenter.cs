@@ -17,7 +17,8 @@ namespace EverScord.UI
         private const float SHOW_RESULT_INTERVAL = 0.1f;
         private static int readyPlayerCount = 0;
 
-        [SerializeField] private GameObject uiHub, ingameUiHub, victoryText, defeatText;
+        [SerializeField] private GameObject uiHub, victoryText, defeatText;
+        [SerializeField] private List<GameObject> ingameUIList;
         [SerializeField] private PhotonView photonView;
         [SerializeField] private List<ResultUI> resultUIList;
         [SerializeField] private GameObject nedPrefab, uniPrefab, usPrefab;
@@ -73,7 +74,9 @@ namespace EverScord.UI
 
         private void SetupUI()
         {
-            ingameUiHub.SetActive(false);
+            for (int i = 0; i < ingameUIList.Count; i++)
+                ingameUIList[i].SetActive(false);
+
             GameManager.Instance.GameOverController.EnableUI(false);
             
             PlayerUI.SetCursor(CursorType.UIFOCUS);

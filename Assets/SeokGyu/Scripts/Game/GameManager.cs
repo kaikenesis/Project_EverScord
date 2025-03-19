@@ -39,6 +39,7 @@ namespace EverScord
         public static int EnemyLayerNumber                      { get; private set; }
         public static int PlayerLayerNumber                     { get; private set; }
         public static int CurrentLevelIndex                     { get; private set; }
+        public static bool IsFirstGameLoad                      { get; private set; }
         public AlterationData PlayerAlterationData              { get; private set; }
 
         public static LayerMask GroundLayer => instance.groundLayer;
@@ -147,6 +148,7 @@ namespace EverScord
             View.ViewID = 999;
             CurrentLevelIndex = -1;
             PhotonNetwork.AutomaticallySyncScene = true;
+            IsFirstGameLoad = true;
 
             playerData.Initialize();
             photonData.Initialize();
@@ -220,6 +222,11 @@ namespace EverScord
         public static void ResetPlayerInfo()
         {
             Instance.PlayerDict.Clear();
+        }
+
+        public static void SetIsFirstGameLoad(bool state)
+        {
+            IsFirstGameLoad = state;
         }
 
         [PunRPC]
