@@ -111,7 +111,7 @@ namespace EverScord
         }
 
         public static void ShowScreenFrom1()
-        {   
+        {
             DOTween.Rewind(ConstStrings.TWEEN_SHOW_SCREEN_FROM1);
             DOTween.Play(ConstStrings.TWEEN_SHOW_SCREEN_FROM1);
         }

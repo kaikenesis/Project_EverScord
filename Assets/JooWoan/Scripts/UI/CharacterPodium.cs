@@ -101,6 +101,10 @@ namespace EverScord.UI
             for (int i = 0; i < raycasters.Length; i++)
             {
                 List<RaycastResult> results = new();
+
+                if (raycasters[i] == null)
+                    continue;
+
                 raycasters[i].Raycast(pointerEventData, results);
 
                 for (int j = 0; j < results.Count; j++)

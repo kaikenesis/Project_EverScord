@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
+using EverScord.GameCamera;
 
 namespace EverScord
 {
@@ -227,8 +228,22 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected)
                 return;
 
+            GameManager.SetLevelIndex(0);
             GameManager.Instance.LoadScreen.SetTargetCamera(Camera.main);
             GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadScene), RpcTarget.All, ConstStrings.SCENE_MAINGAME);
+        }
+
+        public static void ReturnToLobby()
+        {
+            GameManager.ResetGame();
+            GameManager.LoadScene(ConstStrings.SCENE_LOBBY);
+            SoundManager.Instance.PlayBGM("LobbyBGM");
+        }
+
+        [PunRPC]
+        public void ReturnEveryoneToLobby()
+        {
+            ReturnToLobby();
         }
 
         public static IEnumerator LoadSceneAsync(string sceneName)

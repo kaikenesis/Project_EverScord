@@ -25,14 +25,9 @@ namespace EverScord
 
         void Start()
         {
-            if (!GameManager.IsFirstGameLoad)
-            {
-                ShowLobby();
-                return;
-            }
-
-            LoadingScreen.ShowScreenFrom1();
             login.DisableLoginUI();
+            LoadingScreen.ShowScreenFrom1();
+            DOTween.PlayForward(ConstStrings.TWEEN_SHOW_TITLE);
             GameManager.SetIsFirstGameLoad(false);
         }
 
@@ -54,9 +49,10 @@ namespace EverScord
             login.ShowLoginUI(true);
         }
 
-        public void TransitionLobby()
+        public bool TransitionLobby()
         {
             StartCoroutine(StartTransitionLobby());
+            return true;
         }
 
         public IEnumerator StartTransitionLobby()

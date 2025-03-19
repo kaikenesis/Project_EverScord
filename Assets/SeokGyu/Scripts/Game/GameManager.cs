@@ -8,6 +8,7 @@ using EverScord.Monster;
 using EverScord.Effects;
 using EverScord.Augment;
 using EverScord.UI;
+using EverScord.GameCamera;
 
 namespace EverScord
 {
@@ -139,10 +140,10 @@ namespace EverScord
 
         private void Init()
         {
-            View                = gameObject.AddComponent<PhotonView>();
-            EnemyLayerNumber    = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
-            PlayerLayerNumber   = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
-            playerDict          = new Dictionary<int, CharacterControl>();
+            View                 = gameObject.AddComponent<PhotonView>();
+            EnemyLayerNumber     = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
+            PlayerLayerNumber    = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
+            playerDict           = new Dictionary<int, CharacterControl>();
             PlayerAlterationData = new AlterationData(factorDatas);
 
             View.ViewID = 999;
@@ -229,6 +230,19 @@ namespace EverScord
             IsFirstGameLoad = state;
         }
 
+        public static void LoadScene(string sceneName)
+        {
+            Instance.StartCoroutine(LevelControl.LoadSceneAsync(sceneName));
+        }
+
+        public static void ResetGame()
+        {
+            SetLevelIndex(0);
+            ResourceManager.ClearAllPools();
+            Instance.ArmorData.ResetArmorLevel();
+            Instance.LoadScreen.SetTargetCamera(CharacterCamera.CurrentClientCam);
+        }
+
         [PunRPC]
         public void ReviveAllPlayers()
         {
@@ -246,9 +260,7 @@ namespace EverScord
         [PunRPC]
         public void SyncLoadScene(string sceneName)
         {
-            SetLevelIndex(0);
             Instance.StartCoroutine(LevelControl.LoadSceneAsync(sceneName));
-            SoundManager.Instance.PlayBGM("LobbyBGM");
         }
 
         [PunRPC]
@@ -276,9 +288,7 @@ namespace EverScord
                 {
                     if(PhotonNetwork.IsMasterClient)
                     {
-                        PhotonNetwork.LoadLevel("PhotonTestLobby");
-                        ResourceManager.ClearAllPools();
-                        ArmorData.ResetArmorLevel();
+                        LevelControl.View.RPC(nameof(LevelController.ReturnEveryoneToLobby), RpcTarget.All);
                     }
                 }
             }

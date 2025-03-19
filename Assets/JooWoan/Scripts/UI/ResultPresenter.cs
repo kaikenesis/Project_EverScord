@@ -38,7 +38,7 @@ namespace EverScord.UI
             readyPlayerCount = 0;
             isVictory = false;
 
-            lobbyButton.onClick.AddListener(ReturnToLobby);
+            lobbyButton.onClick.AddListener(LevelControl.ReturnToLobby);
         }
 
         void Start()
@@ -48,7 +48,7 @@ namespace EverScord.UI
 
         void OnDisable()
         {
-            lobbyButton.onClick.RemoveListener(ReturnToLobby);
+            lobbyButton.onClick.RemoveListener(LevelControl.ReturnToLobby);
 
             if (depthOfField)
             {
@@ -208,13 +208,6 @@ namespace EverScord.UI
                     StartCoroutine(ShowResults());
                 }
             }
-        }
-
-        private void ReturnToLobby()
-        {
-            ResourceManager.ClearAllPools();
-            GameManager.Instance.LoadScreen.SetTargetCamera(CharacterCamera.CurrentClientCam);
-            GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadScene), RpcTarget.All, ConstStrings.SCENE_LOBBY);
         }
 
         private void SyncPlayerResults()
