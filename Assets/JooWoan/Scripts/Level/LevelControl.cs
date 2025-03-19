@@ -219,6 +219,18 @@ namespace EverScord
             nextLevel.SetActive(true);
         }
 
+        public GameObject SetNextLevel(int level)
+        {
+            levelList[GameManager.CurrentLevelIndex].Level.SetActive(false);
+            GameManager.SetLevelIndex(level);
+
+            GameObject nextLevel = levelList[GameManager.CurrentLevelIndex].Level;
+            groundCollider.transform.position = nextLevel.transform.position;
+
+            nextLevel.SetActive(true);
+            return nextLevel;
+        }
+
         public static void LoadGameLevel()
         {            
             if (!PhotonNetwork.IsConnected)

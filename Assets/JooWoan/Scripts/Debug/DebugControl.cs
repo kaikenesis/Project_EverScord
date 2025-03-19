@@ -1,11 +1,19 @@
 
 using EverScord.Character;
+using Photon.Pun;
 using UnityEngine;
 
 namespace EverScord
 {
     public class DebugControl : MonoBehaviour
     {
+        private PhotonView photonView;
+
+        void Start()
+        {
+            photonView = GetComponent<PhotonView>();
+        }
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.F1))
@@ -18,13 +26,16 @@ namespace EverScord
                 CharacterControl.CurrentClientCharacter.DecreaseHP(1000);
 
             if (Input.GetKeyDown(KeyCode.F4))
-                DebugStats();
+                TeleportToFinalStage();
 
             if (Input.GetKeyDown(KeyCode.F5))
                 GameManager.Instance.debugMode = !GameManager.Instance.debugMode;
 
             if (Input.GetKeyDown(KeyCode.F6))
                 GameManager.Instance.GameOverController.ShowGameover(true);
+            
+            if (Input.GetKeyDown(KeyCode.F7))
+                DebugStats();
         }
 
         public void DebugStats()
@@ -43,6 +54,27 @@ namespace EverScord
             Debug.Log($"Alteration RELOAD-: Additive: {stats.BonusDict[StatType.RELOADSPEED_DECREASE].additive}, Mult: {stats.BonusDict[StatType.RELOADSPEED_DECREASE].multiplicative}");
             Debug.Log($"Alteration SKILLDMG+: Additive: {stats.BonusDict[StatType.SKILLDAMAGE_INCREASE].additive}, Mult: {stats.BonusDict[StatType.SKILLDAMAGE_INCREASE].multiplicative}");
             Debug.Log($"{character.CharacterType.ToString()}===============================================");
+        }
+
+        public void TeleportToFinalStage()
+        {
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(SyncTeleportToFinalStage), RpcTarget.All);
+        }
+
+        [PunRPC]
+        public void SyncTeleportToFinalStage()
+        {
+            foreach (var player in GameManager.Instance.PlayerDict.Values)
+                player.SetActive(false);
+
+            var nextLevel = GameManager.Instance.LevelController.SetNextLevel(3);
+
+            foreach (var player in GameManager.Instance.PlayerDict.Values)
+            {
+                player.transform.position = nextLevel.transform.position;
+                player.SetActive(true);
+            }
         }
     }
 
