@@ -39,10 +39,10 @@ public class DamageTextUI : MonoBehaviour
         }
     }
 
-    public void DisplayDamage(Transform newTarget, float damage)
+    public void DisplayDamage(Transform newTarget, float damage, float yOffset = 0)
     {
         target = newTarget;
-        transform.position = target.position + new Vector3(0, yOffset, 0);
+        transform.position = target.position + new Vector3(0, this.yOffset + yOffset, 0);
         damageText.text = damage.ToString();
         if (gameObject.activeSelf)
             StartCoroutine(Updating());

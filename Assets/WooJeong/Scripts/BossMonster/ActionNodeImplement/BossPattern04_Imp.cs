@@ -27,12 +27,13 @@ public class BossPattern04_Imp : AttackNodeImplement
         //충돌 판정
         foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
         {
-            Vector3 toPlayerVector = (player.PlayerTransform.position - transform.position).normalized;
+            Vector3 toPlayerVector = (player.PlayerTransform.position - transform.position);
+
             if(toPlayerVector.magnitude > attackRadius)
                 continue;
 
             // '타겟-나 벡터'와 '내 정면 벡터'를 내적
-            float dot = Vector3.Dot(toPlayerVector, transform.forward);
+            float dot = Vector3.Dot(toPlayerVector.normalized, transform.forward);
             // 두 벡터 모두 단위 벡터이므로 내적 결과에 cos의 역을 취해서 theta를 구함
             float theta = Mathf.Acos(dot);
             // angleRange와 비교하기 위해 degree로 변환
