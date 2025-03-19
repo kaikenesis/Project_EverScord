@@ -35,9 +35,7 @@ namespace EverScord.Skill
             {
                 IEnemy enemy = colliders[i].GetComponent<IEnemy>();
                 GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
-
-                if (enemy is BossRPC boss)
-                    boss.SetDebuff(activator, EBossDebuff.POISON, Skill.PoisonedDuration, SkillInfo.skillDotDamage);
+                enemy.SetDebuff(activator, EBossDebuff.POISON, Skill.PoisonedDuration, SkillInfo.skillDotDamage);
             }
         }
 

@@ -13,7 +13,7 @@ public class BossMove_Imp : ActionNodeImplement
     protected override void Awake()
     {
         base.Awake();
-        navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
+        navMeshAgent = bossRPC.GetNavMeshAgent();
         navMeshAgent.speed = bossRPC.BossMonsterData.Speed1;
         navMeshAgent.stoppingDistance = bossRPC.BossMonsterData.StopDistance;
         playerLayer = LayerMask.GetMask("Player");

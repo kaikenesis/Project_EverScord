@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using EverScord.Effects;
 using EverScord.Character;
+using UnityEngine.AI;
 
 public interface IEnemy
 {
@@ -11,5 +12,8 @@ public interface IEnemy
     public BlinkEffect GetBlinkEffect();
 
     public float GetDefense();
+
+    public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value);
+    public NavMeshAgent GetNavMeshAgent();
 
 }
