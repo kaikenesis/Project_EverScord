@@ -13,6 +13,7 @@ namespace EverScord
         [SerializeField] private UILogin login;
         [SerializeField] private GameObject titleArea, lobbyArea;
         [SerializeField] private DOTweenAnimation titleFadeOutTween;
+        [SerializeField] private float showPlayerPanelDelay;
         private bool hasPressedAnything = false;
 
         void Awake()
@@ -84,11 +85,15 @@ namespace EverScord
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
+            Invoke(nameof(TweenPlayerPanel), showPlayerPanelDelay);
         }
 
         public void LobbyToAlteration()
         {
             IsExaminingAlteration = true;
+
+            DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
+            DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBY2ALTERATION);
             DOTween.Play(ConstStrings.TWEEN_LOBBY2ALTERATION);
@@ -100,10 +105,29 @@ namespace EverScord
         {
             IsExaminingAlteration = false;
 
+            DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
+            DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
+
             DOTween.Rewind(ConstStrings.TWEEN_ALTERATION2LOBBY);
             DOTween.Play(ConstStrings.TWEEN_ALTERATION2LOBBY);
 
+            TweenPlayerPanel();
+
             // callback: AlterationPanel - ReturnButton - UIToggleButton.ToggleObject()
+        }
+
+        public void TweenAlterationPanel(bool isTransitionToAlteration)
+        {
+            if (isTransitionToAlteration)
+                DOTween.PlayForward(ConstStrings.TWEEN_ALTERATION);
+            else
+                DOTween.PlayBackwards(ConstStrings.TWEEN_ALTERATION);
+        }
+
+        public void TweenPlayerPanel()
+        {
+            DOTween.Rewind(ConstStrings.TWEEN_PLAYERPANEL);
+            DOTween.Play(ConstStrings.TWEEN_PLAYERPANEL);
         }
     }
 }

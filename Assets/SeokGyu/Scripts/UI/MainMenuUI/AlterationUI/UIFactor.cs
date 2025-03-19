@@ -80,7 +80,7 @@ namespace EverScord
             {
                 FactorData data = GameManager.Instance.FactorDatas[i];
                 UIFactorPanel panel = Instantiate(factorPanel, containor).GetComponent<UIFactorPanel>();
-                panel.Initialize((int)data.Type, data.SlotCount, data.ConfirmedCount);
+                panel.Initialize((int)data.Type, data.SlotCount, data.ConfirmedCount, i * 0.3f);
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace EverScord
 {
@@ -14,6 +15,7 @@ namespace EverScord
         [SerializeField] private TMP_Text text;
         private List<UIFactorSlot> slots = new List<UIFactorSlot>();
         private int panelTypeNum;
+        private Sequence popupTween;
 
         public static Action<int> OnUnlockFactor = delegate { };
         public static Action<int> OnRerollFactor = delegate { };
@@ -26,6 +28,11 @@ namespace EverScord
         private void OnDestroy()
         {
             UIFactorSlot.OnClickedSlot -= HandleClickedSlot;
+        }
+
+        private void OnEnable()
+        {
+            PlayPopupTween();
         }
 
         private void HandleClickedSlot(int type, int slotNum)
@@ -44,9 +51,12 @@ namespace EverScord
             }
         }
 
-        public void Initialize(int typeNum, int slotCount, int confirmedCount)
+        public void Initialize(int typeNum, int slotCount, int confirmedCount, float tweenDelay)
         {
             SetTitle(typeNum);
+
+            popupTween = CreatePopupTween(GetComponent<CanvasGroup>(), tweenDelay);
+            PlayPopupTween();
 
             for (int i = 0; i < slotCount; i++)
             {
@@ -79,6 +89,30 @@ namespace EverScord
                     text.text = "º£Å¸";
                     break;
             }
+        }
+
+        private Sequence CreatePopupTween(CanvasGroup canvasGroup, float delay)
+        {
+            if (canvasGroup == null)
+                return null;
+            
+            Sequence sequence = DOTween.Sequence()
+                .SetAutoKill(false)
+                .SetUpdate(true)
+                .Append(canvasGroup.DOFade(1.0f, 1.5f).From(0f))
+                .Join(canvasGroup.transform.DOLocalMoveY(0f, 1.5f).From(-150f))
+                .SetEase(Ease.OutBack)
+                .SetDelay(delay);
+
+            return sequence;
+        }
+
+        private void PlayPopupTween()
+        {
+            if (popupTween == null)
+                return;
+            
+            popupTween.Goto(0, true);
         }
     }
 }
