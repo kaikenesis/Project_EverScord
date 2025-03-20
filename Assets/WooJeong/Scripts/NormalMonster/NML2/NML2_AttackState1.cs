@@ -19,7 +19,6 @@ public class NML2_AttackState1 : NAttackState
                     + monsterController.clipDict["Attack1_End"];
         monsterController.PlaySound("NML2_1");
         yield return new WaitForSeconds(time);
-        monsterController.StopSound("NML2_1");
         StartCoroutine(monsterController.CoolDown1());
         attack = null;
         Exit();

@@ -16,10 +16,12 @@ public class BossPattern14_Imp : AttackNodeImplement
     {
         Debug.Log("Attack14 start");
         bossRPC.PlayAnimation("RotatingShot", 0);
+        bossRPC.PlaySound("BossLaserReady");
         yield return new WaitForSeconds(1.5f);
         bossRPC.LaserEnable(bossRPC.clipDict["RotatingShot"] - 3f);
         bossRPC.PlaySound("BossPatternLaser");
         yield return new WaitForSeconds(bossRPC.clipDict["RotatingShot"] - 1.5f);
+        bossRPC.StopSound("BossPatternLaser");
         bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
