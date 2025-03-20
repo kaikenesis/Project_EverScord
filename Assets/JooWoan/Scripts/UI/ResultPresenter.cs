@@ -38,7 +38,8 @@ namespace EverScord.UI
             readyPlayerCount = 0;
             isVictory = false;
 
-            lobbyButton.onClick.AddListener(LevelControl.ReturnToLobby);
+            lobbyButton.onClick.AddListener(ReturnToLobby);
+            lobbyButton.onClick.AddListener(ButtonSound);
         }
 
         void Start()
@@ -48,13 +49,25 @@ namespace EverScord.UI
 
         void OnDisable()
         {
-            lobbyButton.onClick.RemoveListener(LevelControl.ReturnToLobby);
+            lobbyButton.onClick.RemoveListener(ReturnToLobby);
+            lobbyButton.onClick.RemoveListener(ButtonSound);
 
             if (depthOfField)
             {
                 depthOfField.focusDistance.value = 1f;
                 depthOfField.active = false;
             }
+        }
+
+        private void ButtonSound()
+        {
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_BUTTON);
+        }
+
+        private void ReturnToLobby()
+        {
+            if (PhotonNetwork.IsConnected)
+                LevelControl.View.RPC(nameof(GameManager.LevelController.SyncReturnToLobby), RpcTarget.MasterClient);
         }
 
         private void InitDepthOfField()
@@ -161,6 +174,7 @@ namespace EverScord.UI
             titleTween.DORewind();
             titleTween.DOPlay();
 
+            SoundManager.Instance.StopBGM(1.0f);
             yield return new WaitForSeconds(0.5f);
 
             PlayBGM();
@@ -180,7 +194,7 @@ namespace EverScord.UI
         private void PlayBGM()
         {
             if (isVictory)
-                SoundManager.Instance.PlaySound(ConstStrings.BGM_VICTORY);
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_VICTORY);
             else
                 SoundManager.Instance.PlayBGM(ConstStrings.BGM_DEFEAT);
         }

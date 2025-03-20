@@ -12,7 +12,7 @@ namespace EverScord
         public static Action OnTransitionToLobby = delegate { };
 
         [SerializeField] private UILogin login;
-        [SerializeField] private GameObject titleArea, lobbyArea;
+        [SerializeField] private GameObject titleArea, lobbyArea, factorFlashFilter;
         [SerializeField] private DOTweenAnimation titleFadeOutTween, alterationBgTween;
         [SerializeField] private float showPlayerPanelDelay;
         private bool hasPressedAnything = false;
@@ -120,7 +120,9 @@ namespace EverScord
         public void TweenAlterationPanel(bool isTransitionToAlteration)
         {
             if (isTransitionToAlteration)
+            {
                 DOTween.PlayForward(ConstStrings.TWEEN_ALTERATION);
+            }
             else
                 DOTween.PlayBackwards(ConstStrings.TWEEN_ALTERATION);
         }
@@ -141,6 +143,9 @@ namespace EverScord
 
         public void AlterationAppliedTween()
         {
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_ALTERATION_APPLIED, 0.6f);
+
+            factorFlashFilter.SetActive(true);
             DOTween.Rewind(ConstStrings.TWEEN_ALTERATION_APPLIED);
             DOTween.Play(ConstStrings.TWEEN_ALTERATION_APPLIED);
         }

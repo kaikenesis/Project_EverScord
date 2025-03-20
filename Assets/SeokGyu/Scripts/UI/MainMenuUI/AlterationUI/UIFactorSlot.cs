@@ -99,6 +99,8 @@ namespace EverScord
                 curOptionName = newName;
                 curOptionValue = newValue;
             }
+
+            GameManager.Instance.TitleController.AlterationAppliedTween();
         }
         #endregion // Handle Methods
 

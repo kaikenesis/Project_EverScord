@@ -8,7 +8,6 @@ namespace EverScord
     public class UIDisplayApplyInfo : MonoBehaviour
     {
         [SerializeField] private TMP_Text infoText;
-        [SerializeField] private GameObject flashFilter;
 
         private List<OptionInfo> options = new List<OptionInfo>();
 
@@ -56,9 +55,6 @@ namespace EverScord
             }
 
             Debug.Log($"prevName : {prevName}, prevValue : {prevValue}, newName : {newName}, newValue : {newValue}");
-
-            flashFilter.SetActive(true);
-            GameManager.Instance.TitleController.AlterationAppliedTween();
             UpdateInfo();
         }
 
