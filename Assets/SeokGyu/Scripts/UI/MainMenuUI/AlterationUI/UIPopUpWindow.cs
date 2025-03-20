@@ -21,7 +21,7 @@ namespace EverScord
             Unlock,
             Reroll,
             Apply,
-            MAX
+            MessageBox,
         }
 
         [SerializeField] private TMP_Text requireText;
@@ -45,6 +45,7 @@ namespace EverScord
             UIFactorPanel.OnUnlockFactor -= HandleUnlockFactor;
             UIFactorPanel.OnRerollFactor -= HandleRerollFactor;
             UIFactorSlot.OnRequestApplyOption -= HandleRequestApplyOption;
+            PhotonRoomController.OnCannotGameStart -= HandleCannotGameStart;
         }
 
         protected override void Initialize()
@@ -54,6 +55,7 @@ namespace EverScord
             UIFactorPanel.OnUnlockFactor += HandleUnlockFactor;
             UIFactorPanel.OnRerollFactor += HandleRerollFactor;
             UIFactorSlot.OnRequestApplyOption += HandleRequestApplyOption;
+            PhotonRoomController.OnCannotGameStart += HandleCannotGameStart;
 
             rectTransform = GetComponent<RectTransform>();
 
@@ -74,6 +76,11 @@ namespace EverScord
         private void HandleRequestApplyOption(Color imgColor, string newName, float newValue, string curName, float curValue)
         {
             DisplayApplyOption(curName, curValue, newName, newValue);
+        }
+        
+        private void HandleCannotGameStart()
+        {
+            DisplayMessageBox();
         }
         #endregion // Handle Methods
 
@@ -154,6 +161,22 @@ namespace EverScord
             {
                 beforeOption.text = $"{curName}\n{curValue}%";
             }
+        }
+
+        private void DisplayMessageBox()
+        {
+            PlayDoTween(false);
+            OnDeactivateObject(1);
+            OnDeactivateObject(2);
+            subMessage.gameObject.SetActive(false);
+
+            curType = EType.Reroll;
+            int money = GameManager.Instance.PlayerData.money;
+            rectTransform.sizeDelta = new Vector2(890f, 560f);
+
+            cancelText.transform.parent.GetComponent<Button>().interactable = true;
+            PopUpWindowData.Message msg = data.Messages[(int)curType - 1];
+            SetMessage(msg.MainMessage, msg.SubMessage, msg.AcceptText, msg.CancelText);
         }
 
         private void SetMessage(string mainMsg, string subMsg, string acceptMsg, string cancelMsg)

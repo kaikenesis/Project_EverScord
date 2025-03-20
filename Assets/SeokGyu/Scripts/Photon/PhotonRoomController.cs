@@ -25,6 +25,7 @@ namespace EverScord
         public static Action OnCheckGame = delegate { };
         public static Action<string> OnSendExile = delegate { };
         public static Action OnUpdateDifficulty = delegate { };
+        public static Action OnCannotGameStart = delegate { };
 
         private void Awake()
         {
@@ -155,11 +156,10 @@ namespace EverScord
                         if (IsCanStart())
                         {
                             OnMatchMultiPlay?.Invoke();
-                            Debug.Log("You Can Start Game");
                         }
                         else
                         {
-                            Debug.Log("Cannot Start Game");
+                            OnCannotGameStart?.Invoke();
                         }
                     }
                     break;
@@ -168,11 +168,10 @@ namespace EverScord
                         if (IsCanStart())
                         {
                             OnMatchMultiPlay?.Invoke();
-                            Debug.Log("You Can Start Game");
                         }
                         else
                         {
-                            Debug.Log("Cannot Start Game");
+                            OnCannotGameStart?.Invoke();
                         }
                     }
                     break;
