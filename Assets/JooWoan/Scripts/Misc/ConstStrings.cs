@@ -61,8 +61,8 @@ namespace EverScord
         public const string ANIMLAYER_UPPERMASK = "UpperMask";
 
         // Scene Names
-        public const string SCENE_LOBBY = "PhotonTestLobby";
-        public const string SCENE_MAINGAME = "PhotonTestPlay";
+        public const string SCENE_LOBBY = "LobbyScene";
+        public const string SCENE_MAINGAME = "PlayScene";
 
         // VFX Events
         public const string VFX_WARP_OUT = "out";
