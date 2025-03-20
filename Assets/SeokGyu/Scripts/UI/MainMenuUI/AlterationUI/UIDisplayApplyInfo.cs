@@ -91,7 +91,7 @@ namespace EverScord
                 infoText.text += $"{options[i].name} : {options[i].value}\n";
             }
 
-            
+            GameManager.Instance.PlayerAlterationData.alterationStatus.SetStatus(values);
         }
 
         public class OptionInfo

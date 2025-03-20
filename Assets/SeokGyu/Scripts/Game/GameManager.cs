@@ -141,10 +141,10 @@ namespace EverScord
         private void Init()
         {
             View                 = gameObject.AddComponent<PhotonView>();
+            PlayerAlterationData = gameObject.AddComponent<AlterationData>().Init(factorDatas);
             EnemyLayerNumber     = Mathf.RoundToInt(Mathf.Log(EnemyLayer.value, 2));
             PlayerLayerNumber    = Mathf.RoundToInt(Mathf.Log(PlayerLayer.value, 2));
             playerDict           = new Dictionary<int, CharacterControl>();
-            PlayerAlterationData = new AlterationData(factorDatas);
 
             View.ViewID = 999;
             CurrentLevelIndex = -1;

@@ -44,6 +44,8 @@ namespace EverScord.Character
             for (int i = 0; i < statCount; i++)
                 bonusDict[(StatType)i] = StatBonus.GetDefaultBonus();
 
+            SetAlterationBonus();
+
             this.character = character;
             string tag = PlayerData.GetCharacterName(character.CharacterType);
             StatInfo info = StatData.StatInfoDict[tag];
@@ -59,6 +61,15 @@ namespace EverScord.Character
 
             if (character.CharacterJob == PlayerData.EJob.Healer)
                 attack = info.supportAttack;
+        }
+
+        public void SetAlterationBonus()
+        {
+            // statValues are aligned in the order of StatType enum
+            float[] statValues = GameManager.Instance.PlayerAlterationData.alterationStatus.statusValues;
+
+            for (int i = 0; i < statValues.Length; i++)
+                bonusDict[(StatType)i] = StatBonus.CreateBonus(0, statValues[i]);
         }
 
         public float Attack
