@@ -143,7 +143,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
 
     public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
     {
-        throw new System.NotImplementedException();
+        return;
     }
 
     public NavMeshAgent GetNavMeshAgent()
