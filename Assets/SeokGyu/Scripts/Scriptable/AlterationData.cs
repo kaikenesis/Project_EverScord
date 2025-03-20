@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static EverScord.AlterationData.PanelData;
 
 namespace EverScord
 {
@@ -11,14 +12,18 @@ namespace EverScord
             get { return panelDatas; }
         }
 
-        public AlterationData(FactorData[] factorData)
+        public AlterationData Init(FactorData[] factorData)
         {
             int count = factorData.Length;
             for (int i = 0; i < count; i++)
             {
                 panelDatas.Add(new PanelData(factorData[i]));
             }
+
+            return this;
         }
+
+        public AlterationStatus alterationStatus = new();
 
         public class PanelData
         {
@@ -42,8 +47,6 @@ namespace EverScord
                 optionNum = new int[length];
                 value = new float[length];
             }
-
-            public AlterationStatus alterationStatus;
 
             public class AlterationStatus
             {

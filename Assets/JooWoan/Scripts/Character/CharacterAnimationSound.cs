@@ -7,7 +7,7 @@ namespace EverScord.Character
 
         private void PlayReloadingSound()
         {
-            SoundManager.Instance.PlaySound(ConstStrings.SOUND_RELOADING, 1);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_RELOADING, 1);
         }
     }
 }

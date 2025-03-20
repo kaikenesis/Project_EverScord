@@ -97,7 +97,7 @@ namespace EverScord.Augment
             augmentTimer.gameObject.SetActive(true);
 
             PlayerUI.SetCursor(CursorType.UIFOCUS, 0, 0);
-            player.SetState(SetCharState.ADD, CharState.SELECTING_AUGMENT);
+            player.SetState(SetCharState.ADD, CharState.INTERACTING_UI);
 
             if (PhotonNetwork.IsConnected)
                 player.CharacterPhotonView.RPC(nameof(player.SyncState), RpcTarget.Others, player.State);
@@ -184,7 +184,7 @@ namespace EverScord.Augment
             DOTween.Play(DOTWEEN_UI_DISAPPEAR);
 
             PlayerUI.SetCursor(CursorType.BATTLE);
-            player.SetState(SetCharState.REMOVE, CharState.SELECTING_AUGMENT);
+            player.SetState(SetCharState.REMOVE, CharState.INTERACTING_UI);
 
             if (PhotonNetwork.IsConnected)
             {

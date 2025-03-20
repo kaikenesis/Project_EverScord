@@ -22,6 +22,7 @@ namespace EverScord
         public static PhotonView View { get; private set; }
         public static bool IsLoadingLevel { get; private set; }
         public static bool IsBossMode { get; private set; }
+        public static bool IsReturningToLobby { get; private set; }
 
         public PortalControl PortalController => portalControl;
         public float CurrentProgress => progress / Mathf.Max(0.001f, maxProgress);
@@ -62,6 +63,7 @@ namespace EverScord
             portalControl.ResetPortal();
 
             IsBossMode = false;
+            IsReturningToLobby = false;
             SetMaxProgress(MAX_PROGRESS);
 
             progress = 0f;
@@ -241,17 +243,35 @@ namespace EverScord
             GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadScene), RpcTarget.All, ConstStrings.SCENE_MAINGAME);
         }
 
-        public static void ReturnToLobby()
+        [PunRPC]
+        public void SyncReturnToLobby()
         {
-            GameManager.ResetGame();
-            GameManager.LoadScene(ConstStrings.SCENE_LOBBY);
-            SoundManager.Instance.PlayBGM("LobbyBGM");
+            if (IsReturningToLobby)
+                return;
+
+            IsReturningToLobby = true;
+            View.RPC(nameof(ReturnEveryoneToLobby), RpcTarget.All);
         }
 
         [PunRPC]
         public void ReturnEveryoneToLobby()
         {
             ReturnToLobby();
+        }
+
+        public static void ReturnToLobby()
+        {
+            GameManager.ResetGame();
+            GameManager.LoadScene(ConstStrings.SCENE_LOBBY);
+
+            OnLoadComplete -= PlayLobbyBGM;
+            OnLoadComplete += PlayLobbyBGM;
+        }
+
+        private static void PlayLobbyBGM()
+        {
+            SoundManager.Instance.PlayBGM("LobbyBGM");
+            OnLoadComplete -= PlayLobbyBGM;
         }
 
         public static IEnumerator LoadSceneAsync(string sceneName)
