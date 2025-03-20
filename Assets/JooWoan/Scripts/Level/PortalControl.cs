@@ -40,6 +40,7 @@ namespace EverScord
         private float colliderWorldRadius;
 
         public static Action OnLevelClear = delegate { };
+        public static Action OnNextStage = delegate { };
 
         private void Awake()
         {
@@ -120,6 +121,7 @@ namespace EverScord
             countdownCoroutine = StartCoroutine(portalTimer.RunTimer(true));
 
             CharacterControl.CurrentClientCharacter.PlayerUIControl.ShowPortalNotification();
+            OnNextStage?.Invoke();
         }
 
         public void TryOpenPortal(float currentProgress)

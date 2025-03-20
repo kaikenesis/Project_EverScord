@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class AlterationInputController : UIInputController
+    public class AlterationInputController : BaseInputController
     {
         [SerializeField] private ToggleObject popupWindow;
         private bool bActivePopupWindow;

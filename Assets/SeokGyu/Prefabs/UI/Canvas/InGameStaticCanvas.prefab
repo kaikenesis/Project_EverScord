@@ -126,30 +126,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5064923224959894883}
     m_Modifications:
-    - target: {fileID: 388082321684839438, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 388082321684839438, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 388082321684839438, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 453
-      objectReference: {fileID: 0}
-    - target: {fileID: 388082321684839438, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 388082321684839438, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 226.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 388082321684839438, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -28.635
-      objectReference: {fileID: 0}
     - target: {fileID: 1804546335499225550, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
       propertyPath: m_Name
       value: ChatPanel
@@ -248,10 +224,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4045211715071487735, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4858335443275705305, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
-      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5341766854080055854, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
@@ -455,6 +427,22 @@ PrefabInstance:
     - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6292060689568525129, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6292060689568525129, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6292060689568525129, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6292060689568525129, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7790675213000489208, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_AnchorMax.y

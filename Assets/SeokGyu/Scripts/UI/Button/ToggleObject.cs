@@ -9,7 +9,7 @@ namespace EverScord
         [SerializeField] protected ObjectOption[] objectOptions;
         [SerializeField] private string doTweenID;
         private bool bReverse = false;
-        private bool bActive = false;
+        protected bool bActive = false;
 
         private void Awake()
         {
@@ -71,21 +71,21 @@ namespace EverScord
             }
         }
 
-        public void PlayButtonSound()
+        public virtual void PlayButtonSound()
         {
             SoundManager.Instance.PlaySound("ButtonSound");
         }
 
-        public void PlayDoTween(bool bReverse)
+        public virtual void PlayDoTween(bool bReverse)
         {
-            if(bActive == false && bReverse == false)
+            if(!bActive && !bReverse)
             {
                 bActive = true;
                 this.bReverse = true;
                 OnActivateObjects();
                 DOTween.PlayForward(doTweenID);
             }
-            else if(bActive == true && bReverse == true)
+            else if(bActive && bReverse)
             {
                 bActive = false;
                 this.bReverse = false;
@@ -93,7 +93,7 @@ namespace EverScord
             }
         }
 
-        public void PlayDoTweenToggleObjects()
+        public virtual void PlayDoTweenToggleObjects()
         {
             if (!bReverse)
             {

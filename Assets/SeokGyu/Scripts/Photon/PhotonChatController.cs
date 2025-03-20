@@ -18,8 +18,7 @@ namespace EverScord
         public static Action<string> OnRoomFollow = delegate { };
         public static Action OnStopMatch = delegate { };
         public static Action OnExile = delegate { };
-        public static Action<string> OnSendMsgDead = delegate { };
-        public static Action<string> OnSendMsgAlive = delegate { };
+        public static Action<string> OnSendSystemMsg = delegate { };
 
         private void Awake()
         {
@@ -31,6 +30,9 @@ namespace EverScord
             UIPartyOption.OnClickedExile += HandleClickedExile;
             UIChangeName.OnChangeName += HandleChangeName;
             CharacterControl.OnCheckAlive += HandleSendMsgAlive;
+            PortalControl.OnNextStage += HandleSendMsgNextStage;
+            BossSpawner.OnSpawnBoss += HandleSendMsgBossSpawn;
+            BossRPC.OnBossDead += HandleSendMsgBossDead;
         }
 
         private void Start()
@@ -47,25 +49,9 @@ namespace EverScord
             UIPartyOption.OnClickedExile -= HandleClickedExile;
             UIChangeName.OnChangeName -= HandleChangeName;
             CharacterControl.OnCheckAlive -= HandleSendMsgAlive;
-        }
-
-        private void HandleSendMsgAlive(int pvID, bool isDead, Vector3 position)
-        {
-            if(pv.IsMine)
-            {
-                PhotonView photonView = PhotonNetwork.GetPhotonView(pvID);
-
-                if (isDead)
-                {
-                    string message = $"[시스템] : <color=red>{photonView.Owner.NickName}님이 사망했습니다.</color>";
-                    pv.RPC(nameof(SendDeadSystemMsg), RpcTarget.All, message);
-                }
-                else
-                {
-                    string message = $"[시스템] : <color=blue>{photonView.Owner.NickName}님이 살아났습니다.</color>";
-                    pv.RPC(nameof(SendAliveSystemMsg), RpcTarget.All, message);
-                }
-            }
+            PortalControl.OnNextStage -= HandleSendMsgNextStage;
+            BossSpawner.OnSpawnBoss -= HandleSendMsgBossSpawn;
+            BossRPC.OnBossDead -= HandleSendMsgBossDead;
         }
 
         private void Update()
@@ -113,6 +99,51 @@ namespace EverScord
             chatClient.Disconnect();
             ConnectToPhotonChat(newName);
         }
+
+        private void HandleSendMsgAlive(int pvID, bool isDead, Vector3 position)
+        {
+            if (pv.IsMine)
+            {
+                PhotonView photonView = PhotonNetwork.GetPhotonView(pvID);
+                string message = "";
+                if (isDead)
+                {
+                    message = $"[시스템] : <color=blue>{photonView.Owner.NickName}</color>님이 사망했습니다.";
+                }
+                else
+                {
+                    message = $"[시스템] : <color=blue>{photonView.Owner.NickName}</color>님이 부활했습니다.";
+                }
+                pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
+            }
+        }
+        
+        private void HandleSendMsgNextStage()
+        {
+            if (pv.IsMine)
+            {
+                string message = "[시스템] : 다음 스테이지로 이동합니다.";
+                pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
+            }
+        }
+
+        private void HandleSendMsgBossSpawn()
+        {
+            if(pv.IsMine)
+            {
+                string message = "[시스템] : <color=red>감염된 아트레온</color>이 등장했습니다.";
+                pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
+            }
+        }
+
+        private void HandleSendMsgBossDead()
+        {
+            if (pv.IsMine)
+            {
+                string message = "[시스템] : <color=red>감염된 아트레온</color>을 처치했습니다.";
+                pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
+            }
+        }
         #endregion // Handle Methods
 
         #region Private Methods
@@ -153,15 +184,9 @@ namespace EverScord
         #region PunRPC Methods
         // PhotonView를 못찾고있음 불러올게 아니라 따로 추가해줘야할듯?
         [PunRPC]
-        private void SendDeadSystemMsg(string message)
+        private void SendSystemMsg(string message)
         {
-            OnSendMsgDead?.Invoke(message);
-        }
-
-        [PunRPC]
-        private void SendAliveSystemMsg(string message)
-        {
-            OnSendMsgAlive?.Invoke(message);
+            OnSendSystemMsg?.Invoke(message);
         }
         #endregion // PunRPC Methods
 

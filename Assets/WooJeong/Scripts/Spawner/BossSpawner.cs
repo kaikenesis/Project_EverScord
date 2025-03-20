@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Effects;
 using EverScord;
+using System;
 
 public class BossSpawner : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class BossSpawner : MonoBehaviour
     private object data;
     private GameObject mo;
     private PhotonView photonView;
+
+    public static Action OnSpawnBoss = delegate { };
 
     private void Awake()
     {
@@ -47,6 +50,7 @@ public class BossSpawner : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient)
             yield break;
         Debug.Log("[MasterCient] 몬스터 스폰 함수 실행");
+        OnSpawnBoss?.Invoke();
         while (true)
         {
             curTime += Time.deltaTime;
