@@ -403,7 +403,7 @@ public class BossRPC : MonoBehaviour, IEnemy
             }
         }
 
-        Debug.Log(decrease + " µ¥¹ÌÁö, ³²Àº Ã¼·Â : " + HP);
+        Debug.Log(decrease + " ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ Ã¼ï¿½ï¿½ : " + HP);
     }
 
     public void PhaseUp()

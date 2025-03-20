@@ -33,6 +33,7 @@ public class BossPattern03_Imp : AttackNodeImplement
         yield return bossRPC.ProjectEnable(4, 1f);
 
         bossRPC.PlayAnimation("RushAttack");
+        bossRPC.PlaySound("BossDash");
         StartCoroutine(Charge(0.5f));
         yield return new WaitForSeconds(0.7f);
         bossRPC.PlayEffect("StandingAttackEffect", transform.position + transform.forward * 5);
