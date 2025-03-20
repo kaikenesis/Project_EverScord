@@ -501,8 +501,9 @@ public class BossRPC : MonoBehaviour, IEnemy
         GameObject shield = Instantiate(go);
         shield.transform.position = transform.position;
         photonView.RPC("SyncShield", RpcTarget.Others);
-        yield return new WaitForSeconds(8f);
         BossShield bossShield = shield.GetComponent<BossShield>();
+        bossShield.SetHP(MaxHP * 0.2f);
+        yield return new WaitForSeconds(8f);
         if (bossShield.HP > 0)
         {
             PlayEffect("P15_Attack", transform.position);
@@ -526,6 +527,8 @@ public class BossRPC : MonoBehaviour, IEnemy
         animator.speed = 0;
         GameObject go = ResourceManager.Instance.GetAsset<GameObject>("P15_Shield");
         GameObject shield = Instantiate(go);
+        BossShield bossShield = shield.GetComponent<BossShield>();
+        bossShield.SetHP(MaxHP * 0.2f);
         shield.transform.position = transform.position;
         yield return new WaitForSeconds(8f);
         animator.speed = 1;

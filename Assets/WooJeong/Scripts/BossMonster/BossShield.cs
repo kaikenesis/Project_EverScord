@@ -1,14 +1,12 @@
 using System;
 using EverScord.Character;
 using EverScord.Effects;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class BossShield : MonoBehaviour, IEnemy
 {
     public float HP {  get; private set; }
-    private float maxHP = 100;
     private BlinkEffect blinkEffect;
 
     void Awake()
@@ -18,9 +16,9 @@ public class BossShield : MonoBehaviour, IEnemy
         blinkEffect.InitParticles(particle);
     }
 
-    private void OnEnable()
+    public void SetHP(float hp)
     {
-        HP = maxHP;
+        HP = hp;
     }
 
     public void DecreaseHP(float hp, CharacterControl attacker)

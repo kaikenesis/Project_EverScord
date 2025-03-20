@@ -175,13 +175,13 @@ public class SoundManager : Singleton<SoundManager>
         source.volume = targetVolume;
     }
 
-    public void StopSound(string soundName)
+    public void StopSound(string soundName, float fadeOutTime = 1f)
     {
         foreach (AudioSource source in audioSourcePool)
         {
             if (source.isPlaying && source.clip.name == soundName)
             {
-                StartCoroutine(FadeOutSound(source, 1f));
+                StartCoroutine(FadeOutSound(source, fadeOutTime));
             }
         }
     }
