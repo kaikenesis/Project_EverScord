@@ -53,6 +53,7 @@ public class BossPattern06_Imp : AttackNodeImplement
         bossRPC.SetActivePattern6(false);
 
         Debug.Log("Attack6 end");
+        bossRPC.StopSound("BossPattern06");
         curTime = 0;
         isEnd = true;
         action = null;

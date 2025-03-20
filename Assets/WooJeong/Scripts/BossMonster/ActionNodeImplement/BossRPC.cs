@@ -87,6 +87,11 @@ public class BossRPC : MonoBehaviour, IEnemy
     private void Update()
     {
         uiMarker.UpdatePosition(transform.position);
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            HP -= 10000;
+            Debug.Log($"CurHP = {HP}, {HP / MaxHP * 0.01f}");
+        }
     }
 
     public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
@@ -506,6 +511,8 @@ public class BossRPC : MonoBehaviour, IEnemy
             {
                 player.DecreaseHP(bossData.SkillDatas[13].MaxHpBasedDamage, true);
             }
+            yield return new WaitForSeconds(0.2f);
+            PlaySound("BossPattern15_Attack");
         }
         animator.speed = 1;
         Destroy(shield);
