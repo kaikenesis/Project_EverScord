@@ -1160,6 +1160,42 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 3139013178006763985}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlayButtonSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: PlayButtonSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: EverScord.ToggleObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001192605845634584, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8180421178234234166, guid: 015ebc5814aa1884a87f8ab0b51391bb, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
