@@ -37,10 +37,10 @@ public class BossPattern06_Imp : AttackNodeImplement
     {
         Debug.Log("Attack6 start");
         bossRPC.PlayAnimation("StandingAttack");
+        bossRPC.PlaySound("BossPattern06");
         safePos = transform.position + transform.forward * safeStartDistance;
         bossRPC.SetPositionScaleP6_SafeZone(safePos, safeScale);
         bossRPC.SetActivePattern6(true);
-        bossRPC.PlaySound("BossPattern06");
         yield return new WaitForSeconds(1f);
         Vector3 endPoint = new Vector3(safePos.x + Random.Range(-randomRange, randomRange),
             safePos.y, safePos.z + Random.Range(-randomRange, randomRange));
@@ -65,7 +65,7 @@ public class BossPattern06_Imp : AttackNodeImplement
         hitPlayers.Clear();
         while (true)
         {
-            curTime += attackSpan;
+            curTime += Time.deltaTime;
             if(curTime >= time)
             {
                 curTime = 0;
@@ -81,14 +81,9 @@ public class BossPattern06_Imp : AttackNodeImplement
 
                 if (distanceToSafe > safeRange/2)
                 {
-                    if (hitPlayers.ContainsKey(player) == false)
+                    if (hitPlayers.ContainsKey(player) == false || hitPlayers[player] <= 0)
                     {
                         hitPlayers[player] = attackSpan;
-                        player.DecreaseHP(damage, true);
-                    }
-                    else if (hitPlayers[player] <= 0)
-                    {
-                        hitPlayers.Add(player, attackSpan);
                         player.DecreaseHP(damage, true);
                     }
                 }

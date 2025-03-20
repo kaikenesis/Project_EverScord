@@ -89,8 +89,8 @@ namespace EverScord.Character
         public static Action OnPhotonViewListUpdated = delegate { };
         public static Action<int, bool, Vector3> OnCheckAlive = delegate { };
 
-        private static GameObject deathEffect, reviveEffect, beamEffect;
-        private static ParticleSystem hitEffect1, hitEffect2, healEffect;
+        private GameObject deathEffect, reviveEffect, beamEffect;
+        private ParticleSystem hitEffect1, hitEffect2, healEffect;
 
         private Action onDecreaseHealth;
         private PhotonView photonView;
@@ -172,7 +172,7 @@ namespace EverScord.Character
             SetPortraits();
             EnableRegenerateHP(true);
 
-            OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
+            //OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
         }
 
         void Update()

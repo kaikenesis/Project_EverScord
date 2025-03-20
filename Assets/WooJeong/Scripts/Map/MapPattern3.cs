@@ -59,8 +59,8 @@ public class MapPattern3 : MonoBehaviour
                 {
                     if(fogList.Count > 0)
                         fogList[i].SetActive(false);
-                    photonView.RPC("SyncMapFogDisable", RpcTarget.Others);
                 }
+                photonView.RPC("SyncMapFogDisable", RpcTarget.Others);
                 isDisappear = true;
             }
 
@@ -78,7 +78,7 @@ public class MapPattern3 : MonoBehaviour
                         Debug.Log(ranPos);
                         Debug.Log(mo);
                         fogList.Add(mo);
-                        photonView.RPC("SyncMapFog", RpcTarget.Others, ranPos);
+                        photonView.RPC(nameof(SyncMapFog), RpcTarget.Others, i, ranPos);
                     }                    
                 }
                 else
@@ -92,7 +92,7 @@ public class MapPattern3 : MonoBehaviour
                         fogList[i].SetActive(true);
                         fogList[i].transform.position = ranPos;
 
-                        photonView.RPC("SyncMapFog", RpcTarget.Others, ranPos);
+                        photonView.RPC(nameof(SyncMapFog), RpcTarget.Others, i, ranPos);
                     }
                 }
                 curTime = 0f;
@@ -104,23 +104,17 @@ public class MapPattern3 : MonoBehaviour
     }
 
     [PunRPC]
-    private void SyncMapFog(Vector3 pos)
+    private void SyncMapFog(int index, Vector3 pos)
     {
-        if (fogList.Count == 0)
+        if (fogList.Count < 2)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                GameObject mo = ResourceManager.Instance.GetFromPool(fog.AssetGUID, pos, Quaternion.identity);
-                fogList.Add(mo);
-            }
+            GameObject mo = ResourceManager.Instance.GetFromPool(fog.AssetGUID, pos, Quaternion.identity);
+            fogList.Add(mo);
         }
         else
         {
-            for (int i = 0; i < 2; i++)
-            {
-                fogList[i].SetActive(true);
-                fogList[i].transform.position = pos;
-            }
+            fogList[index].SetActive(true);
+            fogList[index].transform.position = pos;
         }
     }
 

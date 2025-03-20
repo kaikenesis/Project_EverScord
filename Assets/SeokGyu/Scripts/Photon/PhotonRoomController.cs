@@ -24,6 +24,7 @@ namespace EverScord
         public static Action OnUpdateRoom = delegate { };
         public static Action OnCheckGame = delegate { };
         public static Action<string> OnSendExile = delegate { };
+        public static Action OnUpdateDifficulty = delegate { };
 
         private void Awake()
         {
@@ -210,6 +211,7 @@ namespace EverScord
         private void SetLevel(EDifficulty newLevel)
         {
             GameManager.Instance.PlayerData.difficulty = newLevel;
+            OnUpdateDifficulty?.Invoke();
         }
 
         [PunRPC]

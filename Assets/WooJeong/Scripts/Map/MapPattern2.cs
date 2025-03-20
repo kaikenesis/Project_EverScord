@@ -15,7 +15,6 @@ public class MapPattern2 : MonoBehaviour
     private float curTime = 0;
     private List<Vector3> directions = new List<Vector3>();
     private float span = 3f;
-    private int randInt;
     private PhotonView photonView;
     private List<GameObject> spawnList = new();    
     private Dictionary<GameObject, VisualEffect> effectDict = new();
@@ -56,9 +55,9 @@ public class MapPattern2 : MonoBehaviour
             curTime++;
             if (curTime > patternTimer)
             {
-                randInt = Random.Range(0, 4);
+                int randInt = Random.Range(0, 4);
                 photonView.RPC("SyncMapPattern2", RpcTarget.Others, randInt);
-                yield return StartCoroutine(Attack());
+                yield return StartCoroutine(Attack(randInt));
                 curTime = 0f;
             }
 
@@ -66,7 +65,7 @@ public class MapPattern2 : MonoBehaviour
         }
     }
 
-    private IEnumerator Attack()
+    private IEnumerator Attack(int randInt)
     {
         if (spawnList.Count == 0)
         {
@@ -121,8 +120,7 @@ public class MapPattern2 : MonoBehaviour
     [PunRPC]
     private void SyncMapPattern2(int rand)
     {
-        randInt = rand;
-        StartCoroutine(Attack());
+        StartCoroutine(Attack(rand));
     }
 
     protected void ProgressCheck(float currentProgress)
