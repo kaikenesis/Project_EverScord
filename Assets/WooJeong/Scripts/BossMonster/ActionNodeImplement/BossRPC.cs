@@ -5,6 +5,7 @@ using EverScord.Effects;
 using EverScord.Skill;
 using EverScord.UI;
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,6 +48,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private bool isDead;
 
+    public static Action OnBossDead = delegate { };
 
     private void Awake()
     {
@@ -390,6 +392,10 @@ public class BossRPC : MonoBehaviour, IEnemy
         {
             isDead = true;
             attacker.IncreaseKillCount();
+            if(PhotonNetwork.IsMasterClient)
+            {
+                OnBossDead?.Invoke();
+            }
         }
 
         Debug.Log(decrease + " 데미지, 남은 체력 : " + HP);

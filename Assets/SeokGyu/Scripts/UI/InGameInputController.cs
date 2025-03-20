@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EverScord
 {
-    public class InGameInputController : UIInputController
+    public class InGameInputController : BaseInputController
     {
         [SerializeField] private ToggleObject popupSetting;
         private bool bActivePopupSetting;

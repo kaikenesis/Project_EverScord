@@ -13,16 +13,14 @@ namespace EverScord
 
         private void Awake()
         {
-            PhotonChatController.OnSendMsgDead += HandleDisplayMsgDead;
-            PhotonChatController.OnSendMsgAlive += HandleDisplayMsgAlive;
+            PhotonChatController.OnSendSystemMsg += HandleDisplayMsg;
 
             Initialize();
         }
 
         private void OnDestroy()
         {
-            PhotonChatController.OnSendMsgDead -= HandleDisplayMsgDead;
-            PhotonChatController.OnSendMsgAlive -= HandleDisplayMsgAlive;
+            PhotonChatController.OnSendSystemMsg -= HandleDisplayMsg;
         }
 
         private async void Initialize()
@@ -31,25 +29,14 @@ namespace EverScord
         }
 
         #region Handle Methods
-        private void HandleDisplayMsgDead(string message)
+        private void HandleDisplayMsg(string message)
         {
             GameObject obj = ResourceManager.Instance.GetFromPool("SystemMsg", Vector3.zero, Quaternion.identity);
-            obj.GetComponent<TMP_Text>().text = message;
-            obj.transform.parent = containor;
-            if(queueTextObject.Count >= 9)
-            {
-                ResourceManager.Instance.ReturnToPool(queueTextObject.Peek(), "SystemMsg");
-                queueTextObject.Dequeue();
-            }
-            queueTextObject.Enqueue(obj);
-        }
-        private void HandleDisplayMsgAlive(string message)
-        {
-            GameObject obj = ResourceManager.Instance.GetFromPool("SystemMsg", Vector3.zero, Quaternion.identity);
-            if(obj != null)
+            if (obj != null)
             {
                 obj.GetComponent<TMP_Text>().text = message;
                 obj.transform.parent = containor;
+                obj.transform.SetAsLastSibling();
                 if (queueTextObject.Count >= 9)
                 {
                     ResourceManager.Instance.ReturnToPool(queueTextObject.Peek(), "SystemMsg");

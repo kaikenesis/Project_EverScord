@@ -1,14 +1,57 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace EverScord
 {
     public class UISelect : MonoBehaviour
     {
+        [SerializeField] private TMP_Text normalText;
+        [SerializeField] private TMP_Text hardText;
+        private TMP_Text curSelectDifficulty;
+
         public static Action OnChangeUserData = delegate { };
         public static Action OnChangeCharacter = delegate { };
         public static Action OnGameStart = delegate { };
         public static Action OnUpdateReady = delegate { };
+
+        private void Awake()
+        {
+            PhotonRoomController.OnUpdateDifficulty += HandleUpdateDifficulty;
+
+            Initialize();
+        }
+
+        private void OnDestroy()
+        {
+            PhotonRoomController.OnUpdateDifficulty -= HandleUpdateDifficulty;
+        }
+
+        private void Initialize()
+        {
+            switch (GameManager.Instance.PlayerData.difficulty)
+            {
+                case PlayerData.EDifficulty.Normal:
+                    if(normalText != null)
+                    {
+                        curSelectDifficulty = normalText;
+                        normalText.color = Color.red;
+                    }
+                    break;
+                case PlayerData.EDifficulty.Hard:
+                    if(hardText != null)
+                    {
+                        curSelectDifficulty = hardText;
+                        hardText.color = Color.red;
+                    }
+                    break;
+            }
+        }
+
+        private void HandleUpdateDifficulty()
+        {
+            Initialize();
+        }
 
         public void GameStart()
         {
@@ -96,6 +139,14 @@ namespace EverScord
         {
             GameManager.Instance.PlayerData.bReady = bReady;
             OnUpdateReady?.Invoke();
+        }
+
+        public void SetTextColor(TMP_Text newText)
+        {
+            newText.color = Color.red;
+            if (curSelectDifficulty != null)
+                curSelectDifficulty.color = Color.white;
+            curSelectDifficulty = newText;
         }
     }
 }

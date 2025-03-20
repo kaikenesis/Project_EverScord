@@ -172,7 +172,7 @@ namespace EverScord.Character
             SetPortraits();
             EnableRegenerateHP(true);
 
-            OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
+            //OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
         }
 
         void Update()

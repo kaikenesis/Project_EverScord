@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +6,7 @@ using UnityEngine.UI;
 
 namespace EverScord
 {
-    public class LobbyInputController : UIInputController
+    public class LobbyInputController : BaseInputController
     {
         private GraphicRaycaster m_Raycaster;
         private PointerEventData m_PointerEventData;
