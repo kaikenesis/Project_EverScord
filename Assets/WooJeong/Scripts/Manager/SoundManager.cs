@@ -41,7 +41,7 @@ public class SoundManager : Singleton<SoundManager>
             PlayBGM("InGameBGM02");
     }
 
-    public void StopBGM(string soundName, float fadeOutTime)
+    public void StopBGM(float fadeOutTime)
     {
         StartCoroutine(FadeOutSound(currentBGM, fadeOutTime));
     }
