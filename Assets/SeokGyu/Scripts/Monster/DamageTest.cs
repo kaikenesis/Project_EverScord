@@ -7,6 +7,8 @@ namespace EverScord
 {
     public class DamageTest : MonoBehaviour, IEnemy
     {
+        public BodyType EnemyBodyType => BodyType.FLESH;
+
         public void TestDamage(GameObject sender, float value)
         {
             //Debug.Log($"{name} || Sender : {sender.name}, Damage : {value}");

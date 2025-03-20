@@ -120,6 +120,8 @@ namespace EverScord.Weapons
                         
                         float calculatedDamage = DamageCalculator.GetBulletDamage(ViewID, monster);
                         GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(shooter, calculatedDamage, monster, false);
+
+                        GameManager.Instance.BulletsControl.PlayBulletSound(monster);
                     }
                     else if (hit.transform.gameObject.layer == GameManager.PlayerLayerNumber)
                     {
@@ -134,6 +136,8 @@ namespace EverScord.Weapons
                         if (character.IsStunned && PhotonNetwork.IsConnected)
                             character.CharacterPhotonView.RPC(nameof(character.SyncInteractStunDebuff), RpcTarget.All);
                     }
+                    else
+                        GameManager.Instance.BulletsControl.PlayBulletSound();
 
                     SetTracerEffectPosition(currentPoint);
                 }

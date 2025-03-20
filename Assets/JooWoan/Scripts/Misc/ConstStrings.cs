@@ -54,7 +54,6 @@ namespace EverScord
         public const string SFX_VICTORY = "VictorySound";
         public const string SFX_ALTERATION_APPLIED = "AlterationApplied";
         public const string SFX_COUNTER = "CounterSFX";
-        public const string SFX_BULLET_RICOCHET = "BulletRicochet";
         public const string BGM_DEFEAT = "DefeatBGM";
         public const string BGM_TITLE = "TitleBGM";
         public const string BGM_LOBBY = "LobbyBGM";

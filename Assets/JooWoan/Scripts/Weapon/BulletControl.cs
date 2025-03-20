@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
-using UnityEditor.Experimental.GraphView;
+using UnityEngine.AddressableAssets;
 
 namespace EverScord.Weapons
 {
@@ -10,6 +10,10 @@ namespace EverScord.Weapons
     {
         [SerializeField] private ParticleSystem hitEffect;
         [SerializeField] private int hitEffectCount;
+        [SerializeField] private List<AssetReference> fleshHitSounds;
+        [SerializeField] private List<AssetReference> metalHitSounds;
+        [SerializeField] private List<AssetReference> barrierHitSounds;
+        [SerializeField] private List<AssetReference> defaultHitSounds;
 
         private PhotonView photonView;
         private LinkedList<Bullet> myBullets, otherBullets;
@@ -108,14 +112,31 @@ namespace EverScord.Weapons
 
         public void BulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
         {
-            SoundManager.Instance.PlaySound(ConstStrings.SFX_BULLET_RICOCHET);
-
             hitEffect.transform.position = hitPosition;
             hitEffect.transform.forward  = hitDirection;
             hitEffect.Emit(hitEffectCount);
 
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncBulletHitEffect), RpcTarget.Others, hitPosition, hitDirection);
+        }
+
+        public void PlayBulletSound(IEnemy enemy = null)
+        {
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            BodyType bodyType = BodyType.DEFAULT;
+
+            if (enemy != null)
+                bodyType = enemy.EnemyBodyType;
+            
+            photonView.RPC(nameof(SyncBulletSound), RpcTarget.All, (int)bodyType);
+        }
+
+        public void PlayRandomSound(List<AssetReference> targetSounds)
+        {
+            int randomIndex = Random.Range(0, targetSounds.Count);
+            SoundManager.Instance.PlaySound(targetSounds[randomIndex].AssetGUID);
         }
 
         ////////////////////////////////////////  PUN RPC  //////////////////////////////////////////////////////
@@ -129,11 +150,41 @@ namespace EverScord.Weapons
         [PunRPC]
         private void SyncBulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
         {
-            SoundManager.Instance.PlaySound(ConstStrings.SFX_BULLET_RICOCHET);
-
             hitEffect.transform.position = hitPosition;
             hitEffect.transform.forward  = hitDirection;
             hitEffect.Emit(hitEffectCount);
+        }
+
+        [PunRPC]
+        private void SyncBulletSound(int bodyType)
+        {
+            List<AssetReference> targetSounds = null;
+
+            switch ((BodyType)bodyType)
+            {
+                // On flesh hit, include default sounds for variety
+                case BodyType.FLESH:
+                {
+                    int randomIndex = Random.Range(0, 101);
+                    targetSounds = (randomIndex < 30) ? fleshHitSounds : defaultHitSounds;
+                    break;
+                }
+
+                case BodyType.METAL:
+                    targetSounds = metalHitSounds;
+                    break;
+
+                case BodyType.BARRIER:
+                    targetSounds = barrierHitSounds;
+                    break;
+
+                default:
+                    targetSounds = defaultHitSounds;
+                    break;
+            }
+
+            if (targetSounds != null)
+                PlayRandomSound(targetSounds);
         }
 
         [PunRPC]
@@ -150,4 +201,13 @@ namespace EverScord.Weapons
         MINE,
         OTHER
     }
+}
+
+public enum BodyType
+{
+    DEFAULT,
+    FLESH,
+    METAL,
+    ROCK,
+    BARRIER
 }

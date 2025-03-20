@@ -51,6 +51,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     private UIMarker uiMarker;
 
     public PhotonView PhotonView => photonView;
+
+    public virtual BodyType EnemyBodyType => BodyType.FLESH;
+
     private PhotonView photonView;
     protected MonsterHealthBar monsterHealthBar;
     protected GameObject healthBarObject;
