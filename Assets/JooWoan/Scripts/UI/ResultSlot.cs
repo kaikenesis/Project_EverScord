@@ -10,8 +10,8 @@ namespace EverScord.UI
         [SerializeField] private TextMeshProUGUI slot;
         [SerializeField] private float speed;
         [SerializeField] private DOTweenAnimation fadeTween, moveTween;
-        private ResultUI resultUI;
-        private float currentValue, targetValue;
+        private AudioSource counterAudio;
+        private float currentValue, targetValue, minPlaybackInterval;
 
         void OnEnable()
         {
@@ -20,6 +20,7 @@ namespace EverScord.UI
 
             SetCurrentValue(0);
             StartCoroutine(StartTextScroll());
+            StartCoroutine(RepeatCounterSound());
         }
 
         private IEnumerator StartTextScroll()
@@ -29,23 +30,40 @@ namespace EverScord.UI
             while (!Mathf.Approximately(currentValue, targetValue))
             {
                 SetCurrentValue(Mathf.Lerp(currentValue, targetValue, Time.deltaTime * speed));
-                resultUI.PlayCounterSound();
                 yield return null;
             }
 
             SetCurrentValue(targetValue);
         }
 
-        public void Init(float targetValue, ResultUI resultUI)
+        private IEnumerator RepeatCounterSound()
         {
-            this.resultUI = resultUI;
+            while (targetValue - currentValue >= 1f)
+            {
+                PlayCounterSound();
+                yield return null;
+            }
+        }
+
+        public void Init(float targetValue, AudioSource counterAudio, float minPlaybackInterval)
+        {
             this.targetValue = targetValue;
+            this.counterAudio = counterAudio;
+            this.minPlaybackInterval = minPlaybackInterval;
         }
 
         private void SetCurrentValue(float value)
         {
             currentValue = value;
             slot.text = $"{currentValue:F0}";
+        }
+
+        public void PlayCounterSound()
+        {
+            if (counterAudio.isPlaying && counterAudio.time <= minPlaybackInterval)
+                return;
+
+            counterAudio.Play();
         }
     }
 }

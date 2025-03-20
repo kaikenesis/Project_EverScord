@@ -224,14 +224,26 @@ namespace EverScord
 
         public GameObject SetNextLevel(int level)
         {
-            levelList[GameManager.CurrentLevelIndex].Level.SetActive(false);
+            EnableLevel(GameManager.CurrentLevelIndex, false);
             GameManager.SetLevelIndex(level);
 
-            GameObject nextLevel = levelList[GameManager.CurrentLevelIndex].Level;
-            groundCollider.transform.position = nextLevel.transform.position;
+            groundCollider.transform.position = GetCurrentLevel().transform.position;
+            EnableLevel(GameManager.CurrentLevelIndex, true);
 
-            nextLevel.SetActive(true);
-            return nextLevel;
+            return GetCurrentLevel();
+        }
+
+        public void EnableLevel(int levelIndex, bool state)
+        {
+            if (levelIndex < 0 || levelIndex >= levelList.Count)
+                return;
+
+            levelList[levelIndex].Level.SetActive(state);
+        }
+
+        public GameObject GetCurrentLevel()
+        {
+            return levelList[GameManager.CurrentLevelIndex].Level;
         }
 
         public static void LoadGameLevel()
