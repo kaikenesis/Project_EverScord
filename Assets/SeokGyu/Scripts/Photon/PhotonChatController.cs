@@ -11,6 +11,7 @@ namespace EverScord
     public class PhotonChatController : MonoBehaviour, IChatClientListener
     {
         private ChatClient chatClient;
+        private PhotonView pv;
 
         public static Action<string, string> OnRoomInvite = delegate { };
         public static Action<ChatClient> OnChatConnected = delegate { };
@@ -32,6 +33,11 @@ namespace EverScord
             CharacterControl.OnCheckAlive += HandleSendMsgAlive;
         }
 
+        private void Start()
+        {
+            pv = GetComponent<PhotonView>();
+        }
+
         private void OnDestroy()
         {
             PhotonLogin.OnConnectToPhoton -= HandleConnectToPhotonChat;
@@ -45,17 +51,20 @@ namespace EverScord
 
         private void HandleSendMsgAlive(int pvID, bool isDead, Vector3 position)
         {
-            PhotonView pv = PhotonNetwork.GetPhotonView(pvID);
+            if(pv.IsMine)
+            {
+                PhotonView photonView = PhotonNetwork.GetPhotonView(pvID);
 
-            if(isDead)
-            {
-                string message = $"[시스템] : <color=red>{pv.Owner.NickName}님이 사망했습니다.</color>";
-                pv.RPC(nameof(SendDeadSystemMsg), RpcTarget.All, message);
-            }
-            else
-            {
-                string message = $"[시스템] : <color=blue>{pv.Owner.NickName}님이 살아났습니다.</color>";
-                pv.RPC(nameof(SendAliveSystemMsg), RpcTarget.All, message);
+                if (isDead)
+                {
+                    string message = $"[시스템] : <color=red>{photonView.Owner.NickName}님이 사망했습니다.</color>";
+                    pv.RPC(nameof(SendDeadSystemMsg), RpcTarget.All, message);
+                }
+                else
+                {
+                    string message = $"[시스템] : <color=blue>{photonView.Owner.NickName}님이 살아났습니다.</color>";
+                    pv.RPC(nameof(SendAliveSystemMsg), RpcTarget.All, message);
+                }
             }
         }
 

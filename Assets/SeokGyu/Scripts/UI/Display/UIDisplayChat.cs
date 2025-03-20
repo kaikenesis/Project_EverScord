@@ -27,7 +27,7 @@ namespace EverScord
 
         private async void Initialize()
         {
-            await ResourceManager.Instance.CreatePool("SystemMsg", 10);
+            await ResourceManager.Instance.CreatePool("SystemMsg", 15);
         }
 
         #region Handle Methods
@@ -46,14 +46,17 @@ namespace EverScord
         private void HandleDisplayMsgAlive(string message)
         {
             GameObject obj = ResourceManager.Instance.GetFromPool("SystemMsg", Vector3.zero, Quaternion.identity);
-            obj.GetComponent<TMP_Text>().text = message;
-            obj.transform.parent = containor;
-            if (queueTextObject.Count >= 9)
+            if(obj != null)
             {
-                ResourceManager.Instance.ReturnToPool(queueTextObject.Peek(), "SystemMsg");
-                queueTextObject.Dequeue();
+                obj.GetComponent<TMP_Text>().text = message;
+                obj.transform.parent = containor;
+                if (queueTextObject.Count >= 9)
+                {
+                    ResourceManager.Instance.ReturnToPool(queueTextObject.Peek(), "SystemMsg");
+                    queueTextObject.Dequeue();
+                }
+                queueTextObject.Enqueue(obj);
             }
-            queueTextObject.Enqueue(obj);
         }
         #endregion
     }
