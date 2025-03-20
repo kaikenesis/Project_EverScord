@@ -194,7 +194,9 @@ namespace EverScord.UI
         private void PlayBGM()
         {
             if (isVictory)
+            {
                 SoundManager.Instance.PlaySound(ConstStrings.SFX_VICTORY);
+            }
             else
                 SoundManager.Instance.PlayBGM(ConstStrings.BGM_DEFEAT);
         }

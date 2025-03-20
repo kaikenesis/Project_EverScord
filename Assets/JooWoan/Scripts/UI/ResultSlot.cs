@@ -10,6 +10,7 @@ namespace EverScord.UI
         [SerializeField] private TextMeshProUGUI slot;
         [SerializeField] private float speed;
         [SerializeField] private DOTweenAnimation fadeTween, moveTween;
+        private ResultUI resultUI;
         private float currentValue, targetValue;
 
         void OnEnable()
@@ -28,14 +29,16 @@ namespace EverScord.UI
             while (!Mathf.Approximately(currentValue, targetValue))
             {
                 SetCurrentValue(Mathf.Lerp(currentValue, targetValue, Time.deltaTime * speed));
+                resultUI.PlayCounterSound();
                 yield return null;
             }
 
             SetCurrentValue(targetValue);
         }
 
-        public void Init(float targetValue)
+        public void Init(float targetValue, ResultUI resultUI)
         {
+            this.resultUI = resultUI;
             this.targetValue = targetValue;
         }
 

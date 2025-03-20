@@ -230,17 +230,20 @@ namespace EverScord
             IsFirstGameLoad = state;
         }
 
-        public static void LoadScene(string sceneName)
-        {
-            Instance.StartCoroutine(LevelControl.LoadSceneAsync(sceneName));
-        }
-
         public static void ResetGame()
         {
             SetLevelIndex(0);
             ResourceManager.ClearAllPools();
             Instance.ArmorData.ResetArmorLevel();
             Instance.LoadScreen.SetTargetCamera(CharacterCamera.CurrentClientCam);
+        }
+
+        [PunRPC]
+        public void SyncLoadGameLevel()
+        {
+            SetLevelIndex(0);
+            Instance.LoadScreen.SetTargetCamera(Camera.main);
+            LevelControl.LoadScene(ConstStrings.SCENE_MAINGAME);
         }
 
         [PunRPC]
@@ -255,12 +258,6 @@ namespace EverScord
 
                 player.StartCoroutine(player.HandleRevival());
             }
-        }
-
-        [PunRPC]
-        public void SyncLoadScene(string sceneName)
-        {
-            Instance.StartCoroutine(LevelControl.LoadSceneAsync(sceneName));
         }
 
         [PunRPC]

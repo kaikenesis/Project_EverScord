@@ -213,6 +213,7 @@ namespace EverScord
 
         private void SetNextLevel(out GameObject nextLevel)
         {
+            Debug.Log(GameManager.CurrentLevelIndex);
             levelList[GameManager.CurrentLevelIndex].Level.SetActive(false);
             GameManager.SetLevelIndex(GameManager.CurrentLevelIndex + 1);
 
@@ -238,9 +239,7 @@ namespace EverScord
             if (!PhotonNetwork.IsConnected)
                 return;
 
-            GameManager.SetLevelIndex(0);
-            GameManager.Instance.LoadScreen.SetTargetCamera(Camera.main);
-            GameManager.View.RPC(nameof(GameManager.Instance.SyncLoadScene), RpcTarget.All, ConstStrings.SCENE_MAINGAME);
+            GameManager.View.RPC(nameof(GameManager.SyncLoadGameLevel), RpcTarget.All);
         }
 
         [PunRPC]
@@ -262,16 +261,15 @@ namespace EverScord
         public static void ReturnToLobby()
         {
             GameManager.ResetGame();
-            GameManager.LoadScene(ConstStrings.SCENE_LOBBY);
+            LoadScene(ConstStrings.SCENE_LOBBY);
 
             OnLoadComplete -= PlayLobbyBGM;
             OnLoadComplete += PlayLobbyBGM;
         }
 
-        private static void PlayLobbyBGM()
+        public static void LoadScene(string sceneName)
         {
-            SoundManager.Instance.PlayBGM("LobbyBGM");
-            OnLoadComplete -= PlayLobbyBGM;
+            GameManager.Instance.StartCoroutine(LoadSceneAsync(sceneName));
         }
 
         public static IEnumerator LoadSceneAsync(string sceneName)
@@ -310,6 +308,12 @@ namespace EverScord
 
             IsLoadingLevel = false;
             OnLoadComplete?.Invoke();
+        }
+
+        private static void PlayLobbyBGM()
+        {
+            SoundManager.Instance.PlayBGM("LobbyBGM");
+            OnLoadComplete -= PlayLobbyBGM;
         }
     }
 }

@@ -54,6 +54,7 @@ namespace EverScord
         public const string SFX_RELOADING = "ReloadingLoad";
         public const string SFX_VICTORY = "VictorySound";
         public const string SFX_ALTERATION_APPLIED = "AlterationApplied";
+        public const string SFX_COUNTER = "CounterSFX";
         public const string BGM_DEFEAT = "DefeatBGM";
 
         // Animation Layers
