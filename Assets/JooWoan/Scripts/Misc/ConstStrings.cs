@@ -51,13 +51,13 @@ namespace EverScord
         // Sound Names
         public const string SFX_BUTTON = "ButtonSound";
         public const string SFX_SHOOT = "Shoot";
-        public const string SFX_RELOADING = "ReloadingLoad";
-        public const string SFX_RELOAD_PUMP = "ReloadingPump";
         public const string SFX_VICTORY = "VictorySound";
         public const string SFX_ALTERATION_APPLIED = "AlterationApplied";
         public const string SFX_COUNTER = "CounterSFX";
         public const string SFX_BULLET_RICOCHET = "BulletRicochet";
         public const string BGM_DEFEAT = "DefeatBGM";
+        public const string BGM_TITLE = "TitleBGM";
+        public const string BGM_LOBBY = "LobbyBGM";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";

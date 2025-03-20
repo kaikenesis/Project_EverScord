@@ -36,6 +36,8 @@ namespace EverScord
             login.DisableLoginUI();
             LoadingScreen.ShowScreenFrom1();
             DOTween.PlayForward(ConstStrings.TWEEN_SHOW_TITLE);
+
+            SoundManager.Instance.PlayBGM(ConstStrings.BGM_TITLE);
         }
 
         void Update()
@@ -68,6 +70,7 @@ namespace EverScord
 
         public IEnumerator StartTransitionLobby()
         {
+            SoundManager.Instance.StopBGM(1f);
             LoadingScreen.CoverScreen();
             yield return new WaitForSeconds(2f);
 
@@ -79,6 +82,8 @@ namespace EverScord
         {
             LevelControl.OnLoadComplete -= ShowLobby;
 
+            SoundManager.Instance.PlayBGM(ConstStrings.BGM_LOBBY);
+
             titleArea.SetActive(false);
             lobbyArea.SetActive(true);
             login.ToggleLobbyCanvas();
@@ -86,6 +91,7 @@ namespace EverScord
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
+
             Invoke(nameof(TweenPlayerPanel), showPlayerPanelDelay);
         }
 

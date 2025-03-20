@@ -85517,6 +85517,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 743e7e7ec9b101949944a029851f0d50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reloadingSound:
+    m_AssetGUID: b9c7491de79e5b14199cb68f23c8c878
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &1846921666
 GameObject:
   m_ObjectHideFlags: 0
@@ -86957,6 +86962,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LobbyCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 1197834798235478637, guid: c6b6baa5e0d1d074ebbefbf97ac76687, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 95f00caea72ad224da39fdf6ae9d7d56, type: 3}
     - target: {fileID: 3463763180858216456, guid: c6b6baa5e0d1d074ebbefbf97ac76687, type: 3}
       propertyPath: toggleObjects.Array.data[0]
       value: 

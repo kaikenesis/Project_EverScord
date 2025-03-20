@@ -133,9 +133,9 @@ namespace EverScord.Character
             if (photonView.IsMine)
             {
                 PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
+                PlayerUIControl.Init(weapon.IconPrefab);
                 PlayerUIControl.transform.localPosition = new Vector3(170f, -80f, 0f);
                 PlayerUIControl.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
-                PlayerUIControl.Init();
 
                 CameraControl = Instantiate(cameraPrefab, CharacterCamera.Root);
                 CameraControl.Init(PlayerTransform, photonView.IsMine);

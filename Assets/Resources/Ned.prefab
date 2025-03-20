@@ -578,6 +578,17 @@ MonoBehaviour:
   shotEffect: {fileID: 8697624914000545340}
   bulletInfo: {fileID: 11400000, guid: eec83c359a4a188449cd4428af21f105, type: 2}
   bulletSpeed: 100
+  gunshotSound:
+    m_AssetGUID: 6321bb7dd16a7db49a9d4d82df993a58
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  reloadedSound:
+    m_AssetGUID: 8508d160356551d4ba337958357c1081
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  <IconPrefab>k__BackingField: {fileID: 7824913929703776555, guid: f73f7c45a0263c44089212e0bc71c02f, type: 3}
   <GunPoint>k__BackingField: {fileID: 5000854565782103814}
   <WeaponTransform>k__BackingField: {fileID: 5722305271450859557}
   <LeftTarget>k__BackingField: {fileID: 4707739217572464861}
@@ -7084,6 +7095,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 743e7e7ec9b101949944a029851f0d50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reloadingSound:
+    m_AssetGUID: ffa721431888d634b943a76144bd745c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &5069688541824382067
 GameObject:
   m_ObjectHideFlags: 0

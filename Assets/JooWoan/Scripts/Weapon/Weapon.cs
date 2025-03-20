@@ -4,6 +4,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
 using EverScord.Effects;
+using UnityEngine.AddressableAssets;
 
 namespace EverScord.Weapons
 {
@@ -16,7 +17,10 @@ namespace EverScord.Weapons
         [SerializeField] private ParticleSystem shotEffect;
         [SerializeField] private BulletInfo bulletInfo;
         [SerializeField] public float bulletSpeed;
+        [SerializeField] private AssetReference gunshotSound;
+        [SerializeField] private AssetReference reloadedSound;
 
+        [field: SerializeField] public GameObject IconPrefab                            { get; private set; }
         [field: SerializeField] public Transform GunPoint                               { get; private set; }
         [field: SerializeField] public Transform WeaponTransform                        { get; private set; }
         [field: SerializeField] public Transform LeftTarget                             { get; private set; }
@@ -141,7 +145,7 @@ namespace EverScord.Weapons
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, false);
             yield return new WaitForSeconds(animControl.AnimInfo.ShootStance.length * ANIM_TRANSITION);
 
-            SoundManager.Instance.PlaySound(ConstStrings.SFX_RELOAD_PUMP);
+            SoundManager.Instance.PlaySound(reloadedSound.AssetGUID);
             CurrentAmmo = MaxAmmo;
             cooldownTimer.ResetElapsedTime();
             isReloading = false;
@@ -154,7 +158,7 @@ namespace EverScord.Weapons
 
         public void FireBullet()
         {
-            SoundManager.Instance.PlaySound(ConstStrings.SFX_SHOOT);
+            SoundManager.Instance.PlaySound(gunshotSound.AssetGUID);
             shotEffect.Emit(1);
 
             Vector3 gunpointPos   = GunPoint.position;
