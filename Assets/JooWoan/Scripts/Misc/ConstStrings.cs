@@ -49,8 +49,10 @@ namespace EverScord
         public const string TWEEN_ALTERATION_APPLIED = "AlterationApplied";
 
         // Sound Names
-        public const string SOUND_SHOOT = "Shoot";
-        public const string SOUND_RELOADING = "ReloadingLoad";
+        public const string SFX_SHOOT = "Shoot";
+        public const string SFX_RELOADING = "ReloadingLoad";
+        public const string BGM_VICTORY = "VictoryBGM";
+        public const string BGM_DEFEAT = "DefeatBGM";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";

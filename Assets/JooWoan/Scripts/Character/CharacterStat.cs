@@ -68,6 +68,9 @@ namespace EverScord.Character
             // statValues are aligned in the order of StatType enum
             float[] statValues = GameManager.Instance.PlayerAlterationData.alterationStatus.statusValues;
 
+            if (statValues == null)
+                statValues = new float[(int)StatType.END];
+
             for (int i = 0; i < statValues.Length; i++)
                 bonusDict[(StatType)i] = StatBonus.CreateBonus(0, statValues[i]);
         }

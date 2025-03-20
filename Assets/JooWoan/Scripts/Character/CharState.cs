@@ -10,7 +10,7 @@ namespace EverScord.Character
         INVINCIBLE          = (1 << 3),
         DEATH               = (1 << 4),
         TELEPORTING         = (1 << 5),
-        SELECTING_AUGMENT   = (1 << 6) 
+        INTERACTING_UI      = (1 << 6)
     }
 
     public enum SetCharState

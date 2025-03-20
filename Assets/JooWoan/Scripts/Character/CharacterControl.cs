@@ -1,9 +1,9 @@
 using UnityEngine.AddressableAssets;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using UnityEngine;
 using Photon.Pun;
 using EverScord.Weapons;
 using EverScord.UI;
@@ -878,7 +878,7 @@ namespace EverScord.Character
 
         public bool IsInteractingUI
         {
-            get { return HasState(CharState.SELECTING_AUGMENT); }
+            get { return HasState(CharState.INTERACTING_UI); }
         }
 
         public bool IsAiming { get; private set; }

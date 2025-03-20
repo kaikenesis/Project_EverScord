@@ -150,6 +150,8 @@ namespace EverScord.UI
 
         public IEnumerator ShowResults()
         {
+            CharacterControl.CurrentClientCharacter.SetState(SetCharState.ADD, CharState.INTERACTING_UI);
+
             blackTween.DORewind();
             blackTween.DOPlay();
 
@@ -161,6 +163,7 @@ namespace EverScord.UI
 
             yield return new WaitForSeconds(0.5f);
 
+            PlayBGM();
             StartCoroutine(VolumeAnimator.BlurBackground(depthOfField, 0.5f, 1f, 5f));
 
             for (int i = 0; i < resultUIList.Count; i++)
@@ -172,6 +175,14 @@ namespace EverScord.UI
                 resultUIList[i].PlayTween();
                 yield return new WaitForSeconds(SHOW_RESULT_INTERVAL);
             }
+        }
+
+        private void PlayBGM()
+        {
+            if (isVictory)
+                SoundManager.Instance.PlaySound(ConstStrings.BGM_VICTORY);
+            else
+                SoundManager.Instance.PlayBGM(ConstStrings.BGM_DEFEAT);
         }
 
         public void IncreaseReadyCount()

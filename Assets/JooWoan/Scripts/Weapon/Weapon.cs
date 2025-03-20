@@ -176,7 +176,7 @@ namespace EverScord.Weapons
                 smokeTrail.Init(bullet);
             }
 
-            SoundManager.Instance.PlaySound(ConstStrings.SOUND_SHOOT);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_SHOOT);
 
             if (PhotonNetwork.IsConnected)
                 photonView.RPC(nameof(SyncFireBullet), RpcTarget.Others, gunpointPos, bulletVector, bullet.ViewID, bullet.BulletID);

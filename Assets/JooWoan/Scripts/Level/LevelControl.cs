@@ -245,7 +245,15 @@ namespace EverScord
         {
             GameManager.ResetGame();
             GameManager.LoadScene(ConstStrings.SCENE_LOBBY);
+
+            OnLoadComplete -= PlayLobbyBGM;
+            OnLoadComplete += PlayLobbyBGM;
+        }
+
+        private static void PlayLobbyBGM()
+        {
             SoundManager.Instance.PlayBGM("LobbyBGM");
+            OnLoadComplete -= PlayLobbyBGM;
         }
 
         [PunRPC]
