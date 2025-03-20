@@ -15,6 +15,7 @@ namespace EverScord.UI
         [SerializeField] private Canvas canvas;
         [SerializeField] private Collider reviveCollider;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private AudioSource audioSource;
         [SerializeField] private float increaseSpeed, decreaseSpeed;
 
         private Quaternion initialRotation;
@@ -57,9 +58,19 @@ namespace EverScord.UI
             FollowPlayer();
 
             if (revivingPeople > 0)
+            {
+                if (!audioSource.isPlaying)
+                    audioSource.Play();
+
                 IncreaseProgress(increaseSpeed * Time.deltaTime);
+            }
             else
+            {
+                if (audioSource.isPlaying)
+                    audioSource.Stop();
+                
                 DecreaseProgress(decreaseSpeed * Time.deltaTime);
+            }
             
             TrackProgress();
         }

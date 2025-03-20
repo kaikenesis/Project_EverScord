@@ -27,7 +27,7 @@ namespace EverScord.Skill
             if (!base.Activate())
                 return false;
 
-            SoundManager.Instance.PlaySound(skill.BombSfx1.AssetGUID);
+            SoundManager.Instance.PlaySound(skill.ChargedSfx.AssetGUID);
             skillCoroutine = StartCoroutine(ActivateSkill());
             return true;
         }
@@ -65,6 +65,7 @@ namespace EverScord.Skill
             GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, calculatedDamage, enemy);
 
             enemy.StunMonster(skill.StunDuration);
+            SoundManager.Instance.PlaySound(skill.BombSfx.AssetGUID);
         }
 
         public override void SupportAction()
@@ -86,10 +87,13 @@ namespace EverScord.Skill
 
             target.IncreaseHP(activator, totalHealAmount, true);
             StartCoroutine(CharacterSkill.RegenerateHP(activator, new CharacterControl[] {target}, skill.HealDuration, dotHealAmount));
+            SoundManager.Instance.PlaySound(skill.HealSfx.AssetGUID);
         }
 
         private void TeleportPlayer()
         {
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_TELEPORT);
+
             var effect1 = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
             var effect2 = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
 

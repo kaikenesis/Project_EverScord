@@ -285,7 +285,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void DeathAftermath()
     {
         DeathGlitter();
-        healthBarObject.SetActive(false);
+
+        if (healthBarObject)
+            healthBarObject.SetActive(false);
     }
 
     private void DeathGlitter()

@@ -47,6 +47,7 @@ namespace EverScord
             photonView = GetComponent<PhotonView>();
             uiMarker = gameObject.AddComponent<UIMarker>();
             uiMarker.Initialize(PointMarkData.EType.Portal);
+            scanEffect.gameObject.SetActive(false);
         }
 
         void Start()
@@ -118,6 +119,7 @@ namespace EverScord
         private void ActivateCountdown()
         {
             SetPortalCollider(false);
+            scanEffect.gameObject.SetActive(true);
             countdownCoroutine = StartCoroutine(portalTimer.RunTimer(true));
 
             CharacterControl.CurrentClientCharacter.PlayerUIControl.ShowPortalNotification();
@@ -149,7 +151,8 @@ namespace EverScord
         {
             isPortalOpened = true;
             gameObject.SetActive(true);
-            scanEffect.gameObject.SetActive(true);
+
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_START);
 
             GameManager.Instance.AugmentControl.ShowAugmentCards();
             OnLevelClear?.Invoke();
@@ -211,14 +214,21 @@ namespace EverScord
                 }
             }
 
+            bool flag = false;
+
             for (int i = 0; i < targetPlayers.Count; i++)
             {
+                flag = true;
+
                 var effect = Instantiate(teleportEffect, CharacterSkill.SkillRoot);
                 effect.transform.position = targetPlayers[i].PlayerTransform.position;
 
                 targetPlayers[i].Teleport(GetRandomPosition());
                 StartCoroutine(DelayTeleportEffect(targetPlayers[i], 0.2f));
             }
+
+            if (flag)
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_TELEPORT);
         }
 
         private IEnumerator DelayTeleportEffect(CharacterControl player, float delay)

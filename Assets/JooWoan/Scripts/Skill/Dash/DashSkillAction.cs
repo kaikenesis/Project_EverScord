@@ -43,6 +43,8 @@ namespace EverScord.Skill
                 return false;
 
             SoundManager.Instance.PlaySound(skill.DashSfx1.AssetGUID);
+            SoundManager.Instance.PlaySound(skill.DashSfx2.AssetGUID);
+
             trailCoroutine = StartCoroutine(meshTrail.ActivateTrail(skill.Duration));
             skillCoroutine = StartCoroutine(ActivateSkill());
             return true;

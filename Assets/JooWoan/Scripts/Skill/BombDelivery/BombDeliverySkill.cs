@@ -13,6 +13,8 @@ namespace EverScord.Skill
         [field: SerializeField] public LayerMask CollidableLayer        { get; private set; }
         [field: SerializeField] public float HealDuration               { get; private set; }
         [field: SerializeField] public float StunDuration               { get; private set; }
-        [field: SerializeField] public AssetReference BombSfx1          { get; private set; }
+        [field: SerializeField] public AssetReference ChargedSfx        { get; private set; }
+        [field: SerializeField] public AssetReference BombSfx           { get; private set; }
+        [field: SerializeField] public AssetReference HealSfx           { get; private set; }
     }
 }

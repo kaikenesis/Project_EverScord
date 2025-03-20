@@ -182,6 +182,8 @@ namespace EverScord.UI
         {
             notificationBox.SetActive(true);
 
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_ACTIVATED);
+
             DOTween.Rewind(ConstStrings.TWEEN_STAGE_NOTIFICATION);
             DOTween.Play(ConstStrings.TWEEN_STAGE_NOTIFICATION);
         }
@@ -198,6 +200,8 @@ namespace EverScord.UI
 
             DOTween.Rewind(ConstStrings.TWEEN_STAGE_COUNTDOWN);
             DOTween.Play(ConstStrings.TWEEN_STAGE_COUNTDOWN);
+
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_TICK);
         }
     }
     public enum CursorType

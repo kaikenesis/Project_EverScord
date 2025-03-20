@@ -147,6 +147,8 @@ namespace EverScord
         
         public IEnumerator PrepareNextLevel()
         {
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_LOOP);
+
             foreach (var player in GameManager.Instance.PlayerDict.Values)
             {
                 player.SetState(Character.SetCharState.ADD, Character.CharState.TELEPORTING);
@@ -187,6 +189,8 @@ namespace EverScord
 
             LoadingScreen.ShowScreen();
             portalControl.PlayWarpEffect(false);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_ARRIVAL);
+
             yield return waitStageTransition;
 
             bCoverScreen = false;
@@ -200,6 +204,8 @@ namespace EverScord
                 Instantiate(beamEffect, player.PlayerTransform.position, Quaternion.identity);
                 yield return waitPointOne;
             }
+
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_END);
 
             ResetProgress();
             portalControl.ClosePortal();

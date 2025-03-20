@@ -179,7 +179,7 @@ namespace EverScord.Weapons
                     break;
 
                 default:
-                    targetSounds = defaultHitSounds;
+                    targetSounds = metalHitSounds;
                     break;
             }
 

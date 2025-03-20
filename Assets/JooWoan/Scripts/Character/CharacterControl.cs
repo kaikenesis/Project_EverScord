@@ -716,6 +716,8 @@ namespace EverScord.Character
 
             yield return new WaitForEndOfFrame();
 
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PLAYER_REVIVE, 1, true);
+
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
 

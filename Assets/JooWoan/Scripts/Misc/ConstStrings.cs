@@ -54,6 +54,14 @@ namespace EverScord
         public const string SFX_VICTORY = "VictorySound";
         public const string SFX_ALTERATION_APPLIED = "AlterationApplied";
         public const string SFX_COUNTER = "CounterSFX";
+        public const string SFX_PLAYER_REVIVE = "PlayerRevive";
+        public const string SFX_PORTAL_ACTIVATED = "Portal_Activated";
+        public const string SFX_PORTAL_START = "Portal_Start";
+        public const string SFX_PORTAL_LOOP = "Portal_Loop";
+        public const string SFX_PORTAL_ARRIVAL = "Portal_Arrival";
+        public const string SFX_PORTAL_END = "Portal_End";
+        public const string SFX_PORTAL_TICK = "Portal_Tick";
+        public const string SFX_TELEPORT = "TeleportSound";
         public const string BGM_DEFEAT = "DefeatBGM";
         public const string BGM_TITLE = "TitleBGM";
         public const string BGM_LOBBY = "LobbyBGM";
