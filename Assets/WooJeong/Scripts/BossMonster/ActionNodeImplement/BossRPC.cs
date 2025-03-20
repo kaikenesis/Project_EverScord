@@ -394,7 +394,7 @@ public class BossRPC : MonoBehaviour, IEnemy
         if (!isDead && attacker.CharacterPhotonView.IsMine && HP == 0 && Phase == 2)
         {
             isDead = true;
-            attacker.IncreaseKillCount();
+            attacker.IncreaseKillCount();            
         }
 
         Debug.Log(decrease + " 데미지, 남은 체력 : " + HP);
