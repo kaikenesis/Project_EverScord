@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using EverScord.Character;
 using EverScord.Effects;
-using static UnityEngine.GraphicsBuffer;
 
 namespace EverScord.Skill
 {
@@ -28,6 +27,7 @@ namespace EverScord.Skill
             if (!base.Activate())
                 return false;
 
+            SoundManager.Instance.PlaySound(skill.BombSfx1.AssetGUID);
             skillCoroutine = StartCoroutine(ActivateSkill());
             return true;
         }

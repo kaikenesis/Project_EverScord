@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
+using UnityEditor.Experimental.GraphView;
 
 namespace EverScord.Weapons
 {
@@ -107,6 +108,8 @@ namespace EverScord.Weapons
 
         public void BulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
         {
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_BULLET_RICOCHET);
+
             hitEffect.transform.position = hitPosition;
             hitEffect.transform.forward  = hitDirection;
             hitEffect.Emit(hitEffectCount);
@@ -126,6 +129,8 @@ namespace EverScord.Weapons
         [PunRPC]
         private void SyncBulletHitEffect(Vector3 hitPosition, Vector3 hitDirection)
         {
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_BULLET_RICOCHET);
+
             hitEffect.transform.position = hitPosition;
             hitEffect.transform.forward  = hitDirection;
             hitEffect.Emit(hitEffectCount);
