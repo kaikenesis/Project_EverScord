@@ -138,7 +138,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             SetHealthBar();
         }
         healthBarObject.SetActive(true);
-        monsterHealthBar.InitHealthBar(monsterData.HP);
+        monsterHealthBar.InitHealthBar(monsterData.HP);        
     }
 
     private void OnDisable()
@@ -327,7 +327,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 
-    public void StartFSM()
+    public virtual void StartFSM()
     {
         SetActiveHitbox(true);
         WaitState();

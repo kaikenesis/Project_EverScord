@@ -25,4 +25,10 @@ public class NML1_Controller : NController
         base.SetHealthBar();
         monsterHealthBar.SetOffsetY(5);
     }
+
+    public override void StartFSM()
+    {
+        base.StartFSM();
+        PlaySound("NML1_Spawn");
+    }
 }
