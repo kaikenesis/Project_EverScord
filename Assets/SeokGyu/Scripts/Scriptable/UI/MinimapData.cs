@@ -6,63 +6,24 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Datas/MinimapData", fileName = "newMinimapData")]
     public class MinimapData : ScriptableObject
     {
-        [SerializeField] private CameraTransform[] cameraPos;
-        [SerializeField] private StageMap[] stageMaps;
-
-        public CameraTransform[] CameraPos
-        {
-            get { return cameraPos; }
-        }
-
-        public StageMap[] StageMaps
-        {
-            get { return stageMaps; }
-        }
+        [field: SerializeField] public CameraTransform[] CameraPos { get; private set; }
+        [field: SerializeField] public StageMap[] StageMaps { get; private set; }
 
         [System.Serializable]
         public class CameraTransform
         {
-            [SerializeField] private Vector3 position;
-            [SerializeField] private Quaternion rotation;
-
-            public Vector3 Position
-            {
-                get { return position; }
-            }
-
-            public Quaternion Rotation
-            {
-                get { return rotation; }
-            }
+            [field: SerializeField] public Vector3 Position { get; private set; }
+            [field: SerializeField] public Quaternion Rotation { get; private set; }
+            [field: SerializeField] public float OrthographicSize { get; private set; }
         }
 
         [System.Serializable]
         public class StageMap
         {
-            [SerializeField] private Sprite sourceImg;
-            [SerializeField] private Vector3 position;
-            [SerializeField] private Vector2 size;
-            [SerializeField] private Quaternion rotation;
-
-            public Sprite SourceImg
-            {
-                get { return sourceImg; }
-            }
-
-            public Vector3 Position
-            {
-                get { return position; }
-            }
-
-            public Vector2 Size
-            {
-                get { return size; }
-            }
-
-            public Quaternion Rotation
-            {
-                get { return rotation; }
-            }
+            [field: SerializeField] public Sprite SourceImg { get; private set; }
+            [field: SerializeField] public Vector3 Position { get; private set; }
+            [field: SerializeField] public Vector2 Size { get; private set; }
+            [field: SerializeField] public Quaternion Rotation { get; private set; }
         }
     }
 }

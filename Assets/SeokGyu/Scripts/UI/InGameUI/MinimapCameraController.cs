@@ -44,6 +44,7 @@ namespace EverScord
             cameraObj = Instantiate(minimapCamera, CharacterCamera.Root);
             MinimapData.CameraTransform cameraData = GameManager.Instance.MinimapData.CameraPos[0];
             cameraObj.transform.SetLocalPositionAndRotation(cameraData.Position, cameraData.Rotation);
+            //cameraObj.GetComponent<Camera>().orthographicSize = GameManager.Instance.MinimapData.CameraPos.
 
             backgroundObj = Instantiate(minimapBackgroundUI);
             MinimapData.StageMap stageMapData = GameManager.Instance.MinimapData.StageMaps[0];
