@@ -28,13 +28,13 @@ namespace EverScord
             {
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupSetting = false;
-                popupSetting.OnDeactivateObjects();
+                popupSetting.PlayDoTween(true);
             }
             else
             {
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupSetting = true;
-                popupSetting.OnActivateObjects();
+                popupSetting.PlayDoTween(false);
             }
         }
 
