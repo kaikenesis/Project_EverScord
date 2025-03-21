@@ -45,6 +45,8 @@ public class BossRPC : MonoBehaviour, IEnemy
     public float Speed { get; private set; }
     public int Phase { get; private set; }
 
+    public BodyType EnemyBodyType => BodyType.FLESH;
+
     private bool isDead;
 
     public static Action OnBossDead = delegate { };

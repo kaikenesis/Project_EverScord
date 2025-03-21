@@ -10,12 +10,14 @@ namespace EverScord
     {
         public bool IsExaminingAlteration { get; private set; }
         public static Action OnTransitionToLobby = delegate { };
+        public static Action<bool> OnLobbyToAlteration = delegate { };
 
         [SerializeField] private UILogin login;
         [SerializeField] private GameObject titleArea, lobbyArea, factorFlashFilter;
         [SerializeField] private DOTweenAnimation titleFadeOutTween, alterationBgTween;
         [SerializeField] private float showPlayerPanelDelay;
         private bool hasPressedAnything = false;
+
 
         void Awake()
         {
@@ -36,6 +38,8 @@ namespace EverScord
             login.DisableLoginUI();
             LoadingScreen.ShowScreenFrom1();
             DOTween.PlayForward(ConstStrings.TWEEN_SHOW_TITLE);
+
+            SoundManager.Instance.PlayBGM(ConstStrings.BGM_TITLE);
         }
 
         void Update()
@@ -68,6 +72,7 @@ namespace EverScord
 
         public IEnumerator StartTransitionLobby()
         {
+            SoundManager.Instance.StopBGM(1f);
             LoadingScreen.CoverScreen();
             yield return new WaitForSeconds(2f);
 
@@ -79,6 +84,8 @@ namespace EverScord
         {
             LevelControl.OnLoadComplete -= ShowLobby;
 
+            SoundManager.Instance.PlayBGM(ConstStrings.BGM_LOBBY);
+
             titleArea.SetActive(false);
             lobbyArea.SetActive(true);
             login.ToggleLobbyCanvas();
@@ -86,6 +93,7 @@ namespace EverScord
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
+
             Invoke(nameof(TweenPlayerPanel), showPlayerPanelDelay);
         }
 
@@ -98,6 +106,8 @@ namespace EverScord
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBY2ALTERATION);
             DOTween.Play(ConstStrings.TWEEN_LOBBY2ALTERATION);
+
+            OnLobbyToAlteration?.Invoke(false);
 
             // callback: Btn_Alteration - UIToggleButton.ToggleObject()
         }
@@ -113,6 +123,8 @@ namespace EverScord
             DOTween.Play(ConstStrings.TWEEN_ALTERATION2LOBBY);
 
             TweenPlayerPanel();
+
+            OnLobbyToAlteration?.Invoke(true);
 
             // callback: AlterationPanel - ReturnButton - UIToggleButton.ToggleObject()
         }

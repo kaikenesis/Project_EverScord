@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NMS2_Controller : NController
 {
+    public override BodyType EnemyBodyType => BodyType.METAL;
     public bool isUpgraded = false;
 
     protected override void Setup()

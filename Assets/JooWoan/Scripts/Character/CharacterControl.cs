@@ -133,9 +133,9 @@ namespace EverScord.Character
             if (photonView.IsMine)
             {
                 PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
+                PlayerUIControl.Init(weapon.IconPrefab);
                 PlayerUIControl.transform.localPosition = new Vector3(170f, -80f, 0f);
                 PlayerUIControl.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
-                PlayerUIControl.Init();
 
                 CameraControl = Instantiate(cameraPrefab, CharacterCamera.Root);
                 CameraControl.Init(PlayerTransform, photonView.IsMine);
@@ -551,7 +551,7 @@ namespace EverScord.Character
 
         public void ApplyDebuff(CharState state, int count)
         {
-            if (HasState(CharState.INVINCIBLE))
+            if (IsInvincible)
                 return;
 
             if (DebuffDict.ContainsKey(state) && DebuffDict[state] != null)
@@ -698,6 +698,9 @@ namespace EverScord.Character
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, transform.position);
             UIMarker.ToggleDeathIcon();
 
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_1);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_2);
+
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
             EnableReviveCircle(true);
@@ -715,6 +718,9 @@ namespace EverScord.Character
                 StopCoroutine(deathCoroutine);
 
             yield return new WaitForEndOfFrame();
+
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PLAYER_REVIVE);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_UNI_SKILL);
 
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
@@ -763,6 +769,14 @@ namespace EverScord.Character
 
             hitEffect1.Emit(1);
             hitEffect2.Emit(1);
+
+            if (IsInvincible)
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_INVINCIBLE_HIT, 1, true);
+            else
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_PLAYER_HIT, 1, true);
+
+            if (CharacterType == PlayerData.ECharacter.Us)
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_US_HIT, 1, true);
         }
 
         private void PlayHealEffects()
@@ -776,6 +790,8 @@ namespace EverScord.Character
                 healEffect.gameObject.SetActive(true);
             
             healEffect.Emit(1);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_HEAL_1, 1, true);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_HEAL_2, 1, true);
         }
 
         public void Teleport(Vector3 position)
@@ -879,6 +895,11 @@ namespace EverScord.Character
         public bool IsInteractingUI
         {
             get { return HasState(CharState.INTERACTING_UI); }
+        }
+
+        public bool IsInvincible
+        {
+            get { return HasState(CharState.INVINCIBLE); }
         }
 
         public bool IsAiming { get; private set; }

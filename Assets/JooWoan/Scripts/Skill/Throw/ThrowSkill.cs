@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace EverScord.Skill
 {
@@ -6,6 +7,8 @@ namespace EverScord.Skill
     {
         protected const float DEFAULT_THROW_GRAVITY = 45f;
 
+        [field: SerializeField] public AssetReference ThrowSfx       { get; private set; }
+        [field: SerializeField] public AssetReference MarkerSfx      { get; private set; }
         [field: SerializeField] public GameObject ThrowPoint         { get; private set; }
         [field: SerializeField] public GameObject ThrowingObject     { get; private set; }
         [field: SerializeField] public GameObject DestinationMarker  { get; private set; }

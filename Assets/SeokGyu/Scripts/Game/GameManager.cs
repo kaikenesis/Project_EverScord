@@ -135,7 +135,7 @@ namespace EverScord
 
         private void Start()
         {
-            SoundManager.Instance.PlayBGM("LobbyBGM");
+            // SoundManager.Instance.PlayBGM("LobbyBGM");
         }
 
         private void Init()

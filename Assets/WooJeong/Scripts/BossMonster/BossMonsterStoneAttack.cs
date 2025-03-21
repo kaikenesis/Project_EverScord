@@ -4,10 +4,8 @@ using EverScord.Effects;
 using EverScord.Skill;
 using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.Universal;
 
 public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
 {
@@ -25,6 +23,8 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
     PhotonView photonView;
     private BlinkEffect blinkEffect;    
     private CapsuleCollider capsuleCollider;
+
+    public BodyType EnemyBodyType => BodyType.ROCK;
 
     private void Awake()
     {

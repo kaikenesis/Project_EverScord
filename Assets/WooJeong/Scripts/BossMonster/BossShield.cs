@@ -7,6 +7,9 @@ using UnityEngine.AI;
 public class BossShield : MonoBehaviour, IEnemy
 {
     public float HP {  get; private set; }
+
+    public BodyType EnemyBodyType => BodyType.BARRIER;
+
     private BlinkEffect blinkEffect;
 
     void Awake()

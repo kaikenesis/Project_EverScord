@@ -13,6 +13,8 @@ namespace EverScord.Skill
     {
         private const float RAYCAST_LENGTH = 100f;
 
+        [SerializeField] private AudioSource barrierAudio, laserAudio, electricAudio;
+
         // Imported Asset from Hovl
         private Hovl_Laser laserControl;
 
@@ -44,6 +46,7 @@ namespace EverScord.Skill
             elapsedLaserTime = skill.DamageInterval;
             isOutlineActivated = false;
 
+            barrierAudio.Play();
             skillCoroutine = StartCoroutine(ActivateSkill());
             StartCoroutine(GrantBuff(activator));
 
@@ -113,6 +116,12 @@ namespace EverScord.Skill
                 activator.PlayerWeapon.FireBullet();
             }
 
+            laserAudio.Play();
+            electricAudio.Play();
+
+            SoundManager.Instance.PlaySound(skill.LaserStartSfx.AssetGUID);
+            SoundManager.Instance.PlaySound(skill.LaserStartSfx2.AssetGUID);
+
             laserControl = Instantiate(skill.LaserPrefab, CharacterSkill.SkillRoot).GetComponent<Hovl_Laser>();
         }
 
@@ -174,7 +183,11 @@ namespace EverScord.Skill
 
             for (int i = totalChildCount - 1; i >= 0; i--)
                 laserControl.transform.GetChild(i).SetParent(CharacterSkill.SkillRoot);
-            
+
+            laserAudio.Stop();
+            SoundManager.Instance.StopSound(skill.LaserStartSfx.AssetGUID);
+            SoundManager.Instance.StopSound(skill.LaserStartSfx2.AssetGUID);
+
             Destroy(laserControl.gameObject, 0.1f);
 
             laserControl = null;
@@ -215,6 +228,7 @@ namespace EverScord.Skill
 
         public IEnumerator GrantBuff(CharacterControl target)
         {
+            SoundManager.Instance.PlaySound(skill.BuffSfx.AssetGUID);
             target.ApplyBuff(BuffType.BARRIER, skill.Duration);
 
             GameObject barrier = Instantiate(skill.BarrierPrefab);
@@ -254,6 +268,10 @@ namespace EverScord.Skill
 
         public override void ExitSkill()
         {
+            laserAudio.Stop();
+            barrierAudio.Stop();
+            electricAudio.Stop();
+
             StopLaser();
             SetOutline(false);
 

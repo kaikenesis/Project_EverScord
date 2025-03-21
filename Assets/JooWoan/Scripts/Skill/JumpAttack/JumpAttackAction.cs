@@ -14,6 +14,7 @@ namespace EverScord.Skill
         public JumpAttackSkill Skill    { get; private set; }
         public bool CanJump             { get; private set; }
 
+        [SerializeField] private AudioSource electricAudio;
         private CharacterAnimation animControl;
         private AnimationInfo animInfo;
         private WaitForSeconds waitSkill;
@@ -80,11 +81,17 @@ namespace EverScord.Skill
             yield return waitSkill;
 
             if (attackCoroutine == null)
+            {
+                SoundManager.Instance.PlaySound(Skill.UltEnd.AssetGUID);
                 ExitSkill();
+            }
         }
 
         private IEnumerator CounterStance()
         {
+            electricAudio.Play();
+            SoundManager.Instance.PlaySound(Skill.StanceSfx.AssetGUID);
+
             stanceEffect = Instantiate(stanceEffectPrefab, CharacterSkill.SkillRoot);
             stanceEffect.transform.position = activator.PlayerTransform.position;
 
@@ -104,6 +111,10 @@ namespace EverScord.Skill
             }
 
             animControl.Play(animInfo.Howl);
+            SoundManager.Instance.PlaySound(Skill.ChargeSfx1.AssetGUID);
+            SoundManager.Instance.PlaySound(Skill.ChargeSfx2.AssetGUID);
+            SoundManager.Instance.PlaySound(Skill.ChargeSfx3.AssetGUID);
+            SoundManager.Instance.PlaySound(Skill.ChargeSfx4.AssetGUID);
             Invoke(nameof(ExitHowlAnimation), animInfo.Howl.length);
 
             var shockwave = Instantiate(shockwavePrefab, CharacterSkill.SkillRoot);
@@ -144,6 +155,7 @@ namespace EverScord.Skill
 
         public IEnumerator JumpAttack()
         {
+            electricAudio.Stop();
             activator.SetState(SetCharState.ADD, CharState.RIGID_ANIMATING);
 
             float stampTime = animInfo.Jump.length + Skill.LandingDuration;
@@ -154,6 +166,10 @@ namespace EverScord.Skill
 
             CancelInvoke(nameof(ExitHowlAnimation));
             animControl.Play(animInfo.Jump.name);
+
+            SoundManager.Instance.PlaySound(Skill.JumpSfx.AssetGUID);
+            SoundManager.Instance.PlaySound(Skill.JumpSfx2.AssetGUID);
+
             yield return new WaitForSeconds(animInfo.Jump.length);
 
             activator.SetPosition(landingPosition);
@@ -163,7 +179,7 @@ namespace EverScord.Skill
 
             GameObject landingEffect = Instantiate(landingEffectPrefab, CharacterSkill.SkillRoot);
             landingEffect.transform.position = landingPosition;
-
+            SoundManager.Instance.PlaySound(Skill.LandSfx.AssetGUID);
             animControl.Play(animInfo.Land);
             yield return new WaitForSeconds(animInfo.Land.length);
 
@@ -180,6 +196,8 @@ namespace EverScord.Skill
 
             EffectControl.SetEffectParticles(stanceEffect, false);
             EffectControl.SetEffectParticles(markerParticles, false);
+
+            electricAudio.Stop();
 
             SetJumpMode(false);
             activator.UnsubscribeOnDecreaseHealth(OnDecreaseHealth);
@@ -235,6 +253,8 @@ namespace EverScord.Skill
                     float damage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient, enemy);
                     GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, damage, enemy);
 
+                    SoundManager.Instance.PlaySound(Skill.DealerLandSfx.AssetGUID);
+
                     if (enemy is BossRPC boss)
                         boss.SetDebuff(activator, EBossDebuff.SLOW, Skill.SlowDuration, Skill.SlowedAmount);
                 }
@@ -243,6 +263,8 @@ namespace EverScord.Skill
                     CharacterControl player = colliders[i].GetComponent<CharacterControl>();
                     float heal = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDamage, SkillInfo.skillCoefficient);
                     player.IncreaseHP(activator, heal, true);
+
+                    SoundManager.Instance.PlaySound(Skill.HealerLandSfx.AssetGUID);
                 }
             }
         }

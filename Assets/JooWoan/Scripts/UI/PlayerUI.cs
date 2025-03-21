@@ -37,16 +37,19 @@ namespace EverScord.UI
         [SerializeField] private GameObject notificationBox;
         [SerializeField] private TextMeshProUGUI currentAmmoText, maxAmmoText, countdownText;
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
+        [SerializeField] private Transform iconTransform;
 
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
         private bool isEnabled = false;
 
-        public void Init()
+        public void Init(GameObject iconPrefab)
         {
             if (!bloodMat) 
                 bloodMat = ResourceManager.Instance.GetAsset<Material>(AssetReferenceManager.BloodMat_ID);
             
+            var icon = Instantiate(iconPrefab, iconTransform.transform.position, Quaternion.identity);
+            icon.transform.SetParent(transform);
             SetCursor(CursorType.BATTLE);
 
             Volume volume = CharacterCamera.Root.GetComponent<Volume>();
@@ -179,6 +182,8 @@ namespace EverScord.UI
         {
             notificationBox.SetActive(true);
 
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_ACTIVATED);
+
             DOTween.Rewind(ConstStrings.TWEEN_STAGE_NOTIFICATION);
             DOTween.Play(ConstStrings.TWEEN_STAGE_NOTIFICATION);
         }
@@ -195,6 +200,8 @@ namespace EverScord.UI
 
             DOTween.Rewind(ConstStrings.TWEEN_STAGE_COUNTDOWN);
             DOTween.Play(ConstStrings.TWEEN_STAGE_COUNTDOWN);
+
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PORTAL_TICK);
         }
     }
     public enum CursorType

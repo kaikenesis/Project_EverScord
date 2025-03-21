@@ -12,6 +12,7 @@ namespace EverScord.Skill
         private float totalTravelDistance;
         private float travelSpeed;
         private float startDelay;
+        private string sfxTag;
 
         void Awake()
         {
@@ -29,10 +30,11 @@ namespace EverScord.Skill
             lightDir = lightSource.transform.forward;
         }
 
-        public void Init(float totalTravelDistance, float travelSpeed, float startDelay = 0f)
+        public void Init(float totalTravelDistance, float travelSpeed, string sfxTag, float startDelay = 0f)
         {
             this.totalTravelDistance = totalTravelDistance;
             this.travelSpeed = travelSpeed;
+            this.sfxTag = sfxTag;
             this.startDelay = startDelay;
         }
 
@@ -92,8 +94,9 @@ namespace EverScord.Skill
             Vector3 endPoint = wayPoint + moveDir * halfDistance;
 
             transform.position = startPoint;
-
             yield return new WaitForSeconds(startDelay);
+
+            SoundManager.Instance.PlaySound(sfxTag);
 
             while (Vector3.Distance(transform.position, endPoint) > 1f)
             {

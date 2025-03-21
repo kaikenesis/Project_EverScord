@@ -5,6 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 public class NMM2_Controller : NController
 {
+    public override BodyType EnemyBodyType => BodyType.METAL;
     protected override void Setup()
     {
         monsterType = MonsterType.MEDIUM;

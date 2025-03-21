@@ -17,5 +17,16 @@ namespace EverScord.Skill
         [field: SerializeField] public AssetReferenceGameObject SlashEffect     { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject HealEffect      { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject Marker          { get; private set; }
+        [field: SerializeField] public AssetReference StanceSfx                 { get; private set; }
+        [field: SerializeField] public AssetReference JumpSfx                   { get; private set; }
+        [field: SerializeField] public AssetReference JumpSfx2                  { get; private set; }
+        [field: SerializeField] public AssetReference ChargeSfx1                { get; private set; }
+        [field: SerializeField] public AssetReference ChargeSfx2                { get; private set; }
+        [field: SerializeField] public AssetReference ChargeSfx3                { get; private set; }
+        [field: SerializeField] public AssetReference ChargeSfx4                { get; private set; }
+        [field: SerializeField] public AssetReference LandSfx                   { get; private set; }
+        [field: SerializeField] public AssetReference DealerLandSfx             { get; private set; }
+        [field: SerializeField] public AssetReference HealerLandSfx             { get; private set; }
+        [field: SerializeField] public AssetReference UltEnd                    { get; private set; }
     }
 }

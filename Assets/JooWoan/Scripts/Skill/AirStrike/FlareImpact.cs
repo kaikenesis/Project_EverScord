@@ -53,6 +53,8 @@ namespace EverScord.Skill
                     markers[i].SetActive(false);
             }
 
+            SoundManager.Instance.PlaySound(airStrikeSkill.MarkerSfx.AssetGUID);
+
             for (int i = 1; i < MARKER_COUNT; i++)
             {
                 yield return new WaitForSeconds(MARKER_DISPLAY_INTERVAL);

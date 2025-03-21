@@ -44,11 +44,14 @@ namespace EverScord.Skill
 
             if (!hasActivated)
             {
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_THROW_CANCEL);
                 activator.AnimationControl.CrossFade(idleParam);
-
                 ExitSkill();
                 return false;
             }
+
+            PlayMarkerSound();
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_READY2THROW);
 
             activator.RigControl.SetAimWeight(false);
             activator.AnimationControl.SetUpperMask(true);
@@ -66,6 +69,7 @@ namespace EverScord.Skill
                 if (activator.PlayerInputInfo.pressedLeftMouseButton)
                 {
                     base.Activate();
+                    PlayThrowSound();
 
                     activator.SetMouseButtonDown(false);
                     activator.AnimationControl.CrossFade(throwParam);
@@ -121,6 +125,13 @@ namespace EverScord.Skill
                 skillIndex
             );
         }
+
+        protected virtual void PlayMarkerSound()
+        {
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_DEFAULT_MARKER);
+        }
+
+        protected virtual void PlayThrowSound() { }
 
         public abstract IEnumerator ThrowObject(TrajectoryInfo info);
     }

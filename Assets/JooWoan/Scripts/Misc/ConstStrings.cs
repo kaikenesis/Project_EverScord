@@ -51,11 +51,31 @@ namespace EverScord
         // Sound Names
         public const string SFX_BUTTON = "ButtonSound";
         public const string SFX_SHOOT = "Shoot";
-        public const string SFX_RELOADING = "ReloadingLoad";
         public const string SFX_VICTORY = "VictorySound";
+        public const string SFX_US_HIT = "Us_Hit";
+        public const string SFX_PLAYER_HIT = "Player_Hit";
+        public const string SFX_INVINCIBLE_HIT = "Invincible_Hit";
+        public const string SFX_HEAL_1 = "Heal1";
+        public const string SFX_HEAL_2 = "Heal2";
+        public const string SFX_DEATH_1 = "Death1";
+        public const string SFX_DEATH_2 = "Death2";
         public const string SFX_ALTERATION_APPLIED = "AlterationApplied";
         public const string SFX_COUNTER = "CounterSFX";
+        public const string SFX_UNI_SKILL = "Uni_Skill";
+        public const string SFX_PLAYER_REVIVE = "PlayerRevive";
+        public const string SFX_PORTAL_ACTIVATED = "Portal_Activated";
+        public const string SFX_PORTAL_START = "Portal_Start";
+        public const string SFX_PORTAL_LOOP = "Portal_Loop";
+        public const string SFX_PORTAL_ARRIVAL = "Portal_Arrival";
+        public const string SFX_PORTAL_END = "Portal_End";
+        public const string SFX_PORTAL_TICK = "Portal_Tick";
+        public const string SFX_TELEPORT = "TeleportSound";
+        public const string SFX_DEFAULT_MARKER = "Grenade_Marker";
+        public const string SFX_READY2THROW = "Grenade_Ready";
+        public const string SFX_THROW_CANCEL = "Grenade_Cancel";
         public const string BGM_DEFEAT = "DefeatBGM";
+        public const string BGM_TITLE = "TitleBGM";
+        public const string BGM_LOBBY = "LobbyBGM";
 
         // Animation Layers
         public const string ANIMLAYER_UPPERMASK = "UpperMask";

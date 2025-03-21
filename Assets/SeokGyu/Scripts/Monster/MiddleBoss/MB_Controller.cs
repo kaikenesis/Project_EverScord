@@ -30,6 +30,8 @@ namespace EverScord
         private bool remoteActiveRaser;
         private float remoteCurHealth;
 
+        public BodyType EnemyBodyType => BodyType.FLESH;
+
         private void Awake()
         {
             for (int i = 0; i < data.LaserCount; i++)

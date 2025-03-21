@@ -51,6 +51,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     private UIMarker uiMarker;
 
     public PhotonView PhotonView => photonView;
+
+    public virtual BodyType EnemyBodyType => BodyType.FLESH;
+
     private PhotonView photonView;
     protected MonsterHealthBar monsterHealthBar;
     protected GameObject healthBarObject;
@@ -282,7 +285,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     public void DeathAftermath()
     {
         DeathGlitter();
-        healthBarObject.SetActive(false);
+
+        if (healthBarObject)
+            healthBarObject.SetActive(false);
     }
 
     private void DeathGlitter()

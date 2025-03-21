@@ -32,6 +32,12 @@ namespace EverScord
             UISendInvite.OnSendInvite -= HandleSendInvite;
         }
 
+        private void Update()
+        {
+            OnMouseClick();
+            OnKeyInput();
+        }
+
         protected override void OnMouseClick()
         {
             base.OnMouseClick();

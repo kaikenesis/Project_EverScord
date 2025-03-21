@@ -6,6 +6,15 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Datas/PopUpWindowData", fileName = "newPopUpWindowData")]
     public class PopUpWindowData : ScriptableObject
     {
+        public enum EMsgType
+        {
+            None,
+            UnlockFactor,
+            RerollFactor,
+            ApplyFactor,
+            CannotGameStart,
+        }
+
         [SerializeField] private Message[] messages;
 
         public Message[] Messages
