@@ -6,6 +6,7 @@ namespace EverScord.Skill
 {
     public abstract class ThrowableImpact : MonoBehaviour
     {
+        private const float ROTATE_SPEED = 800f;
         private const float ESTIMATED_TIME_DELAY = 0.1f;
         protected Action onSkillActivated = null;
         protected ThrowSkillAction skillAction = null;
@@ -14,7 +15,8 @@ namespace EverScord.Skill
 
         void Update()
         {
-            transform.Rotate(10, 0, 0);
+            transform.Rotate(ROTATE_SPEED * Time.deltaTime, 0, 0);
+
             if (timer == null || timer.IsCooldown)
                 return;
 
