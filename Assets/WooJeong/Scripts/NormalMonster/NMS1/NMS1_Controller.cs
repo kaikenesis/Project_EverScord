@@ -13,4 +13,10 @@ public class NMS1_Controller : NController
         stunState = gameObject.AddComponent<NMS1_StunState>();
         deathState = gameObject.AddComponent<NMS1_DeathState>();
     }
+
+    public override void StartFSM()
+    {
+        base.StartFSM();
+        PlaySound("NMS1_Spawn");
+    }
 }

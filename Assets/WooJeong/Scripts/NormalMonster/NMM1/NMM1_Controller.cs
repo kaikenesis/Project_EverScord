@@ -43,4 +43,10 @@ public class NMM1_Controller : NController
             yield return null;
         }
     }
+
+    public override void StartFSM()
+    {
+        base.StartFSM();
+        PlaySound("NMM1_Spawn");
+    }
 }

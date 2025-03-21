@@ -19,6 +19,7 @@ namespace EverScord.Skill
 
             Impact();
             Destroy(gameObject);
+            transform.Rotate(100, 0, 0);
         }
 
         protected void OnCollisionEnter(Collision collision)

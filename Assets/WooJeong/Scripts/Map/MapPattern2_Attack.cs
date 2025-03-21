@@ -23,7 +23,7 @@ public class MapPattern2_Attack : MonoBehaviour
 
     private IEnumerator Disable()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);        
         sphereCollider.enabled = false;
     }
 

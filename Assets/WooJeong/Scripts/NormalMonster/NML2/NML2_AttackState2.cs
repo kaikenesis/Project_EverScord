@@ -13,15 +13,15 @@ public class NML2_AttackState2 : NAttackState
         float time = monsterController.clipDict["Attack2"];
         monsterController.PlayAnimation("Attack2");
         monsterController.PlaySound("NML2_2");
-
+        
         for (int i = 0; i < 3; i++)
         {
             Fire();
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1.5f);
         }
 
-        yield return new WaitForSeconds(time - 6f);
-        monsterController.StopSound("NML2_2");
+        yield return new WaitForSeconds(time - 4.5f);
+
         StartCoroutine(monsterController.CoolDown2());
         attack = null;
         Exit();
@@ -35,6 +35,6 @@ public class NML2_AttackState2 : NAttackState
             monsterController.monsterData.ProjectionTime,
             "NML2_A2_Effect",
             monsterController.monsterData.Skill02_Damage,
-            "NML2_Floor");
+            "NML2_2_Lightning");
     }
 }

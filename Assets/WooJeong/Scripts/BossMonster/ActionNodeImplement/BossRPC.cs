@@ -2,7 +2,6 @@ using DTT.AreaOfEffectRegions;
 using EverScord;
 using EverScord.Character;
 using EverScord.Effects;
-using EverScord.Skill;
 using EverScord.UI;
 using Photon.Pun;
 using System;
@@ -245,7 +244,6 @@ public class BossRPC : MonoBehaviour, IEnemy
                         yield return new WaitForSeconds(Time.deltaTime);
                         if (curTime > timeOffset)
                         {
-                            //projectorObj_Pattern4.SetActive(false);
                             yield break;
                         }
                     }
@@ -262,7 +260,6 @@ public class BossRPC : MonoBehaviour, IEnemy
                         yield return new WaitForSeconds(Time.deltaTime);
                         if (curTime > timeOffset)
                         {
-                            //projectorObj_Pattern5.SetActive(false);
                             yield break;
                         }
                     }
@@ -272,9 +269,9 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public IEnumerator ProjectEnable(int patternNum, float projectTime)
     {
-        photonView.RPC("SyncProjectorEnable", RpcTarget.All, patternNum, projectTime);
+        photonView.RPC(nameof(SyncProjectorEnable), RpcTarget.All, patternNum, projectTime);
         yield return new WaitForSeconds(projectTime + 0.5f);
-        photonView.RPC("SyncProjectorDisable", RpcTarget.All, patternNum);
+        photonView.RPC(nameof(SyncProjectorDisable), RpcTarget.All, patternNum);
     }
 
     [PunRPC]
@@ -351,19 +348,18 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void MoveP6_SafeZone(float duration, Vector3 endPoint)
     {
-        photonView.RPC(nameof(SyncP6_SafePosition), RpcTarget.All, duration, endPoint);
+        Vector3 startPoint = transform.position + transform.forward * 4;
+        photonView.RPC(nameof(SyncP6_SafePosition), RpcTarget.All, duration, startPoint, endPoint);
     }
 
     [PunRPC]
-    private void SyncP6_SafePosition(float duration, Vector3 endPoint)
+    private void SyncP6_SafePosition(float duration, Vector3 startPoint, Vector3 endPoint)
     {
-        StartCoroutine(MoveSafePos(duration, endPoint));
+        StartCoroutine(MoveSafePos(duration, startPoint, endPoint));
     }
 
-    private IEnumerator MoveSafePos(float duration, Vector3 endPoint)
+    private IEnumerator MoveSafePos(float duration, Vector3 startPoint, Vector3 endPoint)
     {
-        Vector3 startPoint = transform.position + transform.forward * 4;
-
         for (float t = 0f; t < duration; t += Time.deltaTime)
         {
             safeZone.transform.position = Vector3.Lerp(startPoint, endPoint, t / duration);
@@ -373,7 +369,7 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float damage, CharacterControl attacker)
     {
-        photonView.RPC("SyncBossMonsterHP", RpcTarget.All, damage, attacker.CharacterPhotonView.ViewID);
+        photonView.RPC(nameof(SyncBossMonsterHP), RpcTarget.All, damage, attacker.CharacterPhotonView.ViewID);
     }
 
     [PunRPC]
@@ -438,7 +434,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public void LaserEnable(float enableTime)
     {
         laserPoint.GetComponent<BossLaser>().SetDamage(bossData.SkillDatas[4].SkillDamage, BaseAttack);
-        photonView.RPC("SyncLaser", RpcTarget.All, enableTime);
+        photonView.RPC(nameof(SyncLaser), RpcTarget.All, enableTime);
     }
 
     [PunRPC]
