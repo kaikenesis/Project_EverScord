@@ -551,7 +551,7 @@ namespace EverScord.Character
 
         public void ApplyDebuff(CharState state, int count)
         {
-            if (HasState(CharState.INVINCIBLE))
+            if (IsInvincible)
                 return;
 
             if (DebuffDict.ContainsKey(state) && DebuffDict[state] != null)
@@ -769,6 +769,14 @@ namespace EverScord.Character
 
             hitEffect1.Emit(1);
             hitEffect2.Emit(1);
+
+            if (IsInvincible)
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_INVINCIBLE_HIT, 1, true);
+            else
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_PLAYER_HIT, 1, true);
+
+            if (CharacterType == PlayerData.ECharacter.Us)
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_US_HIT, 1, true);
         }
 
         private void PlayHealEffects()
@@ -887,6 +895,11 @@ namespace EverScord.Character
         public bool IsInteractingUI
         {
             get { return HasState(CharState.INTERACTING_UI); }
+        }
+
+        public bool IsInvincible
+        {
+            get { return HasState(CharState.INVINCIBLE); }
         }
 
         public bool IsAiming { get; private set; }

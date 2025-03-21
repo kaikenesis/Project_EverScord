@@ -52,6 +52,9 @@ namespace EverScord
         public const string SFX_BUTTON = "ButtonSound";
         public const string SFX_SHOOT = "Shoot";
         public const string SFX_VICTORY = "VictorySound";
+        public const string SFX_US_HIT = "Us_Hit";
+        public const string SFX_PLAYER_HIT = "Player_Hit";
+        public const string SFX_INVINCIBLE_HIT = "Invincible_Hit";
         public const string SFX_HEAL_1 = "Heal1";
         public const string SFX_HEAL_2 = "Heal2";
         public const string SFX_DEATH_1 = "Death1";
