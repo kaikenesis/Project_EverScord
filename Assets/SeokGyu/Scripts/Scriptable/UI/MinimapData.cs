@@ -6,7 +6,7 @@ namespace EverScord
     [CreateAssetMenu(menuName = "EverScord/Datas/MinimapData", fileName = "newMinimapData")]
     public class MinimapData : ScriptableObject
     {
-        [field: SerializeField] public CameraTransform[] CameraPos { get; private set; }
+        [field: SerializeField] public CameraTransform[] CameraOptions { get; private set; }
         [field: SerializeField] public StageMap[] StageMaps { get; private set; }
 
         [System.Serializable]

@@ -12,29 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d615e34d0b25f0a40afa2046799b5858, type: 3}
   m_Name: MinimapData
   m_EditorClassIdentifier: 
-  cameraPos:
-  - position: {x: 0, y: 64, z: 2}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
-  - position: {x: 0, y: 64, z: 201}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
-  - position: {x: 0, y: 64, z: 405}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
-  - position: {x: 0, y: 64, z: 600}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
-  stageMaps:
-  - sourceImg: {fileID: 21300000, guid: fe95119013209364d928b3bdb0222773, type: 3}
-    position: {x: -2, y: -0.1, z: 2.1}
-    size: {x: 81, y: 70}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
-  - sourceImg: {fileID: 21300000, guid: af8be4787e3ec3b45bb6f2605f9d3d47, type: 3}
-    position: {x: -0.3, y: -0.1, z: 200.7}
-    size: {x: 42, y: 49.2}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
-  - sourceImg: {fileID: 21300000, guid: e0cd17e03cf80ce4883f57b6371841a2, type: 3}
-    position: {x: 4.7, y: -0.1, z: 405.3}
-    size: {x: 56.5, y: 63}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
-  - sourceImg: {fileID: 21300000, guid: f08a10eed10624345ad45568cea7562e, type: 3}
-    position: {x: -0.6, y: -0.1, z: 599.6}
-    size: {x: 47.2, y: 50.6}
-    rotation: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+  <CameraOptions>k__BackingField:
+  - <Position>k__BackingField: {x: 0, y: 64, z: 2}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+    <OrthographicSize>k__BackingField: 35
+  - <Position>k__BackingField: {x: 0, y: 64, z: 201}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+    <OrthographicSize>k__BackingField: 25.5
+  - <Position>k__BackingField: {x: 4.5, y: 64, z: 405}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+    <OrthographicSize>k__BackingField: 32
+  - <Position>k__BackingField: {x: 0, y: 64, z: 600}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+    <OrthographicSize>k__BackingField: 26
+  <StageMaps>k__BackingField:
+  - <SourceImg>k__BackingField: {fileID: 21300000, guid: fe95119013209364d928b3bdb0222773, type: 3}
+    <Position>k__BackingField: {x: -2, y: -0.1, z: 2.1}
+    <Size>k__BackingField: {x: 81, y: 70}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+  - <SourceImg>k__BackingField: {fileID: 21300000, guid: af8be4787e3ec3b45bb6f2605f9d3d47, type: 3}
+    <Position>k__BackingField: {x: -0.4, y: -0.1, z: 200.8}
+    <Size>k__BackingField: {x: 42, y: 49.4}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+  - <SourceImg>k__BackingField: {fileID: 21300000, guid: e0cd17e03cf80ce4883f57b6371841a2, type: 3}
+    <Position>k__BackingField: {x: 4.5, y: -0.1, z: 405.4}
+    <Size>k__BackingField: {x: 56.2, y: 63}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
+  - <SourceImg>k__BackingField: {fileID: 21300000, guid: f08a10eed10624345ad45568cea7562e, type: 3}
+    <Position>k__BackingField: {x: -0.7, y: -0.1, z: 599.5}
+    <Size>k__BackingField: {x: 47.4, y: 50.6}
+    <Rotation>k__BackingField: {x: -0.00000003090862, y: 0.70710677, z: -0.70710677, w: -0.00000003090862}
