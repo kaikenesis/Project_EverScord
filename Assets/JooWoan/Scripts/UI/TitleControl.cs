@@ -91,6 +91,8 @@ namespace EverScord
             login.ToggleLobbyCanvas();
             OnTransitionToLobby?.Invoke();
 
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_SWOOSH_1);
+
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
 
@@ -100,6 +102,9 @@ namespace EverScord
         public void LobbyToAlteration()
         {
             IsExaminingAlteration = true;
+
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_SWOOSH_1);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_ALTERATION_TRANSITION);
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
@@ -115,6 +120,8 @@ namespace EverScord
         public void AlterationToLobby()
         {
             IsExaminingAlteration = false;
+
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_SWOOSH_2);
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
             DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);

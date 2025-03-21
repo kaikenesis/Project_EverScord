@@ -50,6 +50,8 @@ namespace EverScord
 
         // Sound Names
         public const string SFX_BUTTON = "ButtonSound";
+        public const string SFX_BUTTON_2 = "Button_2";
+        public const string SFX_ALTERATION_TRANSITION = "AlterationTransition";
         public const string SFX_SHOOT = "Shoot";
         public const string SFX_VICTORY = "VictorySound";
         public const string SFX_US_HIT = "Us_Hit";
@@ -74,6 +76,8 @@ namespace EverScord
         public const string SFX_READY2THROW = "Grenade_Ready";
         public const string SFX_THROW_CANCEL = "Grenade_Cancel";
         public const string SFX_UI_POPUP_1 = "UI_Popup_1";
+        public const string SFX_SWOOSH_1 = "Swoosh_1";
+        public const string SFX_SWOOSH_2 = "Swoosh_2";
         public const string BGM_DEFEAT = "DefeatBGM";
         public const string BGM_TITLE = "TitleBGM";
         public const string BGM_LOBBY = "LobbyBGM";
