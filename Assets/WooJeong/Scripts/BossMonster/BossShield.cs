@@ -51,7 +51,7 @@ public class BossShield : MonoBehaviour, IEnemy
 
     public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
     {
-        throw new NotImplementedException();
+        return;
     }
 
     public NavMeshAgent GetNavMeshAgent()
