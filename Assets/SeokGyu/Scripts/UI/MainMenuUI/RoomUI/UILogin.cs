@@ -54,6 +54,8 @@ namespace EverScord
 
                 DOTween.Rewind(ConstStrings.TWEEN_LOGIN_IN);
                 DOTween.Play(ConstStrings.TWEEN_LOGIN_IN);
+
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_UI_POPUP_1);
             }
             else
             {

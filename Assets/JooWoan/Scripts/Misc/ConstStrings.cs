@@ -73,6 +73,7 @@ namespace EverScord
         public const string SFX_DEFAULT_MARKER = "Grenade_Marker";
         public const string SFX_READY2THROW = "Grenade_Ready";
         public const string SFX_THROW_CANCEL = "Grenade_Cancel";
+        public const string SFX_UI_POPUP_1 = "UI_Popup_1";
         public const string BGM_DEFEAT = "DefeatBGM";
         public const string BGM_TITLE = "TitleBGM";
         public const string BGM_LOBBY = "LobbyBGM";
