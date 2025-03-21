@@ -22,6 +22,7 @@ namespace EverScord
         void Awake()
         {
             GameManager.Instance.InitControl(this);
+            IsExaminingAlteration = false;
             
             if (!GameManager.IsFirstGameLoad)
             {
@@ -30,8 +31,6 @@ namespace EverScord
                 LevelControl.OnLoadComplete += ShowLobby;
                 return;
             }
-
-            IsExaminingAlteration = false;
 
             titleArea.SetActive(true);
             lobbyArea.SetActive(false);
