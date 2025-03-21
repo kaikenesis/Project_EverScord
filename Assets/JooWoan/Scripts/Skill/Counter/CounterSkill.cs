@@ -15,5 +15,6 @@ namespace EverScord.Skill
         [field: SerializeField] public GameObject LaserPrefab       { get; private set; }
         [field: SerializeField] public AssetReference BuffSfx       { get; private set; }
         [field: SerializeField] public AssetReference LaserStartSfx { get; private set; }
+        [field: SerializeField] public AssetReference LaserStartSfx2{ get; private set; }
     }
 }

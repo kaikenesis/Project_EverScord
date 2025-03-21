@@ -118,7 +118,9 @@ namespace EverScord.Skill
 
             laserAudio.Play();
             electricAudio.Play();
+
             SoundManager.Instance.PlaySound(skill.LaserStartSfx.AssetGUID);
+            SoundManager.Instance.PlaySound(skill.LaserStartSfx2.AssetGUID);
 
             laserControl = Instantiate(skill.LaserPrefab, CharacterSkill.SkillRoot).GetComponent<Hovl_Laser>();
         }
@@ -184,6 +186,7 @@ namespace EverScord.Skill
 
             laserAudio.Stop();
             SoundManager.Instance.StopSound(skill.LaserStartSfx.AssetGUID);
+            SoundManager.Instance.StopSound(skill.LaserStartSfx2.AssetGUID);
 
             Destroy(laserControl.gameObject, 0.1f);
 
