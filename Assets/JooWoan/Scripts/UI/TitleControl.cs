@@ -21,6 +21,8 @@ namespace EverScord
 
         void Awake()
         {
+            GameManager.Instance.InitControl(this);
+            
             if (!GameManager.IsFirstGameLoad)
             {
                 hasPressedAnything = true;
@@ -29,7 +31,6 @@ namespace EverScord
                 return;
             }
 
-            GameManager.Instance.InitControl(this);
             IsExaminingAlteration = false;
 
             titleArea.SetActive(true);
