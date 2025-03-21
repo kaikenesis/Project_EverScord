@@ -27,6 +27,11 @@ namespace EverScord
             UIPopUpWindow.OnAcceptUnlock -= HandleAcceptUnlock;
         }
 
+        private void Update()
+        {
+            OnKeyInput();
+        }
+
         private void HandleDisplayOptionList(int curTypeNum)
         {
             bActiveFactorOptionList = true;

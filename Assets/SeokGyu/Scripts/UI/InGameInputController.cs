@@ -7,6 +7,11 @@ namespace EverScord
         [SerializeField] private ToggleObject popupSetting;
         private bool bActivePopupSetting;
 
+        private void Update()
+        {
+            OnKeyInput();
+        }
+
         protected override void OnKeyInput()
         {
             base.OnKeyInput();

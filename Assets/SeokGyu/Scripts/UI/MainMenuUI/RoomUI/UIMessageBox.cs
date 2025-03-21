@@ -14,6 +14,7 @@ namespace EverScord
             PhotonRoomController.OnCannotGameStart += HandleCannotGameStart;
 
             view.yesButton.onClick.AddListener(Deactive);
+            OnDeactivateObjects();
         }
 
         private void OnDestroy()
