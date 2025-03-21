@@ -14,12 +14,12 @@ namespace EverScord.Skill
 
         void Update()
         {
+            transform.Rotate(10, 0, 0);
             if (timer == null || timer.IsCooldown)
                 return;
 
             Impact();
             Destroy(gameObject);
-            transform.Rotate(100, 0, 0);
         }
 
         protected void OnCollisionEnter(Collision collision)
