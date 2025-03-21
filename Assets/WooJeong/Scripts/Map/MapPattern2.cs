@@ -75,6 +75,7 @@ public class MapPattern2 : MonoBehaviour
             effectDict.Add(start, start.GetComponent<VisualEffect>());
             attackDict.Add(start, start.GetComponent<MapPattern2_Attack>());
             attackDict[start].Attack();
+            SoundManager.Instance.PlaySound("SoundMap2_Attack");
 
             yield return new WaitForSeconds(attackTimeSpan);
 
@@ -90,6 +91,7 @@ public class MapPattern2 : MonoBehaviour
                 spawnList.Add(goReverse);
                 effectDict.Add(goReverse, goReverse.GetComponent<VisualEffect>());
                 attackDict.Add(goReverse, goReverse.GetComponent<MapPattern2_Attack>());
+                SoundManager.Instance.PlaySound("SoundMap2_Attack");
 
                 attackDict[go].Attack();
                 attackDict[goReverse].Attack();
@@ -98,6 +100,7 @@ public class MapPattern2 : MonoBehaviour
         }
         else
         {
+            SoundManager.Instance.PlaySound("SoundMap2_Attack");
             spawnList[0].transform.position = transform.position;
             effectDict[spawnList[0]].Play();
             attackDict[spawnList[0]].Attack();
@@ -109,6 +112,7 @@ public class MapPattern2 : MonoBehaviour
                 spawnList[i + 1].transform.position = transform.position - directions[randInt] * span * (i + 1) / 2;
                 effectDict[spawnList[i]].Play();
                 effectDict[spawnList[i + 1]].Play();
+                SoundManager.Instance.PlaySound("SoundMap2_Attack");
 
                 attackDict[spawnList[i]].Attack();
                 attackDict[spawnList[i+1]].Attack();
