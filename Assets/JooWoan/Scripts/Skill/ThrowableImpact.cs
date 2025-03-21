@@ -14,6 +14,7 @@ namespace EverScord.Skill
 
         void Update()
         {
+            transform.Rotate(10, 0, 0);
             if (timer == null || timer.IsCooldown)
                 return;
 

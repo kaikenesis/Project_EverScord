@@ -46,6 +46,11 @@ namespace EverScord
                 int length = factorData.OptionDatas.Length;
                 optionNum = new int[length];
                 value = new float[length];
+
+                for (int i = 0; i < length; i++)
+                {
+                    optionNum[i] = -1;
+                }
             }
 
             public class AlterationStatus

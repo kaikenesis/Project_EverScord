@@ -10,6 +10,7 @@ namespace EverScord
     {
         public bool IsExaminingAlteration { get; private set; }
         public static Action OnTransitionToLobby = delegate { };
+        public static Action<bool> OnLobbyToAlteration = delegate { };
 
         [SerializeField] private UILogin login;
         [SerializeField] private GameObject titleArea, lobbyArea, factorFlashFilter;
@@ -17,8 +18,12 @@ namespace EverScord
         [SerializeField] private float showPlayerPanelDelay;
         private bool hasPressedAnything = false;
 
+
         void Awake()
         {
+            GameManager.Instance.InitControl(this);
+            IsExaminingAlteration = false;
+            
             if (!GameManager.IsFirstGameLoad)
             {
                 hasPressedAnything = true;
@@ -26,9 +31,6 @@ namespace EverScord
                 LevelControl.OnLoadComplete += ShowLobby;
                 return;
             }
-
-            GameManager.Instance.InitControl(this);
-            IsExaminingAlteration = false;
 
             titleArea.SetActive(true);
             lobbyArea.SetActive(false);
@@ -105,6 +107,8 @@ namespace EverScord
             DOTween.Rewind(ConstStrings.TWEEN_LOBBY2ALTERATION);
             DOTween.Play(ConstStrings.TWEEN_LOBBY2ALTERATION);
 
+            OnLobbyToAlteration?.Invoke(false);
+
             // callback: Btn_Alteration - UIToggleButton.ToggleObject()
         }
 
@@ -119,6 +123,8 @@ namespace EverScord
             DOTween.Play(ConstStrings.TWEEN_ALTERATION2LOBBY);
 
             TweenPlayerPanel();
+
+            OnLobbyToAlteration?.Invoke(true);
 
             // callback: AlterationPanel - ReturnButton - UIToggleButton.ToggleObject()
         }

@@ -13,7 +13,7 @@ public abstract class NDeathState : MonoBehaviour, IState
         Setup();
     }
 
-    public void Enter()
+    public virtual void Enter()
     {
         monsterController.PlayAnimation("Dying");
         if (monsterController.BoxCollider1 != null)

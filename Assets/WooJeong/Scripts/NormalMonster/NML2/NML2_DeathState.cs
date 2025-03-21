@@ -8,4 +8,10 @@ public class NML2_DeathState : NDeathState
     {
         monsterController = GetComponent<NML2_Controller>();
     }
+
+    public override void Enter()
+    {
+        base.Enter();
+        monsterController.PlaySound("NML2_Die");
+    }
 }

@@ -18,6 +18,7 @@ public class BossDeath_Imp : ActionNodeImplement
             yield break;
         }
         bossRPC.PlayAnimation("Die");
+        bossRPC.PlaySound("BossDie");
         yield return new WaitForSeconds(bossRPC.clipDict["Die"]);
         isEnd = true;
         action = null;

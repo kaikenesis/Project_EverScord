@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c33802a3a5567e24e803b63006765a14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupSetting: {fileID: 0}
+  popupSetting: {fileID: 8679260927718649048}
 --- !u!1001 &624218618365784093
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -226,6 +226,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4858335443275705305, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.000015735626
+      objectReference: {fileID: 0}
     - target: {fileID: 5341766854080055854, guid: 00ba424990aaf574bb694a1cf2d73150, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -276,49 +280,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5064923224959894883}
     m_Modifications:
-    - target: {fileID: 410133582128794408, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: objectOptions.Array.data[0].canvas
-      value: 
-      objectReference: {fileID: 6275604926607235160}
     - target: {fileID: 839907284444379487, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_Name
       value: SystemPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 2099341694378751271, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 707299004391074695}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: SetActivePopupSetting
-      objectReference: {fileID: 0}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: EverScord.InGameInputController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3115374031970183524, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4571560351977567648, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_Pivot.x
@@ -400,34 +364,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 707299004391074695}
-    - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: SetActivePopupSetting
-      objectReference: {fileID: 0}
-    - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: EverScord.InGameInputController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 6038701691633029374, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 6292060689568525129, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -456,21 +392,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7811726771800543579, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7811726771800543579, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7811726771800543579, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7947658206460871809, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+      propertyPath: objectOptions.Array.data[0].canvas
+      value: 
+      objectReference: {fileID: 6275604926607235160}
+    m_RemovedComponents:
+    - {fileID: 6606816049748457347, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+    - {fileID: 8832717824870059254, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
     m_RemovedGameObjects:
-    - {fileID: 50142541994044172, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+    - {fileID: 6621792164918025466, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+    - {fileID: 1048270461652476319, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
@@ -479,6 +410,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4571560351977567648, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
   m_PrefabInstance: {fileID: 1601360431514478681}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8679260927718649048 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7947658206460871809, guid: 7a00b2574aed94a4a8cd563ba062d968, type: 3}
+  m_PrefabInstance: {fileID: 1601360431514478681}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fa31081bd163b4eb6484252b223970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7745035400342444555
 PrefabInstance:
   m_ObjectHideFlags: 0

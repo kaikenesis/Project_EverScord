@@ -118,7 +118,7 @@ namespace EverScord
 
             if (optionNums.Length > slotIndex)
             {
-                if(slotIndex < panelData.lastUnlockedNum)
+                if(slotIndex <= panelData.lastUnlockedNum)
                 {
                     bLock = false;
                     lockImg.enabled = bLock;

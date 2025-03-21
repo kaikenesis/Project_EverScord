@@ -25,6 +25,9 @@ namespace EverScord.UI
         [SerializeField] private List<Transform> positionList;
         [SerializeField] private DOTweenAnimation buttonTween, titleTween, blackTween;
         [SerializeField] private Button lobbyButton;
+
+        private int[] rewardMoneyList = { 30, 60, 90, 120 };
+
         private DepthOfField depthOfField;
         private bool isVictory;
 
@@ -83,6 +86,17 @@ namespace EverScord.UI
         {
             this.isVictory = isVictory;
             SyncPlayerResults();
+            EarnRewardMoney();
+        }
+
+        private void EarnRewardMoney()
+        {
+            int totalReward = 0;
+
+            for (int i = 0; i < GameManager.CurrentLevelIndex; i++)
+                totalReward += rewardMoneyList[i];
+
+            GameManager.Instance.UpdateMoney(totalReward);
         }
 
         private void SetupUI()

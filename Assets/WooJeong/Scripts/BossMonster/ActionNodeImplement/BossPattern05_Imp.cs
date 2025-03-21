@@ -27,6 +27,7 @@ public class BossPattern05_Imp : AttackNodeImplement
         bossRPC.PlayAnimation("RotatingShot", 0);
         yield return new WaitForSeconds(1.5f);
         bossRPC.LaserEnable(laserLifeTime);
+        bossRPC.PlaySound("BossLaserReady");
         bossRPC.PlaySound("BossPatternLaser");
         yield return new WaitForSeconds(laserLifeTime);
         bossRPC.StopSound("BossPatternLaser");
