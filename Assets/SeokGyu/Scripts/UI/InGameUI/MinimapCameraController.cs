@@ -30,8 +30,9 @@ namespace EverScord
             if (bCoverScreen == false)
                 return;
 
-            MinimapData.CameraTransform cameraData = GameManager.Instance.MinimapData.CameraPos[curStageNum];
+            MinimapData.CameraTransform cameraData = GameManager.Instance.MinimapData.CameraOptions[curStageNum];
             cameraObj.transform.SetLocalPositionAndRotation(cameraData.Position, cameraData.Rotation);
+            cameraObj.GetComponent<Camera>().orthographicSize = GameManager.Instance.MinimapData.CameraOptions[curStageNum].OrthographicSize;
 
             MinimapData.StageMap stageMapData = GameManager.Instance.MinimapData.StageMaps[curStageNum];
             backgroundObj.GetComponent<Image>().sprite = stageMapData.SourceImg;
@@ -42,8 +43,9 @@ namespace EverScord
         private void Init()
         {
             cameraObj = Instantiate(minimapCamera, CharacterCamera.Root);
-            MinimapData.CameraTransform cameraData = GameManager.Instance.MinimapData.CameraPos[0];
+            MinimapData.CameraTransform cameraData = GameManager.Instance.MinimapData.CameraOptions[0];
             cameraObj.transform.SetLocalPositionAndRotation(cameraData.Position, cameraData.Rotation);
+            cameraObj.GetComponent<Camera>().orthographicSize = GameManager.Instance.MinimapData.CameraOptions[0].OrthographicSize;
 
             backgroundObj = Instantiate(minimapBackgroundUI);
             MinimapData.StageMap stageMapData = GameManager.Instance.MinimapData.StageMaps[0];

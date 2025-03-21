@@ -108,11 +108,11 @@ namespace EverScord
                 string message = "";
                 if (isDead)
                 {
-                    message = $"[시스템] : <color=blue>{photonView.Owner.NickName}</color>님이 사망했습니다.";
+                    message = $"[시스템] <color=#03DEF9>{photonView.Owner.NickName}</color>님이 사망했습니다.";
                 }
                 else
                 {
-                    message = $"[시스템] : <color=blue>{photonView.Owner.NickName}</color>님이 부활했습니다.";
+                    message = $"[시스템] <color=#03DEF9>{photonView.Owner.NickName}</color>님이 부활했습니다.";
                 }
                 pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
             }
@@ -122,7 +122,7 @@ namespace EverScord
         {
             if (pv.IsMine)
             {
-                string message = "[시스템] : 다음 스테이지로 이동합니다.";
+                string message = "[시스템] 다음 스테이지로 이동합니다.";
                 pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
             }
         }
@@ -131,7 +131,7 @@ namespace EverScord
         {
             if(pv.IsMine)
             {
-                string message = "[시스템] : <color=red>감염된 아트레온</color>이 등장했습니다.";
+                string message = "[시스템] <color=red>감염된 아트레온</color>이 등장했습니다.";
                 pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
             }
         }
@@ -140,7 +140,7 @@ namespace EverScord
         {
             if (pv.IsMine)
             {
-                string message = "[시스템] : <color=red>감염된 아트레온</color>을 처치했습니다.";
+                string message = "[시스템] <color=red>감염된 아트레온</color>을 처치했습니다.";
                 pv.RPC(nameof(SendSystemMsg), RpcTarget.All, message);
             }
         }

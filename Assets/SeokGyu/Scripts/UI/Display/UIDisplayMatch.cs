@@ -11,7 +11,6 @@ namespace EverScord
     {
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private Button cancleButton;
-        private RectTransform rectTransform;
         private int seconds = 0;
         private int minutes = 0;
         private bool bPlayTimer = false;

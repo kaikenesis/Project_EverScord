@@ -25,6 +25,7 @@ namespace EverScord
         public static Action OnCheckGame = delegate { };
         public static Action<string> OnSendExile = delegate { };
         public static Action OnUpdateDifficulty = delegate { };
+        public static Action OnCannotGameStart = delegate { };
 
         private void Awake()
         {
@@ -41,6 +42,7 @@ namespace EverScord
             UIPartyOption.OnClickedExit += HandleClickedExit;
             UIChangeName.OnChangeName += HandleChangeName;
             TitleControl.OnTransitionToLobby += HandleTransitionToLobby;
+            TitleControl.OnLobbyToAlteration += HandleCheckReady;
 
             inviteRoomName = "";
             pv = GetComponent<PhotonView>();
@@ -61,6 +63,7 @@ namespace EverScord
             UIPartyOption.OnClickedExit -= HandleClickedExit;
             UIChangeName.OnChangeName -= HandleChangeName;
             TitleControl.OnTransitionToLobby -= HandleTransitionToLobby;
+            TitleControl.OnLobbyToAlteration -= HandleCheckReady;
         }
 
         #region Handle Methods
@@ -155,11 +158,10 @@ namespace EverScord
                         if (IsCanStart())
                         {
                             OnMatchMultiPlay?.Invoke();
-                            Debug.Log("You Can Start Game");
                         }
                         else
                         {
-                            Debug.Log("Cannot Start Game");
+                            OnCannotGameStart?.Invoke();
                         }
                     }
                     break;
@@ -168,11 +170,10 @@ namespace EverScord
                         if (IsCanStart())
                         {
                             OnMatchMultiPlay?.Invoke();
-                            Debug.Log("You Can Start Game");
                         }
                         else
                         {
-                            Debug.Log("Cannot Start Game");
+                            OnCannotGameStart?.Invoke();
                         }
                     }
                     break;
@@ -203,6 +204,12 @@ namespace EverScord
         {
             if(GameManager.Instance.PhotonData.state == PhotonData.EState.NONE)
                 DisplayRoomPlayers();
+        }
+
+        private void HandleCheckReady(bool bReady)
+        {
+            GameManager.Instance.PlayerData.bReady = bReady;
+            SetPlayerRole();
         }
         #endregion // Handle Methods
 
