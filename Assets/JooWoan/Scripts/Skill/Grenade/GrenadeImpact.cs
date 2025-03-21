@@ -24,6 +24,7 @@ namespace EverScord.Skill
             );
 
             explosionEffect.Play();
+            SoundManager.Instance.PlaySound(grenadeSkill.GrenadeExplodeSfx.AssetGUID);
 
             grenadeSkillAction.SetGrenadeImpactPosition(transform.position);
             onSkillActivated.Invoke();

@@ -154,6 +154,7 @@ namespace EverScord.Skill
 
             CancelInvoke(nameof(ExitHowlAnimation));
             animControl.Play(animInfo.Jump.name);
+            SoundManager.Instance.PlaySound(Skill.JumpSfx.AssetGUID);
             yield return new WaitForSeconds(animInfo.Jump.length);
 
             activator.SetPosition(landingPosition);
@@ -163,7 +164,7 @@ namespace EverScord.Skill
 
             GameObject landingEffect = Instantiate(landingEffectPrefab, CharacterSkill.SkillRoot);
             landingEffect.transform.position = landingPosition;
-
+            SoundManager.Instance.PlaySound(Skill.LandSfx.AssetGUID);
             animControl.Play(animInfo.Land);
             yield return new WaitForSeconds(animInfo.Land.length);
 

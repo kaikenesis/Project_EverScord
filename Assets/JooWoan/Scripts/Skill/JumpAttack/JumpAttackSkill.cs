@@ -17,5 +17,7 @@ namespace EverScord.Skill
         [field: SerializeField] public AssetReferenceGameObject SlashEffect     { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject HealEffect      { get; private set; }
         [field: SerializeField] public AssetReferenceGameObject Marker          { get; private set; }
+        [field: SerializeField] public AssetReference JumpSfx                   { get; private set; }
+        [field: SerializeField] public AssetReference LandSfx                   { get; private set; }
     }
 }

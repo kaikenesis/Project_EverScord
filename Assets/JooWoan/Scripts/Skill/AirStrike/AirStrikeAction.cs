@@ -34,9 +34,9 @@ namespace EverScord.Skill
             aircraft2 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
             aircraft3 = Instantiate(Skill.AircraftPrefab, CharacterSkill.SkillRoot).GetComponent<AircraftControl>();
 
-            aircraft1.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed);
-            aircraft2.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_2_SPEED, AIRCRAFT_2_DELAY);
-            aircraft3.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_3_SPEED, AIRCRAFT_3_DELAY);
+            aircraft1.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed, Skill.Jet1Sfx.AssetGUID);
+            aircraft2.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_2_SPEED, Skill.Jet2Sfx.AssetGUID, AIRCRAFT_2_DELAY);
+            aircraft3.Init(Skill.AirCraftTravelDistance, Skill.AirCraftSpeed * AIRCRAFT_3_SPEED, Skill.Jet3Sfx.AssetGUID, AIRCRAFT_3_DELAY);
 
             if (ejob == PlayerData.EJob.Dealer)
             {
@@ -50,6 +50,11 @@ namespace EverScord.Skill
                 healCircle = ResourceManager.Instance.GetAsset<GameObject>(Skill.HealZoneEffectReference.AssetGUID);
                 _ = ResourceManager.Instance.CreatePool(Skill.HealExplosionReference.AssetGUID, 5);
             }
+        }
+
+        protected override void PlayThrowSound()
+        {
+            SoundManager.Instance.PlaySound(Skill.ThrowSfx.AssetGUID);
         }
 
         public override void OffensiveAction()
@@ -78,22 +83,29 @@ namespace EverScord.Skill
             aircraft2.EnableAircraft(leftAircraftPos, direction);
             aircraft3.EnableAircraft(rightAircraftPos, direction);
 
+            SoundManager.Instance.PlaySound(Skill.BombingSfx.AssetGUID);
+            SoundManager.Instance.PlaySound(Skill.ImpactSfx.AssetGUID);
+
             for (int i = 0; i < Skill.BombCount; i++, distanceSum += dropDistance)
             {
                 Vector3 dropPosition = strikeStartPos + direction * distanceSum;
-
-                PoolableVfx explosion = ResourceManager.Instance.GetFromPool(Skill.ExplosionEffectReference.AssetGUID) as PoolableVfx;
+                PoolableVfx explosion = null;
 
                 if (ejob == PlayerData.EJob.Dealer)
                 {
+                    explosion = ResourceManager.Instance.GetFromPool(Skill.ExplosionEffectReference.AssetGUID) as PoolableVfx;
+
                     var effect = Instantiate(bomb, CharacterSkill.SkillRoot);
                     effect.transform.position = dropPosition;
                 }
                 else
                     explosion = ResourceManager.Instance.GetFromPool(Skill.HealExplosionReference.AssetGUID) as PoolableVfx;
 
-                explosion.transform.position = dropPosition;
-                explosion.Play(0.3f);
+                if (explosion)
+                {
+                    explosion.transform.position = dropPosition;
+                    explosion.Play(0.3f);
+                }
 
                 if (photonView.IsMine)
                     StartCoroutine(ProceedCollisionCheck(dropPosition));
@@ -143,13 +155,16 @@ namespace EverScord.Skill
                     dropPosition.z
                 );
 
+                SoundManager.Instance.PlaySound(Skill.FlameSfx.AssetGUID);
                 flames.SetDuration(Skill.ZoneDuration + 2);
                 flames.Play();
             }
             else
             {
+                SoundManager.Instance.PlaySound(Skill.HealSfx.AssetGUID);
                 healEffect = Instantiate(healCircle, CharacterSkill.SkillRoot);
                 healEffect.transform.position = dropPosition;
+
             }
 
             if (photonView.IsMine)
@@ -182,7 +197,10 @@ namespace EverScord.Skill
 
             if (flames)
                 flames.Stop();
-            
+
+            SoundManager.Instance.StopSound(Skill.FlameSfx.AssetGUID);
+            SoundManager.Instance.StopSound(Skill.HealSfx.AssetGUID);
+
             EffectControl.SetEffectParticles(healEffect, false);
         }
 

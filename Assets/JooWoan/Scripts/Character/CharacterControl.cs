@@ -698,6 +698,9 @@ namespace EverScord.Character
             OnCheckAlive?.Invoke(photonView.ViewID, IsDead, transform.position);
             UIMarker.ToggleDeathIcon();
 
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_1);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_2);
+
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
             EnableReviveCircle(true);
@@ -716,7 +719,8 @@ namespace EverScord.Character
 
             yield return new WaitForEndOfFrame();
 
-            SoundManager.Instance.PlaySound(ConstStrings.SFX_PLAYER_REVIVE, 1, true);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_PLAYER_REVIVE);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_UNI_SKILL);
 
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.INVINCIBLE);
@@ -778,6 +782,8 @@ namespace EverScord.Character
                 healEffect.gameObject.SetActive(true);
             
             healEffect.Emit(1);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_HEAL_1, 1, true);
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_HEAL_2, 1, true);
         }
 
         public void Teleport(Vector3 position)

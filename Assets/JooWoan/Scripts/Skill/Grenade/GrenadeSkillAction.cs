@@ -23,6 +23,16 @@ namespace EverScord.Skill
             SkillMarker.SetMarkerColor(stampMarker, Skill.StampMarkerColor);
         }
 
+        protected override void PlayMarkerSound()
+        {
+            SoundManager.Instance.PlaySound(Skill.MarkerSfx.AssetGUID);
+        }
+
+        protected override void PlayThrowSound()
+        {
+            SoundManager.Instance.PlaySound(Skill.ThrowSfx.AssetGUID);
+            SoundManager.Instance.PlaySound(Skill.ThrowSfx2.AssetGUID);
+        }
         public override void OffensiveAction()
         {
             if (!photonView.IsMine)
