@@ -20,7 +20,6 @@ public abstract class NDeathState : MonoBehaviour, IState
             monsterController.BoxCollider1.enabled = false;
         if (monsterController.BoxCollider2 != null)
             monsterController.BoxCollider2.enabled = false;
-        monsterController.SetActiveHitbox(false);
         StartCoroutine(Death());
     }
 
