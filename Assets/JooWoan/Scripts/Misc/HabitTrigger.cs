@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using System.Collections.Generic;
 
 namespace EverScord
 {
@@ -7,6 +9,7 @@ namespace EverScord
         [SerializeField] protected Animator anim;
         [SerializeField] protected AnimationClip idleClip;
         [SerializeField] protected GameObject weapon;
+        [SerializeField] protected List<AssetReference> sounds;
         [Range(0f, 100f), SerializeField] protected float triggerChance;
 
         private void OnEnable()
@@ -45,6 +48,14 @@ namespace EverScord
         {
             if (weapon)
                 weapon.SetActive(false);
+        }
+
+        private void PlaySound(int index)
+        {
+            if (index >= sounds.Count)
+                return;
+
+            SoundManager.Instance.PlaySound(sounds[index].AssetGUID);
         }
     }
 }

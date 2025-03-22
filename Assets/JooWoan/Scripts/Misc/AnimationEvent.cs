@@ -1,10 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace EverScord
 {
     public class AnimationEvent : MonoBehaviour
     {
         [SerializeField] private Animator anim;
+        [SerializeField] private List<AssetReference> sounds;
 
         private Animator currentAnim;
 
@@ -33,6 +36,14 @@ namespace EverScord
                 currentAnim.enabled = false;
             else if (state == 1)
                 currentAnim.enabled = true;
+        }
+
+        private void PlaySound(int index)
+        {
+            if (index >= sounds.Count)
+                return;
+
+            SoundManager.Instance.PlaySound(sounds[index].AssetGUID);
         }
     }
 }
