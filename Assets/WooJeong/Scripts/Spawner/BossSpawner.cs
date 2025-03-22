@@ -52,6 +52,7 @@ public class BossSpawner : MonoBehaviour
         {
             photonView.RPC(nameof(SyncSpawn), RpcTarget.Others, view.ViewID);
         }
+        gameObject.SetActive(false);
     }
 
     [PunRPC]
@@ -66,5 +67,6 @@ public class BossSpawner : MonoBehaviour
 
         PhotonView view = mo.GetComponent<PhotonView>();
         view.ViewID = viewID;
+        gameObject.SetActive(false);
     }
 }
