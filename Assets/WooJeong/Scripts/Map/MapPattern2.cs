@@ -130,7 +130,7 @@ public class MapPattern2 : MonoBehaviour
 
     protected void ProgressCheck(float currentProgress)
     {
-        if (currentProgress == 1 && GameManager.Instance.LevelController.MaxLevelIndex != GameManager.CurrentLevelIndex)
+        if (currentProgress >= 1f && GameManager.Instance.LevelController.MaxLevelIndex != GameManager.CurrentLevelIndex)
         {
             // 현재 진행도 체크하고 다 됐으면 죽임
             StopCoroutine(nameof(Spawn));

@@ -9,8 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.Universal;
-using static UnityEngine.Rendering.DebugUI;
 
 public enum MonsterType
 {
@@ -157,7 +155,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     protected void ProgressCheck(float currentProgress)
     {
-        if (currentProgress == 1)
+        if (currentProgress >= 1.0f)
         {
             // 현재 진행도 체크하고 다 됐으면 죽임
             isDead = true;

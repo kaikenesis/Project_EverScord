@@ -42,7 +42,7 @@ public class MonsterSpawner : MonoBehaviour
 
     protected void ProgressCheck(float currentProgress)
     {
-        if (currentProgress == 1)
+        if (currentProgress >= 1f)
         {
             SyncSpawnMarker(false);
             gameObject.SetActive(false);

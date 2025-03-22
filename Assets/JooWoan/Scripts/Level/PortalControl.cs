@@ -128,7 +128,7 @@ namespace EverScord
 
         public void TryOpenPortal(float currentProgress)
         {
-            if (currentProgress < 1)
+            if (currentProgress < 1f)
                 return;
 
             if (countdownCoroutine != null)

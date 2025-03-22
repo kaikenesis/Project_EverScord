@@ -29,7 +29,7 @@ public class BossSpawner : MonoBehaviour
 
     private void ProgressCheck(float currentProgress)
     {
-        if(currentProgress == 1)
+        if(currentProgress >= 1f)
         {
             Spawn();
         }
