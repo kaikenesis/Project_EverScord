@@ -22,11 +22,6 @@ public class BossSpawner : MonoBehaviour
         LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
-    private void OnDestroy()
-    {
-        LevelControl.OnProgressUpdated -= ProgressCheck;
-    }
-
     private void ProgressCheck(float currentProgress)
     {
         if(currentProgress == 1)
@@ -52,6 +47,8 @@ public class BossSpawner : MonoBehaviour
         {
             photonView.RPC(nameof(SyncSpawn), RpcTarget.Others, view.ViewID);
         }
+
+        LevelControl.OnProgressUpdated -= ProgressCheck;
         gameObject.SetActive(false);
     }
 
@@ -67,6 +64,8 @@ public class BossSpawner : MonoBehaviour
 
         PhotonView view = mo.GetComponent<PhotonView>();
         view.ViewID = viewID;
+
+        LevelControl.OnProgressUpdated -= ProgressCheck;
         gameObject.SetActive(false);
     }
 }
