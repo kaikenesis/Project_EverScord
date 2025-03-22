@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class BossPattern15_Imp : AttackNodeImplement
 {
-    private Vector3 center;
     private bool isUsed = false;
 
     protected override void Awake()
     {
         base.Awake();
-        center = GameObject.Find("BossSpawner").transform.position;
     }
 
     public override NodeState Evaluate()
@@ -42,7 +40,7 @@ public class BossPattern15_Imp : AttackNodeImplement
         bossRPC.PlayAnimation("TakeOff");
         bossRPC.PlayJumpEffect();
         yield return new WaitForSeconds(bossRPC.clipDict["TakeOff"]);
-        transform.position = center;
+        transform.position = bossRPC.SpawnPos;
         bossRPC.PlayAnimation("Landing");
         yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 4);
         bossRPC.PlayJumpEffect();
