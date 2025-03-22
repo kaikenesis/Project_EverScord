@@ -244,6 +244,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             HP = 0;
             isDead = true;
             attacker.IncreaseKillCount();
+            SetActiveHitbox(false);
             GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
         }
 
