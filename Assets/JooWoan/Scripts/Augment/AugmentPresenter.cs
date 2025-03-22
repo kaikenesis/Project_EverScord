@@ -41,6 +41,7 @@ namespace EverScord.Augment
         private List<string> shoesAugmentTags = new();
         private AugmentData augmentData = new();
         private CharacterControl player;
+        private PhotonView photonView;
 
         private string selectedHelmetTag = "";
         private string selectedVestTag = "";
@@ -56,13 +57,15 @@ namespace EverScord.Augment
 
         void Awake()
         {
+            GameManager.Instance.InitControl(this);
+
             augmentData.Init();
             uiHub.SetActive(false);
 
             enhanceIndex = 0;
             enhanceCount = 0;
 
-            GameManager.Instance.InitControl(this);
+            photonView = GetComponent<PhotonView>();
         }
 
         void Start()
@@ -189,15 +192,17 @@ namespace EverScord.Augment
             if (PhotonNetwork.IsConnected)
             {
                 player.CharacterPhotonView.RPC(nameof(player.SyncState), RpcTarget.Others, player.State);
-                player.CharacterPhotonView.RPC(nameof(player.SyncOnAugmentSelect), RpcTarget.MasterClient);
+                photonView.RPC(nameof(IncreaseSelectedPeople), RpcTarget.MasterClient);
             }
         }
 
-        public static void IncreaseSelectedPeople()
+        [PunRPC]
+        public void IncreaseSelectedPeople()
         {
             ++selectedPeople;
+            Debug.Log($"=============== AUGMENT SELECTED PEOPLE: {selectedPeople}/{PhotonNetwork.CurrentRoom.PlayerCount}");
 
-            if (selectedPeople != PhotonNetwork.CurrentRoom.PlayerCount)
+            if (selectedPeople < PhotonNetwork.CurrentRoom.PlayerCount)
                 return;
 
             selectedPeople = 0;

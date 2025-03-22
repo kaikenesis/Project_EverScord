@@ -1026,12 +1026,6 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        public void SyncOnAugmentSelect()
-        {
-            AugmentPresenter.IncreaseSelectedPeople();
-        }
-
-        [PunRPC]
         private void SyncHitEffects(bool isIncreasing, bool isInvincible)
         {
             if (isIncreasing)
