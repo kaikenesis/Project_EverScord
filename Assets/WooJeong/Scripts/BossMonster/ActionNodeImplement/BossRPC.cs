@@ -36,6 +36,8 @@ public class BossRPC : MonoBehaviour, IEnemy
 
     private GameObject worldCanvas;
 
+    public Vector3 SpawnPos { get; private set; }
+
     //cur stat
 
     public float HP { get; private set; }
@@ -95,6 +97,11 @@ public class BossRPC : MonoBehaviour, IEnemy
             HP -= 10000;
             Debug.Log($"CurHP = {HP}, {HP / MaxHP * 0.01f}");
         }
+    }
+
+    public void SetSpawnPos(Vector3 pos)
+    {
+        SpawnPos = pos;
     }
 
     public void SetDebuff(CharacterControl attacker, EBossDebuff debuffState, float time, float value)
@@ -346,6 +353,11 @@ public class BossRPC : MonoBehaviour, IEnemy
         safeZone.transform.localScale = new Vector3(size, 1, size);
     }
 
+    public Vector3 GetSafePos()
+    {
+        return safeZone.transform.position;
+    }
+
     public void MoveP6_SafeZone(float duration, Vector3 endPoint)
     {
         Vector3 startPoint = transform.position + transform.forward * 4;
@@ -401,7 +413,7 @@ public class BossRPC : MonoBehaviour, IEnemy
             }
         }
 
-        Debug.Log(decrease + " ������, ���� ü�� : " + HP);
+        Debug.Log(decrease + " damage, remain : " + HP);
     }
 
     public void PhaseUp()

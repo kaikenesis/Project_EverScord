@@ -24,6 +24,21 @@ public class BossPattern05_Imp : AttackNodeImplement
     protected override IEnumerator Act()
     {
         Debug.Log("Attack5 start");
+
+        bossRPC.PlayAnimation("TakeOff");
+        bossRPC.PlayJumpEffect();
+        yield return new WaitForSeconds(bossRPC.clipDict["TakeOff"]);
+        transform.position = bossRPC.SpawnPos;
+        int randInt = Random.Range(0, 4);
+        transform.rotation = Quaternion.identity;
+        transform.Rotate(0, 90 * randInt, 0);
+        Debug.Log($"{randInt} : {90 * randInt}");
+        bossRPC.PlayAnimation("Landing");        
+        yield return new WaitForSeconds(bossRPC.clipDict["Landing"] * 0.25f);
+        bossRPC.PlayJumpEffect();
+        yield return new WaitForSeconds(bossRPC.clipDict["Landing"] * 0.75f);
+
+
         bossRPC.PlayAnimation("RotatingShot", 0);
         yield return new WaitForSeconds(1.5f);
         bossRPC.LaserEnable(laserLifeTime);

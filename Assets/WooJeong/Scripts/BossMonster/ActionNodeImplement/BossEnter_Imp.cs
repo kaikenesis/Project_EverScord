@@ -26,8 +26,9 @@ public class BossEnter_Imp : ActionNodeImplement
     protected override IEnumerator Act()
     {
         Debug.Log("Enter start");
-        bossRPC.PlaySound("BossSpawn");
         bossRPC.PlayAnimation("Landing", 0);
+        bossRPC.PlaySound("BossSpawn");
+        bossRPC.SetSpawnPos(transform.position);
         yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 4);
         bossRPC.PlayJumpEffect();
         yield return new WaitForSeconds(bossRPC.clipDict["Landing"] / 4 * 3);

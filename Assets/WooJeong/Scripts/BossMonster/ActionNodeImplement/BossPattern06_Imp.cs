@@ -11,7 +11,7 @@ public class BossPattern06_Imp : AttackNodeImplement
     protected float safeRange = 7.5f;
     protected float safeScale = 0.7f;
     private float curTime = 0;
-    private float attackSpan = 1f;
+    private float attackSpan = 0.5f;
     private Vector3 safePos = Vector3.zero;
     private float safeStartDistance = 4;
     private float randomRange = 10;
@@ -77,14 +77,14 @@ public class BossPattern06_Imp : AttackNodeImplement
                 if(hitPlayers.ContainsKey(player))
                     hitPlayers[player] -= Time.deltaTime;
 
-                float distanceToSafe = Vector3.Distance(player.PlayerTransform.position, safePos);
+                float distanceToSafe = Vector3.Distance(player.PlayerTransform.position, bossRPC.GetSafePos());
 
                 if (distanceToSafe > safeRange/2)
                 {
                     if (hitPlayers.ContainsKey(player) == false || hitPlayers[player] <= 0)
                     {
                         hitPlayers[player] = attackSpan;
-                        player.DecreaseHP(damage, true);
+                        player.DecreaseHP(damage * 0.5f, true);
                     }
                 }
             }
