@@ -235,9 +235,13 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float damage, CharacterControl attacker)
     {
+        if (isDead == true)
+            return;
+
         this.HP -= damage;
         if (this.HP <= 0)
         {
+            HP = 0;
             isDead = true;
             attacker.IncreaseKillCount();
             GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
@@ -252,9 +256,13 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncMonsterHP(float damage)
     {
+        if (isDead == true)
+            return;
+
         this.HP -= damage;
         if (this.HP <= 0)
         {
+            HP = 0;
             isDead = true;
             GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
         }
