@@ -128,10 +128,11 @@ namespace EverScord.UI
             
             isEnabled = isLowHealth;
 
-            if (bloodCoroutine != null)
+            if (gameObject.activeSelf && bloodCoroutine != null)
                 StopCoroutine(bloodCoroutine);
             
-            bloodCoroutine = StartCoroutine(AnimateBloodyScreen());
+            if (gameObject.activeSelf)
+                bloodCoroutine = StartCoroutine(AnimateBloodyScreen());
         }
 
         private IEnumerator AnimateBloodyScreen()
