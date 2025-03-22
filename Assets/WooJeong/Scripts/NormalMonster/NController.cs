@@ -127,6 +127,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     private void OnDestroy()
     {
+        StopAllCoroutines();
         LevelControl.OnProgressUpdated -= ProgressCheck;
     }
 
@@ -392,7 +393,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public IEnumerator GameEnd()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(10f);
         Death();
     }
 
