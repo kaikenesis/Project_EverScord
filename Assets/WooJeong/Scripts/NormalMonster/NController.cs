@@ -143,11 +143,6 @@ public abstract class NController : MonoBehaviour, IEnemy
         monsterHealthBar.InitHealthBar(monsterData.HP);        
     }
 
-    private void OnDisable()
-    {
-        uiMarker.SetActivate(false);
-    }
-
     private void Update()
     {
         uiMarker.UpdatePosition(transform.position);
@@ -243,6 +238,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             isDead = true;
             attacker.IncreaseKillCount();
             SetActiveHitbox(false);
+            uiMarker.SetActivate(false);
             GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
         }
 
@@ -263,6 +259,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         {
             HP = 0;
             isDead = true;
+            uiMarker.SetActivate(false);
             GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
         }
 

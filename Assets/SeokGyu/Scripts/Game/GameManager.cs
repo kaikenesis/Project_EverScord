@@ -237,6 +237,7 @@ namespace EverScord
         public void SyncLoadGameLevel()
         {
             SetLevelIndex(0);
+            armorData.ResetArmorLevel();
             Instance.LoadScreen.SetTargetCamera(Camera.main);
             LevelControl.LoadScene(ConstStrings.SCENE_MAINGAME);
         }
