@@ -143,6 +143,11 @@ public abstract class NController : MonoBehaviour, IEnemy
         monsterHealthBar.InitHealthBar(monsterData.HP);        
     }
 
+    private void OnDisable()
+    {
+        uiMarker.SetActivate(false);
+    }
+
     private void Update()
     {
         uiMarker.UpdatePosition(transform.position);
