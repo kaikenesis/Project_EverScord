@@ -699,12 +699,14 @@ namespace EverScord.Character
             SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_1);
             SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_2);
 
+            if (photonView.IsMine)
+            {
+                GameManager.Instance.GameOverController.CheckGameOver();
+            }
+
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
             EnableReviveCircle(true);
-
-            if (photonView.IsMine)
-                GameManager.Instance.GameOverController.CheckGameOver();
 
             if (PhotonNetwork.IsConnected && photonView.IsMine)
                 photonView.RPC(nameof(SyncReviveCircle), RpcTarget.Others, true);
