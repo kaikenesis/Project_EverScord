@@ -11,7 +11,6 @@ namespace EverScord
         private List<UIFactorOption> options = new List<UIFactorOption>();
 
         public static Action<int, int, float> OnApplyOption = delegate { };
-        public static Action<string> OnInitializeOptionName = delegate { };
 
         private void OnDestroy()
         {
@@ -21,16 +20,6 @@ namespace EverScord
 
         private void Start()
         {
-            int count = GameManager.Instance.FactorDatas.Length;
-            for (int i = 0; i < count; i++)
-            {
-                FactorData.OptionData[] optionDatas = GameManager.Instance.FactorDatas[i].OptionDatas;
-                for (int j = 0; j < optionDatas.Length; j++)
-                {
-                    OnInitializeOptionName?.Invoke(optionDatas[j].Name);
-                }
-            }
-
             gameObject.SetActive(false);
         }
 

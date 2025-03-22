@@ -116,28 +116,20 @@ namespace EverScord
             lockImg.sprite = GameManager.Instance.FactorDatas[typeNum].LockedSourceImg;
             curTypeNum = typeNum;
 
-            if (optionNums.Length > slotIndex)
+            if (slotIndex < panelData.lastUnlockedNum)
             {
-                if(slotIndex <= panelData.lastUnlockedNum)
-                {
-                    bLock = false;
-                    lockImg.enabled = bLock;
+                bLock = false;
+                lockImg.enabled = bLock;
 
-                    if(optionNums[slotIndex] != -1)
-                    {
-                        FactorData.OptionData optionData = GameManager.Instance.FactorDatas[typeNum].OptionDatas[optionNums[slotIndex]];
-
-                        curOptionName = optionData.Name;
-                        curOptionValue = valueNums[slotIndex];
-                        optionImg.enabled = true;
-                        optionImg.sprite = optionData.SourceImg;
-                        optionImg.color = optionData.ImgColor;
-                    }
-                }
-                else
+                if (optionNums[slotIndex] != -1)
                 {
-                    bLock = !bConfirmed;
-                    lockImg.enabled = bLock;
+                    FactorData.OptionData optionData = GameManager.Instance.FactorDatas[typeNum].OptionDatas[optionNums[slotIndex]];
+
+                    curOptionName = optionData.Name;
+                    curOptionValue = valueNums[slotIndex];
+                    optionImg.enabled = true;
+                    optionImg.sprite = optionData.SourceImg;
+                    optionImg.color = optionData.ImgColor;
                 }
             }
             else
