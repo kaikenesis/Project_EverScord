@@ -200,7 +200,6 @@ namespace EverScord.Augment
         public void IncreaseSelectedPeople()
         {
             ++selectedPeople;
-            Debug.Log($"=============== AUGMENT SELECTED PEOPLE: {selectedPeople}/{PhotonNetwork.CurrentRoom.PlayerCount}");
 
             if (selectedPeople < PhotonNetwork.CurrentRoom.PlayerCount)
                 return;
