@@ -139,7 +139,8 @@ namespace EverScord.Augment
                 SetStatIncrease();
                 SetAugmentUpgradeText();
             }
-            SoundManager.Instance.PlaySound("ClearWinSound");
+            
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_CLEAR_WIN);
             DOTween.Rewind(DOTWEEN_UI_APPEAR);
             DOTween.Play(DOTWEEN_UI_APPEAR);
         }
@@ -375,7 +376,7 @@ namespace EverScord.Augment
             if (enhanceIndex >= helmetAugmentDict[selectedHelmetTag].Count)
                 enhanceIndex = helmetAugmentDict[selectedHelmetTag].Count - 1;
 
-            SoundManager.Instance.PlaySound("ButtonSound");
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_AUGMENT_CONFIRM);
         }
 
         private void RemoveSlotSelectEvent()
