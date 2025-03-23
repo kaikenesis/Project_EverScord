@@ -23,6 +23,7 @@ namespace EverScord
         {
             GameManager.Instance.InitControl(this);
             IsExaminingAlteration = false;
+            Cursor.visible = false;
         }
 
         void Start()
@@ -50,6 +51,7 @@ namespace EverScord
         {
             if (Input.anyKeyDown && !hasPressedAnything)
             {
+                Cursor.visible = true;
                 hasPressedAnything = true;
                 StartCoroutine(ShowLoginUI());
             }
