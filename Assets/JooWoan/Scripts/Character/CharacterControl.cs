@@ -616,7 +616,7 @@ namespace EverScord.Character
 
             Stats.CurrentHealth = Mathf.Min(Stats.MaxHealth, Stats.CurrentHealth + amount);
 
-            if (activator.CharacterPhotonView.IsMine)
+            if (activator.CharacterPhotonView.IsMine && isExternalHeal)
                 activator.IncreaseDealtHeal(amount);
 
             if (PhotonNetwork.IsConnected && (photonView.IsMine || isExternalHeal))
@@ -647,7 +647,7 @@ namespace EverScord.Character
         {
             while (!IsDead)
             {
-                IncreaseHP(this, Stats.HealthRegen, playEffect: false);
+                IncreaseHP(this, Stats.HealthRegen, isExternalHeal: false, playEffect: false);
                 yield return waitHpRegen;
             }
         }
