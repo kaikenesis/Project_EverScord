@@ -18,6 +18,12 @@ namespace EverScord
             PhotonLogin.OnLoginError += HandleLoginError;
 
             toggleObject = GetComponent<ToggleObject>();
+            gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            ShowLoginUI(true);
         }
 
         private void OnDestroy()
@@ -50,8 +56,6 @@ namespace EverScord
         {
             if (state)
             {
-                gameObject.SetActive(state);
-
                 DOTween.Rewind(ConstStrings.TWEEN_LOGIN_IN);
                 DOTween.Play(ConstStrings.TWEEN_LOGIN_IN);
 
@@ -64,6 +68,11 @@ namespace EverScord
 
                 // Tween OnComplete callback: gameObject.SetActive(false);
             }
+        }
+
+        public void EnableLoginUI()
+        {
+            gameObject.SetActive(true);
         }
 
         public void DisableLoginUI()

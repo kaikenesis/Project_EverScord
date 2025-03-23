@@ -14,7 +14,7 @@ namespace EverScord
 
         [SerializeField] private UILogin login;
         [SerializeField] private GameObject titleArea, lobbyArea, factorFlashFilter;
-        [SerializeField] private DOTweenAnimation titleFadeOutTween, alterationBgTween;
+        [SerializeField] private DOTweenAnimation titleFadeOutTween;
         [SerializeField] private float showPlayerPanelDelay;
         private bool hasPressedAnything = false;
 
@@ -23,7 +23,10 @@ namespace EverScord
         {
             GameManager.Instance.InitControl(this);
             IsExaminingAlteration = false;
-            
+        }
+
+        void Start()
+        {
             if (!GameManager.IsFirstGameLoad)
             {
                 hasPressedAnything = true;
@@ -35,9 +38,10 @@ namespace EverScord
             titleArea.SetActive(true);
             lobbyArea.SetActive(false);
 
-            login.DisableLoginUI();
             LoadingScreen.ShowScreenFrom1();
-            DOTween.PlayForward(ConstStrings.TWEEN_SHOW_TITLE);
+
+            DOTween.Rewind(ConstStrings.TWEEN_SHOW_TITLE);
+            DOTween.Play(ConstStrings.TWEEN_SHOW_TITLE);
 
             SoundManager.Instance.PlayBGM(ConstStrings.BGM_TITLE);
         }
@@ -57,7 +61,7 @@ namespace EverScord
             titleFadeOutTween.DOPlay();
 
             yield return new WaitForSeconds(0.3f);
-            login.ShowLoginUI(true);
+            login.EnableLoginUI();
         }
 
         public bool TransitionLobby()

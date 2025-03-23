@@ -54413,7 +54413,6 @@ MonoBehaviour:
   lobbyArea: {fileID: 916755541}
   factorFlashFilter: {fileID: 299650650}
   titleFadeOutTween: {fileID: 2064748319}
-  alterationBgTween: {fileID: 0}
   showPlayerPanelDelay: 0.2
 --- !u!1 &1523941713
 GameObject:
@@ -83558,6 +83557,14 @@ PrefabInstance:
       propertyPath: toggleObjects.Array.data[0]
       value: 
       objectReference: {fileID: 2009893101}
+    - target: {fileID: 8403027539141953664, guid: 962e13f5df3d9a140a02d060056ef71c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8709927716813623413, guid: 962e13f5df3d9a140a02d060056ef71c, type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
