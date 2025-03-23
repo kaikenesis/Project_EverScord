@@ -32,7 +32,7 @@ namespace EverScord
                 GameManager.Instance.debugMode = !GameManager.Instance.debugMode;
 
             if (Input.GetKeyDown(KeyCode.F6))
-                GameManager.Instance.GameOverController.ShowGameover(false);
+                GameManager.Instance.GameOverController.ShowGameover(true);
             
             if (Input.GetKeyDown(KeyCode.F7))
                 DebugStats();

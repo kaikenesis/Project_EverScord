@@ -105,6 +105,7 @@ namespace EverScord.UI
                 ingameUIList[i].SetActive(false);
 
             GameManager.Instance.GameOverController.EnableUI(false);
+            GameManager.Instance.LevelController.GetCurrentLevel().gameObject.SetActive(false);
             
             PlayerUI.SetCursor(CursorType.UIFOCUS);
             uiHub.SetActive(true);
