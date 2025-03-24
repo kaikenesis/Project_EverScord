@@ -33,6 +33,11 @@ namespace EverScord.UI
             initialRotation = transform.localRotation;
         }
 
+        void Start()
+        {
+            audioSource.outputAudioMixerGroup = SoundManager.Instance.SfxMixerGroup;
+        }
+
         public void Init(int viewID)
         {
             reviveTarget = GameManager.Instance.PlayerDict[viewID];

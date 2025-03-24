@@ -12908,6 +12908,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1547650009}
     m_Modifications:
+    - target: {fileID: 2125541024503463562, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
+      propertyPath: portalAudioSource
+      value: 
+      objectReference: {fileID: 8205605749184711732}
     - target: {fileID: 2619601317213053651, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
       propertyPath: m_Name
       value: Portal
@@ -12965,6 +12969,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
+--- !u!82 &8205605749184711732 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2887040851006502079, guid: e0c0aff897d948e4ca6e5b15ff9dbd4b, type: 3}
+  m_PrefabInstance: {fileID: 8205605749184711731}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8328645704140777150
 PrefabInstance:
   m_ObjectHideFlags: 0
