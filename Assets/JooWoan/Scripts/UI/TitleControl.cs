@@ -15,6 +15,7 @@ namespace EverScord
         [SerializeField] private UILogin login;
         [SerializeField] private GameObject titleArea, lobbyArea, factorFlashFilter;
         [SerializeField] private DOTweenAnimation titleFadeOutTween;
+        [SerializeField] private AudioSource buttonHoverAudioSource;
         [SerializeField] private float showPlayerPanelDelay;
         private bool hasPressedAnything = false;
 
@@ -45,6 +46,7 @@ namespace EverScord
             DOTween.Play(ConstStrings.TWEEN_SHOW_TITLE);
 
             SoundManager.Instance.PlayBGM(ConstStrings.BGM_TITLE);
+            buttonHoverAudioSource.outputAudioMixerGroup = SoundManager.Instance.SfxMixerGroup;
         }
 
         void Update()
