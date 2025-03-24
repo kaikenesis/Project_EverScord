@@ -5111,7 +5111,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5734778817572637541
 Transform:
   m_ObjectHideFlags: 0
@@ -13854,12 +13854,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 5946583939606055015}
-  defeatAnim: {fileID: 6786179430066917987}
   idleClip: {fileID: 7400000, guid: a5024a3e76ae0ee41b617f8e08bd8a0f, type: 2}
+  weapon: {fileID: 8322347200122765042}
+  sounds: []
+  triggerChance: 25
+  defeatAnim: {fileID: 6786179430066917987}
   victoryStart: {fileID: 7400000, guid: c1e25eca774ff4741820eb8f9735c867, type: 2}
   defeatStart: {fileID: 7400000, guid: 12b79fd1c9b4c55498d3d546c3df1d4e, type: 2}
-  weapon: {fileID: 8322347200122765042}
-  triggerChance: 25
 --- !u!1 &9148529437180396615
 GameObject:
   m_ObjectHideFlags: 0

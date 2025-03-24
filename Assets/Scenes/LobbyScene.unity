@@ -22418,7 +22418,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &466765990
 Transform:
   m_ObjectHideFlags: 0
@@ -81549,6 +81549,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 916755542}
     m_Modifications:
+    - target: {fileID: 911815660975261239, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4743980455421370487, guid: 031145ebcddfb3f49a3c8224f24ae459, type: 3}
       propertyPath: m_Name
       value: CharacterPodium
