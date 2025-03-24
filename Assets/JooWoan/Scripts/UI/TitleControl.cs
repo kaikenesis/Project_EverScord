@@ -97,6 +97,7 @@ namespace EverScord
             login.ToggleLobbyCanvas();
             OnTransitionToLobby?.Invoke();
 
+            Cursor.visible = true;
             SoundManager.Instance.PlaySound(ConstStrings.SFX_SWOOSH_1);
 
             DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
