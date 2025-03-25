@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 namespace EverScord
 {
@@ -17,6 +18,7 @@ namespace EverScord
         [SerializeField] private Button[] masterOnlyButtons;
         [SerializeField] private Button[] gameSettingButtons;
         private UIRoomPlayer[] uiRoomPlayers;
+        private bool bFull = false;
 
         public static Action OnLeaveRoom = delegate { };
         public static Action OnVisibleObject = delegate { };
@@ -107,10 +109,12 @@ namespace EverScord
             if (players.Count < 3)
             {
                 inviteButton.SetActive(PhotonNetwork.IsMasterClient);
+                bFull = false;
             }
             else
             {
                 inviteButton.SetActive(false);
+                bFull = true;
             }
         }
 
@@ -172,7 +176,7 @@ namespace EverScord
         {
             // 파티장만 초대버튼 활성화/비활성화
             // 나머지 버튼들은 비활성화
-            if(inviteButton.activeSelf == false)
+            if(inviteButton.activeSelf == false && bFull == false)
             {
                 inviteButton.SetActive(PhotonNetwork.IsMasterClient);
             }
