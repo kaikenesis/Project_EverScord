@@ -115,9 +115,6 @@ namespace EverScord
             SoundManager.Instance.PlaySound(ConstStrings.SFX_SWOOSH_1);
             SoundManager.Instance.PlaySound(ConstStrings.SFX_ALTERATION_TRANSITION);
 
-            DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
-            DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
-
             DOTween.Rewind(ConstStrings.TWEEN_LOBBY2ALTERATION);
             DOTween.Play(ConstStrings.TWEEN_LOBBY2ALTERATION);
 
@@ -132,14 +129,10 @@ namespace EverScord
 
             SoundManager.Instance.PlaySound(ConstStrings.SFX_SWOOSH_2);
 
-            DOTween.Rewind(ConstStrings.TWEEN_LOBBYCAM_INTRO);
-            DOTween.Play(ConstStrings.TWEEN_LOBBYCAM_INTRO);
-
             DOTween.Rewind(ConstStrings.TWEEN_ALTERATION2LOBBY);
             DOTween.Play(ConstStrings.TWEEN_ALTERATION2LOBBY);
 
             TweenPlayerPanel();
-
             OnLobbyToAlteration?.Invoke(true);
 
             // callback: AlterationPanel - ReturnButton - UIToggleButton.ToggleObject()
