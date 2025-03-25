@@ -78,6 +78,8 @@ namespace EverScord
         public const string SFX_UI_POPUP_1 = "UI_Popup_1";
         public const string SFX_SWOOSH_1 = "Swoosh_1";
         public const string SFX_SWOOSH_2 = "Swoosh_2";
+        public const string SFX_AUGMENT_CONFIRM = "Augment_Confirm";
+        public const string SFX_CLEAR_WIN = "ClearWinSound";
         public const string BGM_DEFEAT = "DefeatBGM";
         public const string BGM_TITLE = "TitleBGM";
         public const string BGM_LOBBY = "LobbyBGM";

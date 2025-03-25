@@ -557,7 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -662,7 +662,7 @@ MonoBehaviour:
   loops: 1
   id: AugmentCard_Appear
   isRelative: 0
-  isFrom: 1
+  isFrom: 0
   isIndependentUpdate: 0
   autoKill: 0
   autoGenerate: 1
@@ -674,7 +674,7 @@ MonoBehaviour:
   forcedTargetType: 0
   autoPlay: 0
   useTargetAsV3: 0
-  endValueFloat: 1
+  endValueFloat: 0
   endValueV3: {x: 0, y: 0, z: 0}
   endValueV2: {x: 0, y: 0}
   endValueColor: {r: 1, g: 1, b: 1, a: 1}
@@ -2481,7 +2481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2555,7 +2555,7 @@ MonoBehaviour:
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
-  delay: 0.1
+  delay: 0.2
   duration: 0.5
   easeType: 6
   easeCurve:
@@ -2586,7 +2586,7 @@ MonoBehaviour:
   loops: 1
   id: AugmentCard_Appear
   isRelative: 0
-  isFrom: 1
+  isFrom: 0
   isIndependentUpdate: 0
   autoKill: 0
   autoGenerate: 1
@@ -2598,7 +2598,7 @@ MonoBehaviour:
   forcedTargetType: 0
   autoPlay: 0
   useTargetAsV3: 0
-  endValueFloat: 1
+  endValueFloat: 0
   endValueV3: {x: 0, y: 0, z: 0}
   endValueV2: {x: 0, y: 0}
   endValueColor: {r: 1, g: 1, b: 1, a: 1}
@@ -3079,20 +3079,6 @@ MonoBehaviour:
   shoeUpgradeIcons:
     PreviousIcon: {fileID: 3307651364366493716}
     NextIcon: {fileID: 7023655652414444789}
-  helmetIcons:
-  - {fileID: 21300000, guid: 0baee9fef2b8c684aab3dab3b383de02, type: 3}
-  - {fileID: 21300000, guid: 0baee9fef2b8c684aab3dab3b383de02, type: 3}
-  - {fileID: 21300000, guid: 8aa08cc6476c70c48953173384bcac64, type: 3}
-  vestIcons:
-  - {fileID: 21300000, guid: 12fb03bc8909c8b41802992c6ecc0d42, type: 3}
-  - {fileID: 21300000, guid: 12fb03bc8909c8b41802992c6ecc0d42, type: 3}
-  - {fileID: 21300000, guid: 92af191912e3981408f48dc71a7f8407, type: 3}
-  shoeIcons:
-  - {fileID: 21300000, guid: 64786171e62977f45a95431d40fcfe72, type: 3}
-  - {fileID: 21300000, guid: 64786171e62977f45a95431d40fcfe72, type: 3}
-  - {fileID: 21300000, guid: 0dcd36863a99194448f8c43677cdfbaa, type: 3}
-  greenIconColor: {r: 0.21176471, g: 1, b: 0.07058824, a: 1}
-  deafultIconColor: {r: 0.35686275, g: 0.35686275, b: 0.35686275, a: 1}
 --- !u!223 &1409612709447654985
 Canvas:
   m_ObjectHideFlags: 0
@@ -3473,7 +3459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3547,7 +3533,7 @@ MonoBehaviour:
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
-  delay: 0.1
+  delay: 0.3
   duration: 0.5
   easeType: 6
   easeCurve:
@@ -3578,7 +3564,7 @@ MonoBehaviour:
   loops: 1
   id: AugmentCard_Appear
   isRelative: 0
-  isFrom: 1
+  isFrom: 0
   isIndependentUpdate: 0
   autoKill: 0
   autoGenerate: 1
@@ -3590,7 +3576,7 @@ MonoBehaviour:
   forcedTargetType: 0
   autoPlay: 0
   useTargetAsV3: 0
-  endValueFloat: 1
+  endValueFloat: 0
   endValueV3: {x: 0, y: 0, z: 0}
   endValueV2: {x: 0, y: 0}
   endValueColor: {r: 1, g: 1, b: 1, a: 1}

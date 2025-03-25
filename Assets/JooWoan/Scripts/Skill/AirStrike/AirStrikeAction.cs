@@ -43,6 +43,10 @@ namespace EverScord.Skill
                 targetLayer = GameManager.EnemyLayer;
                 bomb = ResourceManager.Instance.GetAsset<GameObject>(Skill.BombEffectReference.AssetGUID);
                 _ = ResourceManager.Instance.CreatePool(Skill.ExplosionEffectReference.AssetGUID, 5);
+
+                // >> Play effects beforehand to reduce lag 
+                Instantiate(bomb, CharacterSkill.SkillRoot);
+                // <<
             }
             else
             {

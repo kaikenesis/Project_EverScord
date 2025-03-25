@@ -170,7 +170,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncNMSound(string soundName, float volume)
     {
-        SoundManager.Instance.PlaySound(soundName, volume);
+        SoundManager.Instance.PlaySound(soundName, volume, true);
     }
 
     public void StopSound(string soundName)

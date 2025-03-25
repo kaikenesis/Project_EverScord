@@ -4,6 +4,8 @@ using EverScord.GameCamera;
 using EverScord.Character;
 using DG.Tweening;
 using Photon.Pun;
+using System.Collections.Generic;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.UI
 {
@@ -18,6 +20,7 @@ namespace EverScord.UI
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private float increaseSpeed, decreaseSpeed;
 
+        private List<CharacterControl> rescuers = new();
         private Quaternion initialRotation;
         private Camera cam;
         private Transform circleOwner;
@@ -28,6 +31,11 @@ namespace EverScord.UI
         void Awake()
         {
             initialRotation = transform.localRotation;
+        }
+
+        void Start()
+        {
+            audioSource.outputAudioMixerGroup = SoundManager.Instance.SfxMixerGroup;
         }
 
         public void Init(int viewID)
@@ -77,17 +85,34 @@ namespace EverScord.UI
 
         void OnTriggerEnter(Collider other)
         {
-            if (!IsPlayer(other))
+            if (!IsPlayer(other, out var player))
                 return;
 
+            if (rescuers.Contains(player))
+                return;                
+
+            rescuers.Add(player);
             revivingPeople++;
+        }
+
+        void OnTriggerStay(Collider other)
+        {
+            for (int i = rescuers.Count - 1; i >= 0; i--)
+            {
+                if (rescuers[i].IsDead)
+                {
+                    rescuers.RemoveAt(i);
+                    revivingPeople--;
+                }
+            }
         }
 
         void OnTriggerExit(Collider other)
         {
-            if (!IsPlayer(other))
+            if (!IsPlayer(other, out var player))
                 return;
             
+            rescuers.Remove(player);
             revivingPeople--;
         }
 
@@ -150,12 +175,19 @@ namespace EverScord.UI
             buttonImg.color = decreaseColor;
         }
 
-        private bool IsPlayer(Collider other)
+        private bool IsPlayer(Collider other, out CharacterControl player)
         {
+            player = null;
+
             if (other.transform.root == circleOwner)
                 return false;
             
             if (((1 << other.gameObject.layer) & GameManager.PlayerLayer) == 0)
+                return false;
+
+            player = other.GetComponent<CharacterControl>();
+            
+            if (player == null)
                 return false;
 
             return true;

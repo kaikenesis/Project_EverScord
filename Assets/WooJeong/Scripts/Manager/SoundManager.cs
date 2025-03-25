@@ -15,6 +15,8 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private AudioMixerGroup bgmMixerGroup;
     [SerializeField] private AudioMixerGroup sfxMixerGroup;
 
+    public AudioMixerGroup SfxMixerGroup => sfxMixerGroup;
+
     private AudioSource currentBGM;
 
     private const float MIN_VOLUME_DB = -80f;
