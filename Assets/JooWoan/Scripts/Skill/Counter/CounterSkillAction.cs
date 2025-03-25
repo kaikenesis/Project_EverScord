@@ -149,7 +149,7 @@ namespace EverScord.Skill
             if (!laserControl || !toggleLaser)
                 return;
             
-            elapsedLaserTime += elapsedSkillTime;
+            elapsedLaserTime += Time.deltaTime;
 
             if (elapsedLaserTime > skill.DamageInterval)
             {
