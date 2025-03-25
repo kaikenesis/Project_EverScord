@@ -39,6 +39,11 @@ namespace EverScord.Skill
             // marker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
         }
 
+        public void SetMarkerPosition(Vector3 position)
+        {
+            Marker.position = position;
+        }
+
         public void SetStamped(bool state)
         {
             StampedMarker.gameObject.SetActive(state);

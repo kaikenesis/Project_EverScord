@@ -96,9 +96,11 @@ namespace EverScord.Skill
             float totalTime     = info.EstimatedTime;
             Vector3 position    = info.ThrownPosition;
             Vector3 direction   = info.GroundDirection;
+            Vector3 markerPos   = info.MarkerPosition;
             float velocity      = info.InitialVelocity;
             float angle         = info.TrajectoryAngle;
 
+            skillMarker.SetMarkerPosition(markerPos);
             skillMarker.Stamp(totalTime);
             skillMarker.Set(false);
             SetPathVisibility(false);
@@ -216,6 +218,7 @@ namespace EverScord.Skill
             {
                 ThrownPosition  = thrownPosition,
                 GroundDirection = groundDirection,
+                MarkerPosition  = skillMarker.Marker.transform.position,
                 InitialVelocity = initialVelocity,
                 TrajectoryAngle = trajectoryAngle,
                 EstimatedTime   = estimatedTime
@@ -238,6 +241,7 @@ namespace EverScord.Skill
     {
         public Vector3 ThrownPosition;
         public Vector3 GroundDirection;
+        public Vector3 MarkerPosition;
         public float InitialVelocity;
         public float TrajectoryAngle;
         public float EstimatedTime;

@@ -119,6 +119,7 @@ namespace EverScord.Skill
                 activator.MouseRayHitPos,
                 info.ThrownPosition,
                 info.GroundDirection,
+                info.MarkerPosition,
                 info.InitialVelocity,
                 info.TrajectoryAngle,
                 info.EstimatedTime,

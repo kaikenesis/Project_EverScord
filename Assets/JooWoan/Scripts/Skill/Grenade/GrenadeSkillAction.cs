@@ -33,6 +33,7 @@ namespace EverScord.Skill
             SoundManager.Instance.PlaySound(Skill.ThrowSfx.AssetGUID);
             SoundManager.Instance.PlaySound(Skill.ThrowSfx2.AssetGUID);
         }
+        
         public override void OffensiveAction()
         {
             if (!photonView.IsMine)
