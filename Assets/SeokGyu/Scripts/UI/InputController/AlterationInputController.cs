@@ -1,4 +1,5 @@
 
+using DG.Tweening;
 using System;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace EverScord
     {
         [SerializeField] private ToggleObject popupWindow;
         private bool bActivePopupWindow;
-        [SerializeField] private GameObject probabilitySheet;
+        [SerializeField] private ToggleObject probabilitySheet;
         private bool bActiveProbabilitySheet;
         [SerializeField] private ToggleObject factorOptionList;
         private bool bActiveFactorOptionList;
@@ -63,7 +64,7 @@ namespace EverScord
             {
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActivePopupWindow = false;
-                popupWindow.OnDeactivateObjects();
+                popupWindow.PlayDoTween(true);
                 return;
             }
 
@@ -71,7 +72,7 @@ namespace EverScord
             {
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActiveProbabilitySheet = false;
-                probabilitySheet.SetActive(false);
+                probabilitySheet.PlayDoTween(true);
                 return;
             }
 
@@ -79,7 +80,7 @@ namespace EverScord
             {
                 SoundManager.Instance.PlaySound("ButtonSound");
                 bActiveFactorOptionList = false;
-                factorOptionList.OnDeactivateObjects();
+                factorOptionList.PlayDoTween(true);
                 return;
             }
         }

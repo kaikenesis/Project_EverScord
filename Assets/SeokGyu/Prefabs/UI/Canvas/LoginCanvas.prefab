@@ -437,7 +437,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2085188641826268487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1791,7 +1791,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8403027539141953664}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1871,7 +1871,7 @@ MonoBehaviour:
   loops: 1
   id: LOGIN_OUT
   isRelative: 0
-  isFrom: 1
+  isFrom: 0
   isIndependentUpdate: 0
   autoKill: 0
   autoGenerate: 1
@@ -1883,7 +1883,7 @@ MonoBehaviour:
   forcedTargetType: 2
   autoPlay: 0
   useTargetAsV3: 0
-  endValueFloat: 1
+  endValueFloat: 0
   endValueV3: {x: 0, y: 0, z: 0}
   endValueV2: {x: 0, y: 0}
   endValueColor: {r: 1, g: 1, b: 1, a: 1}

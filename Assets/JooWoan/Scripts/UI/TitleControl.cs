@@ -163,6 +163,9 @@ namespace EverScord
 
         public void DarkenAlterationBackground(bool state)
         {
+            // callback: FactorOptionList - DoTween - OnPlay, OnRewind
+            // callback: Popup_System - DoTween - OnPlay, OnRewind
+
             if (state)
                 DOTween.PlayForward(ConstStrings.TWEEN_DARKEN_ALTERATION_BG);
             else
