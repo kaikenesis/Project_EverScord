@@ -20,10 +20,17 @@ namespace EverScord.Skill
 
         public static float GetBulletHealAmount(CharacterControl character)
         {
-            float amount = BASE_HEAL + character.Stats.Attack * 0.3f;
-            StatBonus healBonus = character.Stats.BonusDict[StatType.COOLDOWN_DECREASE];
+            float heal = character.Stats.Attack;
 
-            return healBonus.CalculateStat(amount);
+            StatBonus bonus1 = character.CharacterHelmet.BasicHealBonus;
+            StatBonus bonus2 = character.CharacterHelmet.AllroundHealBonus;
+            StatBonus bonus3 = character.Stats.BonusDict[StatType.HEAL_INCREASE];
+
+            StatBonus merged1 = StatBonus.MergeBonus(bonus1, bonus2);
+            StatBonus merged2 = StatBonus.MergeBonus(merged1, bonus3);
+
+            heal = merged2.CalculateStat(heal);
+            return BASE_HEAL + heal * 0.3f;
         }
 
         public static float GetSkillDamage(CharacterControl character, float baseDamage, float coefficient, IEnemy monster = null)

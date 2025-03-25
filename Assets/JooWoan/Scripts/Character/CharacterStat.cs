@@ -79,19 +79,15 @@ namespace EverScord.Character
         {
             get
             {
-                StatBonus bonus1 = character.CharacterHelmet.BasicAttackBonus;
+                StatBonus bonus1 = bonusDict[StatType.ATTACK];
 
                 if (character.CharacterJob == PlayerData.EJob.Dealer)
                 {
-                    StatBonus merged1 = StatBonus.MergeBonus(bonus1, bonusDict[StatType.ATTACK]);
+                    StatBonus merged1 = StatBonus.MergeBonus(bonus1, character.CharacterHelmet.BasicAttackBonus);
                     return merged1.CalculateStat(attack);
                 }
 
-                StatBonus bonus2  = character.CharacterHelmet.AllroundHealBonus;
-                StatBonus bonus3  = StatBonus.MergeBonus(bonus1, bonus2);
-                StatBonus merged2 = StatBonus.MergeBonus(bonus3, bonusDict[StatType.HEAL_INCREASE]);
-
-                return merged2.CalculateStat(attack);
+                return bonus1.CalculateStat(attack);
             }
         }
 
@@ -157,19 +153,21 @@ namespace EverScord.Character
 
         public float IncreasedSkillDamage(float damage)
         {
-            StatBonus bonus1 = character.CharacterHelmet.SkillAttackBonus;
-
             if (character.CharacterJob == PlayerData.EJob.Dealer)
             {
+                StatBonus bonus1 = character.CharacterHelmet.SkillAttackBonus;
                 StatBonus merged1 = StatBonus.MergeBonus(bonus1, bonusDict[StatType.SKILLDAMAGE_INCREASE]);
                 return merged1.CalculateStat(damage);
             }
 
-            StatBonus bonus2  = character.CharacterHelmet.AllroundHealBonus;
-            StatBonus bonus3  = StatBonus.MergeBonus(bonus1, bonus2);
-            StatBonus merged2 = StatBonus.MergeBonus(bonus3, bonusDict[StatType.HEAL_INCREASE]);
-            
-            return merged2.CalculateStat(damage);
+            {
+                StatBonus bonus1 = character.CharacterHelmet.SkillHealBonus;
+                StatBonus bonus2 = character.CharacterHelmet.AllroundHealBonus;
+                StatBonus bonus3 = StatBonus.MergeBonus(bonus1, bonus2);
+                StatBonus merged2 = StatBonus.MergeBonus(bonus3, bonusDict[StatType.HEAL_INCREASE]);
+
+                return merged2.CalculateStat(damage);
+            }
         }
 
         public float CriticalHitChance
