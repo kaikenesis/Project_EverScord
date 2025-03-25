@@ -19,9 +19,9 @@ namespace EverScord.Pool
             foreach (var info in assetReferenceList)
             {
                 if (info.PoolSize == 0)
-                    await ResourceManager.Instance.CreatePool(info.Reference.AssetGUID);
+                    _ = ResourceManager.Instance.CreatePool(info.Reference.AssetGUID);
                 else
-                    await ResourceManager.Instance.CreatePool(info.Reference.AssetGUID, info.PoolSize);
+                    _ = ResourceManager.Instance.CreatePool(info.Reference.AssetGUID, info.PoolSize);
             }
 
             _ = ResourceManager.Instance.CreatePool("DamageText");

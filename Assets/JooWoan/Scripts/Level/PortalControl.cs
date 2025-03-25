@@ -18,6 +18,7 @@ namespace EverScord
         [SerializeField] private SphereCollider portalCollider;
         [SerializeField] private Vector3 initialPortalScale;
         [SerializeField] private ParticleSystem scanEffect;
+        [SerializeField] private AudioSource portalAudioSource;
 
         public PhotonView View => photonView;
         public ParticleSystem ScanEffect => scanEffect;
@@ -52,6 +53,7 @@ namespace EverScord
 
         void Start()
         {
+            portalAudioSource.outputAudioMixerGroup = SoundManager.Instance.SfxMixerGroup;
             teleportEffect = ResourceManager.Instance.GetAsset<GameObject>(AssetReferenceManager.TeleportEffect_ID);
         }
 

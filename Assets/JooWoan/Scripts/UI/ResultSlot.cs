@@ -50,6 +50,8 @@ namespace EverScord.UI
             this.targetValue = targetValue;
             this.counterAudio = counterAudio;
             this.minPlaybackInterval = minPlaybackInterval;
+
+            counterAudio.outputAudioMixerGroup = SoundManager.Instance.SfxMixerGroup;
         }
 
         private void SetCurrentValue(float value)
