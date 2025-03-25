@@ -97,6 +97,11 @@ public class BossRPC : MonoBehaviour, IEnemy
             HP -= 10000;
             Debug.Log($"CurHP = {HP}, {HP / MaxHP * 0.01f}");
         }
+
+        if (Input.GetKeyDown(KeyCode.F11))
+        {
+            //Debug.Error(bossData.SkillDatas[0].Cooldown);
+        }
     }
 
     public void SetSpawnPos(Vector3 pos)
