@@ -101,6 +101,7 @@ MonoBehaviour:
   healSlot: {fileID: 7725212168930642802}
   nicknameText: {fileID: 1987850279959736430}
   counterAudio: {fileID: 7266600619084736467}
+  checkBox: {fileID: 7621427324960975992}
   minPlaybackInterval: 0.065
 --- !u!225 &2163193719329607782
 CanvasGroup:
@@ -539,6 +540,14 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5653066278252512614, guid: cb48b5cc0ca695440a75ff05c1206c84, type: 3}
+      propertyPath: m_Name
+      value: CheckBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 5653066278252512614, guid: cb48b5cc0ca695440a75ff05c1206c84, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7625447244584754500, guid: cb48b5cc0ca695440a75ff05c1206c84, type: 3}
       propertyPath: m_Name
       value: Username
@@ -642,6 +651,11 @@ MonoBehaviour:
 --- !u!224 &5648641823712654427 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7625447244584754501, guid: cb48b5cc0ca695440a75ff05c1206c84, type: 3}
+  m_PrefabInstance: {fileID: 2861762760704403742}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7621427324960975992 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5653066278252512614, guid: cb48b5cc0ca695440a75ff05c1206c84, type: 3}
   m_PrefabInstance: {fileID: 2861762760704403742}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3316455671105395771

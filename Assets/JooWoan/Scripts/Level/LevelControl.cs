@@ -260,14 +260,15 @@ namespace EverScord
             GameManager.View.RPC(nameof(GameManager.SyncLoadGameLevel), RpcTarget.All);
         }
 
-        [PunRPC]
         public void SyncReturnToLobby()
         {
             if (IsReturningToLobby)
                 return;
 
             IsReturningToLobby = true;
-            View.RPC(nameof(ReturnEveryoneToLobby), RpcTarget.All);
+
+            if (PhotonNetwork.IsConnected)
+                View.RPC(nameof(ReturnEveryoneToLobby), RpcTarget.All);
         }
 
         [PunRPC]

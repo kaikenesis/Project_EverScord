@@ -9,6 +9,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.GameCamera;
 using UnityEngine.UI;
+using TMPro;
 
 namespace EverScord.UI
 {
@@ -23,10 +24,13 @@ namespace EverScord.UI
         [SerializeField] private List<ResultUI> resultUIList;
         [SerializeField] private GameObject nedPrefab, uniPrefab, usPrefab;
         [SerializeField] private List<Transform> positionList;
-        [SerializeField] private DOTweenAnimation buttonTween, titleTween, blackTween;
+        [SerializeField] private DOTweenAnimation buttonTween1, buttonTween2, titleTween, blackTween;
+        [SerializeField] private TextMeshProUGUI returnCountText;
         [SerializeField] private Button lobbyButton;
+        [SerializeField] private Color readyColor;
 
         private int[] rewardMoneyList = { 30, 60, 90, 120 };
+        private List<int> returnRequestList;
 
         private DepthOfField depthOfField;
         private bool isVictory;
@@ -40,9 +44,9 @@ namespace EverScord.UI
 
             readyPlayerCount = 0;
             isVictory = false;
+            returnRequestList = new();
 
-            lobbyButton.onClick.AddListener(ReturnToLobby);
-            lobbyButton.onClick.AddListener(ButtonSound);
+            lobbyButton.onClick.AddListener(RequestReturnToLobby);
         }
 
         void Start()
@@ -52,8 +56,7 @@ namespace EverScord.UI
 
         void OnDisable()
         {
-            lobbyButton.onClick.RemoveListener(ReturnToLobby);
-            lobbyButton.onClick.RemoveListener(ButtonSound);
+            lobbyButton.onClick.RemoveListener(RequestReturnToLobby);
 
             if (depthOfField)
             {
@@ -62,15 +65,12 @@ namespace EverScord.UI
             }
         }
 
-        private void ButtonSound()
+        private void ButtonSound(bool isEveryoneReady)
         {
-            SoundManager.Instance.PlaySound(ConstStrings.SFX_BUTTON);
-        }
-
-        private void ReturnToLobby()
-        {
-            if (PhotonNetwork.IsConnected)
-                LevelControl.View.RPC(nameof(GameManager.LevelController.SyncReturnToLobby), RpcTarget.MasterClient);
+            if (!isEveryoneReady)
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_BUTTON_2);
+            else
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_BUTTON);
         }
 
         private void InitDepthOfField()
@@ -135,7 +135,7 @@ namespace EverScord.UI
 
                 CharacterControl player = playerList[i];
                 SpawnPlayerPrefab(player.CharacterType, i);
-                resultUIList[i].Init(player.KillCount, player.DealtDamage, player.DealtHeal, player.Nickname);
+                resultUIList[i].Init(player.KillCount, player.DealtDamage, player.DealtHeal, player.Nickname, player.CharacterPhotonView.ViewID);
             }
 
             if (isVictory)
@@ -179,12 +179,16 @@ namespace EverScord.UI
         public IEnumerator ShowResults()
         {
             CharacterControl.CurrentClientCharacter.SetState(SetCharState.ADD, CharState.INTERACTING_UI);
+            IncreaseReturnCountText(0);
 
             blackTween.DORewind();
             blackTween.DOPlay();
 
-            buttonTween.DORewind();
-            buttonTween.DOPlay();
+            buttonTween1.DORewind();
+            buttonTween1.DOPlay();
+
+            buttonTween2.DORewind();
+            buttonTween2.DOPlay();
 
             titleTween.DORewind();
             titleTween.DOPlay();
@@ -244,6 +248,77 @@ namespace EverScord.UI
                 player.DealtHeal,
                 PhotonNetwork.NickName
             );
+        }
+
+        private void RequestReturnToLobby()
+        {
+            if (!PhotonNetwork.IsConnected)
+                return;
+            
+            lobbyButton.onClick.RemoveListener(RequestReturnToLobby);
+            ChangeLobbyButtonColor();
+
+            int currentClientViewID = CharacterControl.CurrentClientCharacter.CharacterPhotonView.ViewID;
+
+            photonView.RPC(nameof(SyncCheckbox), RpcTarget.All, currentClientViewID);
+            photonView.RPC(nameof(TryReturnToLobby), RpcTarget.MasterClient, currentClientViewID);
+        }
+
+        private void ChangeLobbyButtonColor()
+        {
+            Image buttonImg = lobbyButton.GetComponent<Image>();
+            buttonImg.color = readyColor;
+        }
+
+        [PunRPC]
+        private void TryReturnToLobby(int viewID)
+        {
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            if (returnRequestList.Contains(viewID))
+                return;
+            
+            returnRequestList.Add(viewID);
+
+            photonView.RPC(nameof(SyncIncreaseReturnCountText), RpcTarget.All, returnRequestList.Count);
+            photonView.RPC(nameof(SyncButtonSound), RpcTarget.All);
+
+            if (returnRequestList.Count >= GameManager.Instance.PlayerDict.Count)
+            {
+                returnRequestList.Clear();
+                GameManager.Instance.LevelController.SyncReturnToLobby();
+            }
+        }
+
+        [PunRPC]
+        private void SyncCheckbox(int viewID)
+        {
+            foreach (var resultUI in resultUIList)
+            {
+                if (resultUI.ViewID != viewID)
+                    continue;
+
+                resultUI.EnableReadyCheckbox();
+                break;
+            }
+        }
+
+        [PunRPC]
+        private void SyncIncreaseReturnCountText(int currentCount)
+        {
+            IncreaseReturnCountText(currentCount);
+        }
+
+        [PunRPC]
+        private void SyncButtonSound()
+        {
+            ButtonSound(returnRequestList.Count == GameManager.Instance.PlayerDict.Count);
+        }
+
+        private void IncreaseReturnCountText(int currentCount)
+        {
+            returnCountText.text = $"{currentCount}/{GameManager.Instance.PlayerDict.Count}";
         }
     }
 }
