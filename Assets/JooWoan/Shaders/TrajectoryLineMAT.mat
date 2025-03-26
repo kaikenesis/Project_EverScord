@@ -36,6 +36,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _EmissiveMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Texture:
         m_Texture: {fileID: 2800000, guid: 221833ee954908b4c8153f4ebbfd041d, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -54,12 +58,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _FlipX: 1
+    - _FlipY: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Rotation: 0
     - _Scale: 1
     m_Colors:
-    - _Direction: {r: -2, g: 0, b: 0, a: 0}
-    - _EmissiveColor: {r: 0.76886797, g: 0.927738, b: 1, a: 0}
+    - _Direction: {r: -3, g: 5, b: 0, a: 0}
+    - _EmissiveColor: {r: 0.33976704, g: 1.5917145, b: 4.2370944, a: 0}
     - _Tile: {r: 1, g: 3, b: 0, a: 0}
   m_BuildTextureStacks: []
