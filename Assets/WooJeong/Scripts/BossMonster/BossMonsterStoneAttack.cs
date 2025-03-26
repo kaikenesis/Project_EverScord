@@ -41,7 +41,7 @@ public class BossMonsterStoneAttack : MonoBehaviour, IEnemy
         this.effectAddressableKey = effectAddressableKey;
         this.skillDamage = skillDamage;
         this.baseAttack = baseAttack;
-        circleProjector.Radius = width / 2;
+        circleProjector.Radius = width;
         sphereCollider.radius = width / 2;
         capsuleCollider.radius = width / 2;
 
