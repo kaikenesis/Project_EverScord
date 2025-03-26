@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
-using EverScord.GameCamera;
+using EverScord.Character;
 
 namespace EverScord
 {
@@ -175,6 +175,7 @@ namespace EverScord
             yield return waitStageFade;
 
             portalControl.ScanEffect.gameObject.SetActive(false);
+            CharacterControl.CurrentClientCharacter.PlayerUIControl.EnableStageClearGlitter(false);
 
             bool bCoverScreen = true;
             OnLevelUpdated?.Invoke(GameManager.CurrentLevelIndex + 1, bCoverScreen);

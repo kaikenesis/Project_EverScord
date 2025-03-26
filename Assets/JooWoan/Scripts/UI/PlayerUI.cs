@@ -39,6 +39,8 @@ namespace EverScord.UI
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
         [SerializeField] private Transform iconTransform;
 
+        public ParticleSystem[] SkillCooldownEffects = new ParticleSystem[2];
+        private ParticleSystem stageClearEffect;
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
         private bool isEnabled = false;
@@ -50,7 +52,10 @@ namespace EverScord.UI
             
             var icon = Instantiate(iconPrefab, iconTransform.transform.position, Quaternion.identity);
             icon.transform.SetParent(transform);
+
             SetCursor(CursorType.BATTLE);
+            SetCooldownUIEffect();
+            SetStageClearGlitter();
 
             Volume volume = CharacterCamera.Root.GetComponent<Volume>();
             VolumeProfile profile = volume.profile;
@@ -166,6 +171,40 @@ namespace EverScord.UI
                 bloodMat.SetInt(BLOOD_ENABLED, 0);
 
             bloodCoroutine = null;
+        }
+
+        private void SetCooldownUIEffect()
+        {
+            var effects = GameObject.FindGameObjectsWithTag(ConstStrings.TAG_COOLDOWN_UI_EFFECT);
+
+            if (effects.Length < 2)
+            {
+                Debug.LogWarning("Cooldown UI effect not properly set. Check tags");
+                return;
+            }
+
+            SkillCooldownEffects[0] = effects[0].GetComponent<ParticleSystem>();
+            SkillCooldownEffects[1] = effects[1].GetComponent<ParticleSystem>();
+        }
+
+        public void PlayCooldownUIEffect(int skillIndex)
+        {
+            SkillCooldownEffects[skillIndex].Play();
+            SoundManager.Instance.PlaySound(ConstStrings.SFX_SKILL_CHARGED);
+        }
+
+        public void SetStageClearGlitter()
+        {
+            var effect = GameObject.FindGameObjectWithTag(ConstStrings.TAG_STAGE_CLEAR_GLITTER);
+            stageClearEffect = effect.GetComponent<ParticleSystem>();
+        }
+
+        public void EnableStageClearGlitter(bool state)
+        {
+            if (state)
+                stageClearEffect.Play();
+            else
+                stageClearEffect.Stop();
         }
 
         public void SetGrayscaleScreen(float currentHealth)

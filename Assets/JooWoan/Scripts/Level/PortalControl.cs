@@ -159,6 +159,8 @@ namespace EverScord
             GameManager.Instance.AugmentControl.ShowAugmentCards();
             OnLevelClear?.Invoke();
 
+            CharacterControl.CurrentClientCharacter.PlayerUIControl.EnableStageClearGlitter(true);
+
             DOTween.Rewind(ConstStrings.TWEEN_OPEN_PORTAL);
             DOTween.Play(ConstStrings.TWEEN_OPEN_PORTAL);
 

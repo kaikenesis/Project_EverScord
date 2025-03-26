@@ -132,11 +132,11 @@ namespace EverScord.Character
 
             if (photonView.IsMine)
             {
-                PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
-                PlayerUIControl.Init(weapon.IconPrefab);
-
                 CameraControl = Instantiate(cameraPrefab, CharacterCamera.Root);
                 CameraControl.Init(PlayerTransform, photonView.IsMine);
+
+                PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
+                PlayerUIControl.Init(weapon.IconPrefab);
 
                 CharacterType = GameManager.Instance.PlayerData.character;
 

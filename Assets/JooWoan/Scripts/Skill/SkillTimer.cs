@@ -1,3 +1,4 @@
+using EverScord.Character;
 using System;
 
 namespace EverScord.Skill
@@ -16,6 +17,9 @@ namespace EverScord.Skill
 
             onTimerTick -= UpdateCooldownProgress;
             onTimerTick += UpdateCooldownProgress;
+            
+            onCooldownOver -= PlayCooldownUIEffect;
+            onCooldownOver += PlayCooldownUIEffect;
         }
 
         public static void SubscribeOnCooldown(Action<int, float> subscriber)
@@ -33,6 +37,15 @@ namespace EverScord.Skill
         {
             if (IsCooldown && isMine)
                 onCoolDown?.Invoke(skillIndex, CooldownProgress);
+        }
+
+        public void PlayCooldownUIEffect()
+        {
+            if (!isMine)
+                return;
+
+            var uiControl = CharacterControl.CurrentClientCharacter.PlayerUIControl;
+            uiControl.PlayCooldownUIEffect(skillIndex);
         }
     }
 }
