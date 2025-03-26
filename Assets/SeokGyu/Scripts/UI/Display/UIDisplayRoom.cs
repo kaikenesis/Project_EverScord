@@ -62,6 +62,8 @@ namespace EverScord
                 uiRoomPlayers[i] = uiRoomPlayer;
             }
             inviteButton.transform.SetAsLastSibling();
+
+            HandleUpdateRoom();
         }
         #region Handle Methods
         private void HandleJoinRoom()
@@ -120,6 +122,7 @@ namespace EverScord
 
         private void HandleUpdateRoom()
         {
+            Debug.Log("HandleUpdateRoom");
             SetActiveMasterButton(PhotonNetwork.IsMasterClient);
 
             if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
