@@ -24,6 +24,12 @@ namespace EverScord
             GameManager.Instance.ArmorData.ResetArmorLevel();
         }
 
+        void OnDestroy()
+        {
+            if (GameManager.IsInitialized)
+                GameManager.Instance.ArmorData.UnSubscribeOnLevelUp(UpdateArmorUI);
+        }
+
         private void Initialize()
         {
             for (int i = 0; i < armorType.Length; i++)

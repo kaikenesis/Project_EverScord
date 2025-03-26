@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace EverScord
 {
@@ -70,7 +71,8 @@ namespace EverScord
 
         private void SetTimerText()
         {
-            timerText.text = string.Format("진행시간 <color=#{0}>[{1}:{2:D2}]</color>", colorHex, min, sec);
+            int currentRoundNum = GameManager.CurrentLevelIndex + 1;
+            timerText.text = string.Format("{0} 라운드 <color=#{1}>[{2}:{3:D2}]</color>", currentRoundNum, colorHex, min, sec);
         }
 
         private IEnumerator UpdateTimer()

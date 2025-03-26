@@ -52,6 +52,7 @@ namespace EverScord
         public static BlinkEffectInfo InvincibleBlinkInfo => instance.invincibleBlinkInfo;
         public static BlinkEffectInfo StunnedBlinkInfo => instance.stunnedBlinkInfo;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
+        public static bool IsInitialized => instance != null;
 
         [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer, redOutlineLayer;
         [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo, stunnedBlinkInfo;
