@@ -981,7 +981,7 @@ namespace EverScord.Character
         }
 
         [PunRPC]
-        public void SyncThrowSkill(Vector3 mouseRayHitPos, Vector3 thrownPosition, Vector3 groundDirection, float initialVelocity, float trajectoryAngle, float estimatedTime, int index)
+        public void SyncThrowSkill(Vector3 mouseRayHitPos, Vector3 thrownPosition, Vector3 groundDirection, Vector3 markerPos, float initialVelocity, float trajectoryAngle, float estimatedTime, int index)
         {
             ThrowSkillAction skillAction = (ThrowSkillAction)skillList[index].SkillAction;
 
@@ -992,6 +992,7 @@ namespace EverScord.Character
             {
                 ThrownPosition  = thrownPosition,
                 GroundDirection = groundDirection,
+                MarkerPosition  = markerPos,
                 InitialVelocity = initialVelocity,
                 TrajectoryAngle = trajectoryAngle,
                 EstimatedTime   = estimatedTime

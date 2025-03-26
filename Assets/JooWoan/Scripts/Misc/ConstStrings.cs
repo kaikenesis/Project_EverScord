@@ -47,6 +47,7 @@ namespace EverScord
         public const string TWEEN_PLAYERPANEL = "Playerpanel_Appear";
         public const string TWEEN_DARKEN_ALTERATION_BG = "DarkenAlterationBackground";
         public const string TWEEN_ALTERATION_APPLIED = "AlterationApplied";
+        public const string TWEEN_CAMERA_SHAKE = "CameraShake";
 
         // Sound Names
         public const string SFX_BUTTON = "ButtonSound";

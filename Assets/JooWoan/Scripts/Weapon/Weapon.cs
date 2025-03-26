@@ -50,11 +50,19 @@ namespace EverScord.Weapons
 
             LinkAimPoint();
 
+            // Set active false to exclude from blink effect initialization
+            shotEffect.gameObject.SetActive(false);
+
             if (shooter.PlayerUIControl == null)
                 return;
 
             onShotFired -= shooter.PlayerUIControl.SetAmmoText;
             onShotFired += shooter.PlayerUIControl.SetAmmoText;
+        }
+
+        void Start()
+        {
+            shotEffect.gameObject.SetActive(true);
         }
 
         void OnEnable()

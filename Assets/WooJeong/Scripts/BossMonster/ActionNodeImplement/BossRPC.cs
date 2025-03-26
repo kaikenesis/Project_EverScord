@@ -1,3 +1,4 @@
+using DG.Tweening;
 using DTT.AreaOfEffectRegions;
 using EverScord;
 using EverScord.Character;
@@ -533,6 +534,10 @@ public class BossRPC : MonoBehaviour, IEnemy
             {
                 player.DecreaseHP(bossData.SkillDatas[13].MaxHpBasedDamage, true);
             }
+
+            DOTween.Rewind(ConstStrings.TWEEN_CAMERA_SHAKE);
+            DOTween.Play(ConstStrings.TWEEN_CAMERA_SHAKE);
+
             yield return new WaitForSeconds(0.2f);
             PlaySound("BossPattern15_Attack");
         }

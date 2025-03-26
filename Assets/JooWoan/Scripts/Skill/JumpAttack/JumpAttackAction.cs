@@ -6,6 +6,7 @@ using Photon.Pun;
 using AnimationInfo = EverScord.Character.AnimationInfo;
 using EverScord.UI;
 using EverScord.Effects;
+using DG.Tweening;
 
 namespace EverScord.Skill
 {
@@ -181,6 +182,10 @@ namespace EverScord.Skill
             landingEffect.transform.position = landingPosition;
             SoundManager.Instance.PlaySound(Skill.LandSfx.AssetGUID);
             animControl.Play(animInfo.Land);
+
+            DOTween.Rewind(ConstStrings.TWEEN_CAMERA_SHAKE);
+            DOTween.Play(ConstStrings.TWEEN_CAMERA_SHAKE);
+
             yield return new WaitForSeconds(animInfo.Land.length);
 
             ExitSkill(true);

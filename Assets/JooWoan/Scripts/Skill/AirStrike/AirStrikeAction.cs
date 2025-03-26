@@ -3,6 +3,7 @@ using UnityEngine;
 using EverScord.Character;
 using EverScord.Effects;
 using EverScord.Pool;
+using DG.Tweening;
 
 namespace EverScord.Skill
 {
@@ -109,6 +110,8 @@ namespace EverScord.Skill
                 {
                     explosion.transform.position = dropPosition;
                     explosion.Play(0.3f);
+
+                    Invoke(nameof(DelayShake), 0.5f);
                 }
 
                 if (photonView.IsMine)
@@ -117,6 +120,12 @@ namespace EverScord.Skill
                 StartCoroutine(CreateZone(dropPosition));
                 yield return waitStrikeInterval;
             }
+        }
+
+        private void DelayShake()
+        {
+            DOTween.Rewind(ConstStrings.TWEEN_CAMERA_SHAKE);
+            DOTween.Play(ConstStrings.TWEEN_CAMERA_SHAKE);
         }
 
         private IEnumerator ProceedCollisionCheck(Vector3 dropPosition)
