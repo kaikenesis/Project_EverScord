@@ -1,3 +1,4 @@
+using DG.Tweening;
 using EverScord.Pool;
 using UnityEngine;
 
@@ -25,6 +26,9 @@ namespace EverScord.Skill
 
             explosionEffect.Play();
             SoundManager.Instance.PlaySound(grenadeSkill.GrenadeExplodeSfx.AssetGUID);
+
+            DOTween.Rewind(ConstStrings.TWEEN_CAMERA_SHAKE);
+            DOTween.Play(ConstStrings.TWEEN_CAMERA_SHAKE);
 
             grenadeSkillAction.SetGrenadeImpactPosition(transform.position);
             onSkillActivated.Invoke();
