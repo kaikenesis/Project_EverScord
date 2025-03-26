@@ -29,6 +29,7 @@ public class BossPattern03_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
+        StartCoroutine(nameof(CheckDeath));
         bossRPC.PlayAnimation("Idle");
         yield return bossRPC.ProjectEnable(4, 1f);
 

@@ -10,7 +10,7 @@ public abstract class BTree : MonoBehaviour
         SetupTree();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (!PhotonNetwork.IsMasterClient)
             return;

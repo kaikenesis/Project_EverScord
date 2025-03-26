@@ -29,14 +29,14 @@ public class BossPattern15_Imp : AttackNodeImplement
         }
 
         if (action == null)
-            action = StartCoroutine(Act());
+            action = StartCoroutine(nameof(Act));
 
         return NodeState.RUNNING;
     }
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack15 start");
+        StartCoroutine(nameof(CheckDeath));
         bossRPC.PlayAnimation("TakeOff");
         bossRPC.PlayJumpEffect();
         yield return new WaitForSeconds(bossRPC.clipDict["TakeOff"]);
@@ -50,7 +50,6 @@ public class BossPattern15_Imp : AttackNodeImplement
         yield return bossRPC.EnableShield();
         bossRPC.StopSound("BossPattern15");
 
-        Debug.Log("Attack15 start");
         isEnd = true;
         action = null;
     }

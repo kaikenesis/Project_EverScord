@@ -19,6 +19,7 @@ public class BossPattern07_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
+        StartCoroutine(nameof(CheckDeath));
         bossRPC.PlayAnimation("Shoot");
         yield return new WaitForSeconds(0.5f);
         bossRPC.PlaySound("BossPatternShoot");

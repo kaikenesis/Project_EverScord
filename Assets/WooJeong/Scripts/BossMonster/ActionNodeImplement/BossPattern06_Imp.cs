@@ -35,7 +35,7 @@ public class BossPattern06_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack6 start");
+        StartCoroutine(nameof(CheckDeath));
         bossRPC.PlayAnimation("StandingAttack");
         bossRPC.PlaySound("BossPattern06");
         safePos = transform.position + transform.forward * safeStartDistance;
@@ -52,7 +52,6 @@ public class BossPattern06_Imp : AttackNodeImplement
         yield return new WaitForSeconds(4f);
         bossRPC.SetActivePattern6(false);
 
-        Debug.Log("Attack6 end");
         bossRPC.StopSound("BossPattern06");
         curTime = 0;
         isEnd = true;

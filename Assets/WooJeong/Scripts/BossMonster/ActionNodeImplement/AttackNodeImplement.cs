@@ -18,7 +18,7 @@ public abstract class AttackNodeImplement : ActionNodeImplement
         if (attackable == false && bossRPC.IsUnderHP(attackableHP))
         {
             attackable = true;
-            action = StartCoroutine(Act());
+            action = StartCoroutine(nameof(Act));
         }
 
         if (attackable == false)

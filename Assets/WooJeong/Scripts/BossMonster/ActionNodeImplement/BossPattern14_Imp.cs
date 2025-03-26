@@ -14,7 +14,7 @@ public class BossPattern14_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack14 start");
+        StartCoroutine(nameof(CheckDeath));
 
         bossRPC.PlayAnimation("TakeOff");
         bossRPC.PlayJumpEffect();
@@ -23,7 +23,6 @@ public class BossPattern14_Imp : AttackNodeImplement
         int randInt = Random.Range(0, 4);
         transform.rotation = Quaternion.identity;
         transform.Rotate(0, 90 * randInt, 0);
-        Debug.Log($"{randInt} : {90 * randInt}");
         bossRPC.PlayAnimation("Landing");
         yield return new WaitForSeconds(bossRPC.clipDict["Landing"] * 0.25f);
         bossRPC.PlayJumpEffect();
@@ -39,6 +38,5 @@ public class BossPattern14_Imp : AttackNodeImplement
         bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
-        Debug.Log("Attack14 end");
     }
 }

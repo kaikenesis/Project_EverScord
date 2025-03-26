@@ -22,7 +22,7 @@ public class BossPattern12_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack 12 Start");
+        StartCoroutine(nameof(CheckDeath));
         for (int i = 0; i < 3; i++)
         {
             bossRPC.PlayAnimation("StandingAttack");

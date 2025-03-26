@@ -25,12 +25,25 @@ public abstract class ActionNodeImplement : MonoBehaviour
         }
 
         if (action == null)
-            action = StartCoroutine(Act());
+            action = StartCoroutine(nameof(Act));
 
         return NodeState.RUNNING;
     }
 
     protected abstract IEnumerator Act();
 
+    protected IEnumerator CheckDeath()
+    {
+        Debug.Log("node Death");
 
+        while (isEnd == false)
+        {
+            if (bossRPC.IsDead)
+            {
+                StopCoroutine(nameof(Act));
+                yield break;
+            }
+            yield return null;
+        }
+    }
 }

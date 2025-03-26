@@ -34,7 +34,7 @@ public class BossMove_Imp : ActionNodeImplement
         }
 
         if (action == null)
-            action = StartCoroutine(Act());
+            action = StartCoroutine(nameof(Act));
 
         return NodeState.RUNNING;
     }
