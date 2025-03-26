@@ -10,6 +10,14 @@ public class InventoryManager : Singleton<InventoryManager>
     [SerializeField] private List<InventoryItem> inventory = new List<InventoryItem>();
     [SerializeField] private int inventoryCapacity = 20;
 
+    [SerializeField] private Item item;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            AddItem(item);
+    }
+
     public void SwapItems(int fromIndex, int toIndex)
     {
         if (fromIndex >= 0 && fromIndex < inventory.Count && toIndex >= 0 && toIndex < inventory.Count)

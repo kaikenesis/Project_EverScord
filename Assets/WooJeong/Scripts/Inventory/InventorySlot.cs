@@ -105,6 +105,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     // 마우스 엔터 이벤트
     public void OnPointerEnter(PointerEventData eventData)
     {
+        Debug.Log("enter");
         if (currentItem != null)
         {
             OnItemPointerEnter?.Invoke(currentItem, eventData.position);
