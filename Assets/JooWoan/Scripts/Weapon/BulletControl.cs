@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using EverScord.Effects;
 using UnityEngine.AddressableAssets;
+using EverScord.Character;
 
 namespace EverScord.Weapons
 {
@@ -72,13 +73,14 @@ namespace EverScord.Weapons
                 LinkedListNode<Bullet> nextNode = currentNode.Next;
 
                 Bullet bullet = currentNode.Value;
-                Weapon weapon = GameManager.Instance.PlayerDict[bullet.ViewID].PlayerWeapon;
+                CharacterControl shooter = GameManager.Instance.PlayerDict[bullet.ViewID];
+                Weapon weapon = shooter.PlayerWeapon;
 
                 Vector3 currentPosition = bullet.GetPosition();
                 bullet.SetLifetime(bullet.Lifetime + deltaTime);
                 Vector3 nextPosition    = bullet.GetPosition();
 
-                if (bullet.ShouldBeDestroyed(weapon.WeaponRange))
+                if (bullet.ShouldBeDestroyed(shooter.CharacterWeaponInfo.WeaponRange))
                 {
                     bullet.SetIsDestroyed(true);
                     bullets.Remove(currentNode);

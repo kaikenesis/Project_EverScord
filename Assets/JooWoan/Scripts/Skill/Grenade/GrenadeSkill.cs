@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EverScord.Skill
 {
-    [CreateAssetMenu(fileName = "Grenade Skill", menuName = "EverScord/Character Skill/Grenade Skill")]
+    [CreateAssetMenu(fileName = "Grenade Skill", menuName = "EverScord/Character/Skill/Grenade Skill")]
     public class GrenadeSkill : ThrowSkill
     {
         [field: SerializeField] public AssetReferenceGameObject DamageEffectReference   { get; private set; }

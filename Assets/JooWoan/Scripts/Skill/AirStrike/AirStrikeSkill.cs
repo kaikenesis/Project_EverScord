@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EverScord.Skill
 {
-    [CreateAssetMenu(fileName = "Air Strike Skill", menuName = "EverScord/Character Skill/Air Strike Skill")]
+    [CreateAssetMenu(fileName = "Air Strike Skill", menuName = "EverScord/Character/Skill/Air Strike Skill")]
 
     public class AirStrikeSkill : ThrowSkill
     {

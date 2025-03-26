@@ -33,7 +33,7 @@ namespace EverScord.Skill
             Skill       = skill as JumpAttackSkill;
             waitSkill   = new WaitForSeconds(Skill.Duration);
             animControl = activator.AnimationControl;
-            animInfo    = animControl.AnimInfo;
+            animInfo    = activator.AnimInfo;
         }
 
         void Start()

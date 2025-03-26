@@ -7,15 +7,13 @@ namespace EverScord.Character
     public class CharacterAnimation : MonoBehaviour
     {
         [SerializeField] private Animator anim;
-        [SerializeField] private AnimationInfo info;
         [SerializeField] private float transitionDampTime;
         [SerializeField] private float lerpMaskSpeed = 1f;
         [field: SerializeField] public float ShootStanceDuration { get; private set; }
         public Animator Anim => anim;
-        public AnimationInfo AnimInfo => info;
+
         private PhotonView photonView;
         private Coroutine lerpMaskCoroutine;
-
         private int upperMaskLayerIndex;
 
         void OnEnable()
@@ -23,9 +21,15 @@ namespace EverScord.Character
             SetUpperMask(false, true);
         }
 
-        public void Init(PhotonView photonView)
+        public void Init(PhotonView photonView, AnimationInfo animInfo, CharacterSoundInfo soundInfo)
         {
             this.photonView = photonView;
+
+            anim.runtimeAnimatorController = animInfo.AnimController;
+            anim.transform.GetComponent<CharacterAnimationSound>().Init(soundInfo);
+
+            GetComponent<Animator>().avatar = animInfo.CharacterAvatar;
+
             upperMaskLayerIndex = anim.GetLayerIndex(ConstStrings.ANIMLAYER_UPPERMASK);
             SetUpperMask(false, true);
         }

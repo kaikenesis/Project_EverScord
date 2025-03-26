@@ -1,15 +1,19 @@
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace EverScord.Character
 {
     public class CharacterAnimationSound : MonoBehaviour
     {
-        [SerializeField] private AssetReference reloadingSound;
+        private CharacterSoundInfo soundInfo;
+
+        public void Init(CharacterSoundInfo soundInfo)
+        {
+            this.soundInfo = soundInfo;
+        }
 
         private void PlayReloadingSound()
         {
-            SoundManager.Instance.PlaySound(reloadingSound.AssetGUID, 1);
+            SoundManager.Instance.PlaySound(soundInfo.Reloading.AssetGUID, 1);
         }
     }
 }

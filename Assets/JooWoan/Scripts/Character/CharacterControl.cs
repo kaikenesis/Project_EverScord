@@ -1,4 +1,3 @@
-using UnityEngine.AddressableAssets;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +10,6 @@ using EverScord.GameCamera;
 using EverScord.Skill;
 using EverScord.Effects;
 using EverScord.Armor;
-using EverScord.Augment;
 
 namespace EverScord.Character
 {
@@ -32,15 +30,17 @@ namespace EverScord.Character
         [SerializeField] private float groundCheckRadius;
         [SerializeField] private Vector3 groundCheckOffset;
 
-        [Header("Weapon")]
-        [SerializeField] private Weapon weapon;
-
-        [Header("Sound")]
-        [SerializeField] private AssetReference frontFootstep;
-        [SerializeField] private AssetReference backFootstep;
-
         [Header("Skill")]
         [SerializeField] private List<SkillActionInfo> skillList;
+
+        [Header("Weapon")]
+        [SerializeField] private WeaponInfo weaponInfo;
+
+        [Header("Animation")]
+        [SerializeField] private AnimationInfo animInfo;
+
+        [Header("Sound")]
+        [SerializeField] private CharacterSoundInfo soundInfo;
 
         [Header("UI")]
         [SerializeField] private PlayerUI uiPrefab;
@@ -79,14 +79,17 @@ namespace EverScord.Character
         public float DealtHeal                                          { get; private set; }
         public int KillCount                                            { get; private set; }
 
-        public Weapon PlayerWeapon => weapon;
-        public PhotonView CharacterPhotonView => photonView;
-        public CharacterController Controller => controller;
-        public InputInfo PlayerInputInfo => playerInputInfo;
-        public List<SkillActionInfo> SkillList => skillList;
-        public Vector3 LookDir => lookDir;
+        public Weapon PlayerWeapon              => weapon;
+        public PhotonView CharacterPhotonView   => photonView;
+        public CharacterController Controller   => controller;
+        public InputInfo PlayerInputInfo        => playerInputInfo;
+        public List<SkillActionInfo> SkillList  => skillList;
+        public AnimationInfo AnimInfo           => animInfo;
+        public CharacterSoundInfo SoundInfo     => soundInfo;
+        public WeaponInfo CharacterWeaponInfo   => weaponInfo;
+        public Vector3 LookDir                  => lookDir;
 
-        public static Action OnPhotonViewListUpdated = delegate { };
+        public static Action OnPhotonViewListUpdated          = delegate { };
         public static Action<int, bool, Vector3> OnCheckAlive = delegate { };
 
         private GameObject deathEffect, reviveEffect, beamEffect;
@@ -98,6 +101,8 @@ namespace EverScord.Character
         private CharacterController controller;
         private Coroutine deathCoroutine, hpRegenCoroutine, footstepCoroutine;
         private WaitForSeconds waitHpRegen, waitFootstep;
+        private Weapon weapon;
+
         private Vector3 movement, lookDir, moveInput, moveDir;
         private Vector3 remoteMouseRayHitPos;
         private LayerMask groundAndEnemyLayer;
@@ -109,6 +114,7 @@ namespace EverScord.Character
 
             photonView       = GetComponent<PhotonView>();
             controller       = GetComponent<CharacterController>();
+            weapon           = GetComponent<Weapon>();
             AnimationControl = GetComponent<CharacterAnimation>();
             SkinRenderers    = GetComponentsInChildren<SkinnedMeshRenderer>();
             UIMarker         = gameObject.AddComponent<UIMarker>();
@@ -121,7 +127,7 @@ namespace EverScord.Character
             CharacterShoes   = new Shoes();
             PhysicsControl   = new CharacterPhysics(gravity, mass);
             waitHpRegen      = new WaitForSeconds(1f);
-            waitFootstep     = new WaitForSeconds(AnimationControl.AnimInfo.RunForward.length * 0.48f);
+            waitFootstep     = new WaitForSeconds(AnimInfo.RunForward.length * 0.48f);
             playerInputInfo  = new InputInfo();
 
             // Unity docs: Set skinwidth 10% of the Radius
@@ -133,7 +139,7 @@ namespace EverScord.Character
             if (photonView.IsMine)
             {
                 PlayerUIControl = Instantiate(uiPrefab, PlayerUI.Root);
-                PlayerUIControl.Init(weapon.IconPrefab);
+                PlayerUIControl.Init(weaponInfo.IconPrefab);
 
                 CameraControl = Instantiate(cameraPrefab, CharacterCamera.Root);
                 CameraControl.Init(PlayerTransform, photonView.IsMine);
@@ -144,7 +150,7 @@ namespace EverScord.Character
             }
 
             UIMarker.Initialize(PointMarkData.EType.Player);
-            AnimationControl.Init(photonView);
+            AnimationControl.Init(photonView, animInfo, soundInfo);
             weapon.Init(this);
 
             RigControl = Instantiate(rigLayerPrefab, AnimationControl.Anim.transform);
@@ -323,7 +329,7 @@ namespace EverScord.Character
 
             weapon.SetGunPointDirection(gunPoint2MouseDir);
 
-            Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weapon.WeaponRange;
+            Vector3 aimPosition = weapon.GunPoint.position + weapon.GunPoint.forward * weaponInfo.WeaponRange;
             weapon.AimPoint.position = aimPosition;
         }
 
@@ -392,9 +398,9 @@ namespace EverScord.Character
             while (IsMoving)
             {
                 if (moveDir.z > 0)
-                    SoundManager.Instance.PlaySound(frontFootstep.AssetGUID);
+                    SoundManager.Instance.PlaySound(soundInfo.FrontFootstep.AssetGUID);
                 else
-                    SoundManager.Instance.PlaySound(backFootstep.AssetGUID);
+                    SoundManager.Instance.PlaySound(soundInfo.BackFootstep.AssetGUID);
 
                 yield return waitFootstep;
             }
@@ -689,7 +695,7 @@ namespace EverScord.Character
             RigControl.SetMainRigWeight(false);
 
             AnimationControl.SetUpperMask(false, true);
-            AnimationControl.Play(AnimationControl.AnimInfo.Death);
+            AnimationControl.Play(AnimInfo.Death);
 
             OutlineControl.SetCharacterOutline(this, true);
 
@@ -704,7 +710,7 @@ namespace EverScord.Character
                 GameManager.Instance.GameOverController.CheckGameOver();
             }
 
-            yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
+            yield return new WaitForSeconds(AnimInfo.Death.length);
 
             EnableReviveCircle(true);
 
@@ -731,15 +737,15 @@ namespace EverScord.Character
             PlayHealEffects();
             Stats.CurrentHealth = Stats.MaxHealth;
 
-            AnimationControl.Play(AnimationControl.AnimInfo.Revive);
+            AnimationControl.Play(AnimInfo.Revive);
             EnableReviveCircle(false);
 
             OutlineControl.SetCharacterOutline(this, false);
             
-            yield return new WaitForSeconds(AnimationControl.AnimInfo.Revive.length);
+            yield return new WaitForSeconds(AnimInfo.Revive.length);
 
             RigControl.SetMainRigWeight(true);
-            AnimationControl.CrossFade(new AnimationParam(AnimationControl.AnimInfo.Idle.name, 0.25f));
+            AnimationControl.CrossFade(new AnimationParam(AnimInfo.Idle.name, 0.25f));
 
             for (float t = 0; t < 0.5f; t += Time.deltaTime)
                 yield return null;

@@ -25,6 +25,11 @@ namespace EverScord
         public const string TAG_AIMPOINT = "AimPoint";
         public const string TAG_MAINLIGHT = "MainLight";
         public const string TAG_PARTICLE_BLINKABLE = "ParticleBlinkable";
+        public const string TAG_WEAPON_RIGHTHAND = "Weapon_RightHand";
+        public const string TAG_WEAPON_MUZZLE = "Weapon_Muzzle";
+        public const string TAG_WEAPON_GUNPOINT = "Weapon_Gunpoint";
+        public const string TAG_WEAPON_LEFTTARGET = "Weapon_LeftTarget";
+        public const string TAG_WEAPON_LEFTHINT = "Weapon_LeftHint";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";

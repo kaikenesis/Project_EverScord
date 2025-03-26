@@ -12,7 +12,6 @@ namespace EverScord.Weapons
         private const float COLLISION_STEP = 0.5f;
         
         [field: SerializeField] public TrailRenderer TracerEffect   { get; private set; }
-        public BulletInfo BulletInfo                                { get; private set; }
         public Vector3 InitialPosition                              { get; private set; }
         public Vector3 InitialVelocity                              { get; private set; }
         public float Lifetime                                       { get; private set; }
@@ -22,14 +21,13 @@ namespace EverScord.Weapons
         private int bulletID = -1;
         public int BulletID => bulletID;
 
-        public void Init(Vector3 position, Vector3 velocity, BulletInfo bulletInfo, int viewID)
+        public void Init(Vector3 position, Vector3 velocity, WeaponInfo weaponInfo, int viewID)
         {
             InitialPosition = position;
             InitialVelocity = velocity;
 
-            BulletInfo = bulletInfo;
-            TracerEffect.material = bulletInfo.TracerMaterial;
-            TracerEffect.colorGradient = bulletInfo.TracerGradient;
+            TracerEffect.material = weaponInfo.TracerMaterial;
+            TracerEffect.colorGradient = weaponInfo.TracerGradient;
 
             ViewID = viewID;
 

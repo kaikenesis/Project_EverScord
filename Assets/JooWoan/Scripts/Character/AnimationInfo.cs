@@ -2,9 +2,12 @@ using UnityEngine;
 
 namespace EverScord.Character
 {
-    [CreateAssetMenu(fileName = "_ Animation Info", menuName = "EverScord/Animation Info")]
+    [CreateAssetMenu(fileName = "_ Animation Info", menuName = "EverScord/Character/Animation Info")]
     public class AnimationInfo : ScriptableObject
     {
+        [field: SerializeField] public RuntimeAnimatorController AnimController { get; private set; }
+        [field: SerializeField] public Avatar CharacterAvatar                   { get; private set; }
+
         [field: SerializeField] public AnimationClip Idle           { get; private set; }
         [field: SerializeField] public AnimationClip Shoot          { get; private set; }
         [field: SerializeField] public AnimationClip ShootEnd       { get; private set; }

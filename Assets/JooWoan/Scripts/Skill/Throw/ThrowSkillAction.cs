@@ -22,9 +22,9 @@ namespace EverScord.Skill
             ThrowingSkill = (ThrowSkill)skill;
             predictor = new TrajectoryPredictor(activator, transform, ThrowingSkill);
 
-            throwReadyParam = new AnimationParam(activator.AnimationControl.AnimInfo.ThrowReady.name, 0.1f);
-            throwParam = new AnimationParam(activator.AnimationControl.AnimInfo.Throw.name, 0.1f);
-            idleParam = new AnimationParam(activator.AnimationControl.AnimInfo.Idle.name, 0.1f, 1);
+            throwReadyParam = new AnimationParam(activator.AnimInfo.ThrowReady.name, 0.1f);
+            throwParam = new AnimationParam(activator.AnimInfo.Throw.name, 0.1f);
+            idleParam = new AnimationParam(activator.AnimInfo.Idle.name, 0.1f, 1);
 
             base.Init(activator, skill, ejob, skillIndex);
         }

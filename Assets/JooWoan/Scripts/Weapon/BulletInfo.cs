@@ -1,9 +1,8 @@
-using UnityEngine.AddressableAssets;
 using UnityEngine;
 
 namespace EverScord.Weapons
 {
-    [CreateAssetMenu(fileName = "Bullet Tracer Info", menuName = "EverScord/Bullet Tracer Info")]
+    [CreateAssetMenu(fileName = "Bullet Tracer Info", menuName = "EverScord/Character/Bullet Tracer Info")]
     public class BulletInfo : ScriptableObject
     {
         [field: SerializeField] public Material TracerMaterial { get; private set; }

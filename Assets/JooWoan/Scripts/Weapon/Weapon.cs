@@ -4,7 +4,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.Skill;
 using EverScord.Effects;
-using UnityEngine.AddressableAssets;
+using System.Collections.Generic;
 
 namespace EverScord.Weapons
 {
@@ -14,31 +14,22 @@ namespace EverScord.Weapons
     {
         private const float ANIM_TRANSITION = 0.25f;
 
-        [SerializeField] private ParticleSystem shotEffect;
-        [SerializeField] private BulletInfo bulletInfo;
-        [SerializeField] public float bulletSpeed;
-        [SerializeField] private AssetReference gunshotSound;
-        [SerializeField] private AssetReference reloadedSound;
+        [field: SerializeField] public LayerMask ShootableLayer { get; private set; }
+        public Transform GunPoint                               { get; private set; }
+        public Transform WeaponTransform                        { get; private set; }
+        public Transform LeftTarget                             { get; private set; }
+        public Transform LeftHint                               { get; private set; }
+        public Transform AimPoint                               { get; private set; }
 
-        [field: SerializeField] public GameObject IconPrefab                            { get; private set; }
-        [field: SerializeField] public Transform GunPoint                               { get; private set; }
-        [field: SerializeField] public Transform WeaponTransform                        { get; private set; }
-        [field: SerializeField] public Transform LeftTarget                             { get; private set; }
-        [field: SerializeField] public Transform LeftHint                               { get; private set; }
-        [field: SerializeField] public LayerMask ShootableLayer                         { get; private set; }
-        [field: SerializeField] public float AimSensitivity                             { get; private set; }
-        [field: SerializeField] public float Cooldown                                   { get; private set; }
-        [field: SerializeField] public float ReloadTime                                 { get; private set; }
-        [field: SerializeField] public float WeaponRange                                { get; private set; }
-        [field: SerializeField] public int MaxAmmo                                      { get; private set; }
-        public Transform AimPoint                                                       { get; private set; }
-
+        private ParticleSystem shotEffect;
         private PhotonView photonView;
         private OnShotFired onShotFired;
         private CooldownTimer cooldownTimer;
         private CharacterAnimation animControl;
-
+        private WeaponInfo weaponInfo;
+        private CharacterSoundInfo soundInfo;
         private int currentAmmo;
+
         private bool isReloading = false;
         public bool IsReloading => isReloading;
 
@@ -46,8 +37,11 @@ namespace EverScord.Weapons
         {
             photonView  = shooter.CharacterPhotonView;
             animControl = shooter.AnimationControl;
-            currentAmmo = MaxAmmo;
+            weaponInfo  = shooter.CharacterWeaponInfo;
+            soundInfo   = shooter.SoundInfo;
+            currentAmmo = weaponInfo.MaxAmmo;
 
+            SetupWeapon();
             LinkAimPoint();
 
             // Set active false to exclude from blink effect initialization
@@ -68,11 +62,60 @@ namespace EverScord.Weapons
         void OnEnable()
         {
             if (cooldownTimer == null)
-                cooldownTimer = new CooldownTimer(Cooldown);
+                cooldownTimer = new CooldownTimer(weaponInfo.Cooldown);
 
             isReloading = false;
-            CurrentAmmo = MaxAmmo;
+            CurrentAmmo = weaponInfo.MaxAmmo;
             StartCoroutine(cooldownTimer.RunTimer());
+        }
+
+        private Transform GetRightHand()
+        {
+            List<Transform> childs = new();
+            Utilities.GetAllChildren(transform, ref childs);
+
+            for (int i = 0; i < childs.Count; i++)
+            {
+                if (childs[i].gameObject.tag == ConstStrings.TAG_WEAPON_RIGHTHAND)
+                    return childs[i];
+            }
+
+            Debug.LogWarning("No right hand found. Assign appropriate right hand tag to character");
+            return null;
+        }
+
+        private void SetupWeapon()
+        {
+            Transform rightHand = GetRightHand();
+            WeaponTransform = Instantiate(weaponInfo.WeaponPrefab, rightHand).transform;
+
+            List<Transform> childs = new();
+            Utilities.GetAllChildren(WeaponTransform, ref childs);
+
+            for (int i = 0; i < childs.Count; i++)
+            {
+                switch (childs[i].gameObject.tag)
+                {
+                    case ConstStrings.TAG_WEAPON_MUZZLE:
+                        shotEffect = childs[i].GetComponent<ParticleSystem>();
+                        break;
+
+                    case ConstStrings.TAG_WEAPON_GUNPOINT:
+                        GunPoint = childs[i];
+                        break;
+
+                    case ConstStrings.TAG_WEAPON_LEFTTARGET:
+                        LeftTarget = childs[i];
+                        break;
+
+                    case ConstStrings.TAG_WEAPON_LEFTHINT:
+                        LeftHint = childs[i];
+                        break;
+
+                    default:
+                        break;
+                }
+            }
         }
 
         private void LinkAimPoint()
@@ -87,7 +130,7 @@ namespace EverScord.Weapons
                     continue;
                 
                 AimPoint = aimpoints[i].transform;
-                AimPoint.transform.position = GunPoint.transform.position + GunPoint.forward * WeaponRange;
+                AimPoint.transform.position = GunPoint.transform.position + GunPoint.forward * weaponInfo.WeaponRange;
                 return;
             }
         }
@@ -121,7 +164,7 @@ namespace EverScord.Weapons
             if (!shooter.PlayerInputInfo.pressedReloadButton)
                 return;
 
-            if (currentAmmo == MaxAmmo)
+            if (currentAmmo == weaponInfo.MaxAmmo)
                 return;
 
             if (isReloading)
@@ -143,18 +186,18 @@ namespace EverScord.Weapons
             shooter.PlayerUIControl.SetReloadText();
 
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, true);
-            animControl.Play(animControl.AnimInfo.Reload);
+            animControl.Play(shooter.AnimInfo.Reload);
 
-            float reloadTime = shooter.Stats.DecreasedReload(ReloadTime);
+            float reloadTime = shooter.Stats.DecreasedReload(weaponInfo.ReloadTime);
             yield return new WaitForSeconds(reloadTime);
 
             shooter.SetIsAiming(true);
             shooter.RigControl.SetAimWeight(true);
             animControl.SetBool(ConstStrings.PARAM_ISRELOADING, false);
-            yield return new WaitForSeconds(animControl.AnimInfo.ShootStance.length * ANIM_TRANSITION);
+            yield return new WaitForSeconds(shooter.AnimInfo.ShootStance.length * ANIM_TRANSITION);
 
-            SoundManager.Instance.PlaySound(reloadedSound.AssetGUID);
-            CurrentAmmo = MaxAmmo;
+            SoundManager.Instance.PlaySound(soundInfo.Reloaded.AssetGUID);
+            CurrentAmmo = weaponInfo.MaxAmmo;
             cooldownTimer.ResetElapsedTime();
             isReloading = false;
         }
@@ -166,11 +209,11 @@ namespace EverScord.Weapons
 
         public void FireBullet()
         {
-            SoundManager.Instance.PlaySound(gunshotSound.AssetGUID);
+            SoundManager.Instance.PlaySound(soundInfo.Gunshot.AssetGUID);
             shotEffect.Emit(1);
 
             Vector3 gunpointPos   = GunPoint.position;
-            Vector3 bulletVector  = GunPoint.forward * bulletSpeed;
+            Vector3 bulletVector  = GunPoint.forward * weaponInfo.BulletSpeed;
 
             Bullet bullet         = ResourceManager.Instance.GetFromPool(AssetReferenceManager.Bullet_ID) as Bullet;
             SmokeTrail smokeTrail = ResourceManager.Instance.GetFromPool(AssetReferenceManager.BulletSmoke_ID) as SmokeTrail;
@@ -179,7 +222,7 @@ namespace EverScord.Weapons
                 return;
             else
             {
-                bullet.Init(gunpointPos, bulletVector, bulletInfo, photonView.ViewID);
+                bullet.Init(gunpointPos, bulletVector, weaponInfo, photonView.ViewID);
                 GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.MINE);
             }
 
@@ -199,7 +242,7 @@ namespace EverScord.Weapons
             shooter.RigControl.SetAimWeight(state);
             shooter.AnimationControl.SetUpperMask(state, isImmediate);
 
-            AnimationClip clip = state ? animControl.AnimInfo.Shoot : animControl.AnimInfo.ShootEnd;
+            AnimationClip clip = state ? shooter.AnimInfo.Shoot : shooter.AnimInfo.ShootEnd;
             animControl.Play(clip);
 
             if (!PhotonNetwork.IsConnected)
@@ -239,7 +282,7 @@ namespace EverScord.Weapons
             if (!shooter.IsAiming)
                 return false;
 
-            float cooldownOvertime = cooldownTimer.GetElapsedTime() - Cooldown;
+            float cooldownOvertime = cooldownTimer.GetElapsedTime() - weaponInfo.Cooldown;
 
             if (cooldownOvertime <= shooter.AnimationControl.ShootStanceDuration)
                 return false;
@@ -280,7 +323,7 @@ namespace EverScord.Weapons
 
             if (bullet)
             {
-                bullet.Init(gunpointPos, bulletVector, bulletInfo, viewID);
+                bullet.Init(gunpointPos, bulletVector, weaponInfo, viewID);
                 bullet.SetBulletID(bulletID);
                 GameManager.Instance.BulletsControl.AddBullet(bullet, BulletOwner.OTHER);
             }

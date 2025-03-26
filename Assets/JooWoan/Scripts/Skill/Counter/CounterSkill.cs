@@ -3,7 +3,7 @@ using UnityEngine.AddressableAssets;
 
 namespace EverScord.Skill
 {
-    [CreateAssetMenu(fileName = "Counter Skill", menuName = "EverScord/Character Skill/Counter Skill")]
+    [CreateAssetMenu(fileName = "Counter Skill", menuName = "EverScord/Character/Skill/Counter Skill")]
     public class CounterSkill : CharacterSkill
     {
 
