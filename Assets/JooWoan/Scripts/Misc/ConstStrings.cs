@@ -49,6 +49,8 @@ namespace EverScord
         public const string TWEEN_ALTERATION_APPLIED = "AlterationApplied";
         public const string TWEEN_CAMERA_SHAKE = "CameraShake";
 
+        public const string TWEEN_INVEN_DISABLE = "InvenDisable";
+
         // Sound Names
         public const string SFX_BUTTON = "ButtonSound";
         public const string SFX_BUTTON_2 = "Button_2";

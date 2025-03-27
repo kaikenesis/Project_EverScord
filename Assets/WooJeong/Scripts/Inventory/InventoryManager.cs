@@ -1,41 +1,91 @@
+using DG.Tweening;
 using EverScord;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryManager : Singleton<InventoryManager>
 {
     public event Action<List<InventoryItem>> OnInventoryChanged;
     [SerializeField] private List<InventoryItem> inventory = new List<InventoryItem>();
-    [SerializeField] private int inventoryCapacity = 20;
+    [SerializeField] private int inventoryCapacity = 30;
+    public int InventoryCapacity => inventoryCapacity;
+
+    [SerializeField] private GameObject inventoryPanel;
 
     [SerializeField] private Item item;
+    [SerializeField] private Item item2;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        for(int i = 0; i < inventoryCapacity; i++)
+        {
+            inventory.Add(new InventoryItem(null, 1));
+        }
+    }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            AddItem(item);
+        if (Input.GetKeyDown(KeyCode.A))
+            AddItem(item);        
+        if (Input.GetKeyDown(KeyCode.S))
+            AddItem(item2);
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (inventoryPanel.activeSelf == true)
+            {
+                DOTween.Rewind(ConstStrings.TWEEN_INVEN_DISABLE);
+                DOTween.Play(ConstStrings.TWEEN_INVEN_DISABLE);
+            }
+            else
+            {
+                inventoryPanel.SetActive(true);
+                DOTween.Rewind(ConstStrings.TWEEN_INVEN_DISABLE);
+            }
+        }
     }
 
     public void SwapItems(int fromIndex, int toIndex)
     {
-        if (fromIndex >= 0 && fromIndex < inventory.Count && toIndex >= 0 && toIndex < inventory.Count)
+        if (fromIndex >= 0 && fromIndex < inventoryCapacity && toIndex >= 0 && toIndex < inventoryCapacity)
         {
-            // 아이템 교환
             (inventory[toIndex], inventory[fromIndex]) = (inventory[fromIndex], inventory[toIndex]);
-
-            // UI 업데이트 이벤트 발생
             OnInventoryChanged?.Invoke(inventory);
         }
+    }
+
+    private int GetBlankIndex()
+    {
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            if (inventory[i].item == null)
+                return i;
+        }
+        return -1;
     }
 
     public bool AddItem(Item item, int quantity = 1)
     {
         if (item == null)
             return false;
+        int index = GetBlankIndex();
 
-        if (inventory.Count >= inventoryCapacity && !HasItem(item))
+        if (index == -1 && HasItem(item) == true)
+        {
+            if(item.isStackable == false)
+                return false;
+            foreach (var inventoryItem in inventory)
+            {
+                if (inventoryItem.quantity + quantity > item.maxStackSize)
+                {
+                    return false;
+                }
+            }
+        }
+        else if (index == -1)
         {
             Debug.Log("인벤토리가 가득 찼습니다!");
             return false;
@@ -43,7 +93,7 @@ public class InventoryManager : Singleton<InventoryManager>
 
         if (item.isStackable)
         {
-            foreach (InventoryItem inventoryItem in inventory)
+            foreach (var inventoryItem in inventory)
             {
                 if (inventoryItem.item == item)
                 {
@@ -63,23 +113,17 @@ public class InventoryManager : Singleton<InventoryManager>
             }
         }
 
-        if (inventory.Count < inventoryCapacity)
+        InventoryItem newItem = new InventoryItem(item, Mathf.Min(quantity, item.maxStackSize));
+        inventory[index] = newItem;
+
+        if (item.isStackable && quantity > item.maxStackSize)
         {
-            InventoryItem newItem = new InventoryItem(item, Mathf.Min(quantity, item.maxStackSize));
-            inventory.Add(newItem);
-
-            if (item.isStackable && quantity > item.maxStackSize)
-            {
-                OnInventoryChanged?.Invoke(inventory);
-                return AddItem(item, quantity - item.maxStackSize);
-            }
-
             OnInventoryChanged?.Invoke(inventory);
-            return true;
+            return AddItem(item, quantity - item.maxStackSize);
         }
 
-        Debug.Log("인벤토리에 아이템을 추가할 수 없습니다!");
-        return false;
+        OnInventoryChanged?.Invoke(inventory);
+        return true;
     }
 
     public bool RemoveItem(Item item, int quantity = 1)

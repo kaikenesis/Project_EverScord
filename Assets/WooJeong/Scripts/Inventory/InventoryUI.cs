@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class InventoryUI : MonoBehaviour
 {
-    // 인벤토리 매니저 참조
     [SerializeField] private InventoryManager inventoryManager;
 
-    // UI 요소 참조
     [SerializeField] private Transform slotContainer;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private GameObject itemInfoPanel;
@@ -17,63 +17,97 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemDescriptionText;
     [SerializeField] private TextMeshProUGUI itemStatsText;
 
-    // 인벤토리 슬롯 관리
     private List<InventorySlot> slots = new List<InventorySlot>();
+    private List<RectTransform> slotRectTransforms = new List<RectTransform>();
+
+    private GraphicRaycaster raycaster;
+    private PointerEventData pointerEventData;
+    private List<RaycastResult> raycastResult = new();
+    private InventorySlot curShowSlot;
+    private Vector2 infoOffSet = new Vector2(300, 400);
+    private RectTransform invenRect, infoRect;
+
+    private Image draggedItemImage;
+    private InventorySlot draggedFromSlot;
+
+    private void Awake()
+    {
+        invenRect = GetComponent<RectTransform>();
+        infoRect = itemInfoPanel.GetComponent<RectTransform>();
+        pointerEventData = new PointerEventData(EventSystem.current);
+        raycaster = itemInfoPanel.transform.parent.GetComponent<GraphicRaycaster>();
+        itemInfoPanel.SetActive(false);
+        MakeDragItem();
+    }
 
     private void Start()
     {
-        // 인벤토리 변경 이벤트 구독
         inventoryManager.OnInventoryChanged += UpdateUI;
+        InitializeInventorySlots(InventoryManager.Instance.InventoryCapacity);        
+    }
 
-        // 인벤토리 슬롯 초기화
-        InitializeInventorySlots(20); // 예시: 20개 슬롯 생성
+    private void Update()
+    {
+        pointerEventData.position = Input.mousePosition;
 
-        // 정보 패널 초기 상태
+        OnPointerSlotEnter();
+        OnItemClicked();
+        OnItemDrag();
+    }
+
+    private void OnDisable()
+    {
         itemInfoPanel.SetActive(false);
     }
 
     private void OnDestroy()
     {
-        // 이벤트 구독 해제
         if (inventoryManager != null)
         {
             inventoryManager.OnInventoryChanged -= UpdateUI;
         }
     }
 
-    // 인벤토리 슬롯 초기화
+    private void MakeDragItem()
+    {
+        if (draggedItemImage == null)
+        {
+            Canvas canvas = FindObjectOfType<Canvas>();
+
+            GameObject dragImageObj = new GameObject("DragItemImage");
+            dragImageObj.transform.SetParent(canvas.transform);
+            draggedItemImage = dragImageObj.AddComponent<Image>();
+            draggedItemImage.raycastTarget = false;
+            draggedItemImage.rectTransform.sizeDelta = new Vector2(80, 80);
+
+            draggedItemImage.gameObject.SetActive(false);
+        }
+    }
+
     private void InitializeInventorySlots(int slotCount)
     {
-        // 기존 슬롯 정리
         foreach (Transform child in slotContainer)
         {
             Destroy(child.gameObject);
         }
         slots.Clear();
 
-        // 새 슬롯 생성
         for (int i = 0; i < slotCount; i++)
         {
             GameObject slotGO = Instantiate(slotPrefab, slotContainer);
             InventorySlot slot = slotGO.GetComponent<InventorySlot>();
             slot.SlotIndex = i;
-            slot.OnItemClicked += OnItemClicked;
-            slot.OnItemPointerEnter += ShowItemInfo;
-            slot.OnItemPointerExit += HideItemInfo;
             slots.Add(slot);
         }
     }
 
-    // UI 업데이트
     private void UpdateUI(List<InventoryItem> inventory)
     {
-        // 모든 슬롯 초기화
         foreach (InventorySlot slot in slots)
         {
             slot.ClearSlot();
         }
 
-        // 인벤토리 아이템으로 슬롯 채우기
         for (int i = 0; i < inventory.Count; i++)
         {
             if (i < slots.Count)
@@ -83,24 +117,25 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    // 아이템 클릭 처리
-    private void OnItemClicked(InventoryItem item)
+    private void DecideInventoryOffset()
     {
-        if (item != null)
+        if(Screen.currentResolution.width / 2 >= transform.position.x)
         {
-            inventoryManager.UseItem(item.item);
+            infoOffSet = new Vector2(invenRect.rect.width / 2, invenRect.rect.height / 2);
+        }
+        else
+        {
+            infoOffSet = new Vector2((invenRect.rect.width / 2 + infoRect.rect.width) * -1, invenRect.rect.height / 2);
         }
     }
 
-    // 아이템 정보 표시
-    private void ShowItemInfo(InventoryItem item, Vector2 position)
+    private void ShowItemInfo(InventoryItem item)
     {
-        if (item != null)
+        if (item.item != null)
         {
             itemNameText.text = item.item.itemName;
             itemDescriptionText.text = item.item.itemDescription;
 
-            // 아이템 타입에 따른 스탯 표시
             string statsText = "";
             switch (item.item.itemType)
             {
@@ -119,15 +154,71 @@ public class InventoryUI : MonoBehaviour
             }
             itemStatsText.text = statsText;
 
-            // 정보 패널 위치 및 표시
-            itemInfoPanel.transform.position = position;
+            DecideInventoryOffset();
+            itemInfoPanel.transform.position = (Vector2)transform.position + infoOffSet;
             itemInfoPanel.SetActive(true);
         }
     }
 
-    // 아이템 정보 숨기기
-    private void HideItemInfo(InventoryItem item)
+    private void HideItemInfo()
     {
         itemInfoPanel.SetActive(false);
+    }
+
+    private T RaycastAndTryGetComponent<T>() where T : Component
+    {
+        raycastResult.Clear();
+
+        raycaster.Raycast(pointerEventData, raycastResult);
+
+        if (raycastResult.Count == 0)
+            return null;
+
+        return raycastResult[0].gameObject.GetComponent<T>();
+    }
+
+    public void OnPointerSlotEnter()
+    {
+        InventorySlot slot = RaycastAndTryGetComponent<InventorySlot>();
+        
+        if (slot == null)
+        {
+            HideItemInfo();
+            curShowSlot = null;
+            return;
+        }
+
+        curShowSlot = slot;
+        ShowItemInfo(slot.CurrentItem);
+    }
+
+    private void OnItemClicked()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            if (draggedFromSlot == null && curShowSlot != null)
+            {
+                draggedFromSlot = curShowSlot;
+                draggedFromSlot.IconImage.enabled = false;
+                draggedItemImage.sprite = draggedFromSlot.CurrentItem.item.icon;
+                draggedItemImage.gameObject.SetActive(true);
+                draggedItemImage.gameObject.transform.position = Input.mousePosition;
+            }
+            else if(draggedFromSlot != null && curShowSlot != null)
+            {
+                draggedFromSlot.IconImage.enabled = true;
+                InventoryManager.Instance.SwapItems(draggedFromSlot.SlotIndex, curShowSlot.SlotIndex);
+                draggedFromSlot = null;
+                draggedItemImage.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void OnItemDrag()
+    {
+        if(draggedFromSlot == null)
+            return;
+
+        draggedItemImage.gameObject.transform.position = Input.mousePosition;
     }
 }

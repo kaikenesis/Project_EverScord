@@ -444,7 +444,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         Vector3 start = new(transform.position.x, transform.position.y + 0.3f, transform.position.z);        
 
         if (Physics.Raycast(start, transform.forward, out hit, distance, playerLayer))
-        {
+        {            
             return true;
         }
         Debug.DrawRay(start, transform.forward * distance, Color.red);
