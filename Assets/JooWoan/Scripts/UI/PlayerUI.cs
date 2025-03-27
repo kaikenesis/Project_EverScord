@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Rendering;
 using UnityEngine;
@@ -8,7 +9,6 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.GameCamera;
 using EverScord.Effects;
-using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.UI
 {
@@ -40,7 +40,7 @@ namespace EverScord.UI
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
         [SerializeField] private Transform iconTransform;
 
-        public ParticleSystem[] SkillCooldownEffects = new ParticleSystem[2];
+        public List<CooldownUIEffect> cooldownUIEffectList = new();
         private ParticleSystem stageClearEffect;
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
@@ -187,16 +187,21 @@ namespace EverScord.UI
             for (int i = 0; i < effects.Length; i++)
             {
                 CooldownUIEffect cooldownEffect = effects[i].GetComponent<CooldownUIEffect>();
-
-                if (i == cooldownEffect.SkillIndex)
-                    SkillCooldownEffects[i] = cooldownEffect.Effect;
+                cooldownUIEffectList.Add(cooldownEffect);
             }
         }
 
         public void PlayCooldownUIEffect(int skillIndex)
         {
-            SkillCooldownEffects[skillIndex].Play();
-            SoundManager.Instance.PlaySound(ConstStrings.SFX_SKILL_CHARGED);
+            for (int i = 0; i < cooldownUIEffectList.Count; i++)
+            {
+                if (cooldownUIEffectList[i].SkillIndex != skillIndex)
+                    continue;
+
+                cooldownUIEffectList[i].Effect.Play();
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_SKILL_CHARGED);
+                break;
+            }
         }
 
         public void SetStageClearGlitter()
