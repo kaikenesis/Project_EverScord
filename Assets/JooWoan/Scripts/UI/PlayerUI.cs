@@ -8,6 +8,7 @@ using Photon.Pun;
 using EverScord.Character;
 using EverScord.GameCamera;
 using EverScord.Effects;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace EverScord.UI
 {
@@ -183,8 +184,13 @@ namespace EverScord.UI
                 return;
             }
 
-            SkillCooldownEffects[0] = effects[0].GetComponent<ParticleSystem>();
-            SkillCooldownEffects[1] = effects[1].GetComponent<ParticleSystem>();
+            for (int i = 0; i < effects.Length; i++)
+            {
+                CooldownUIEffect cooldownEffect = effects[i].GetComponent<CooldownUIEffect>();
+
+                if (i == cooldownEffect.SkillIndex)
+                    SkillCooldownEffects[i] = cooldownEffect.Effect;
+            }
         }
 
         public void PlayCooldownUIEffect(int skillIndex)
