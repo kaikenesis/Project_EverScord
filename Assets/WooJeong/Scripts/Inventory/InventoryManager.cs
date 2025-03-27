@@ -23,8 +23,13 @@ public class InventoryManager : Singleton<InventoryManager>
         base.Awake();
         for(int i = 0; i < inventoryCapacity; i++)
         {
-            inventory.Add(new InventoryItem(null, 1));
+            inventory.Add(new InventoryItem(null, 0));
         }
+    }
+
+    private void Start()
+    {
+        OnInventoryChanged?.Invoke(inventory);
     }
 
     private void Update()
@@ -143,7 +148,8 @@ public class InventoryManager : Singleton<InventoryManager>
                 }
                 else if (inventory[i].quantity == quantity)
                 {
-                    inventory.RemoveAt(i);
+                    inventory[i].item = null;
+                    inventory[i].quantity = 0;
                     OnInventoryChanged?.Invoke(inventory);
                     return true;
                 }
@@ -160,6 +166,26 @@ public class InventoryManager : Singleton<InventoryManager>
         Debug.Log("인벤토리에서 아이템을 찾을 수 없습니다!");
         return false;
     }
+
+    public bool RemoveItem(InventorySlot slot, int quantity = 1)
+    {
+        if (inventory[slot.SlotIndex].quantity > quantity)
+        {
+            inventory[slot.SlotIndex].quantity -= quantity;
+            OnInventoryChanged?.Invoke(inventory);
+            return true;
+        }
+        else if (inventory[slot.SlotIndex].quantity <= quantity)
+        {
+            inventory[slot.SlotIndex].item = null;
+            inventory[slot.SlotIndex].quantity = 0;
+            OnInventoryChanged?.Invoke(inventory);
+            return true;
+        }
+        
+        return false;
+    }
+
 
     public bool UseItem(Item item)
     {
