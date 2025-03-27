@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,11 +6,11 @@ namespace EverScord
 {
     public class UIRoomView : ToggleObject
     {
-        [field: SerializeField] public GameObject RoomContainer;
-        [field: SerializeField] public GameObject InviteButton;
-        [field: SerializeField] public Button[] SingleOnlyButtons;
-        [field: SerializeField] public Button[] MasterOnlyButtons;
-        [field: SerializeField] public Button[] GameSettingButtons;
+        [field: SerializeField] public GameObject RoomContainer { get; private set; }
+        [field: SerializeField] public GameObject InviteButton { get; private set; }
+        [field: SerializeField] public Button[] SingleOnlyButtons { get; private set; }
+        [field: SerializeField] public Button[] MasterOnlyButtons { get; private set; }
+        [field: SerializeField] public Button[] GameSettingButtons { get; private set; }
 
         private void Awake()
         {
@@ -19,13 +20,42 @@ namespace EverScord
         protected override void Initialize()
         {
             base.Initialize();
-
-
         }
 
-        public void DisplayRoom()
+        public void SetActiveMasterButton(bool bActive)
         {
+            for (int i = 0; i < MasterOnlyButtons.Length; i++)
+            {
+                MasterOnlyButtons[i].interactable = bActive;
+            }
+        }
 
+        public void SetActiveSingleButton(bool bActive)
+        {
+            for (int i = 0; i < SingleOnlyButtons.Length; i++)
+            {
+                SingleOnlyButtons[i].interactable = bActive;
+            }
+        }
+
+        public void SetActiveGameSettingButton(bool bActive)
+        {
+            for (int i = 0; i < GameSettingButtons.Length; i++)
+            {
+                GameSettingButtons[i].interactable = bActive;
+            }
+        }
+
+        public void SetInviteButton()
+        {
+            if (InviteButton.activeSelf == false && bFull == false)
+            {
+                InviteButton.SetActive(PhotonNetwork.IsMasterClient);
+            }
+            else if (view.InviteButton.activeSelf == true)
+            {
+                view.InviteButton.SetActive(false);
+            }
         }
     }
 }

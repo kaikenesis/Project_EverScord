@@ -34,7 +34,7 @@ namespace EverScord
         private void Initialize()
         {
             uiRoomPlayers = new UIRoomPlayer[3];
-            for(int i = 0;i<3;i++)
+            for (int i = 0; i < 3; i++)
             {
                 UIRoomPlayer uiRoomPlayer = Instantiate(model.UIRoomPlayer, view.RoomContainer.transform);
                 uiRoomPlayers[i] = uiRoomPlayer;
@@ -44,23 +44,25 @@ namespace EverScord
         #region Handle Methods
         private void HandleDisplayPlayers(List<string> players, List<Tuple<int, int>> typeDatas)
         {
-            int i = 0;
-            for (i = 0; i < players.Count; i++)
+            int count = GameManager.Instance.GameMode.maxPlayer;
+            for(int i = 0; i< count; i++)
             {
-                bool bMaster = false;
-                if (PhotonNetwork.MasterClient.NickName == players[i])
-                    bMaster = true;
+                if(i < players.Count)
+                {
+                    bool bMaster = false;
+                    if (PhotonNetwork.MasterClient.NickName == players[i])
+                        bMaster = true;
 
-                uiRoomPlayers[i].Initialize(players[i], bMaster, typeDatas[i].Item1, typeDatas[i].Item2);
-                uiRoomPlayers[i].gameObject.SetActive(true);
+                    uiRoomPlayers[i].Initialize(players[i], bMaster, typeDatas[i].Item1, typeDatas[i].Item2);
+                    uiRoomPlayers[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    uiRoomPlayers[i].gameObject.SetActive(false);
+                }
             }
 
-            for (; i < 3; i++)
-            {
-                uiRoomPlayers[i].gameObject.SetActive(false);
-            }
-
-            if (players.Count < 3)
+            if (players.Count < count)
             {
                 view.InviteButton.SetActive(PhotonNetwork.IsMasterClient);
                 bFull = false;
@@ -74,15 +76,15 @@ namespace EverScord
 
         private void HandleUpdateRoom()
         {
-            SetActiveMasterButton(PhotonNetwork.IsMasterClient);
+            view.SetActiveMasterButton(PhotonNetwork.IsMasterClient);
 
             if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
             {
-                SetActiveSingleButton(false);
+                view.SetActiveSingleButton(false);
             }
             else
             {
-                SetActiveSingleButton(true);
+                view.SetActiveSingleButton(true);
             }
         }
 
@@ -91,22 +93,6 @@ namespace EverScord
             SetActiveGameUI(bActive);
         }
         #endregion // Handle Methods
-
-        private void SetActiveMasterButton(bool bActive)
-        {
-            for (int i = 0; i < view.MasterOnlyButtons.Length; i++)
-            {
-                view.MasterOnlyButtons[i].interactable = bActive;
-            }
-        }
-
-        private void SetActiveSingleButton(bool bActive)
-        {
-            for (int i = 0; i < view.SingleOnlyButtons.Length; i++)
-            {
-                view.SingleOnlyButtons[i].interactable = bActive;
-            }
-        }
 
         private void SetActiveGameUI(bool bActive)
         {
@@ -121,10 +107,7 @@ namespace EverScord
                 view.InviteButton.SetActive(false);
             }
 
-            for (int i = 0; i < view.GameSettingButtons.Length; i++)
-            {
-                view.GameSettingButtons[i].interactable = bActive;
-            }
+            view.SetActiveGameSettingButton(bActive);
         }
     }
 }

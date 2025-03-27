@@ -1,7 +1,4 @@
-using ExitGames.Client.Photon;
-using System.Collections.Generic;
 using UnityEngine;
-using static EverScord.PlayerData;
 
 namespace EverScord
 {
