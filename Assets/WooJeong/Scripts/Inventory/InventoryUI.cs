@@ -196,8 +196,10 @@ public class InventoryUI : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            // 처음 아이템을 선택
-            if (draggedFromSlot == null && curShowSlot != null)
+            if (draggedFromSlot == null && curShowSlot == null)
+                return;
+
+            if (draggedFromSlot == null && curShowSlot.CurrentItem.item != null)
             {
                 draggedFromSlot = curShowSlot;
                 draggedFromSlot.IconImage.enabled = false;
@@ -205,7 +207,6 @@ public class InventoryUI : MonoBehaviour
                 draggedItemImage.gameObject.SetActive(true);
                 draggedItemImage.gameObject.transform.position = Input.mousePosition;
             }
-            // 다른 아이템을 선택하고 스왑
             else if(draggedFromSlot != null && curShowSlot != null)
             {
                 draggedFromSlot.IconImage.enabled = true;
@@ -213,7 +214,6 @@ public class InventoryUI : MonoBehaviour
                 draggedFromSlot = null;
                 draggedItemImage.gameObject.SetActive(false);
             }
-            // 밖을 선택
             else if(draggedFromSlot != null && raycastResult.Count == 0)
             {
                 Debug.Log("Click outside");
