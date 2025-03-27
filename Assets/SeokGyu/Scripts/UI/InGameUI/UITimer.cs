@@ -71,8 +71,8 @@ namespace EverScord
 
         private void SetTimerText()
         {
-            int currentRoundNum = GameManager.CurrentLevelIndex + 1;
-            timerText.text = string.Format("Round {0} <color=#{1}>[{2}:{3:D2}]</color>", currentRoundNum, colorHex, min, sec);
+            int currentRoundNum = GameManager.GetStageNum(true);
+            timerText.text = string.Format("Stage {0} <color=#{1}>[{2}:{3:D2}]</color>", currentRoundNum, colorHex, min, sec);
         }
 
         private IEnumerator UpdateTimer()
