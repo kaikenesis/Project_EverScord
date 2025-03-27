@@ -12119,13 +12119,21 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 42
       objectReference: {fileID: 0}
-    - target: {fileID: 1780138485867894950, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 290.203
+    - target: {fileID: 3698600626184413835, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
+      propertyPath: m_text
+      value: Normal
       objectReference: {fileID: 0}
-    - target: {fileID: 1780138485867894950, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 290.203
+    - target: {fileID: 3698600626184413835, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 655a0d019f44d3744926aac9a00fa491, type: 2}
+    - target: {fileID: 3698600626184413835, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6140313745365206959, guid: 655a0d019f44d3744926aac9a00fa491, type: 2}
+    - target: {fileID: 3698600626184413835, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4540606844168055961, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
       propertyPath: m_Pivot.x
@@ -12210,10 +12218,6 @@ PrefabInstance:
     - target: {fileID: 6923019025935935204, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
       propertyPath: m_Name
       value: InGameDynamicCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 8327586903003362674, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 505.3
       objectReference: {fileID: 0}
     - target: {fileID: 9187882029912331553, guid: cf24cec42341eb5419b42efeb0a1e639, type: 3}
       propertyPath: m_AnchorMax.x

@@ -75,8 +75,6 @@ public class MapPattern3 : MonoBehaviour
                         Vector3 ranPos = new Vector3(transform.position.x + randomX, 0, transform.position.z + randomZ);
 
                         GameObject mo = ResourceManager.Instance.GetFromPool(fog.AssetGUID, ranPos, Quaternion.identity);
-                        Debug.Log(ranPos);
-                        Debug.Log(mo);
                         fogList.Add(mo);
                         photonView.RPC(nameof(SyncMapFog), RpcTarget.Others, i, ranPos);
                     }                    

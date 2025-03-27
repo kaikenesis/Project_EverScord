@@ -22,7 +22,6 @@ public class MapPattern2 : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("map2 awake");
         photonView = GetComponent<PhotonView>();
 
         for (int i = 0; i < 4; i++)

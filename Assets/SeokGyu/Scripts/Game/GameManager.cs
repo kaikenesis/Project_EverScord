@@ -52,6 +52,7 @@ namespace EverScord
         public static BlinkEffectInfo InvincibleBlinkInfo => instance.invincibleBlinkInfo;
         public static BlinkEffectInfo StunnedBlinkInfo => instance.stunnedBlinkInfo;
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
+        public static bool IsInitialized => instance != null;
 
         [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer, redOutlineLayer;
         [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo, stunnedBlinkInfo;
@@ -260,6 +261,35 @@ namespace EverScord
         private void ChangePlayerData(string nickName)
         {
             OnUpdatePlayerData?.Invoke(nickName);
+        }
+
+        public static int GetStageNum(bool isTemporary = false)
+        {
+            /*
+                발표 자료에서 2스테이지를 제외하고 3스테이지 게임이라고 할 예정이라고 합니다.
+                Stage 3 -> Stage 2
+                Stage 4 -> Stage 3
+            */
+            int num = CurrentLevelIndex + 1;
+
+            if (isTemporary)
+            {
+                switch (num)
+                {
+                    case 3:
+                        num = 2;
+                        break;
+
+                    case 4:
+                        num = 3;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            return num;
         }
 
         private void OnGUI()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Rendering;
 using UnityEngine;
@@ -39,6 +40,8 @@ namespace EverScord.UI
         [SerializeField] private Color32 initialAmmoTextColor, outOfAmmoTextColor;
         [SerializeField] private Transform iconTransform;
 
+        public List<CooldownUIEffect> cooldownUIEffectList = new();
+        private ParticleSystem stageClearEffect;
         private Coroutine bloodCoroutine;
         private float maskSize = 1f;
         private bool isEnabled = false;
@@ -50,7 +53,10 @@ namespace EverScord.UI
             
             var icon = Instantiate(iconPrefab, iconTransform.transform.position, Quaternion.identity);
             icon.transform.SetParent(transform);
+
             SetCursor(CursorType.BATTLE);
+            SetCooldownUIEffect();
+            SetStageClearGlitter();
 
             Volume volume = CharacterCamera.Root.GetComponent<Volume>();
             VolumeProfile profile = volume.profile;
@@ -166,6 +172,50 @@ namespace EverScord.UI
                 bloodMat.SetInt(BLOOD_ENABLED, 0);
 
             bloodCoroutine = null;
+        }
+
+        private void SetCooldownUIEffect()
+        {
+            var effects = GameObject.FindGameObjectsWithTag(ConstStrings.TAG_COOLDOWN_UI_EFFECT);
+
+            if (effects.Length < 2)
+            {
+                Debug.LogWarning("Cooldown UI effect not properly set. Check tags");
+                return;
+            }
+
+            for (int i = 0; i < effects.Length; i++)
+            {
+                CooldownUIEffect cooldownEffect = effects[i].GetComponent<CooldownUIEffect>();
+                cooldownUIEffectList.Add(cooldownEffect);
+            }
+        }
+
+        public void PlayCooldownUIEffect(int skillIndex)
+        {
+            for (int i = 0; i < cooldownUIEffectList.Count; i++)
+            {
+                if (cooldownUIEffectList[i].SkillIndex != skillIndex)
+                    continue;
+
+                cooldownUIEffectList[i].Effect.Play();
+                SoundManager.Instance.PlaySound(ConstStrings.SFX_SKILL_CHARGED);
+                break;
+            }
+        }
+
+        public void SetStageClearGlitter()
+        {
+            var effect = GameObject.FindGameObjectWithTag(ConstStrings.TAG_STAGE_CLEAR_GLITTER);
+            stageClearEffect = effect.GetComponent<ParticleSystem>();
+        }
+
+        public void EnableStageClearGlitter(bool state)
+        {
+            if (state)
+                stageClearEffect.Play();
+            else
+                stageClearEffect.Stop();
         }
 
         public void SetGrayscaleScreen(float currentHealth)

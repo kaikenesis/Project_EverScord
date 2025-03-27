@@ -25,6 +25,7 @@ public class BossPattern09_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
+        StartCoroutine(nameof(CheckDeath));
         for (int i = 0; i < 3; i++)
         {
             bossRPC.PlayAnimation("StandingAttack");

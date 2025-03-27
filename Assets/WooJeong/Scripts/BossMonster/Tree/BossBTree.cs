@@ -6,6 +6,17 @@ public class BossBTree : BTree
 {
     private BossRPC bossRPC;
 
+    protected override void Update()
+    {
+        if(bossRPC.IsDead)
+        {
+            
+            return;
+        }
+
+        base.Update();
+    }
+
     protected override void SetupTree()
     {
         bossRPC = GetComponent<BossRPC>();

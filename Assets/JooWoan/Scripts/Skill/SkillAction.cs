@@ -25,6 +25,12 @@ namespace EverScord.Skill
             get { return skillCoroutine != null; }
         }
 
+        void OnDestroy()
+        {
+            if (GameManager.IsInitialized)
+                cooldownTimer.UnsubscribeOnCooldownOver(cooldownTimer.PlayCooldownUIEffect);
+        }
+
         public virtual void Init(CharacterControl activator, CharacterSkill skill, PlayerData.EJob ejob, int skillIndex)
         {
             this.activator  = activator;
@@ -40,12 +46,6 @@ namespace EverScord.Skill
             StartCoroutine(cooldownTimer.RunTimer());
         }
 
-        public void SetNewCooldown()
-        {
-            float cooldown = activator.Stats.DecreasedCooldown(SkillInfo.cooldown);
-            cooldownTimer.SetNewCooldown(cooldown);
-        }
-
         public virtual bool Activate()
         {
             if (cooldownTimer.IsCooldown)
@@ -59,6 +59,12 @@ namespace EverScord.Skill
         {
             if (skillCoroutine != null)
                 StopCoroutine(skillCoroutine);
+        }
+
+        public void SetNewCooldown()
+        {
+            float cooldown = activator.Stats.DecreasedCooldown(SkillInfo.cooldown);
+            cooldownTimer.SetNewCooldown(cooldown);
         }
 
         public abstract void OffensiveAction();

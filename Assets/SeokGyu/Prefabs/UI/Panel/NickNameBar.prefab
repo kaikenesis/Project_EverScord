@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: NickName
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8442cf7570d363245ab90c96d5ec360d, type: 2}
-  m_sharedMaterial: {fileID: -634663603510050946, guid: 8442cf7570d363245ab90c96d5ec360d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 652c8cb1e71f0f54a8526e6058624037, type: 2}
+  m_sharedMaterial: {fileID: 5770006403182033589, guid: 652c8cb1e71f0f54a8526e6058624037, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -92,13 +92,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -469,6 +469,10 @@ PrefabInstance:
     - target: {fileID: 8442215952889185937, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
       propertyPath: m_Name
       value: ChangeNickname
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442215952889185937, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8817722929783028848, guid: 4ef54126f5f2ef048b4c1e192977aeed, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target

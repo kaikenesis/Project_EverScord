@@ -9,7 +9,8 @@ namespace EverScord.Skill
     public class TrajectoryPredictor
     {
         private const float TRAJECTORY_STEP = 0.02f;
-        private const float LINE_WIDTH = 0.2f;
+        private const float LINE_START_WIDTH = 0.2f;
+        private const float LINE_END_WIDTH = 0.8f;
 
         // -Physics.gravity.y;
         private readonly float GRAVITY; 
@@ -47,8 +48,8 @@ namespace EverScord.Skill
 
             trajectoryLine               = skillTransform.AddComponent<LineRenderer>();
             trajectoryLine.textureMode   = LineTextureMode.Stretch;
-            trajectoryLine.startWidth    = LINE_WIDTH;
-            trajectoryLine.endWidth      = LINE_WIDTH;
+            trajectoryLine.startWidth    = LINE_START_WIDTH;
+            trajectoryLine.endWidth      = LINE_END_WIDTH;
             trajectoryLine.material      = lineMat;
             trajectoryLine.useWorldSpace = true;
 

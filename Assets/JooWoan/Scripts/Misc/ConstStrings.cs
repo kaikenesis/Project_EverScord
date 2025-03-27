@@ -30,6 +30,8 @@ namespace EverScord
         public const string TAG_WEAPON_GUNPOINT = "Weapon_Gunpoint";
         public const string TAG_WEAPON_LEFTTARGET = "Weapon_LeftTarget";
         public const string TAG_WEAPON_LEFTHINT = "Weapon_LeftHint";
+        public const string TAG_COOLDOWN_UI_EFFECT = "SkillCooldownUIEffect";
+        public const string TAG_STAGE_CLEAR_GLITTER = "StageClearGlitter";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";
@@ -85,6 +87,7 @@ namespace EverScord
         public const string SFX_SWOOSH_1 = "Swoosh_1";
         public const string SFX_SWOOSH_2 = "Swoosh_2";
         public const string SFX_AUGMENT_CONFIRM = "Augment_Confirm";
+        public const string SFX_SKILL_CHARGED = "SkillCharged";
         public const string SFX_CLEAR_WIN = "ClearWinSound";
         public const string BGM_DEFEAT = "DefeatBGM";
         public const string BGM_TITLE = "TitleBGM";

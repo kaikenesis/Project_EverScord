@@ -8,6 +8,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -51,6 +52,7 @@ public class BossRPC : MonoBehaviour, IEnemy
     public BodyType EnemyBodyType => BodyType.FLESH;
 
     private bool isDead;
+    public bool IsDead => isDead;
 
     public static Action OnBossDead = delegate { };
 
@@ -131,7 +133,6 @@ public class BossRPC : MonoBehaviour, IEnemy
     
     public void PlayAnimation(string animationName, float transitionDuration)
     {
-        Debug.Log(animationName);
         photonView.RPC("SyncBossAnimation", RpcTarget.All, animationName, transitionDuration);
     }
 
@@ -411,15 +412,15 @@ public class BossRPC : MonoBehaviour, IEnemy
 
         if (!isDead && attacker.CharacterPhotonView.IsMine && HP == 0 && Phase == 2)
         {
+            StopAllCoroutines();
             isDead = true;
             attacker.IncreaseKillCount();
             if(PhotonNetwork.IsMasterClient)
             {
+                StartCoroutine(Death());
                 OnBossDead?.Invoke();
             }
         }
-
-        Debug.Log(decrease + " damage, remain : " + HP);
     }
 
     public void PhaseUp()
@@ -562,21 +563,27 @@ public class BossRPC : MonoBehaviour, IEnemy
         hitBox.enabled = true;
     }
 
-    public void Death()
+    private void DisableObj()
     {
+        laserPoint.SetActive(false);
+        projectorObj_Pattern4.SetActive(false);
+        projectorObj_Pattern5.SetActive(false);
+        fogPlane.SetActive(false);
+        safeZone.SetActive(false);
+    }
+
+    public IEnumerator Death()
+    {
+        hitBox.enabled = false;
+        PlayAnimation("Die");
+        PlaySound("BossDie");
+        DisableObj();
+        yield return new WaitForSeconds(clipDict["Die"]);
+
         GameOverControl gameOver = GameManager.Instance.GameOverController;
 
         if (PhotonNetwork.IsMasterClient)
             GameManager.Instance.StartCoroutine(gameOver.ShowGameover(true, 3f));
-
-        photonView.RPC("SyncBossDeath", RpcTarget.All);
-    }
-
-    [PunRPC]
-    private void SyncBossDeath()
-    {
-        //bossDebuffSystem.ClearActions();
-        Destroy(gameObject);
     }
 
     public void TestDamage(GameObject sender, float value)

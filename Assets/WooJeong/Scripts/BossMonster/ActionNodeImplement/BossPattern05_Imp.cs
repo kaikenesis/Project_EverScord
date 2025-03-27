@@ -23,7 +23,7 @@ public class BossPattern05_Imp : AttackNodeImplement
 
     protected override IEnumerator Act()
     {
-        Debug.Log("Attack5 start");
+        StartCoroutine(nameof(CheckDeath));
 
         bossRPC.PlayAnimation("TakeOff");
         bossRPC.PlayJumpEffect();
@@ -49,6 +49,5 @@ public class BossPattern05_Imp : AttackNodeImplement
         bossRPC.PlayAnimation("Idle");
         isEnd = true;
         action = null;
-        Debug.Log("Attack5 end");
     }
 }
