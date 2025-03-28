@@ -7,8 +7,9 @@ namespace EverScord.Skill
 {
     public class BombDeliveryAction : SkillAction
     {
-        private const int MAX_COLLISION_CHECK = 100;
-        private const float CHECK_DISTANCE_OFFSET = 0.5f;
+        private const int MAX_COLLISION_CHECK = 10;
+        private const float CHECK_DISTANCE_OFFSET = 0.1f;
+        private const float CHECK_RADIUS = 3f;
 
         private BombDeliverySkill skill;
         private Transform closestTarget;
@@ -140,23 +141,61 @@ namespace EverScord.Skill
 
         private Vector3 GetSafeTeleportPosition(Vector3 targetPos)
         {
-            Vector3 playerToTargetDir = (targetPos - activator.PlayerTransform.position).normalized;
+            Vector3 targetToPlayerDir = (activator.PlayerTransform.position - targetPos).normalized;
 
             Vector3 teleportPos = targetPos;
-            float checkRadius = activator.Controller.radius;
+            float checkRadius = CHECK_RADIUS;
 
-            int checkCount = 0;
-            float distance = 1f;
+            int angleCount = 8;
+            float degreesPerAngle = 360 / angleCount;
 
-            while (Physics.CheckSphere(teleportPos, checkRadius, skill.CollidableLayer) && checkCount <= MAX_COLLISION_CHECK)
+            for (int i = 0; i < angleCount; i++)
             {
-                ++checkCount;
-                distance += CHECK_DISTANCE_OFFSET;
-                teleportPos = targetPos + playerToTargetDir * distance;
+                float angle = i * degreesPerAngle;
+                Vector3 currentDirection = Quaternion.Euler(0, angle, 0) * targetToPlayerDir;
+
+                teleportPos = targetPos;
+                float distance = 0f;
+                int checkCount = -1;
+                bool flag = false;
+
+                while (checkCount <= MAX_COLLISION_CHECK)
+                {
+                    Collider[] colliders = Physics.OverlapSphere(teleportPos, checkRadius, skill.CollidableLayer);
+
+                    if (IsWall(colliders))
+                        break;
+                    
+                    if (colliders.Length == 0)
+                    {
+                        flag = true;
+                        break;
+                    }
+
+                    distance += CHECK_DISTANCE_OFFSET;
+                    teleportPos = targetPos + currentDirection * distance;
+                    ++checkCount;
+                }
+
+                if (flag)
+                    break;
             }
 
             teleportPos.y = 0f;
             return teleportPos;
+        }
+
+        private bool IsWall(Collider[] colliders)
+        {
+            foreach (Collider collider in colliders)
+            {
+                int colliderLayer = collider.gameObject.layer;
+
+                if (((1 << colliderLayer) & GameManager.WallLayer) != 0)
+                    return true;
+            }
+
+            return false;
         }
 
         public override void ExitSkill()

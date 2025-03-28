@@ -674,8 +674,6 @@ namespace EverScord.Character
 
         public IEnumerator HandleDeath()
         {
-            Debug.Log($"------ {CharacterType.ToString()}[{CharacterPhotonView.ViewID}] is dead.");
-
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.DEATH);
 
@@ -701,10 +699,8 @@ namespace EverScord.Character
             SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_1);
             SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_2);
 
-            if (photonView.IsMine)
-            {
-                GameManager.Instance.GameOverController.CheckGameOver();
-            }
+            if (photonView.IsMine && PhotonNetwork.IsConnected)
+                GameManager.View.RPC(nameof(GameManager.Instance.CheckDefeat), RpcTarget.MasterClient, photonView.ViewID);
 
             yield return new WaitForSeconds(AnimationControl.AnimInfo.Death.length);
 
@@ -716,8 +712,6 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
-            Debug.Log($"++++++ {CharacterType.ToString()}[{CharacterPhotonView.ViewID}] has revived.");
-
             if (deathCoroutine != null)
                 StopCoroutine(deathCoroutine);
 

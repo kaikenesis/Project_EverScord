@@ -32,7 +32,6 @@ public class MonsterSpawner : MonoBehaviour
     {
         await ResourceManager.Instance.CreatePool(monster.AssetGUID, 1);
         LevelControl.OnProgressUpdated += ProgressCheck;
-        spawn = StartCoroutine(Spawn());
     }
 
     private void OnDestroy()
@@ -40,11 +39,24 @@ public class MonsterSpawner : MonoBehaviour
         LevelControl.OnProgressUpdated -= ProgressCheck;
     }
 
+    public static void ActivateSpawners()
+    {
+        var spawners = FindObjectsOfType<MonsterSpawner>();
+
+        foreach (MonsterSpawner spawner in spawners)
+            spawner.StartSpawn();
+    }
+
+    public void StartSpawn()
+    {
+        spawn = StartCoroutine(Spawn());
+    }
+
     protected void ProgressCheck(float currentProgress)
     {
         if (currentProgress >= 1f)
         {
-            SyncSpawnMarker(false);
+            photonView.RPC(nameof(SyncSpawnMarker), RpcTarget.All, false);
             gameObject.SetActive(false);
         }
     }
@@ -54,12 +66,24 @@ public class MonsterSpawner : MonoBehaviour
         if(!PhotonNetwork.IsMasterClient)
             yield break;
 
-        yield return new WaitForSeconds(startDelay);
+        float timeUntilSpawn = 0f;
+
+        // yield return new WaitForSeconds(startDelay);
+        for (float t = 0f; t <= startDelay; t += Time.deltaTime)
+        {
+            timeUntilSpawn = startDelay - t;
+
+            if (enableMarker && timeUntilSpawn < SPAWN_ALERT_TIME)
+                photonView.RPC(nameof(SyncSpawnMarker), RpcTarget.All, true);
+
+            yield return null;
+        }
+
         curTime = spawnTimer;
         while(true)
         {
             curTime++;
-            float timeUntilSpawn = spawnTimer - curTime;
+            timeUntilSpawn = spawnTimer - curTime;
 
             if (AllPlayerDead() == true)
                 yield break;

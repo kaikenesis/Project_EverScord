@@ -46,6 +46,7 @@ namespace EverScord
         public static LayerMask GroundLayer => instance.groundLayer;
         public static LayerMask EnemyLayer => instance.enemyLayer;
         public static LayerMask PlayerLayer => instance.playerLayer;
+        public static LayerMask WallLayer => instance.wallLayer;
         public static LayerMask OutlineLayer => instance.outlineLayer;
         public static LayerMask RedOutlineLayer => instance.redOutlineLayer;
         public static BlinkEffectInfo HurtBlinkInfo => instance.hurtBlinkInfo;
@@ -54,7 +55,7 @@ namespace EverScord
         public IDictionary<int, CharacterControl> PlayerDict => playerDict;
         public static bool IsInitialized => instance != null;
 
-        [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, outlineLayer, redOutlineLayer;
+        [SerializeField] private LayerMask groundLayer, enemyLayer, playerLayer, wallLayer, outlineLayer, redOutlineLayer;
         [SerializeField] private BlinkEffectInfo hurtBlinkInfo, invincibleBlinkInfo, stunnedBlinkInfo;
         [SerializeField] private CostData costData;
         public CostData CostDatas
@@ -106,6 +107,8 @@ namespace EverScord
 
         public static Action<int> OnUpdatedMoney = delegate { };
         public static Action<string> OnUpdatePlayerData = delegate { };
+
+        private static int loadCompletePlayers = 0;
 
         public static GameManager Instance
         {
@@ -240,6 +243,10 @@ namespace EverScord
             SetLevelIndex(0);
             armorData.ResetArmorLevel();
             Instance.LoadScreen.SetTargetCamera(Camera.main);
+
+            LevelControl.OnLoadComplete -= MonsterSpawner.ActivateSpawners;
+            LevelControl.OnLoadComplete += MonsterSpawner.ActivateSpawners;
+
             LevelControl.LoadScene(ConstStrings.SCENE_MAINGAME);
         }
 
@@ -258,9 +265,56 @@ namespace EverScord
         }
 
         [PunRPC]
+        public void CheckDefeat(int viewID)
+        {
+            bool flag = true;
+
+            foreach (var player in PlayerDict.Values)
+            {
+                if (player.CharacterPhotonView.ViewID == viewID)
+                    continue;
+                
+                if (!player.IsDead)
+                {
+                    flag = false;
+                    break;
+                }
+            }
+
+            if (flag && !GameOverControl.IsDefeat)
+            {
+                GameOverController.SetIsDefeat(true);
+                GameOverController.ShowGameover(false);
+            }
+        }
+
+        [PunRPC]
+        public void TryExitLoadScreen()
+        {
+            loadCompletePlayers++;
+
+            if (loadCompletePlayers == PhotonNetwork.CurrentRoom.PlayerCount)
+            {
+                loadCompletePlayers = 0;
+                View.RPC(nameof(SyncExitLoadScreen), RpcTarget.All);
+            }
+        }
+
+        [PunRPC]
+        private void SyncExitLoadScreen()
+        {
+            StartCoroutine(LevelControl.ExitLoadingScreen());
+        }
+
+        [PunRPC]
         private void ChangePlayerData(string nickName)
         {
             OnUpdatePlayerData?.Invoke(nickName);
+        }
+
+        public void SetLoadCompletePlayerCount(int count)
+        {
+            loadCompletePlayers = count;
         }
 
         public static int GetStageNum(bool isTemporary = false)

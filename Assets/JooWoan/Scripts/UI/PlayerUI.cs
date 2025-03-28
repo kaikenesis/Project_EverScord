@@ -74,12 +74,6 @@ namespace EverScord.UI
             SetGrayscaleScreen(false);
         }
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F8))
-                SetGrayscaleScreen(true);
-        }
-
         public static void SetCursor(CursorType type, float xPos = 0.5f, float yPos = 0.5f)
         {
             cursorIcon = GameManager.Instance.CrossHairCursor;

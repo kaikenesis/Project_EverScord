@@ -36,6 +36,9 @@ namespace EverScord
             
             if (Input.GetKeyDown(KeyCode.F7))
                 DebugStats();
+
+            if (Input.GetKeyDown(KeyCode.F8))
+                FinishSkillCooldowns();
         }
 
         public void DebugStats()
@@ -54,6 +57,20 @@ namespace EverScord
             Debug.Log($"Alteration RELOAD-: Additive: {stats.BonusDict[StatType.RELOADSPEED_DECREASE].additive}, Mult: {stats.BonusDict[StatType.RELOADSPEED_DECREASE].multiplicative}");
             Debug.Log($"Alteration SKILLDMG+: Additive: {stats.BonusDict[StatType.SKILLDAMAGE_INCREASE].additive}, Mult: {stats.BonusDict[StatType.SKILLDAMAGE_INCREASE].multiplicative}");
             Debug.Log($"{character.CharacterType.ToString()}===============================================");
+        }
+
+        private void FinishSkillCooldowns()
+        {
+            photonView.RPC(nameof(SyncFinishSkillCooldowns), RpcTarget.All, CharacterControl.CurrentClientCharacter.CharacterPhotonView.ViewID);
+        }
+
+        [PunRPC]
+        private void SyncFinishSkillCooldowns(int viewID)
+        {
+            var skillActions = GameManager.Instance.PlayerDict[viewID].SkillList;
+
+            for (int i = 0; i < skillActions.Count; i++)
+                skillActions[i].SkillAction.Timer.CompleteCooldown();
         }
 
         public void TeleportToFinalStage()
