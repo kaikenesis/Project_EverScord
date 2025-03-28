@@ -131,22 +131,22 @@ public class InventoryUI : MonoBehaviour
 
     private void ShowItemInfo(InventoryItem item)
     {
-        if (item.item != null)
+        if (item.Item != null)
         {
-            itemNameText.text = item.item.itemName;
-            itemDescriptionText.text = item.item.itemDescription;
+            itemNameText.text = item.Item.ItemName;
+            itemDescriptionText.text = item.Item.ItemDescription;
 
             string statsText = "";
-            switch (item.item.itemType)
+            switch (item.Item.ItemType)
             {
-                case Item.ItemType.Weapon:
-                    statsText = $"공격력: {item.item.damage}";
+                case Item.EItemType.Weapon:
+                    statsText = $"공격력: {item.Item.Damage}";
                     break;
-                case Item.ItemType.Armor:
-                    statsText = $"방어력: {item.item.defense}";
+                case Item.EItemType.Armor:
+                    statsText = $"방어력: {item.Item.Defense}";
                     break;
-                case Item.ItemType.Consumable:
-                    statsText = $"회복량: {item.item.healAmount}";
+                case Item.EItemType.Consumable:
+                    statsText = $"회복량: {item.Item.HealAmount}";
                     break;
                 default:
                     statsText = "";
@@ -199,11 +199,11 @@ public class InventoryUI : MonoBehaviour
             if (draggedFromSlot == null && curShowSlot == null)
                 return;
 
-            if (draggedFromSlot == null && curShowSlot.CurrentItem.item != null)
+            if (draggedFromSlot == null && curShowSlot.CurrentItem.Item != null)
             {
                 draggedFromSlot = curShowSlot;
                 draggedFromSlot.IconImage.enabled = false;
-                draggedItemImage.sprite = draggedFromSlot.CurrentItem.item.icon;
+                draggedItemImage.sprite = draggedFromSlot.CurrentItem.Item.Icon;
                 draggedItemImage.gameObject.SetActive(true);
                 draggedItemImage.gameObject.transform.position = Input.mousePosition;
             }

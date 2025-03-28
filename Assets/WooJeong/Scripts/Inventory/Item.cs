@@ -8,18 +8,18 @@ public enum EItemType
 [CreateAssetMenu(menuName = "ScriptableObjects/Data/ItemData")]
 public class Item : ScriptableObject
 {
-    public string itemName;
-    public Sprite icon;   
-    public string itemDescription;
-    public int maxStackSize = 1;
-    public bool isStackable;
-    public ItemType itemType;
+    public string ItemName;
+    public Sprite Icon;   
+    public string ItemDescription;
+    public int MaxStackSize = 1;
+    public bool IsStackable;
+    public EItemType ItemType;
 
-    public int damage;
-    public int defense;
-    public int healAmount;
+    public int Damage;
+    public int Defense;
+    public int HealAmount;
 
-    public enum ItemType
+    public enum EItemType
     {
         Weapon,
         Armor,
