@@ -674,6 +674,8 @@ namespace EverScord.Character
 
         public IEnumerator HandleDeath()
         {
+            Debug.Log($"------ {CharacterType.ToString()}[{CharacterPhotonView.ViewID}] is dead.");
+
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.DEATH);
 
@@ -714,6 +716,8 @@ namespace EverScord.Character
 
         public IEnumerator HandleRevival()
         {
+            Debug.Log($"++++++ {CharacterType.ToString()}[{CharacterPhotonView.ViewID}] has revived.");
+
             if (deathCoroutine != null)
                 StopCoroutine(deathCoroutine);
 
