@@ -1,4 +1,3 @@
-using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,18 +42,6 @@ namespace EverScord
             for (int i = 0; i < GameSettingButtons.Length; i++)
             {
                 GameSettingButtons[i].interactable = bActive;
-            }
-        }
-
-        public void SetInviteButton()
-        {
-            if (InviteButton.activeSelf == false && bFull == false)
-            {
-                InviteButton.SetActive(PhotonNetwork.IsMasterClient);
-            }
-            else if (view.InviteButton.activeSelf == true)
-            {
-                view.InviteButton.SetActive(false);
             }
         }
     }

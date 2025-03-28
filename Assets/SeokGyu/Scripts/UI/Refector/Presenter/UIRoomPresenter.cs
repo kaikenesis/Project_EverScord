@@ -17,6 +17,8 @@ namespace EverScord
 
         private void Awake()
         {
+            PhotonRoomController.OnJoinRoom += HandleJoinRoom;
+            PhotonRoomController.OnRoomLeft += HandleRoomLeft;
             PhotonRoomController.OnDisplayPlayers += HandleDisplayPlayers;
             PhotonRoomController.OnUpdateRoom += HandleUpdateRoom;
             PhotonMatchController.OnUpdateUI += HandleUpdateUI;
@@ -26,6 +28,8 @@ namespace EverScord
 
         private void OnDestroy()
         {
+            PhotonRoomController.OnJoinRoom -= HandleJoinRoom;
+            PhotonRoomController.OnRoomLeft -= HandleRoomLeft;
             PhotonRoomController.OnDisplayPlayers -= HandleDisplayPlayers;
             PhotonRoomController.OnUpdateRoom -= HandleUpdateRoom;
             PhotonMatchController.OnUpdateUI -= HandleUpdateUI;
@@ -42,6 +46,18 @@ namespace EverScord
         }
 
         #region Handle Methods
+        private void HandleJoinRoom()
+        {
+            view.OnActivateObjects();
+
+            OnVisibleObject?.Invoke();
+        }
+
+        private void HandleRoomLeft()
+        {
+            view.OnDeactivateObjects();
+        }
+
         private void HandleDisplayPlayers(List<string> players, List<Tuple<int, int>> typeDatas)
         {
             int count = GameManager.Instance.GameMode.maxPlayer;

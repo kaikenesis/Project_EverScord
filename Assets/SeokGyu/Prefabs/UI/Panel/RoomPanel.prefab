@@ -135,7 +135,9 @@ GameObject:
   - component: {fileID: 377488259225948171}
   - component: {fileID: 56551903761270391}
   - component: {fileID: 1886709744607732084}
-  - component: {fileID: 788549286250761825}
+  - component: {fileID: 5407079138007976287}
+  - component: {fileID: 3886134300739842238}
+  - component: {fileID: 5760575874665343320}
   m_Layer: 5
   m_Name: RoomPanel
   m_TagString: Untagged
@@ -199,7 +201,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &788549286250761825
+--- !u!114 &5407079138007976287
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -208,32 +210,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 8549247223990952150}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a8ac18d981409c43beec7d36a07a9b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 27d3b89e905b79040a5ccb96dee52434, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiRoomPlayerPrefab: {fileID: 2802581190963127729, guid: e9f0313e3f5c6c047a21e7993b1c8ce3, type: 3}
-  roomContainer: {fileID: 816144525450218428}
-  inviteButton: {fileID: 7139936580103585115}
-  hideObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  showObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  singleOnlyButtons: []
-  masterOnlyButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  gameSettingButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  toggleObjects: []
+  objectOptions: []
+  doTweenID: 
+  <RoomContainer>k__BackingField: {fileID: 816144525450218428}
+  <InviteButton>k__BackingField: {fileID: 7139936580103585115}
+  <SingleOnlyButtons>k__BackingField: []
+  <MasterOnlyButtons>k__BackingField: []
+  <GameSettingButtons>k__BackingField: []
+--- !u!114 &3886134300739842238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8549247223990952150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c838bbb283f25634db64918e7e655f24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <UIRoomPlayer>k__BackingField: {fileID: 2802581190963127729, guid: e9f0313e3f5c6c047a21e7993b1c8ce3, type: 3}
+--- !u!114 &5760575874665343320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8549247223990952150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 390398653066f8543b7c24fe08c7a453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  model: {fileID: 3886134300739842238}
+  view: {fileID: 5407079138007976287}
 --- !u!1001 &4147005401162365410
 PrefabInstance:
   m_ObjectHideFlags: 0
