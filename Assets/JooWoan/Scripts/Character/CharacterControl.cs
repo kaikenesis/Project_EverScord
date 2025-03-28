@@ -1074,7 +1074,7 @@ namespace EverScord.Character
             if (photonView.ViewID != viewID)
                 return;
 
-            reviveCircle.SyncExitCircle();
+            reviveCircle.ProceedExitCircle();
         }
 
         [PunRPC]

@@ -89,7 +89,7 @@ namespace EverScord.UI
                 return;
 
             if (rescuers.Contains(player))
-                return;                
+                return;
 
             rescuers.Add(player);
             revivingPeople++;
@@ -111,7 +111,10 @@ namespace EverScord.UI
         {
             if (!IsPlayer(other, out var player))
                 return;
-            
+
+            if (!rescuers.Contains(player))
+                return;
+
             rescuers.Remove(player);
             revivingPeople--;
         }
@@ -195,6 +198,7 @@ namespace EverScord.UI
 
         private void ExitCircle()
         {
+            rescuers.Clear();
             revivingPeople = 0;
             reviveCollider.isTrigger = false;
 
@@ -217,7 +221,7 @@ namespace EverScord.UI
             reviveCollider.isTrigger = true;
         }
 
-        public void SyncExitCircle()
+        public void ProceedExitCircle()
         {
             // If exit circle already happened on this client (before the rpc), don execute logic
             if (revivingPeople == 0)
