@@ -10,7 +10,7 @@ public class NMS2_AttackState2 : NAttackState
     {        
         monsterController.PlayAnimation("Attack2");
         monsterController.PlaySound("NMS2_2");
-        float time = monsterController.clipDict["Attack2"];
+        float time = monsterController.ClipDict["Attack2"];
         controller.isUpgraded = true;
         yield return new WaitForSeconds(time);
         StartCoroutine(monsterController.CoolDown2());

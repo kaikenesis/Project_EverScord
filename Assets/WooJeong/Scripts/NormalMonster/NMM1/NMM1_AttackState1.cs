@@ -21,7 +21,7 @@ public class NMM1_AttackState1 : NAttackState
         controller.ProjectLineIndicator(1f);
         yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack1");
-        float time = monsterController.clipDict["Attack1"];
+        float time = monsterController.ClipDict["Attack1"];
         monsterController.PlaySound("NMM1_Sound");
         yield return new WaitForSeconds(time / 3);
         monsterController.BoxCollider1.enabled = true;

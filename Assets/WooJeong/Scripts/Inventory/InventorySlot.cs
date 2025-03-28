@@ -9,7 +9,7 @@ using System.Collections.Generic;
 public class InventorySlot : MonoBehaviour
 {
     [SerializeField] private GameObject iconContainer;
-    [SerializeField] private Image iconImage;
+    private Image iconImage;
     [SerializeField] private TextMeshProUGUI quantityText;
     [SerializeField] private GameObject quantityContainer;
 

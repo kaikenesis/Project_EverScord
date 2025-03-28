@@ -16,7 +16,7 @@ public class NMM2_AttackState1 : NAttackState
         //yield return project = StartCoroutine(monsterController.ProjectAttackRange(1));
 
         monsterController.PlayAnimation("Attack1");
-        float time = monsterController.clipDict["Attack1"];
+        float time = monsterController.ClipDict["Attack1"];
 
         yield return new WaitForSeconds(0.6f);
         capsuleCollider.enabled = true;
@@ -34,7 +34,7 @@ public class NMM2_AttackState1 : NAttackState
         navMeshAgent.stoppingDistance = monsterController.monsterData.Skill01_RangeZ;
         while (true)
         {
-            navMeshAgent.destination = monsterController.player.transform.position;
+            navMeshAgent.destination = monsterController.Player.transform.position;
             if (monsterController.CalcDistance() < monsterController.monsterData.Skill01_RangeZ)
             {
                 yield break;

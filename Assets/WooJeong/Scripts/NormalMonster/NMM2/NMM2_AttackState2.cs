@@ -15,7 +15,7 @@ public class NMM2_AttackState2 : NAttackState
     protected override IEnumerator Attack()
     {
         monsterController.PlayAnimation("Attack2");
-        float time = monsterController.clipDict["Attack2"];
+        float time = monsterController.ClipDict["Attack2"];
 
         yield return new WaitForSeconds(time/2);
         monsterController.PlaySound("NMM2_2");

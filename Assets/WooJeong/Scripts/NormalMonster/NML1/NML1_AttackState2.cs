@@ -23,7 +23,7 @@ public class NML1_AttackState2 : NAttackState
         controller.PhotonView.RPC(nameof(SyncProjectLineIndicator), RpcTarget.All, 1.0f);
         yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
-        float time = monsterController.clipDict["Attack2"];
+        float time = monsterController.ClipDict["Attack2"];
 
         yield return new WaitForSeconds(time / 4);
         monsterController.BoxCollider2.enabled = true;

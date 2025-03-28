@@ -13,7 +13,7 @@ public class NMS1_AttackState2 : NAttackState
     {
         monsterController.PlayAnimation("Attack2");
         monsterController.PlaySound("NMS1_2");
-        float time = monsterController.clipDict["Attack2"];
+        float time = monsterController.ClipDict["Attack2"];
         monsterController.BoxCollider2.enabled = true;
         yield return new WaitForSeconds(time);
         monsterController.BoxCollider2.enabled = false;

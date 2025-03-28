@@ -14,9 +14,9 @@ public class NML2_AttackState1 : NAttackState
         Fire();
         monsterController.PlayAnimation("Attack1");
 
-        float time = monsterController.clipDict["Attack1"]
-                    + monsterController.clipDict["Attack1_Loop"]
-                    + monsterController.clipDict["Attack1_End"];
+        float time = monsterController.ClipDict["Attack1"]
+                    + monsterController.ClipDict["Attack1_Loop"]
+                    + monsterController.ClipDict["Attack1_End"];
         monsterController.PlaySound("NML2_1");
         yield return new WaitForSeconds(time);
         StartCoroutine(monsterController.CoolDown1());
@@ -30,7 +30,7 @@ public class NML2_AttackState1 : NAttackState
         foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
         {
             if((player.PlayerTransform.position - transform.position).magnitude <= monsterController.monsterData.Skill01_RangeX
-                && player.gameObject != monsterController.player)
+                && player.gameObject != monsterController.Player)
             {
                 player2 = player.gameObject;
                 break;
@@ -38,7 +38,7 @@ public class NML2_AttackState1 : NAttackState
         }
 
         monsterController.InstantiateMonsterAttack(
-            monsterController.player.transform.position,
+            monsterController.Player.transform.position,
             monsterController.monsterData.Skill01_RangeX,
             monsterController.monsterData.ProjectionTime,
             "NML2_A1_Effect01",

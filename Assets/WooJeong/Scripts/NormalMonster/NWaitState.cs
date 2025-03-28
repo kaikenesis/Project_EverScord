@@ -26,23 +26,23 @@ public abstract class NWaitState : MonoBehaviour, IState
         if (!isEnter)
             return;
 
-        if (monsterController.isStun)
+        if (monsterController.IsStun)
         {
             isEnter = false;
             ExitToStun();
             return;
         }
 
-        if (monsterController.isDead)
+        if (monsterController.IsDead)
         {
             isEnter = false;
             ExitToDeath();
             return;
         }
 
-        if (monsterController.player == null)
+        if (monsterController.Player == null)
             monsterController.SetNearestPlayer();
-        if (monsterController.player == null && coGameEnd == null)
+        if (monsterController.Player == null && coGameEnd == null)
             coGameEnd = StartCoroutine(monsterController.GameEnd());
 
         monsterController.LookPlayer();

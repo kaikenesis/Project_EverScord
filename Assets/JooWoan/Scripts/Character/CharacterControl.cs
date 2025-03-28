@@ -271,7 +271,7 @@ namespace EverScord.Character
                 {
                     IEnemy enemy = hits[i].transform.GetComponent<IEnemy>();
 
-                    if (enemy is NController nctrl && nctrl.isDead)
+                    if (enemy is NController nctrl && nctrl.IsDead)
                         continue;
                     
                     OutlineControl.EnableEnemyOutline(photonView, enemy);

@@ -24,12 +24,12 @@ public abstract class NController : MonoBehaviour, IEnemy
     private const float MEDIUM_SIZE = 3f;
     private const float LARGE_SIZE = 4f;
 
-    [HideInInspector] public Dictionary<string, float> clipDict = new();
+    [HideInInspector] public Dictionary<string, float> ClipDict = new();
     [HideInInspector] public int LastAttack = 0;
-    [HideInInspector] public GameObject player;
-    [HideInInspector] public float stunTime = 2;
-    [HideInInspector] public bool isStun = false;
-    [HideInInspector] public bool isDead = false;
+    [HideInInspector] public GameObject Player;
+    [HideInInspector] public float StunTime = 2;
+    [HideInInspector] public bool IsStun = false;
+    [HideInInspector] public bool IsDead = false;
     protected float curCool1 = 0;
     protected float curCool2 = 0;
     protected RaycastHit hit;
@@ -84,7 +84,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
         foreach (AnimationClip clip in Animator.runtimeAnimatorController.animationClips)
         {
-            clipDict[clip.name] = clip.length;
+            ClipDict[clip.name] = clip.length;
         }
 
         Setup();
@@ -131,7 +131,7 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     private void OnEnable()
     {
-        isDead = false;
+        IsDead = false;
         LastAttack = 0;
         uiMarker.SetActivate(true);
         HP = monsterData.HP;
@@ -158,7 +158,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         if (currentProgress >= 1.0f)
         {
             // 현재 진행도 체크하고 다 됐으면 죽임
-            isDead = true;
+            IsDead = true;
         }
     }
 
@@ -233,14 +233,14 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public void DecreaseHP(float damage, CharacterControl attacker)
     {
-        if (isDead == true)
+        if (IsDead == true)
             return;
 
         this.HP -= damage;
         if (this.HP <= 0)
         {
             HP = 0;
-            isDead = true;
+            IsDead = true;
             attacker.IncreaseKillCount();
             SetActiveHitbox(false);
             uiMarker.SetActivate(false);
@@ -256,14 +256,14 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncMonsterHP(float damage)
     {
-        if (isDead == true)
+        if (IsDead == true)
             return;
 
         this.HP -= damage;
         if (this.HP <= 0)
         {
             HP = 0;
-            isDead = true;
+            IsDead = true;
             uiMarker.SetActivate(false);
             GameManager.Instance.LevelController.IncreaseMonsterProgress(monsterType);
         }
@@ -281,8 +281,8 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncMonsterStun(float stunTime)
     {
-        isStun = true;
-        this.stunTime = stunTime;
+        IsStun = true;
+        this.StunTime = stunTime;
     }
 
     [PunRPC]
@@ -338,7 +338,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     [PunRPC]
     protected void SyncMonsterDeath()
     {
-        isDead = false;
+        IsDead = false;
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 
@@ -426,14 +426,14 @@ public abstract class NController : MonoBehaviour, IEnemy
             }
         }
 
-        player = nearPlayer;
+        Player = nearPlayer;
     }
 
     public void LookPlayer()
     {
-        if (player != null)
+        if (Player != null)
         {
-            Vector3 dir = player.transform.position - transform.position;
+            Vector3 dir = Player.transform.position - transform.position;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * monsterData.SmoothAngleSpeed);
             transform.rotation = new(0, transform.rotation.y, 0, transform.rotation.w);
         }
@@ -482,9 +482,9 @@ public abstract class NController : MonoBehaviour, IEnemy
 
     public float CalcDistance()
     {
-        if (player != null)
+        if (Player != null)
         {
-            Vector3 heading = player.transform.position - transform.position;
+            Vector3 heading = Player.transform.position - transform.position;
             float distance = heading.magnitude;
             return distance;
         }

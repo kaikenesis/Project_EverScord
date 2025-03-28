@@ -9,7 +9,7 @@ public class NMM2_RunState : NRunState
 
     protected override IEnumerator Updating()
     {
-        navMeshAgent.stoppingDistance = monsterController.monsterData.StopDistance;
+        monsterController.MonsterNavMeshAgent.stoppingDistance = monsterController.monsterData.StopDistance;
         return base.Updating();
     }
 }

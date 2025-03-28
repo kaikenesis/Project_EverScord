@@ -20,7 +20,7 @@ public class NMM1_AttackState2 : NAttackState
         controller.ProjectLineIndicator(1f);
         yield return new WaitForSeconds(1f);
         monsterController.PlayAnimation("Attack2");
-        float time = monsterController.clipDict["Attack2"];
+        float time = monsterController.ClipDict["Attack2"];
         
         for (int i = 0; i < 3; i++)
         {

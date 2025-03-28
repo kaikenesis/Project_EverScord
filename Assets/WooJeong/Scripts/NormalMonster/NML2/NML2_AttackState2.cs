@@ -10,7 +10,7 @@ public class NML2_AttackState2 : NAttackState
     }
     protected override IEnumerator Attack()
     {
-        float time = monsterController.clipDict["Attack2"];
+        float time = monsterController.ClipDict["Attack2"];
         monsterController.PlayAnimation("Attack2");
         monsterController.PlaySound("NML2_2");
         
@@ -30,7 +30,7 @@ public class NML2_AttackState2 : NAttackState
     private void Fire()
     {
         monsterController.InstantiateMonsterAttack(
-            monsterController.player.transform.position,
+            monsterController.Player.transform.position,
             monsterController.monsterData.Skill02_RangeX,
             monsterController.monsterData.ProjectionTime,
             "NML2_A2_Effect",

@@ -15,7 +15,7 @@ public class NMS2_AttackState1 : NAttackState
     protected override IEnumerator Attack()
     {
         monsterController.PlayAnimation("Attack1");
-        float time = monsterController.clipDict["Attack1"];
+        float time = monsterController.ClipDict["Attack1"];
         int attackCount = 5;
         if (controller.isUpgraded)
         {

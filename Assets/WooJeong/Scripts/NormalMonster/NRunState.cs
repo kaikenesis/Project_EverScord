@@ -8,10 +8,6 @@ using UnityEngine.AI;
 public abstract class NRunState : MonoBehaviour, IState
 {
     protected NController monsterController;
-    protected PhotonView photonView;
-    protected Vector3 remotePos;
-    protected Quaternion remoteRot;
-    protected NavMeshAgent navMeshAgent;
     protected Coroutine updating;
 
     protected abstract void Setup();
@@ -19,9 +15,7 @@ public abstract class NRunState : MonoBehaviour, IState
     void Awake()
     {
         Setup();
-        photonView = GetComponent<PhotonView>();
-        navMeshAgent = monsterController.MonsterNavMeshAgent;
-        navMeshAgent.stoppingDistance = monsterController.monsterData.StopDistance;
+        monsterController.MonsterNavMeshAgent.stoppingDistance = monsterController.monsterData.StopDistance;
     }
 
     public void Enter()
@@ -35,23 +29,23 @@ public abstract class NRunState : MonoBehaviour, IState
     {
         while (true)
         {
-            if (monsterController.isStun)
+            if (monsterController.IsStun)
             {
                 ExitToStun();
                 yield break;
             }
 
-            if (monsterController.isDead)
+            if (monsterController.IsDead)
             {
                 ExitToDeath();
                 yield break;
             }
 
             monsterController.SetNearestPlayer();
-            if (monsterController.player != null)
-                navMeshAgent.destination = monsterController.player.transform.position;
+            if (monsterController.Player != null)
+                monsterController.MonsterNavMeshAgent.destination = monsterController.Player.transform.position;
 
-            if (monsterController.CalcDistance() < navMeshAgent.stoppingDistance)
+            if (monsterController.CalcDistance() < monsterController.MonsterNavMeshAgent.stoppingDistance)
             {
                 Exit();
                 yield break;
@@ -127,14 +121,14 @@ public abstract class NRunState : MonoBehaviour, IState
     protected void ExitToStun()
     {
         StopUpdating();
-        navMeshAgent.destination = transform.position;
+        monsterController.MonsterNavMeshAgent.destination = transform.position;
         monsterController.StunState();
     }
 
     protected void ExitToDeath()
     {
         StopUpdating();
-        navMeshAgent.destination = transform.position;
+        monsterController.MonsterNavMeshAgent.destination = transform.position;
         monsterController.DeathState();
     }
 

@@ -8,7 +8,6 @@ public abstract class NAttackState : MonoBehaviour, IState
 {
     protected NController monsterController;
     protected bool isAttacking = false;
-    protected float attackDamage;
     protected Coroutine attack;
     protected Coroutine project;
     protected Coroutine updating;
@@ -32,13 +31,13 @@ public abstract class NAttackState : MonoBehaviour, IState
     {
         while(true)
         {
-            if (monsterController.isStun)
+            if (monsterController.IsStun)
             {
                 ExitToStun();
                 yield break;
             }
 
-            if (monsterController.isDead)
+            if (monsterController.IsDead)
             {
                 ExitToDeath();
                 yield break;
@@ -47,7 +46,7 @@ public abstract class NAttackState : MonoBehaviour, IState
             if (!isAttacking)
             {
                 monsterController.SetNearestPlayer();
-                if(monsterController.player == null)
+                if(monsterController.Player == null)
                 {
                     ExitToWait();
                     yield break;

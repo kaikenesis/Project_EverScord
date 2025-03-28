@@ -13,7 +13,7 @@ namespace EverScord.Monster
 
         public void ApplyDamageToEnemy(CharacterControl attacker, float hp, IEnemy monster, bool isSkillDamage = true)
         {
-            if (monster is NController nctrl && nctrl.isDead)
+            if (monster is NController nctrl && nctrl.IsDead)
                 return;
 
             if (monster != null && attacker.CharacterPhotonView.IsMine)

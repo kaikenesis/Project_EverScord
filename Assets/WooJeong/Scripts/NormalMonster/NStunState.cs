@@ -30,15 +30,15 @@ public abstract class NStunState : MonoBehaviour, IState
         while (true)
         {
             yield return new WaitForSeconds(Time.deltaTime);
-            if (monsterController.isDead)
+            if (monsterController.IsDead)
             {
                 ExitToDeath();
                 yield break;
             }
             time += Time.deltaTime;
-            if (time >= monsterController.stunTime)
+            if (time >= monsterController.StunTime)
             {
-                monsterController.isStun = false;
+                monsterController.IsStun = false;
                 Exit();
                 yield break;
             } 
