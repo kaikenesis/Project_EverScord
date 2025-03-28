@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern06_Imp : AttackNodeImplement
+public class BossPattern06_Imp : ActionNodeImplement
 {
     //private float attackRadius = 100;
     private float attackLifeTime = 4;
@@ -22,7 +22,6 @@ public class BossPattern06_Imp : AttackNodeImplement
     protected override void Awake()
     {
         base.Awake();
-        attackableHP = 60;
         damage = bossRPC.BossMonsterData.SkillDatas[5].SkillDotDamage;
     }
 

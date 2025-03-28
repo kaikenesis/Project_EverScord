@@ -2,19 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern07_Imp : AttackNodeImplement
+public class BossPattern07_Imp : ActionNodeImplement
 {
     private float projectileSpeed = 20f;
     private float damage;
     private void Start()
     {
         damage = bossRPC.BossMonsterData.SkillDatas[6].MaxHpBasedDamage;
-    }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        attackableHP = 50;
     }
 
     protected override IEnumerator Act()

@@ -3,24 +3,15 @@ using EverScord.Character;
 using System.Collections;
 using UnityEngine;
 
-public class BossPattern09_Imp : AttackNodeImplement
+public class BossPattern09_Imp : ActionNodeImplement
 {
     private float damage;
     private float attackWidth = 3;
-    protected int failurePhase = 2;
 
     protected override void Awake()
     {
         base.Awake();
-        attackableHP = 30;
         damage = bossRPC.BossMonsterData.SkillDatas[8].SkillDamage;
-    }
-
-    public override NodeState Evaluate()
-    {
-        if (bossRPC.Phase == failurePhase)
-            return NodeState.FAILURE;
-        return base.Evaluate();
     }
 
     protected override IEnumerator Act()

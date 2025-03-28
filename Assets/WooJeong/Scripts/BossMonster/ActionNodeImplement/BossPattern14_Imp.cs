@@ -3,15 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPattern14_Imp : AttackNodeImplement
+public class BossPattern14_Imp : ActionNodeImplement
 {
-    public override NodeState Evaluate()
-    {
-        if (bossRPC.Phase == 1)
-            return NodeState.FAILURE;
-        return base.Evaluate();
-    }
-
     protected override IEnumerator Act()
     {
         StartCoroutine(nameof(CheckDeath));

@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class BossPattern03_Imp : AttackNodeImplement
+public class BossPattern03_Imp : ActionNodeImplement
 {
     private float chargeRange = 10;
     private BoxCollider boxCollider;
@@ -14,9 +14,7 @@ public class BossPattern03_Imp : AttackNodeImplement
 
     protected override void Awake()
     {
-        attackable = false;
         bossRPC = GetComponentInParent<BossRPC>();
-        attackableHP = 90;
 
         boxCollider = gameObject.AddComponent<BoxCollider>();
         boxCollider.size = new Vector3(2, 1, 3);

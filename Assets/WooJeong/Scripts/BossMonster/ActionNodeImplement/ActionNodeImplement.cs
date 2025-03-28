@@ -34,8 +34,6 @@ public abstract class ActionNodeImplement : MonoBehaviour
 
     protected IEnumerator CheckDeath()
     {
-        Debug.Log("node Death");
-
         while (isEnd == false)
         {
             if (bossRPC.IsDead)

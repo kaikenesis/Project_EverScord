@@ -3,7 +3,7 @@ using System.Collections;
 using EverScord.Character;
 using UnityEngine;
 
-public class BossPattern12_Imp : AttackNodeImplement
+public class BossPattern12_Imp : ActionNodeImplement
 {
     private float damage;
     private float attackWidth = 3;
@@ -11,13 +11,6 @@ public class BossPattern12_Imp : AttackNodeImplement
     private void Start()
     {
         damage = bossRPC.BossMonsterData.SkillDatas[10].SkillDamage;
-    }
-
-    public override NodeState Evaluate()
-    {
-        if (bossRPC.Phase == 1)
-            return NodeState.FAILURE;
-        return base.Evaluate();
     }
 
     protected override IEnumerator Act()

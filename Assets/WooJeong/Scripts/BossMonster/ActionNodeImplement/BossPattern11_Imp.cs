@@ -8,6 +8,5 @@ public class BossPattern11_Imp : BossPattern08_Imp
     {
         base.Awake();
         attackCount = 60;
-        failurePhase = 1;
     }
 }
