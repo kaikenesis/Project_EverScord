@@ -175,6 +175,9 @@ namespace EverScord.Character
 
         void Update()
         {
+            if (LevelControl.IsLoadingLevel)
+                return;
+            
             UIMarker.UpdatePosition(PlayerTransform.position);
 
             if (!photonView.IsMine)

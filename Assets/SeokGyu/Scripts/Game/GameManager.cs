@@ -108,7 +108,7 @@ namespace EverScord
         public static Action<int> OnUpdatedMoney = delegate { };
         public static Action<string> OnUpdatePlayerData = delegate { };
 
-        private static int loadCompletePlayers = 0;
+        public static int LoadCompletePlayers { get; private set; }
 
         public static GameManager Instance
         {
@@ -149,6 +149,7 @@ namespace EverScord
             CurrentLevelIndex = -1;
             PhotonNetwork.AutomaticallySyncScene = true;
             IsFirstGameLoad = true;
+            LoadCompletePlayers = 0;
 
             playerData.Initialize();
             photonData.Initialize();
@@ -291,13 +292,15 @@ namespace EverScord
         [PunRPC]
         public void TryExitLoadScreen()
         {
-            loadCompletePlayers++;
+            LoadCompletePlayers++;
 
-            if (loadCompletePlayers == PhotonNetwork.CurrentRoom.PlayerCount)
-            {
-                loadCompletePlayers = 0;
+            if (IsEveryPlayerLoaded)
                 View.RPC(nameof(SyncExitLoadScreen), RpcTarget.All);
-            }
+        }
+
+        public static bool IsEveryPlayerLoaded
+        {
+            get { return LoadCompletePlayers == PhotonNetwork.CurrentRoom.PlayerCount; }
         }
 
         [PunRPC]
@@ -314,7 +317,7 @@ namespace EverScord
 
         public void SetLoadCompletePlayerCount(int count)
         {
-            loadCompletePlayers = count;
+            LoadCompletePlayers = count;
         }
 
         public static int GetStageNum(bool isTemporary = false)

@@ -7,10 +7,7 @@ namespace EverScord.Skill
 {
     public class BombDeliveryAction : SkillAction
     {
-        private const int MAX_COLLISION_CHECK = 10;
-        private const float CHECK_DISTANCE_OFFSET = 0.1f;
-        private const float CHECK_RADIUS = 3f;
-
+        private const float TELEPORT_RAY_LENGTH = 1f;
         private BombDeliverySkill skill;
         private Transform closestTarget;
         private GameObject teleportEffect;
@@ -142,60 +139,36 @@ namespace EverScord.Skill
         private Vector3 GetSafeTeleportPosition(Vector3 targetPos)
         {
             Vector3 targetToPlayerDir = (activator.PlayerTransform.position - targetPos).normalized;
-
             Vector3 teleportPos = targetPos;
-            float checkRadius = CHECK_RADIUS;
+            Vector3 currentDir = targetToPlayerDir;
 
-            int angleCount = 8;
-            float degreesPerAngle = 360 / angleCount;
+            int count = 8;
+            float degrees = 360 / count;
+            float length = TELEPORT_RAY_LENGTH;
 
-            for (int i = 0; i < angleCount; i++)
+            for (int i = 0; i < 8; i++)
             {
-                float angle = i * degreesPerAngle;
-                Vector3 currentDirection = Quaternion.Euler(0, angle, 0) * targetToPlayerDir;
+                currentDir = Quaternion.Euler(0, i * degrees, 0) * targetToPlayerDir;
 
-                teleportPos = targetPos;
-                float distance = 0f;
-                int checkCount = -1;
-                bool flag = false;
+                if (Physics.Raycast(targetPos, currentDir, out RaycastHit hit1, length, skill.CollidableLayer))
+                    continue;
 
-                while (checkCount <= MAX_COLLISION_CHECK)
+                teleportPos = targetPos + currentDir * length;
+
+                var hits = Physics.SphereCastAll(teleportPos, activator.Controller.radius, Vector3.up, Mathf.Infinity, skill.CollidableLayer);
+
+                if (hits.Length > 0)
                 {
-                    Collider[] colliders = Physics.OverlapSphere(teleportPos, checkRadius, skill.CollidableLayer);
-
-                    if (IsWall(colliders))
-                        break;
-                    
-                    if (colliders.Length == 0)
-                    {
-                        flag = true;
-                        break;
-                    }
-
-                    distance += CHECK_DISTANCE_OFFSET;
-                    teleportPos = targetPos + currentDirection * distance;
-                    ++checkCount;
+                    // Revert teleport position
+                    teleportPos = targetPos;
+                    continue;
                 }
 
-                if (flag)
-                    break;
+                break;
             }
 
-            teleportPos.y = 0f;
+            teleportPos.y = GameManager.GROUND_HEIGHT;
             return teleportPos;
-        }
-
-        private bool IsWall(Collider[] colliders)
-        {
-            foreach (Collider collider in colliders)
-            {
-                int colliderLayer = collider.gameObject.layer;
-
-                if (((1 << colliderLayer) & GameManager.WallLayer) != 0)
-                    return true;
-            }
-
-            return false;
         }
 
         public override void ExitSkill()
