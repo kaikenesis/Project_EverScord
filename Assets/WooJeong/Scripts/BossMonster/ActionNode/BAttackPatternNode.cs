@@ -4,15 +4,11 @@ using UnityEngine;
 
 public abstract class BAttackPatternNode : BActionNode
 {
-    protected BossData bossData;
     protected bool isRunning = false;
     protected bool attackable = false;
 
     public override NodeState Evaluate()
     {
-        if (!attackable)
-            return NodeState.FAILURE;
-
         if (!isRunning)
         {
             int random = Random.Range(1, 9);
@@ -20,6 +16,7 @@ public abstract class BAttackPatternNode : BActionNode
             {
                 return NodeState.FAILURE;
             }
+            Debug.Log($"{this} »ç¿ë");
             isRunning = true;
         }
 

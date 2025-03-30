@@ -7,18 +7,29 @@ public class HPDecorator : BDecoratorNode
 {
     [SerializeField] private int failurePhase;
     [SerializeField] private int usableHP;
-    private bool pass = false;
+    private bool usable = false;
 
-    public override NodeState Evaluate()
+    private void Awake()
     {
+        usable = false;
+    }
+    
+    public override NodeState Evaluate()
+    {        
         if (bossRPC.Phase == failurePhase)
             return NodeState.FAILURE;
 
-        if (bossRPC.IsUnderHP(usableHP) == true)
-            pass = true;
+        if (usable == false && bossRPC.IsUnderHP(usableHP) == true)
+        {
+            Debug.Log($"{children[0]} 사용가능");
+            usable = true;
+        }
 
-        if (pass == false)
+        if (usable == false)
+        {
+            Debug.Log($"{children[0]} 사용 불가");
             return NodeState.FAILURE;
+        }
 
         state = children[0].Evaluate();
         return state;

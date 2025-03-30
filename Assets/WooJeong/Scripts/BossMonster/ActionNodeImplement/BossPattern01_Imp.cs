@@ -13,20 +13,6 @@ public class BossPattern01_Imp : ActionNodeImplement
         damage = bossRPC.BossMonsterData.SkillDatas[0].MaxHpBasedDamage;
     }
 
-    public override NodeState Evaluate()
-    {
-        if(isEnd == false && action == null)
-        {
-            int random = Random.Range(0, 10);
-            if (random < 5)
-            {
-                return NodeState.FAILURE;
-            }
-        }
-
-        return base.Evaluate();
-    }
-
     protected override IEnumerator Act()
     {
         StartCoroutine(nameof(CheckDeath));

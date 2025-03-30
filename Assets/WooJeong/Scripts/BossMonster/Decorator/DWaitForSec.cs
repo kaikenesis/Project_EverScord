@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Decorator/DWaitForSec")]
-public class DWaitForSec : BehaviorNode
+public class DWaitForSec : BDecoratorNode
 {
     float curTime = 0;
 

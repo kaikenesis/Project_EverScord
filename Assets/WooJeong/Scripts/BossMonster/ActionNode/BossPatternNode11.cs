@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern11", order = 11)]
-public class BossPatternNode11 : BActionNode
+public class BossPatternNode11 : BAttackPatternNode
 {
     public override void Setup(GameObject gameObject)
     {
