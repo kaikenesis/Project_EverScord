@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BossPattern01_Imp : ActionNodeImplement
 {
-    //private float projectileSize = 1;
     private float projectileSpeed = 20f;
     private float damage;
 

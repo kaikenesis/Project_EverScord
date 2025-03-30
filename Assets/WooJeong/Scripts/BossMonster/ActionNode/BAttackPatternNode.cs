@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class BAttackPatternNode : BActionNode
 {
     protected bool isRunning = false;
-    protected bool attackable = false;
 
     public override NodeState Evaluate()
     {

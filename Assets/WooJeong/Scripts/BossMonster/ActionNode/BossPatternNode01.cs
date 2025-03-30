@@ -6,10 +6,13 @@ using UnityEngine;
 public class BossPatternNode01 : BActionNode
 {
     protected bool isRunning = false;
+    public int successChance = 50;
 
     public override void Setup(GameObject gameObject)
     {
-        actionNodeImplement = gameObject.AddComponent<BossPattern01_Imp>();
+        actionNodeImplement = gameObject.GetComponent<BossPattern01_Imp>();
+        if(actionNodeImplement == null)
+            gameObject.AddComponent<BossPattern01_Imp>();
         base.Setup(gameObject);
     }
 
@@ -17,11 +20,12 @@ public class BossPatternNode01 : BActionNode
     {
         if (!isRunning)
         {
-            int random = Random.Range(0, 10);
-            if (random < 5)
+            int random = Random.Range(0, 100);
+            if(random < successChance)
             {
                 return NodeState.FAILURE;
             }
+            
             isRunning = true;
         }
 
