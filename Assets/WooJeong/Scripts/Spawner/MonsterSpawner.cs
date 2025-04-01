@@ -5,10 +5,6 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using System.Diagnostics;
-
-using Debug = UnityEngine.Debug;
-
 public class MonsterSpawner : MonoBehaviour
 {
     private const float SPAWN_ALERT_TIME = 3f;
@@ -26,14 +22,20 @@ public class MonsterSpawner : MonoBehaviour
     private PhotonView photonView;
     private Coroutine spawn;
 
+    private static int monsterCount = 0;
+    private const int MAX_SPAWN = 50;
+    private bool firstSpawn = true;
+
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
+        monsterCount = 0;
+        firstSpawn = true;
     }
 
-    private void Start()
+    private async void Start()
     {
-        ResourceManager.Instance.CreatePool(monster.AssetGUID, 10);
+        await ResourceManager.Instance.CreatePool(monster.AssetGUID, 10);
         LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
@@ -83,8 +85,18 @@ public class MonsterSpawner : MonoBehaviour
         }
 
         curTime = spawnTimer;
+
         while(true)
         {
+            if (!firstSpawn && monsterCount >= MAX_SPAWN)
+            {
+                yield return null;
+                continue;
+            }
+
+            if (firstSpawn)
+                firstSpawn = false;
+
             curTime++;
             timeUntilSpawn = spawnTimer - curTime;
 
@@ -102,6 +114,7 @@ public class MonsterSpawner : MonoBehaviour
                     continue;
                 }
 
+                ++monsterCount;
                 SpawnSmoke();
                 PhotonView view = mo.GetComponent<PhotonView>();
 
@@ -165,6 +178,11 @@ public class MonsterSpawner : MonoBehaviour
         spawnSmoke.Emit();
     }
 
+    public static void DecreaseMonsterCount()
+    {
+        --monsterCount;
+    }
+
     [PunRPC]
     private void SyncSpawnMarker(bool state)
     {
@@ -193,6 +211,7 @@ public class MonsterSpawner : MonoBehaviour
         NController nController = mo.GetComponent<NController>();
         nController.SetGUID(monster.AssetGUID);
 
+        ++monsterCount;
         SpawnSmoke();
 
         photonView.RPC("SpawnComplete", RpcTarget.MasterClient);

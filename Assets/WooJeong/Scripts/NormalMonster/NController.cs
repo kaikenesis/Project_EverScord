@@ -343,6 +343,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     protected void SyncMonsterDeath()
     {
         isDead = false;
+        MonsterSpawner.DecreaseMonsterCount();
         ResourceManager.Instance.ReturnToPool(gameObject, GUID);
     }
 
