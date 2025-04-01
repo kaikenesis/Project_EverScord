@@ -1,10 +1,7 @@
 // InventorySlot.cs 스크립트
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
-using System;
-using System.Collections.Generic;
 
 public class InventorySlot : MonoBehaviour
 {

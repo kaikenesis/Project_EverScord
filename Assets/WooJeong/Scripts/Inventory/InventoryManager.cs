@@ -9,14 +9,10 @@ using UnityEngine.UI;
 public class InventoryManager : Singleton<InventoryManager>
 {
     public event Action<List<InventoryItem>> OnInventoryChanged;
-    [SerializeField] private List<InventoryItem> inventory = new List<InventoryItem>();
+    private List<InventoryItem> inventory = new List<InventoryItem>();
     [SerializeField] private int inventoryCapacity = 30;
     public int InventoryCapacity => inventoryCapacity;
 
-    [SerializeField] private GameObject inventoryPanel;
-
-    [SerializeField] private Item item;
-    [SerializeField] private Item item2;
 
     protected override void Awake()
     {
@@ -30,27 +26,6 @@ public class InventoryManager : Singleton<InventoryManager>
     private void Start()
     {
         OnInventoryChanged?.Invoke(inventory);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-            AddItem(item);        
-        if (Input.GetKeyDown(KeyCode.S))
-            AddItem(item2);
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (inventoryPanel.activeSelf == true)
-            {
-                DOTween.Rewind(ConstStrings.TWEEN_INVEN_DISABLE);
-                DOTween.Play(ConstStrings.TWEEN_INVEN_DISABLE);
-            }
-            else
-            {
-                inventoryPanel.SetActive(true);
-                DOTween.Rewind(ConstStrings.TWEEN_INVEN_DISABLE);
-            }
-        }
     }
 
     public void SwapItems(int fromIndex, int toIndex)

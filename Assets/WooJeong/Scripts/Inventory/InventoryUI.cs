@@ -1,10 +1,12 @@
-// InventoryUI.cs 스크립트를 InventoryPanel에 연결
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using System.Collections;
+using Palmmedia.ReportGenerator.Core.Common;
+using System;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -16,6 +18,9 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private TextMeshProUGUI itemDescriptionText;
     [SerializeField] private TextMeshProUGUI itemStatsText;
+    [SerializeField] private GameObject disposePanel;
+    [SerializeField] private TMP_InputField disposeInput;
+    [SerializeField] private Button confirmButton;
 
     private List<InventorySlot> slots = new List<InventorySlot>();
     private List<RectTransform> slotRectTransforms = new List<RectTransform>();
@@ -27,8 +32,11 @@ public class InventoryUI : MonoBehaviour
     private Vector2 infoOffSet = new Vector2(300, 400);
     private RectTransform invenRect, infoRect;
 
-    private Image draggedItemImage;
-    private InventorySlot draggedFromSlot;
+    private Image dragItemImage;
+    private InventorySlot curDragSlot;
+
+    private bool isDoubleClick = false;
+    private Coroutine coDoubleClick;
 
     private void Awake()
     {
@@ -37,6 +45,7 @@ public class InventoryUI : MonoBehaviour
         pointerEventData = new PointerEventData(EventSystem.current);
         raycaster = itemInfoPanel.transform.parent.GetComponent<GraphicRaycaster>();
         itemInfoPanel.SetActive(false);
+        confirmButton.onClick.AddListener(DisposeAndExit);
         MakeDragItem();
     }
 
@@ -70,17 +79,17 @@ public class InventoryUI : MonoBehaviour
 
     private void MakeDragItem()
     {
-        if (draggedItemImage == null)
+        if (dragItemImage == null)
         {
             Canvas canvas = FindObjectOfType<Canvas>();
 
             GameObject dragImageObj = new GameObject("DragItemImage");
             dragImageObj.transform.SetParent(canvas.transform);
-            draggedItemImage = dragImageObj.AddComponent<Image>();
-            draggedItemImage.raycastTarget = false;
-            draggedItemImage.rectTransform.sizeDelta = new Vector2(80, 80);
+            dragItemImage = dragImageObj.AddComponent<Image>();
+            dragItemImage.raycastTarget = false;
+            dragItemImage.rectTransform.sizeDelta = new Vector2(80, 80);
 
-            draggedItemImage.gameObject.SetActive(false);
+            dragItemImage.gameObject.SetActive(false);
         }
     }
 
@@ -131,6 +140,9 @@ public class InventoryUI : MonoBehaviour
 
     private void ShowItemInfo(InventoryItem item)
     {
+        if (disposePanel.activeSelf == true)
+            return;
+
         if (item.Item != null)
         {
             itemNameText.text = item.Item.ItemName;
@@ -196,39 +208,113 @@ public class InventoryUI : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            if (draggedFromSlot == null && curShowSlot == null)
+            if (curDragSlot == null && curShowSlot == null)
                 return;
 
-            if (draggedFromSlot == null && curShowSlot.CurrentItem.Item != null)
+            if(curDragSlot == curShowSlot)
+                CheckDoubleClick();
+            else if (curDragSlot == null && curShowSlot.CurrentItem.Item != null) // 아이템 클릭
             {
-                draggedFromSlot = curShowSlot;
-                draggedFromSlot.IconImage.enabled = false;
-                draggedItemImage.sprite = draggedFromSlot.CurrentItem.Item.Icon;
-                draggedItemImage.gameObject.SetActive(true);
-                draggedItemImage.gameObject.transform.position = Input.mousePosition;
+                curDragSlot = curShowSlot;
+                curDragSlot.IconImage.enabled = false;
+                dragItemImage.sprite = curDragSlot.CurrentItem.Item.Icon;
+                dragItemImage.gameObject.SetActive(true);
+                dragItemImage.gameObject.transform.position = Input.mousePosition;
+                if(coDoubleClick == null)
+                {
+                    coDoubleClick = StartCoroutine(DoubleClickTimer());
+                }
+                else
+                {
+                    StopCoroutine(coDoubleClick);
+                    coDoubleClick = StartCoroutine(DoubleClickTimer());
+                }    
             }
-            else if(draggedFromSlot != null && curShowSlot != null)
+            else if(curDragSlot != null && curShowSlot != null) // 스왑
             {
-                draggedFromSlot.IconImage.enabled = true;
-                InventoryManager.Instance.SwapItems(draggedFromSlot.SlotIndex, curShowSlot.SlotIndex);
-                draggedFromSlot = null;
-                draggedItemImage.gameObject.SetActive(false);
+                curDragSlot.IconImage.enabled = true;
+                InventoryManager.Instance.SwapItems(curDragSlot.SlotIndex, curShowSlot.SlotIndex);
+                curDragSlot = null;
+                dragItemImage.gameObject.SetActive(false);
             }
-            else if(draggedFromSlot != null && raycastResult.Count == 0)
+            else if(curDragSlot != null && raycastResult.Count == 0) // 버리기
             {
-                Debug.Log("Click outside");
-                InventoryManager.Instance.RemoveItem(draggedFromSlot);
-                draggedFromSlot = null;
-                draggedItemImage.gameObject.SetActive(false);
+                if(curDragSlot.CurrentItem.Quantity == 1)
+                {
+                    InventoryManager.Instance.RemoveItem(curDragSlot);
+                    curDragSlot = null;
+                    dragItemImage.gameObject.SetActive(false);
+                }
+                else
+                {
+                    SetDisposePanel();
+                }
+                Debug.Log("Click outside");                
             }
         }
     }
 
     private void OnItemDrag()
     {
-        if(draggedFromSlot == null)
+        if(curDragSlot == null)
             return;
 
-        draggedItemImage.gameObject.transform.position = Input.mousePosition;
+        dragItemImage.gameObject.transform.position = Input.mousePosition;
+    }
+
+    private void SetDisposePanel()
+    {
+        curDragSlot.IconImage.enabled = true;
+        dragItemImage.gameObject.SetActive(false);
+
+        disposePanel.SetActive(true);
+        DOTween.Rewind("DisposeDisable");
+        disposeInput.text = "";
+    }
+
+    private void DisposeAndExit()
+    {
+        if (int.TryParse(disposeInput.text.Trim(), out int n) == false)
+        {
+            Debug.Log(disposeInput.text);
+            Debug.Log("text length " + disposeInput.text.Trim().Length);
+            Debug.Log("parse fail");
+            Debug.Log(n);
+            foreach(var i in disposeInput.text.Trim())
+            {
+                Debug.Log(i);
+            }
+            curDragSlot = null;
+            return;
+        }
+        InventoryManager.Instance.RemoveItem(curDragSlot, n);
+        curDragSlot = null;
+
+        DOTween.Rewind("DisposeDisable");
+        DOTween.Play("DisposeDisable");
+    }
+
+    private bool CheckDoubleClick()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            if(curDragSlot != null && isDoubleClick == true)
+            {
+                Debug.Log($"UseItem {curDragSlot.CurrentItem.Item}");
+                InventoryManager.Instance.RemoveItem(curDragSlot);
+                curDragSlot = null;
+                dragItemImage.gameObject.SetActive(false);
+                //InventoryManager.Instance.UseItem(draggedFromSlot.CurrentItem.Item);
+            }
+        }
+        return true;
+    }
+
+    private IEnumerator DoubleClickTimer()
+    {
+        isDoubleClick = true;
+        yield return new WaitForSeconds(0.3f);
+        isDoubleClick = false;
+        coDoubleClick = null;
     }
 }
