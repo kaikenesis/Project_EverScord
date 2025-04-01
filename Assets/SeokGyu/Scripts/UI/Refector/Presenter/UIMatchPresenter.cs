@@ -26,11 +26,14 @@ namespace EverScord
             PhotonMatchController.OnStartTimer -= HandleStartTimer;
             PhotonMatchController.OnStopTimer -= HandleStopTimer;
             PhotonMatchController.OnMatchComplete -= HandleMatchComplete;
+
+            view.cancleButton.onClick.RemoveAllListeners();
         }
 
         private void Initialize()
         {
             view.SetTimerText(string.Format("경과시간 {0}:{1:D2}", model.minutes, model.seconds));
+            view.cancleButton.onClick.AddListener(StopMatch);
         }
 
         #region Handle Methods
@@ -58,7 +61,7 @@ namespace EverScord
         }
         #endregion // Handle Methods
 
-        public void StopMatch()
+        private void StopMatch()
         {
             SoundManager.Instance.PlaySound("ButtonSound");
             OnRequestStopMatch?.Invoke();
