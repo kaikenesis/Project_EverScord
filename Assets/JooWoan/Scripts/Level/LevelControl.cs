@@ -151,7 +151,7 @@ namespace EverScord
 
             foreach (var player in GameManager.Instance.PlayerDict.Values)
             {
-                player.SetState(Character.SetCharState.ADD, Character.CharState.TELEPORTING);
+                player.SetState(SetCharState.ADD, CharState.TELEPORTING);
                 player.AnimationControl.Rotate(false);
                 player.PlayerWeapon.SetShootingStance(player, false, true);
             }
@@ -186,6 +186,8 @@ namespace EverScord
             foreach (var player in GameManager.Instance.PlayerDict.Values)
                 player.Teleport(portalControl.GetRandomPosition());
 
+            MonsterSpawner.ActivateSpawners();
+
             yield return new WaitForSeconds(0.8f);
 
             LoadingScreen.ShowScreen();
@@ -200,8 +202,8 @@ namespace EverScord
             foreach (var player in GameManager.Instance.PlayerDict.Values)
             {
                 player.SetActive(true);
-                player.SetState(Character.SetCharState.REMOVE, Character.CharState.TELEPORTING);
-                player.SetState(Character.SetCharState.REMOVE, Character.CharState.INVINCIBLE);
+                player.SetState(SetCharState.REMOVE, CharState.TELEPORTING);
+                player.SetState(SetCharState.REMOVE, CharState.INVINCIBLE);
                 Instantiate(beamEffect, player.PlayerTransform.position, Quaternion.identity);
                 yield return waitPointOne;
             }
@@ -280,15 +282,23 @@ namespace EverScord
 
         public static void ReturnToLobby()
         {
-            GameManager.ResetGame();
-            LoadScene(ConstStrings.SCENE_LOBBY);
-
             OnLoadComplete -= PlayLobbyBGM;
             OnLoadComplete += PlayLobbyBGM;
+            
+            OnLoadComplete -= MonsterSpawner.ActivateSpawners;
+
+            GameManager.ResetGame();
+            LoadScene(ConstStrings.SCENE_LOBBY);
         }
 
         public static void LoadScene(string sceneName)
         {
+            if (IsLoadingLevel)
+                return;
+            
+            if (PhotonNetwork.IsMasterClient)
+                GameManager.Instance.SetLoadCompletePlayerCount(0);
+            
             GameManager.Instance.StartCoroutine(LoadSceneAsync(sceneName));
         }
 
@@ -313,10 +323,10 @@ namespace EverScord
             }
 
             GameManager.Instance.LoadScreen.SetProgress(1f);
-            GameManager.Instance.StartCoroutine(ExitLoadingScreen());
+            GameManager.View.RPC(nameof(GameManager.Instance.TryExitLoadScreen), RpcTarget.MasterClient);
         }
 
-        private static IEnumerator ExitLoadingScreen()
+        public static IEnumerator ExitLoadingScreen()
         {
             yield return waitLoadScreen;
 

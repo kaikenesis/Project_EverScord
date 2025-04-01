@@ -39,6 +39,12 @@ namespace EverScord.Skill
                 onCoolDown?.Invoke(skillIndex, CooldownProgress);
         }
 
+        public override void CompleteCooldown()
+        {
+            base.CompleteCooldown();
+            onCoolDown?.Invoke(skillIndex, CooldownProgress);
+        }
+
         public void PlayCooldownUIEffect()
         {
             if (!isMine)

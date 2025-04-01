@@ -181,6 +181,9 @@ namespace EverScord.Character
 
         void Update()
         {
+            if (LevelControl.IsLoadingLevel)
+                return;
+            
             UIMarker.UpdatePosition(PlayerTransform.position);
 
             if (!photonView.IsMine)
@@ -705,10 +708,8 @@ namespace EverScord.Character
             SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_1);
             SoundManager.Instance.PlaySound(ConstStrings.SFX_DEATH_2);
 
-            if (photonView.IsMine)
-            {
-                GameManager.Instance.GameOverController.CheckGameOver();
-            }
+            if (photonView.IsMine && PhotonNetwork.IsConnected)
+                GameManager.View.RPC(nameof(GameManager.Instance.CheckDefeat), RpcTarget.MasterClient, photonView.ViewID);
 
             yield return new WaitForSeconds(AnimInfo.Death.length);
 
@@ -1076,7 +1077,7 @@ namespace EverScord.Character
             if (photonView.ViewID != viewID)
                 return;
 
-            reviveCircle.SyncExitCircle();
+            reviveCircle.ProceedExitCircle();
         }
 
         [PunRPC]

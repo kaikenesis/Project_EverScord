@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EverScord.UI
@@ -15,9 +16,12 @@ namespace EverScord.UI
         [SerializeField] private AnimationClip transitionClip;
 
         public static Action OnGameOver = delegate { };
+        public PhotonView View => photonView;
+        public static bool IsDefeat { get; private set; }
 
         void Awake()
         {
+            SetIsDefeat(false);
             GameManager.Instance.InitControl(this);
         }
 
@@ -56,23 +60,6 @@ namespace EverScord.UI
             uiHub.SetActive(state);
         }
 
-        public void CheckGameOver()
-        {
-            bool isGameOver = true;
-
-            foreach (var player in GameManager.Instance.PlayerDict.Values)
-            {
-                if (!player.IsDead)
-                {
-                    isGameOver = false;
-                    break;
-                }
-            }
-
-            if (isGameOver)
-                ShowGameover(false);
-        }
-
         public void ShowGameover(bool isVictory)
         {
             OnGameOver?.Invoke();
@@ -85,6 +72,11 @@ namespace EverScord.UI
         {
             yield return new WaitForSeconds(waitDuration);
             ShowGameover(isVictory);
+        }
+
+        public void SetIsDefeat(bool state)
+        {
+            IsDefeat = state;
         }
     }
 }

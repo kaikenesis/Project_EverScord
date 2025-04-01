@@ -55,6 +55,11 @@ namespace EverScord.Skill
             elapsedTime = 0f;
         }
 
+        public virtual void CompleteCooldown()
+        {
+            elapsedTime = cooldown;
+        }
+
         public float GetElapsedTime()
         {
             return elapsedTime;

@@ -13,6 +13,7 @@ namespace EverScord.Skill
         protected PlayerData.EJob ejob;
         protected int skillIndex;
 
+        public CooldownTimer Timer => cooldownTimer;
         public CharacterSkillInfo SkillInfo { get; private set; }
 
         public virtual bool CanAttackWhileSkill

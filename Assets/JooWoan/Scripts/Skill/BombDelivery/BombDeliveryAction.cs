@@ -7,9 +7,7 @@ namespace EverScord.Skill
 {
     public class BombDeliveryAction : SkillAction
     {
-        private const int MAX_COLLISION_CHECK = 100;
-        private const float CHECK_DISTANCE_OFFSET = 0.5f;
-
+        private const float TELEPORT_RAY_LENGTH = 1f;
         private BombDeliverySkill skill;
         private Transform closestTarget;
         private GameObject teleportEffect;
@@ -140,22 +138,36 @@ namespace EverScord.Skill
 
         private Vector3 GetSafeTeleportPosition(Vector3 targetPos)
         {
-            Vector3 playerToTargetDir = (targetPos - activator.PlayerTransform.position).normalized;
-
+            Vector3 targetToPlayerDir = (activator.PlayerTransform.position - targetPos).normalized;
             Vector3 teleportPos = targetPos;
-            float checkRadius = activator.Controller.radius;
+            Vector3 currentDir = targetToPlayerDir;
 
-            int checkCount = 0;
-            float distance = 1f;
+            int count = 8;
+            float degrees = 360 / count;
+            float length = TELEPORT_RAY_LENGTH;
 
-            while (Physics.CheckSphere(teleportPos, checkRadius, skill.CollidableLayer) && checkCount <= MAX_COLLISION_CHECK)
+            for (int i = 0; i < 8; i++)
             {
-                ++checkCount;
-                distance += CHECK_DISTANCE_OFFSET;
-                teleportPos = targetPos + playerToTargetDir * distance;
+                currentDir = Quaternion.Euler(0, i * degrees, 0) * targetToPlayerDir;
+
+                if (Physics.Raycast(targetPos, currentDir, out RaycastHit hit1, length, skill.CollidableLayer))
+                    continue;
+
+                teleportPos = targetPos + currentDir * length;
+
+                var hits = Physics.SphereCastAll(teleportPos, activator.Controller.radius, Vector3.up, Mathf.Infinity, skill.CollidableLayer);
+
+                if (hits.Length > 0)
+                {
+                    // Revert teleport position
+                    teleportPos = targetPos;
+                    continue;
+                }
+
+                break;
             }
 
-            teleportPos.y = 0f;
+            teleportPos.y = GameManager.GROUND_HEIGHT;
             return teleportPos;
         }
 
