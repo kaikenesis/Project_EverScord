@@ -101,6 +101,7 @@ public class ResourceManager : Singleton<ResourceManager>
             for (int i = 0; i < poolSize; i++)
             {
                 GameObject obj = CreateNewObject(addressableKey);
+                obj.SetActive(true);
                 IPoolable poolable = obj.GetComponent<IPoolable>();
 
                 if (poolable != null)

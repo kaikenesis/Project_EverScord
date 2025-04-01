@@ -32,6 +32,7 @@ namespace EverScord
         public const string TAG_WEAPON_LEFTHINT = "Weapon_LeftHint";
         public const string TAG_COOLDOWN_UI_EFFECT = "SkillCooldownUIEffect";
         public const string TAG_STAGE_CLEAR_GLITTER = "StageClearGlitter";
+        public const string TAG_MONSTERCANVAS = "MonsterUI";
 
         // DOTween
         public const string TWEEN_AMMOCHANGE = "AmmoChange";

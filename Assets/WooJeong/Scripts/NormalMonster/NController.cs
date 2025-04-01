@@ -48,6 +48,7 @@ public abstract class NController : MonoBehaviour, IEnemy
     private DissolveEffect dissolveEffect;
     private UIMarker uiMarker;
 
+    private static Transform monsterCanvas;
     public PhotonView PhotonView => photonView;
 
     public virtual BodyType EnemyBodyType => BodyType.FLESH;
@@ -81,6 +82,7 @@ public abstract class NController : MonoBehaviour, IEnemy
         blinkEffect = BlinkEffect.Create(this);
         dissolveEffect = DissolveEffect.Create(this);
 
+        monsterCanvas = GameObject.FindGameObjectWithTag(ConstStrings.TAG_MONSTERCANVAS).transform;
 
         foreach (AnimationClip clip in Animator.runtimeAnimatorController.animationClips)
         {
@@ -146,6 +148,9 @@ public abstract class NController : MonoBehaviour, IEnemy
     private void OnDisable()
     {
         uiMarker.SetActivate(false);
+
+        if (healthBarObject)
+            healthBarObject.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -190,8 +195,7 @@ public abstract class NController : MonoBehaviour, IEnemy
             return;
 
         healthBarObject = ResourceManager.Instance.GetFromPool("MonsterHealthBar", Vector3.zero, Quaternion.identity);
-        Transform canvas = GameObject.FindGameObjectWithTag("MonsterUI").transform;
-        healthBarObject.transform.SetParent(canvas);
+        healthBarObject.transform.SetParent(monsterCanvas);
 
         monsterHealthBar = healthBarObject.GetComponent<MonsterHealthBar>();
         monsterHealthBar.SetTarget(transform);

@@ -5,6 +5,9 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using System.Diagnostics;
+
+using Debug = UnityEngine.Debug;
 
 public class MonsterSpawner : MonoBehaviour
 {
@@ -28,9 +31,9 @@ public class MonsterSpawner : MonoBehaviour
         photonView = GetComponent<PhotonView>();
     }
 
-    private async void Start()
+    private void Start()
     {
-        await ResourceManager.Instance.CreatePool(monster.AssetGUID, 1);
+        ResourceManager.Instance.CreatePool(monster.AssetGUID, 10);
         LevelControl.OnProgressUpdated += ProgressCheck;
     }
 
