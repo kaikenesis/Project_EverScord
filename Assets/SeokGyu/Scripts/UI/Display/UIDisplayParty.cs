@@ -27,12 +27,10 @@ namespace EverScord
             int playerCount = GameManager.Instance.PlayerDict.Count;
             int i = 0;
 
-            Debug.Log(GameManager.Instance.PlayerDict.Count);
-
             foreach (CharacterControl player in GameManager.Instance.PlayerDict.Values)
             {
                 int viewID = player.CharacterPhotonView.ViewID;
-                Debug.Log($"{player.gameObject} : {viewID}");
+                //Debug.Log($"{player.gameObject} : {viewID}");
 
                 if (portraits.Count < playerCount)
                 {
@@ -48,7 +46,7 @@ namespace EverScord
                     }
                     
                     portraits.Add(obj);
-                    Debug.Log($"{player.CharacterType} , {player.CharacterJob}");
+                    //Debug.Log($"{player.CharacterType} , {player.CharacterJob}");
 
                     obj.GetComponent<UIPortrait>().Initialize(player.CharacterType, viewID);
                     obj.GetComponentInChildren<UIJobIcon>().Initialize(player.CharacterJob, viewID);

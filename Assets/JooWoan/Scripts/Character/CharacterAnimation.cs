@@ -28,6 +28,15 @@ namespace EverScord.Character
             anim.runtimeAnimatorController = animInfo.AnimController;
             anim.transform.GetComponent<CharacterAnimationSound>().Init(soundInfo);
 
+            PhotonAnimatorView photonAnimView = anim.GetComponent<PhotonAnimatorView>();
+            var syncedParams = photonAnimView.GetSynchronizedParameters();
+
+            photonAnimView.SetParameterSynchronized(ConstStrings.PARAM_ISMOVING,    PhotonAnimatorView.ParameterType.Bool,  PhotonAnimatorView.SynchronizeType.Discrete);
+            photonAnimView.SetParameterSynchronized(ConstStrings.PARAM_ISROTATING,  PhotonAnimatorView.ParameterType.Bool,  PhotonAnimatorView.SynchronizeType.Discrete);
+            photonAnimView.SetParameterSynchronized(ConstStrings.PARAM_ISRELOADING, PhotonAnimatorView.ParameterType.Bool,  PhotonAnimatorView.SynchronizeType.Discrete);
+            photonAnimView.SetParameterSynchronized(ConstStrings.PARAM_HORIZONTAL,  PhotonAnimatorView.ParameterType.Float, PhotonAnimatorView.SynchronizeType.Discrete);
+            photonAnimView.SetParameterSynchronized(ConstStrings.PARAM_VERTICAL,    PhotonAnimatorView.ParameterType.Float, PhotonAnimatorView.SynchronizeType.Discrete);
+
             GetComponent<Animator>().avatar = animInfo.CharacterAvatar;
 
             upperMaskLayerIndex = anim.GetLayerIndex(ConstStrings.ANIMLAYER_UPPERMASK);
