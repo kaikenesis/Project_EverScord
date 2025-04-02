@@ -148,6 +148,9 @@ namespace EverScord.Skill
 
         private void ApplyDamage()
         {
+            if (!activator.CharacterPhotonView.IsMine)
+                return;
+
             if (!laserControl || !toggleLaser)
                 return;
             
@@ -165,11 +168,8 @@ namespace EverScord.Skill
 
                 IEnemy monster = hit.transform.GetComponent<IEnemy>();
 
-                if (activator.CharacterPhotonView.IsMine)
-                {
-                    float laserDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage, SkillInfo.skillCoefficient, monster);
-                    GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, laserDamage, monster);
-                }
+                float laserDamage = DamageCalculator.GetSkillDamage(activator, SkillInfo.skillDotDamage, SkillInfo.skillCoefficient, monster);
+                GameManager.Instance.EnemyHitsControl.ApplyDamageToEnemy(activator, laserDamage, monster);
             }
         }
 
