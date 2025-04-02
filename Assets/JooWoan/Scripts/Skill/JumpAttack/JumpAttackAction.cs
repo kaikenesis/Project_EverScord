@@ -68,9 +68,9 @@ namespace EverScord.Skill
             if (IsUsingSkill)
                 return false;
 
-            activator.SubscribeOnDecreaseHealth(OnDecreaseHealth);
             activator.SetState(SetCharState.ADD, CharState.INVINCIBLE);
             activator.SetState(SetCharState.ADD, CharState.SKILL_STANCE);
+            activator.SubscribeOnDecreaseHealth(OnDecreaseHealth);
 
             skillCoroutine = StartCoroutine(ActivateSkill());
             return true;
@@ -84,6 +84,7 @@ namespace EverScord.Skill
             if (attackCoroutine == null)
             {
                 SoundManager.Instance.PlaySound(Skill.UltEnd.AssetGUID);
+                cooldownTimer.ResetElapsedTime();
                 ExitSkill();
             }
         }
@@ -208,10 +209,7 @@ namespace EverScord.Skill
             activator.UnsubscribeOnDecreaseHealth(OnDecreaseHealth);
 
             if (!hasAttacked)
-            {
-                cooldownTimer.ResetElapsedTime();
                 animControl.CrossFade(new AnimationParam(animInfo.Idle.name, 0.3f));
-            }
             else
                 animControl.Play(animInfo.Idle.name);
 
@@ -235,6 +233,7 @@ namespace EverScord.Skill
 
         public override void ExitSkill()
         {
+            ExitSkill();
             return;
         }
 

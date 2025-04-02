@@ -175,8 +175,6 @@ namespace EverScord.Character
             SetEffects();
             SetPortraits();
             EnableRegenerateHP(true);
-
-            //OnCheckAlive?.Invoke(photonView.ViewID, IsDead, Vector3.zero);
         }
 
         void Update()
@@ -371,8 +369,14 @@ namespace EverScord.Character
                 if (weapon.IsReloading && !skillList[i].SkillAction.CanAttackWhileSkill)
                     continue;
 
-                if (IsUsingSkill && CurrentSkillAction != skillList[i].SkillAction)
-                    continue;
+                if (IsUsingSkill)
+                {
+                    if (CurrentSkillAction is not ThrowSkillAction)
+                        continue;
+
+                    else if (CurrentSkillAction != skillList[i].SkillAction)
+                        continue;
+                }
 
                 info.SkillAction.Activate();
                 CurrentSkillAction = skillList[i].SkillAction;
@@ -683,6 +687,8 @@ namespace EverScord.Character
 
         public IEnumerator HandleDeath()
         {
+            CancelAction();
+
             SetState(SetCharState.CLEAR);
             SetState(SetCharState.ADD, CharState.DEATH);
 

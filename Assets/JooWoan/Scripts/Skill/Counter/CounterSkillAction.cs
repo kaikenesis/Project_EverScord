@@ -6,6 +6,7 @@ using EverScord.Character;
 using EverScord.UI;
 using EverScord.GameCamera;
 using EverScord.Effects;
+using System.Threading;
 
 namespace EverScord.Skill
 {
@@ -78,6 +79,7 @@ namespace EverScord.Skill
                     targetCharacter.transform.position.z
                 );
 
+                barrierTransform.rotation = Quaternion.identity;
                 yield return null;
             }
         }
@@ -232,16 +234,14 @@ namespace EverScord.Skill
             target.ApplyBuff(BuffType.BARRIER, skill.Duration);
 
             GameObject barrier = Instantiate(skill.BarrierPrefab);
-            barrier.transform.SetParent(CharacterSkill.SkillRoot);
+            barrier.transform.SetParent(target.transform);
 
             StartCoroutine(UpdateBarrierPosition(barrier.transform, target.transform));
 
             while (skillCoroutine != null)
                 yield return null;
 
-            barrier.transform.SetParent(target.transform);
             StopBarrier(barrier);
-
             buffCoroutine = null;
         }
 
