@@ -13,7 +13,7 @@ namespace EverScord
         public static Action<bool> OnLobbyToAlteration = delegate { };
 
         [SerializeField] private UILogin login;
-        [SerializeField] private GameObject titleArea, lobbyArea, factorFlashFilter;
+        [SerializeField] private GameObject titleArea, lobbyArea, alterationArea, factorFlashFilter;
         [SerializeField] private DOTweenAnimation titleFadeOutTween;
         [SerializeField] private AudioSource buttonHoverAudioSource;
         [SerializeField] private float showPlayerPanelDelay;
@@ -39,6 +39,7 @@ namespace EverScord
 
             titleArea.SetActive(true);
             lobbyArea.SetActive(false);
+            alterationArea.SetActive(false);
 
             LoadingScreen.ShowScreenFrom1();
 
@@ -118,6 +119,7 @@ namespace EverScord
             DOTween.Rewind(ConstStrings.TWEEN_LOBBY2ALTERATION);
             DOTween.Play(ConstStrings.TWEEN_LOBBY2ALTERATION);
 
+            alterationArea.SetActive(true);
             OnLobbyToAlteration?.Invoke(false);
 
             // callback: Btn_Alteration - UIToggleButton.ToggleObject()
@@ -133,6 +135,7 @@ namespace EverScord
             DOTween.Play(ConstStrings.TWEEN_ALTERATION2LOBBY);
 
             TweenPlayerPanel();
+            alterationArea.SetActive(false);
             OnLobbyToAlteration?.Invoke(true);
 
             // callback: AlterationPanel - ReturnButton - UIToggleButton.ToggleObject()
