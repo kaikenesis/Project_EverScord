@@ -30,8 +30,12 @@ namespace EverScord
         private void Init()
         {
             PhotonNetwork.GameVersion = version;            // 버전 할당.
-            Debug.Log(PhotonNetwork.SendRate);              // Photon서버와의 통신 횟수를 로그로 찍기. 기본값 : 30, 제대로 통신이 되면 30이 출력
-            
+            PhotonNetwork.SendRate = 60;
+            Debug.Log(PhotonNetwork.SendRate);              // Photon서버와의 통신 횟수를 로그로 찍기. 기본값 : 30
+
+            PhotonNetwork.SerializationRate = 30;           // 초당 몇 번 OnPhotonSerialize가 실행되는지. 기본값 : 10
+            Debug.Log(PhotonNetwork.SerializationRate);
+
             PhotonLogin.OnConnectToPhoton += HandleConnectToPhoton;
         }
 
