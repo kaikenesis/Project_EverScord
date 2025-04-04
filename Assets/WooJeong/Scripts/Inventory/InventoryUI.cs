@@ -5,8 +5,6 @@ using TMPro;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using System.Collections;
-using Palmmedia.ReportGenerator.Core.Common;
-using System;
 
 public class InventoryUI : MonoBehaviour
 {
