@@ -25,6 +25,7 @@ namespace EverScord.Character
         [SerializeField] private float gravity;
         [SerializeField] private float mass;
         [SerializeField] private float bodyRotateSpeed;
+        [SerializeField] private float bodyRotateAngle = BODY_ROTATESTART_ANGLE;
 
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius;
@@ -341,7 +342,7 @@ namespace EverScord.Character
             
             float angle = Vector3.Angle(lookDir, PlayerTransform.forward);
 
-            if (angle > BODY_ROTATESTART_ANGLE)
+            if (angle > bodyRotateAngle)
             {
                 AnimationControl.Rotate(!IsMoving);
                 Quaternion lookRotation = Quaternion.LookRotation(lookDir);

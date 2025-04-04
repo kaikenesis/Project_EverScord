@@ -70,7 +70,7 @@ namespace EverScord.Skill
             while (!IsThrownObjectMoving)
             {
                 throwDirection = activator.MouseRayHitPos - throwPoint.position;
-                groundDirection = new Vector3(throwDirection.x, 0, throwDirection.z);
+                groundDirection = new Vector3(throwDirection.x, GameManager.GROUND_HEIGHT, throwDirection.z);
                 Vector3 targetPos = new Vector3(groundDirection.magnitude, throwDirection.y, 0);
 
                 groundDirection.Normalize();
