@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/ActionNode/BossPattern01", order = 1)]
 public class BossPatternNode01 : BActionNode
 {
-    protected bool isRunning = false;
+    public bool isRunning = false;
     public int successChance = 50;
 
     public override void Setup(GameObject gameObject)

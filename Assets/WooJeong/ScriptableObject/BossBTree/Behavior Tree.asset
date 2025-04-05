@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8899410345044210728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37817416719bbaf439eb658fb2a3564e, type: 3}
+  m_Name: HPDecorator
+  m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  children: []
+  nodePosition: {x: 0, y: 0}
+  guid: 838247c64b521d74d90dc724aec3d725
+  position: {x: 0, y: 0}
+  failurePhase: 0
+  usableHP: 0
+--- !u!114 &-670086797577363997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e87a6a80ed82a49b54256903095f29, type: 3}
+  m_Name: BossPatternNode03
+  m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  children: []
+  nodePosition: {x: 0, y: 0}
+  guid: c0dc481c523967841bc9b40c7d20e110
+  position: {x: 166.97614, y: 410.85486}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ccf5df1be2e7b64daee666485632cb7, type: 3}
+  m_Name: Behavior Tree
+  m_EditorClassIdentifier: 
+  root: {fileID: 0}
+  nodes:
+  - {fileID: 580481711023817790}
+  - {fileID: -670086797577363997}
+  - {fileID: 6077758199649015107}
+  - {fileID: -8899410345044210728}
+--- !u!114 &580481711023817790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df17de535a9b87547906a5d314b19e28, type: 3}
+  m_Name: BSequenceNode
+  m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  children: []
+  nodePosition: {x: 0, y: 0}
+  guid: 1638a316c6df58f49b8f3a1d179f0d3e
+  position: {x: 121.00011, y: 150.50197}
+--- !u!114 &6077758199649015107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71951226f4020bc4da439ad998217179, type: 3}
+  m_Name: BossPatternNode04
+  m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  children: []
+  nodePosition: {x: 0, y: 0}
+  guid: 0105fdd1442a5524ba043923d54d4260
+  position: {x: 382.43536, y: 410.99994}

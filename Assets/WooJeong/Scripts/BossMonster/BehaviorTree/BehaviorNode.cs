@@ -10,11 +10,14 @@ public enum NodeState
 
 public abstract class BehaviorNode : ScriptableObject
 {
-    protected BehaviorNode parent = null;
-    [SerializeField] protected List<BehaviorNode> children = new();
+    public BehaviorNode parent = null;
+    [SerializeField] public List<BehaviorNode> children = new();
     protected NodeState state = NodeState.FAILURE;
     private Dictionary<string, object> blackBoard;
     protected int start = 0;
+
+    [HideInInspector] public string guid;
+    [HideInInspector] public Vector2 position;
 
     public void Init()
     {
