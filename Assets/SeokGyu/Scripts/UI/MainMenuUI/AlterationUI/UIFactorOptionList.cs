@@ -70,7 +70,10 @@ namespace EverScord
                 {
                     options[i].gameObject.SetActive(true);
                     FactorData.OptionData optionData = datas.OptionDatas[i];
-                    options[i].Initialize(optionData.Name, optionData.Values[optionData.Values.Length - 1], i, typeNum);
+                    string name = optionData.Name;
+                    float value = optionData.Values[optionData.Values.Length - 1];
+                    Sprite sprite = optionData.SourceImg;
+                    options[i].Initialize(name, value, i, typeNum, sprite);
                 }
                 else
                     options[i].gameObject.SetActive(false);

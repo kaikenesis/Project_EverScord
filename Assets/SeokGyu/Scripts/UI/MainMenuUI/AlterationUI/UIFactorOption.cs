@@ -15,10 +15,10 @@ namespace EverScord
 
         public static Action<int,int,float> OnSelectOption = delegate { };
 
-        public void Initialize(string name, float value, int optionNum, int typeNum)
+        public void Initialize(string name, float value, int optionNum, int typeNum, Sprite sprite)
         {
             nameText.text = $"{name} {value}%";
-            optionIcon.sprite = GameManager.Instance.FactorDatas[typeNum].OptionDatas[optionNum].SourceImg;
+            optionIcon.sprite = sprite;
             this.value = value;
             this.optionNum = optionNum;
             this.typeNum = typeNum;
