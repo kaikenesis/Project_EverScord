@@ -34,7 +34,7 @@ public class AddressablesDownloader : MonoBehaviour
 
         var checkCatalogOperation = Addressables.CheckForCatalogUpdates();
         yield return checkCatalogOperation;
-
+        
         if (checkCatalogOperation.Result.Count > 0)
         {
             // 카탈로그 업데이트가 필요한 경우
