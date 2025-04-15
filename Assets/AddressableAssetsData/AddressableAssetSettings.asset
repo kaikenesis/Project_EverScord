@@ -15,9 +15,9 @@ MonoBehaviour:
   m_DefaultGroup: 159233c991825184591fc248848a009b
   m_currentHash:
     serializedVersion: 2
-    Hash: f0c9b8747844abbce94fe3f5dd0dbbab
+    Hash: e39d0b4f465e0fec07aba1bb16cc8907
   m_OptimizeCatalogSize: 0
-  m_BuildRemoteCatalog: 0
+  m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
   m_CatalogRequestsTimeout: 0
   m_DisableCatalogUpdateOnStart: 0
@@ -35,9 +35,9 @@ MonoBehaviour:
   m_CheckForContentUpdateRestrictionsOption: 0
   m_MonoScriptBundleCustomNaming: 
   m_RemoteCatalogBuildPath:
-    m_Id: 
+    m_Id: 8aa25cfd9eb89dc47b773e98456449b1
   m_RemoteCatalogLoadPath:
-    m_Id: 
+    m_Id: 2b66f864047f9084f84c3ca476fafed1
   m_ContentStateBuildPathProfileVariableName: <default settings path>
   m_CustomContentStateBuildPath: 
   m_ContentStateBuildPath: 
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: b39122fb5918b5b48ba18faed3af2b6d, type: 2}
   - {fileID: 11400000, guid: 558ffc2d0b0ab5147acca1dccc72ac9c, type: 2}
+  - {fileID: 11400000, guid: c750b355606cad349b6bf52cd53042ee, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -56,6 +57,20 @@ MonoBehaviour:
     - m_InheritedParent: 
       m_Id: 470782aecb5babc449e4f4cb3ca207cf
       m_ProfileName: Default
+      m_Values:
+      - m_Id: 2b66f864047f9084f84c3ca476fafed1
+        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+      - m_Id: 8aa25cfd9eb89dc47b773e98456449b1
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: 945baf3ea8907d54f907357ded915d54
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: ad589aba6dd4a5046a9489795b54447d
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: eac9310d0afe9c749b34821acc29a2a5
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+    - m_InheritedParent: 
+      m_Id: cbfdeb8f002a01043959910f429de6cc
+      m_ProfileName: Remote
       m_Values:
       - m_Id: 2b66f864047f9084f84c3ca476fafed1
         m_Value: http://[PrivateIpAddress]:[HostingServicePort]
@@ -87,6 +102,7 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - Test
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: a582006fe9b8085449df06201b558687, type: 2}
@@ -100,7 +116,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e38514ec704e4744ea60e91fa1d35800, type: 2}
   - {fileID: 11400000, guid: 4872044f00a9d0d41a5b6982a74b78f9, type: 2}
   - {fileID: 11400000, guid: f473e4b0afb1bc14b9fd4c2ec8d6f013, type: 2}
-  m_ActiveProfileId: 470782aecb5babc449e4f4cb3ca207cf
+  m_ActiveProfileId: cbfdeb8f002a01043959910f429de6cc
   m_HostingServicesManager:
     m_HostingServiceInfos: []
     m_Settings: {fileID: 11400000}
