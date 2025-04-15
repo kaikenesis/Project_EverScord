@@ -14,10 +14,8 @@ public class AddressablesDownloader : MonoBehaviour
     [SerializeField] private TextMeshProUGUI progressText; // 다운로드 진행률을 표시할 Text
     [SerializeField] private Button downloadButton; // 다운로드 시작 버튼
 
-    private AsyncOperationHandle _downloadHandle;
     private List<object> _keysToDownload = new List<object>();
     private long _totalDownloadSize = 0;
-    private long _downloadedBytes = 0;
 
     private void Start()
     {
@@ -34,7 +32,9 @@ public class AddressablesDownloader : MonoBehaviour
 
         var checkCatalogOperation = Addressables.CheckForCatalogUpdates();
         yield return checkCatalogOperation;
-        
+
+        Debug.Log(checkCatalogOperation.Result.Count);
+
         if (checkCatalogOperation.Result.Count > 0)
         {
             // 카탈로그 업데이트가 필요한 경우
@@ -75,24 +75,12 @@ public class AddressablesDownloader : MonoBehaviour
             Debug.Log($"총 {_keysToDownload.Count}개 에셋, {sizeText} 다운로드 필요");
 
             downloadButton.enabled = true;
-
-            //// 각 키 다운로드
-            //_downloadedBytes = 0;
-            //foreach (var key in _keysToDownload)
-            //{
-            //    yield return StartCoroutine(DownloadRemoteAssets(key));
-            //}
-
-            //if (sizeInfoText != null) sizeInfoText.text = "다운로드 완료!";
-            //if (progressText != null) progressText.text = "100%";
-
-            //Addressables.Release(updateOperation);
         }
         else
         {
             Debug.Log("모든 콘텐츠가 최신 상태입니다. 다운로드 필요 없음.");
             if (sizeInfoText != null) sizeInfoText.text = "모든 콘텐츠가 최신 상태입니다.";
-            StartGame();
+            //StartGame();
         }
 
         Addressables.Release(checkCatalogOperation);
@@ -107,7 +95,6 @@ public class AddressablesDownloader : MonoBehaviour
     {
         slider.enabled = true;
 
-        _downloadedBytes = 0;
         foreach (var key in _keysToDownload)
         {
             yield return StartCoroutine(DownloadRemoteAssets(key));
@@ -122,38 +109,24 @@ public class AddressablesDownloader : MonoBehaviour
         StartGame();
     }
 
-    private void StartGame()
-    {
-        SceneManager.LoadScene("LobbyScene");
-    }
-
     public IEnumerator DownloadRemoteAssets(object key)
     {
-        var downloadSize = Addressables.GetDownloadSizeAsync(key);
-        yield return downloadSize;
-        long assetSize = downloadSize.Result;
-        Addressables.Release(downloadSize);
-
-        Debug.Log($"{key} 다운로드 시작 (크기: {FormatFileSize(assetSize)})");
-
-        _downloadHandle = Addressables.DownloadDependenciesAsync(key, false);
+        AsyncOperationHandle _downloadHandle = Addressables.DownloadDependenciesAsync(key, false);
 
         while (!_downloadHandle.IsDone)
         {
-            float assetProgress = _downloadHandle.PercentComplete;
-            float overallProgress = (_downloadedBytes + (long)(assetSize * assetProgress)) / (float)_totalDownloadSize;
+            float overallProgress = _downloadHandle.GetDownloadStatus().Percent;
 
             if (slider != null) slider.value = overallProgress;
             if (progressText != null) progressText.text = $"{(overallProgress * 100):F1}%";
 
-            Debug.Log($"{key} 다운로드 진행률: {assetProgress * 100:F1}%, 전체 진행률: {overallProgress * 100:F1}%");
+            Debug.Log($"{key} 다운로드 진행률: {overallProgress * 100:F1}%");
 
             yield return null;
         }
 
         if (_downloadHandle.Status == AsyncOperationStatus.Succeeded)
         {
-            _downloadedBytes += assetSize;
             Debug.Log($"{key} 다운로드 완료!");
         }
         else
@@ -179,9 +152,8 @@ public class AddressablesDownloader : MonoBehaviour
         return $"{size:F2} {suffixes[suffixIndex]}";
     }
 
-    private void OnDestroy()
+    private void StartGame()
     {
-        if (_downloadHandle.IsValid())
-            Addressables.Release(_downloadHandle);
+        SceneManager.LoadScene("LobbyScene");
     }
 }
