@@ -80,7 +80,7 @@ public class AddressablesDownloader : MonoBehaviour
         {
             Debug.Log("모든 콘텐츠가 최신 상태입니다. 다운로드 필요 없음.");
             if (sizeInfoText != null) sizeInfoText.text = "모든 콘텐츠가 최신 상태입니다.";
-            //StartGame();
+            StartGame();
         }
 
         Addressables.Release(checkCatalogOperation);
