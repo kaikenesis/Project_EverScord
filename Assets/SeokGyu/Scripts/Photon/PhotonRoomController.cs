@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using WebSocketSharp;
 using static EverScord.PlayerData;
-using EverScord.UI;
 
 namespace EverScord
 {

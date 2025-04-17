@@ -14,7 +14,6 @@ namespace EverScord
         private PhotonView pv;
 
         public static Action<string, string> OnRoomInvite = delegate { };
-        public static Action<ChatClient> OnChatConnected = delegate { };
         public static Action<string> OnRoomFollow = delegate { };
         public static Action OnStopMatch = delegate { };
         public static Action OnExile = delegate { };
@@ -205,7 +204,6 @@ namespace EverScord
         public void OnConnected()
         {
             Debug.Log("You have connected to the Photon Chat");
-            OnChatConnected?.Invoke(chatClient);
             chatClient.SetOnlineStatus(ChatUserStatus.Online);
         }
 

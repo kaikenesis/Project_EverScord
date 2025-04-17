@@ -12,11 +12,6 @@ namespace EverScord
         public static Action<string> OnConnectToPhoton = delegate { };
         public static Action OnLoginError = delegate { };
 
-        private void Awake()
-        {
-
-        }
-
         public void LoginPhoton()
         {
             if (string.IsNullOrEmpty(userName))
