@@ -1,18 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class UIProbabilitySheetPresenter : MonoBehaviour
+namespace EverScord
 {
-    // Start is called before the first frame update
-    void Start()
+    public class UIProbabilitySheetPresenter : MonoBehaviour
     {
+        [SerializeField] private FactorModel model;
+        [SerializeField] private GameObject sheetOption;
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void Initialize()
+        {
+            int typeCount = model.Datas.Length;
+            for (int i = 0; i < typeCount; i++)
+            {
+                GameObject obj = Instantiate(sheetOption, transform);
+                UISheetOptionPresenter uiSheetOption = obj.GetComponent<UISheetOptionPresenter>();
+                uiSheetOption.Initialize();
+            }
+        }
     }
 }
+

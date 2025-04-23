@@ -1,5 +1,7 @@
+using System.Data;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EverScord
 {
@@ -8,30 +10,27 @@ namespace EverScord
         [SerializeField] private TMP_Text text;
         [SerializeField] private GameObject containor;
 
-        public void Initialize(int typeNum)
+        public void SetTypeText(string typeName)
         {
-            FactorData.OptionData[] datas = GameManager.Instance.FactorDatas[typeNum].OptionDatas;
+            text.text = typeName;
+        }
 
-            switch (GameManager.Instance.FactorDatas[typeNum].Type)
-            {
-                case FactorData.EType.ALPHA:
-                    text.text = "▷알파";
-                    break;
-                case FactorData.EType.BETA:
-                    text.text = "▷베타";
-                    break;
-            }
+        public void AddTextToContainor(GameObject textObj)
+        {
+            textObj.transform.SetParent(containor.transform);
+        }
 
-            int count = datas.Length;
-            for (int i = 0; i < count; i++)
-            {
-                TMP_Text newOption = Instantiate(text, containor.transform);
-                newOption.text = $"● <color=white>{datas[i].Name}</color>({datas[i].Values[0]}%~{datas[i].Values[datas[i].Values.Length - 1]}%)";
-            }
+        public void SetHeight(int textCount, float textHeight)
+        {
+            int col = containor.GetComponent<GridLayoutGroup>().constraintCount;
+            int row = textCount / col;
+            if (textCount % col != 0)
+                row += 2;
 
             float h = text.GetComponent<RectTransform>().sizeDelta.y;
 
-            float height = h * 3 + count / 2 * h;
+            //float height = h * 3 + count / 2 * h;
+            float height = textHeight * row + h;
             GetComponent<RectTransform>().sizeDelta = new Vector2(0, height);
         }
     }
