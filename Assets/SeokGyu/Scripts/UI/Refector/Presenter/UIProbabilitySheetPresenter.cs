@@ -7,7 +7,12 @@ namespace EverScord
     {
         [SerializeField] private FactorModel model;
         [SerializeField] private GameObject sheetOption;
-        
+
+        private void Awake()
+        {
+            Initialize();
+        }
+
         private void Initialize()
         {
             int typeCount = model.Datas.Length;
@@ -15,7 +20,7 @@ namespace EverScord
             {
                 GameObject obj = Instantiate(sheetOption, transform);
                 UISheetOptionPresenter uiSheetOption = obj.GetComponent<UISheetOptionPresenter>();
-                uiSheetOption.Initialize();
+                uiSheetOption.SetOptionInfo(i);
             }
         }
     }

@@ -8,38 +8,24 @@ namespace EverScord
     {
         [SerializeField] private FactorModel model;
         [SerializeField] private UISheetOptionView view;
-
-        public void Initialize()
-        {
-            int count = model.Datas.Length;
-
-            for (int i = 0; i < count; i++)
-            {
-                SetOptionInfo(i);
-            }
-        }
-
-        private void SetOptionInfo(int num)
+        
+        public void SetOptionInfo(int num)
         {
             string typeText = $"¢¹{model.Datas[num].TypeName}";
             view.SetTypeText(typeText);
 
             FactorModel.OptionData[] optionDatas = model.Datas[num].OptionDatas;
             int count = optionDatas.Length;
-            float textHeight = 0f;
 
             for (int i = 0; i < count; i++)
             {
-                GameObject obj = new GameObject();
+                GameObject obj = new GameObject("Option");
 
-                TMP_Text newOption = obj.AddComponent<TMP_Text>();
-                newOption.text = $"¡Ü <color=white>{optionDatas[i].Name}</color>({optionDatas[i].Values[0]}%~{optionDatas[i].Values[optionDatas[i].Values.Length - 1]}%)";
-                view.AddTextToContainor(obj);
-                if (textHeight <= 0f)
-                    textHeight = obj.GetComponent<RectTransform>().sizeDelta.y;
+                string text = $"¡Ü <color=white>{optionDatas[i].Name}</color>({optionDatas[i].Values[0]}%~{optionDatas[i].Values[optionDatas[i].Values.Length - 1]}%)";
+                view.AddTextToContainor(obj, text);
             }
 
-            view.SetHeight(count, textHeight);
+            view.SetHeight(count);
         }
     }
 }
